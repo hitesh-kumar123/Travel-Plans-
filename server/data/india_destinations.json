@@ -1,0 +1,2152 @@
+[
+  {
+    "name": "Jantar Mantar",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.9247389,
+      "lon": 75.8244663
+    },
+    "type": "Observatory",
+    "significance": "Scientific",
+    "rating": 4.2,
+    "entrance_fee_inr": 15,
+    "best_time_to_visit": "Morning",
+    "time_needed_hrs": 2.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1724",
+    "wikidata": "Q508634",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/JantarMantarJaipur20080213-4.jpg/1600px-JantarMantarJaipur20080213-4.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/JantarMantarJaipur20080213-8.jpg/1600px-JantarMantarJaipur20080213-8.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Jantar_Mantar%2C_Jaipur_-_Samrat_Yantra.jpg/1600px-Jantar_Mantar%2C_Jaipur_-_Samrat_Yantra.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Jaipur%2C_Jantar_Mantar%2C_Rashi_Yantras_%286271717613%29.jpg/1600px-Jaipur%2C_Jantar_Mantar%2C_Rashi_Yantras_%286271717613%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Steps_and_Curves_%286652755339%29.jpg/1600px-Steps_and_Curves_%286652755339%29.jpg"
+    ],
+    "zone": "Northern"
+  },
+  {
+    "name": "Hawa Mahal",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.923932,
+      "lon": 75.8268652
+    },
+    "type": "Palace",
+    "significance": "Architectural",
+    "rating": 4.4,
+    "entrance_fee_inr": 50,
+    "best_time_to_visit": "Morning",
+    "time_needed_hrs": 1.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1799",
+    "wikidata": "Q836531",
+    "wikipedia": "en:Hawa Mahal",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Hawamahal20080213-10.jpg/1600px-Hawamahal20080213-10.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Hawamahal20080213-4.jpg/1600px-Hawamahal20080213-4.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Hawamahal20080213-5.jpg/1600px-Hawamahal20080213-5.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Hawamahal20080213-6.jpg/1600px-Hawamahal20080213-6.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Hawamahal20080213-7.jpg/1600px-Hawamahal20080213-7.jpg"
+    ],
+    "zone": "Northern"
+  },
+  {
+    "name": "Pink City",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9232015,
+      "lon": 75.8243929
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/JantarMantarJaipur20080213-3.jpg/1600px-JantarMantarJaipur20080213-3.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/JantarMantarJaipur20080213-5.jpg/1600px-JantarMantarJaipur20080213-5.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/JantarMantarJaipur20080213-6.jpg/1600px-JantarMantarJaipur20080213-6.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/JantarMantarJaipur20080213-7.jpg/1600px-JantarMantarJaipur20080213-7.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/JantarMantarJaipur20080213-1.jpg/1286px-JantarMantarJaipur20080213-1.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Albert Hall",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9117053,
+      "lon": 75.8194973
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "Q4710411",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Albert_Hall_Museum.JPG/1600px-Albert_Hall_Museum.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%282%29.jpg/1600px-Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%282%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%284%29.jpg/1600px-Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%284%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%288%29.jpg/1600px-Albert_Hall%2C_Ram_Niwas_Bagh%2C_Jaipur_%288%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Albert_Hall_Museum_%28exterior%29%2C_Ram_Niwas_Garden%2C_Jaipur%2C_Rajasthan%2C_India_%282016%29_3.jpg/1600px-Albert_Hall_Museum_%28exterior%29%2C_Ram_Niwas_Garden%2C_Jaipur%2C_Rajasthan%2C_India_%282016%29_3.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Iswari Minar Swarga Sali (Isarlat)",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9244425,
+      "lon": 75.8208167
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/A_building_within_Jaipur_City_Palace_complex.jpg/1600px-A_building_within_Jaipur_City_Palace_complex.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Jaipur_Mubarak_Mahal_2011.jpg/1600px-Jaipur_Mubarak_Mahal_2011.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Jaipur%2C_City_Palace%2C_Mubarak_Mahal_%286272429240%29.jpg/1600px-Jaipur%2C_City_Palace%2C_Mubarak_Mahal_%286272429240%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Diwan-I-Khas_City_palace.JPG/1600px-Diwan-I-Khas_City_palace.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Mubarak_Mahal_City_Palace.JPG/1600px-Mubarak_Mahal_City_Palace.JPG"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9102675,
+      "lon": 75.819124
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/1996_-220-28_Jaipur_%282233399105%29.jpg/1600px-1996_-220-28_Jaipur_%282233399105%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/1996_-222-20_Jaipur_%282234191852%29.jpg/1600px-1996_-222-20_Jaipur_%282234191852%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Nahargarh Fort",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9400336,
+      "lon": 75.8165299
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Jaipur_evening_2011.jpg/1600px-Jaipur_evening_2011.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Panoramic_view_of_Jaipur.jpg/1600px-Panoramic_view_of_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Jaipur.in_Panorama_from_Nahargarh_-_panoramio.jpg/1600px-Jaipur.in_Panorama_from_Nahargarh_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Jaipur.in_Panorama_from_Nahargarh_-_panoramio_-_SINHA.jpg/1600px-Jaipur.in_Panorama_from_Nahargarh_-_panoramio_-_SINHA.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Jaipur_from_Nahar_Garh_Fort%27s_window.jpg/1200px-Jaipur_from_Nahar_Garh_Fort%27s_window.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9369522,
+      "lon": 75.7573272
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/The_evenings_in_pink_city.jpg/1200px-The_evenings_in_pink_city.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Chauhan%27s_diwali_house.jpg/1600px-Chauhan%27s_diwali_house.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Maharaniyon",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9448268,
+      "lon": 75.8407405
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Bandhani%2C_Tie_dye_dresses_drying_in_Jaipur.jpg/1600px-Bandhani%2C_Tie_dye_dresses_drying_in_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Jaipur-Man_Sagar_Lake-20131017.jpg/1600px-Jaipur-Man_Sagar_Lake-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Jaipur-Man_Sagar_Lake-Jal_Mahal-20131017.jpg/1600px-Jaipur-Man_Sagar_Lake-Jal_Mahal-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Jaipur_Jal_Mahal_-_panoramio.jpg/1600px-Jaipur_Jal_Mahal_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Jaipur.in_Jal_Mahal_-_panoramio.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Maharaja Sawai Mansingh II",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.926828,
+      "lon": 75.8238676
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/ChandraMahalJaipur20080213-2.jpg/1600px-ChandraMahalJaipur20080213-2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Diwan-i-KhasJaipur20080213-1.jpg/1600px-Diwan-i-KhasJaipur20080213-1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Diwan-i-KhasJaipur20080213-2.jpg/1600px-Diwan-i-KhasJaipur20080213-2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Diwan-i-KhasJaipur20080213-3.jpg/1600px-Diwan-i-KhasJaipur20080213-3.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/City_Palace_Jaipur_-_Diwan-i_Khas.jpg/1600px-City_Palace_Jaipur_-_Diwan-i_Khas.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Mansingh Townhall",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9255317,
+      "lon": 75.8272703
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Jaipur_Market.jpg/1600px-Jaipur_Market.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Hawa_mahal_windows.jpg/1600px-Hawa_mahal_windows.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Side_view_of_hawa_mahal_balconies.jpg/1600px-Side_view_of_hawa_mahal_balconies.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Jaipur-Hawa_Mahal_Bazaar-20131016.jpg/1600px-Jaipur-Hawa_Mahal_Bazaar-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Jaipur-Hawa_Mahal_Bazaar-Going_to_the_market-20131017.jpg/1600px-Jaipur-Hawa_Mahal_Bazaar-Going_to_the_market-20131017.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9225011,
+      "lon": 75.8219616
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Crowd_procession_gangaur.jpg/1600px-Crowd_procession_gangaur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/India_-_Colours_of_India_-_010_-_Flower_Market_%28843953060%29.jpg/1200px-India_-_Colours_of_India_-_010_-_Flower_Market_%28843953060%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/India_-_Colours_of_India_-_011b_-_Pots_for_sale_%28843126905%29.jpg/1600px-India_-_Colours_of_India_-_011b_-_Pots_for_sale_%28843126905%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/India_-_Colours_of_India_-_011a_-_Pots_for_sale_%28843121657%29.jpg/1600px-India_-_Colours_of_India_-_011a_-_Pots_for_sale_%28843121657%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/JantarMantarDevice2.jpg/1600px-JantarMantarDevice2.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Jaipur Wax Museum",
+    "city": "Jaipur",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9391114,
+      "lon": 75.8163025
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Jaipur_03-2016_38_Garh_Ganesh_Temple.jpg/1600px-Jaipur_03-2016_38_Garh_Ganesh_Temple.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Nahar_Garh_Fort.jpg/1600px-Nahar_Garh_Fort.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9261054,
+      "lon": 75.8237241
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/City_Palace_Jaipur_-_Mubarak_Mahal.jpg/1600px-City_Palace_Jaipur_-_Mubarak_Mahal.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/City_Palace_Jaipur_-_Mubarak_Mahal_2.jpg/1600px-City_Palace_Jaipur_-_Mubarak_Mahal_2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Jaipur-City_Palace-Diwan_I_Khas_VA-20131016.jpg/1600px-Jaipur-City_Palace-Diwan_I_Khas_VA-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Jaipur-City_Palace-Diwan_I_Khas_VIF-20131016.jpg/1600px-Jaipur-City_Palace-Diwan_I_Khas_VIF-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Jaipur-City_Palace-Diwan_I_Khas_VP-20131016.jpg/1600px-Jaipur-City_Palace-Diwan_I_Khas_VP-20131016.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9265234,
+      "lon": 75.8235571
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/ChandraMahalJaipur20080213-1.jpg/1600px-ChandraMahalJaipur20080213-1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/PritamChowkJaipur20080213-1.jpg/1066px-PritamChowkJaipur20080213-1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/PritamChowkJaipur20080213-2.jpg/1066px-PritamChowkJaipur20080213-2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/PritamChowkJaipur20080213-4.jpg/1066px-PritamChowkJaipur20080213-4.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/PritamChowkJaipur20080213-5.jpg/1600px-PritamChowkJaipur20080213-5.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Pink city",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9246636,
+      "lon": 75.818417
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/India_%284016817285%29.jpg/1600px-India_%284016817285%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Jaipur%2C_panorama_centra_m%C4%9Bsta.jpg/1600px-Jaipur%2C_panorama_centra_m%C4%9Bsta.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jaipur_-_panoramio.jpg/1600px-Jaipur_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Jaipur_street_bovine_%286785607063%29.jpg/1032px-Jaipur_street_bovine_%286785607063%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Indian_wedding%2C_Jaipur_%2836912972020%29.jpg/1600px-Indian_wedding%2C_Jaipur_%2836912972020%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "M",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9170488,
+      "lon": 75.8167405
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Rickshaw_Wisdom_%286652769119%29.jpg/1600px-Rickshaw_Wisdom_%286652769119%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Albert_Hall_Side_ways.jpg/1600px-Albert_Hall_Side_ways.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Sargasuli_Tower.JPG/1600px-Sargasuli_Tower.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Albert_Hall_Museum_%28exterior%29%2C_Ram_Niwas_Garden%2C_Jaipur%2C_Rajasthan%2C_India_%282016%29_2.jpg/1600px-Albert_Hall_Museum_%28exterior%29%2C_Ram_Niwas_Garden%2C_Jaipur%2C_Rajasthan%2C_India_%282016%29_2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/00/Quotidianit%C3%A0_-_panoramio.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Paanch Batti",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9162485,
+      "lon": 75.8098572
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lascar_Jaipur%2C_the_Pink_City_%284499845296%29.jpg/1600px-Lascar_Jaipur%2C_the_Pink_City_%284499845296%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/71/Lyricist_Javed_Akhtar_with_Suresh_Sharma.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Javed_Akhtar_with_Suresh_Sharma.JPG/1600px-Javed_Akhtar_with_Suresh_Sharma.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Sanjoy_Roy_with_Suresh_Sharma.JPG/1600px-Sanjoy_Roy_with_Suresh_Sharma.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Ram_Jhethmalani_with_Suresh_Sharma.JPG/1600px-Ram_Jhethmalani_with_Suresh_Sharma.JPG"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9526193,
+      "lon": 75.8266406
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Gaitore_07.jpg/1600px-Gaitore_07.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gaitore_08.jpg/1600px-Gaitore_08.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Gaitore_09.jpg/1200px-Gaitore_09.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Gaitore_11.jpg/1600px-Gaitore_11.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Charan_Mandir.jpg/1600px-Charan_Mandir.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Sunset Point",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9367309,
+      "lon": 75.8122387
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/From_Hawa_Mahal_%283096735513%29.jpg/1600px-From_Hawa_Mahal_%283096735513%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Hawa_Mahal_from_the_back_%283097575118%29.jpg/1600px-Hawa_Mahal_from_the_back_%283097575118%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Jantar_Mantar_from_the_top_%283097577942%29.jpg/1600px-Jantar_Mantar_from_the_top_%283097577942%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Market_%283097573280%29.jpg/1600px-Market_%283097573280%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Hawa_Mahal_%283096733351%29.jpg/1600px-Hawa_Mahal_%283096733351%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "S R C Museum of indology",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9021795,
+      "lon": 75.8193059
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Khakra_pizza.jpg/1600px-Khakra_pizza.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Moti_Dongri_Fortress.jpg/1600px-Moti_Dongri_Fortress.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Siviji_temple.jpg/1600px-Siviji_temple.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/SMS_robot.jpg/1200px-SMS_robot.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Sri_Moti_Ganesh_Ji_Mandir_Dungri.jpg/1600px-Sri_Moti_Ganesh_Ji_Mandir_Dungri.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Wind Palace",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9237834,
+      "lon": 75.8272706
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Hawamahal20080213-1.jpg/1600px-Hawamahal20080213-1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Hawamahal20080213-2.jpg/1600px-Hawamahal20080213-2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Hawamahal20080213-3.jpg/1600px-Hawamahal20080213-3.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Hawa_Mahal_-_Jaipur_1.jpg/1600px-Hawa_Mahal_-_Jaipur_1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Hawa_Mahal_2011.jpg/1600px-Hawa_Mahal_2011.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8996801,
+      "lon": 75.8586223
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/c/c1/Inde_Rajasthan_Vers_Jaipur_Montagne_Aravalli_23022015_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/The_Sisters_Of_Pale_Pink_%28101829313%29.jpeg/1200px-The_Sisters_Of_Pale_Pink_%28101829313%29.jpeg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Sisodia_Rani_ka_Bagh_%2845549615912%29.jpg/1462px-Sisodia_Rani_ka_Bagh_%2845549615912%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Sisodia_Rani_ka_Bagh_%2845549609872%29.jpg/1405px-Sisodia_Rani_ka_Bagh_%2845549609872%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Sisodia_Rani_ka_Bagh_%2845549604772%29.jpg/1600px-Sisodia_Rani_ka_Bagh_%2845549604772%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8991154,
+      "lon": 75.8584973
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Amrapali Museum",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9150126,
+      "lon": 75.8019066
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/d/d8/India_-_Jaipur2_-_032c_-_traditional_puppet_show_%283316332563%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/ff/India_-_Jaipur2_-_032b_-_traditional_puppet_show_%283317157470%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/India_-_Jaipur2_-_039_-_Flowers_in_December_off_our_guesthouse_rooftop_%282178612505%29.jpg/1600px-India_-_Jaipur2_-_039_-_Flowers_in_December_off_our_guesthouse_rooftop_%282178612505%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/India_-_Jaipur2_-_032_-_traditional_puppet_show_%282178576805%29.jpg/1600px-India_-_Jaipur2_-_032_-_traditional_puppet_show_%282178576805%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/India-6495_-_Flickr_-_archer10_%28Dennis%29.jpg/1600px-India-6495_-_Flickr_-_archer10_%28Dennis%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.925266,
+      "lon": 75.8155862
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Carved_marble_column_base_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609884343%29.jpg/1065px-Carved_marble_column_base_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609884343%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Detail_of_carved_marble_column_base_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609882817%29.jpg/1600px-Detail_of_carved_marble_column_base_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609882817%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Carved_Stone_Screen_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609878019%29.jpg/1065px-Carved_Stone_Screen_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609878019%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Maharani_Ki_Chhatri%2C_Jaipur_%284609875989%29.jpg/1353px-Maharani_Ki_Chhatri%2C_Jaipur_%284609875989%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Former_Tree_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609874771%29.jpg/1065px-Former_Tree_-_Maharani_Ki_Chhatri%2C_Jaipur_%284609874771%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Chhoti roundabout view",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9242036,
+      "lon": 75.8186173
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "amrapali museum",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9150439,
+      "lon": 75.8019015
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9375847,
+      "lon": 75.8156013
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9527361,
+      "lon": 75.8277562
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Turban museum",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9321605,
+      "lon": 75.8313232
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Jaipur_manual_pump.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Jaipur-Samode_Haveli_Garden-Pupettry_01-20131017.jpg/1600px-Jaipur-Samode_Haveli_Garden-Pupettry_01-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Jaipur-Samode_Haveli_Garden-Pupettry_02-20131017.jpg/1600px-Jaipur-Samode_Haveli_Garden-Pupettry_02-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Jaipur-Samode_Haveli_Garden-Pupettry_03-20131017.jpg/1600px-Jaipur-Samode_Haveli_Garden-Pupettry_03-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Jaipur-Samode_Haveli_Garden-Pupettry_04-20131017.jpg/1600px-Jaipur-Samode_Haveli_Garden-Pupettry_04-20131017.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9376234,
+      "lon": 75.8156457
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.923987,
+      "lon": 75.8225804
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Jantar_Mantar_%282108030933%29.jpg/1600px-Jantar_Mantar_%282108030933%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Jaipur%2C_Jantar_Mantar_observatory_%283160437590%29.jpg/1600px-Jaipur%2C_Jantar_Mantar_observatory_%283160437590%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Jaipur_Feb_2020_027.jpg/1600px-Jaipur_Feb_2020_027.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Jaipur_Feb_2020_026.jpg/1600px-Jaipur_Feb_2020_026.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/JaiPrakashYantraJaipur20080213-3.jpg/1600px-JaiPrakashYantraJaipur20080213-3.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9239547,
+      "lon": 75.8227412
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/JaiPrakashYantraJaipur20080213-4.jpg/1600px-JaiPrakashYantraJaipur20080213-4.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9450895,
+      "lon": 75.827858
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/c/c6/An_ancient_monument_in_India_%282018%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Gaitore_04.jpg/1600px-Gaitore_04.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Gaitore_02.jpg/1600px-Gaitore_02.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Gaitore_03.jpg/1600px-Gaitore_03.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Gaitore_05.jpg/1600px-Gaitore_05.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9449411,
+      "lon": 75.8264962
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.942635,
+      "lon": 75.8251632
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9298383,
+      "lon": 75.8285093
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Peacock_Gate%2C_City_Palace%2C_Jaipur_-_panoramio.jpg/1200px-Peacock_Gate%2C_City_Palace%2C_Jaipur_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/f1/Inde_Rajasthan_Jaipur_City_Palace_Singh_Pol_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/14/Inde_Rajasthan_Jaipur_City_Palace_Pitam_Niwas_Chowk_Porte_Rose_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/74/Inde_Rajasthan_Jaipur_City_Palace_Pitam_Niwas_Chowk_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/City_Palace_Jaipur_-_Diwan-i_Khas_2.jpg/1600px-City_Palace_Jaipur_-_Diwan-i_Khas_2.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Rooftop view stairs",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9238157,
+      "lon": 75.8206609
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "jewels gallery",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9226505,
+      "lon": 75.8277839
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Jaipur-Hawa_Mahal-20131016.jpg/1600px-Jaipur-Hawa_Mahal-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Jaipur-Tripolia_Bazar-Bedspread_shop-20131017.jpg/1600px-Jaipur-Tripolia_Bazar-Bedspread_shop-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Jaipur-Tripolia_Bazar-Bracelets_shop-20131017.jpg/1600px-Jaipur-Tripolia_Bazar-Bracelets_shop-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Jaipur-Tripolia_Bazar-Indian_family_shopping-20131017.jpg/1600px-Jaipur-Tripolia_Bazar-Indian_family_shopping-20131017.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Jaipur.in_Rajasthan_Hawa_Mahal_-_panoramio.jpg/1600px-Jaipur.in_Rajasthan_Hawa_Mahal_-_panoramio.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9253392,
+      "lon": 75.8256913
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Jantar_Mantar_at_Jaipur.jpg/1600px-Jantar_Mantar_at_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Steps_%286652755967%29.jpg/1600px-Steps_%286652755967%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Steps_and_Curves_%286652756715%29.jpg/1600px-Steps_and_Curves_%286652756715%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Curves_and_Arches_%286652754049%29.jpg/1066px-Curves_and_Arches_%286652754049%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jaipur-Jantar_Mantar-Disha_Yantra-20131016.jpg/1600px-Jaipur-Jantar_Mantar-Disha_Yantra-20131016.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9266033,
+      "lon": 75.8094283
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/0d/Royal_attendants_at_City_Palace%2C_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Details_of_a_brass_door%2C_City_Palace%2C_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Jaipur%2C_rekonstrukce_silnice.jpg/1600px-Jaipur%2C_rekonstrukce_silnice.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Weight_%2863952159%29.jpeg/1600px-Weight_%2863952159%29.jpeg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Jaipur_Tirpoliya_Bazar.jpg/1600px-Jaipur_Tirpoliya_Bazar.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Sunrise point",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9400258,
+      "lon": 75.8170828
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "dune",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9401153,
+      "lon": 75.8131635
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "rooftop view",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9240911,
+      "lon": 75.8207688
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9544871,
+      "lon": 75.84293
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Floating_palace_Jaipur_India.jpg/1600px-Floating_palace_Jaipur_India.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Water_palace_05.jpg/1600px-Water_palace_05.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Water_palace_07.jpg/1600px-Water_palace_07.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Jal_mahal.JPG/1600px-Jal_mahal.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/The_mahal_on_jal_%2C_jalmahal.JPG"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Lake Palace",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9534274,
+      "lon": 75.8461475
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "Q2757538",
+    "wikipedia": "en:Jal Mahal",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Jal_Mahal_Palace.JPG/1600px-Jal_Mahal_Palace.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/6/6d/Jal_Mahal_in_Man_Sagar_Lake.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Jal_mahal_-_panoramio.jpg/1600px-Jal_mahal_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/0d/The_palace_built_by_king_sawai_pratap_singh_in_A.D_1799._it_is_a_five_storied_building_out_of_which_four_floors_remain_under_water_when_the_lake_and_it_was_a_summer_palace._when_summer_time_come_king_and_qu_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/2/22/Jal_Mahal%2C_Amer%2C_Jaipur%2C_Rajasthan%2C_India_-_panoramio.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Sanganeri Gate",
+    "city": "Jaipur",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9158691,
+      "lon": 75.8247984
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/India_-_Jaipur2_-_030_-_traffic_in_Jaipurs_pink-clad_Old_Town_%282178575173%29.jpg/1600px-India_-_Jaipur2_-_030_-_traffic_in_Jaipurs_pink-clad_Old_Town_%282178575173%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/India_-_Jaipur2_-_031_-_traffic_in_Jaipurs_pink-clad_Old_Town_%282178575969%29.jpg/1600px-India_-_Jaipur2_-_031_-_traffic_in_Jaipurs_pink-clad_Old_Town_%282178575969%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Palace_Guard_%286652758339%29.jpg/1066px-Palace_Guard_%286652758339%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Flower_Stall_%286652759267%29.jpg/1600px-Flower_Stall_%286652759267%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Palace_Detail_%286652757613%29.jpg/1600px-Palace_Detail_%286652757613%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Mubarak Mahal",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9257301,
+      "lon": 75.8236319
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Mubarak_Mahal_%284571622070%29.jpg/1600px-Mubarak_Mahal_%284571622070%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Inside_the_Jaipur_City_Palace_%284571621452%29.jpg/1067px-Inside_the_Jaipur_City_Palace_%284571621452%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/India_2015-183_%2817164337281%29.jpg/1600px-India_2015-183_%2817164337281%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Rama_Yantra%2C_Jantar_Mantar.jpg/1600px-Rama_Yantra%2C_Jantar_Mantar.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/City_Palace_0001.jpg/1600px-City_Palace_0001.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Albert Hall Museum , jaipur",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9116797,
+      "lon": 75.8195026
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Moti Doongri Fort",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8935929,
+      "lon": 75.816775
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/India_-_Jaipur_-_023_-_The_peculiar_Birla_Mandir_temple_%281037308254%29.jpg/1600px-India_-_Jaipur_-_023_-_The_peculiar_Birla_Mandir_temple_%281037308254%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/India_-_Jaipur_-_001_-_Rambarh_Palace_Hotel_%281027431008%29.jpg/1600px-India_-_Jaipur_-_001_-_Rambarh_Palace_Hotel_%281027431008%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Jaipur%2C_Birla_Lakshmi_Narayan_Temple_%286272410552%29.jpg/1600px-Jaipur%2C_Birla_Lakshmi_Narayan_Temple_%286272410552%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Jaipur-Birla_Mandir-Road_view-20131016.jpg/1600px-Jaipur-Birla_Mandir-Road_view-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Jaipur-Birla_Mandir-General_View-20131016.jpg/1600px-Jaipur-Birla_Mandir-General_View-20131016.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Royal Gaitor",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9429134,
+      "lon": 75.8246611
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "Q12424215",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Haveli",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9205392,
+      "lon": 75.8188816
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Man Gate",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9167338,
+      "lon": 75.8206772
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "City Palace",
+    "city": "Udaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.9262372,
+      "lon": 75.8238122
+    },
+    "type": "Palace",
+    "significance": "Historical",
+    "rating": 4.4,
+    "entrance_fee_inr": 300,
+    "best_time_to_visit": "All",
+    "time_needed_hrs": 2.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1559",
+    "wikidata": "Q2723395",
+    "wikipedia": "en:City Palace, Jaipur",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Guards_at_City_Palace%2C_Jaipur.jpg/1600px-Guards_at_City_Palace%2C_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Jaipur_03-2016_24_City_Palace_complex.jpg/1600px-Jaipur_03-2016_24_City_Palace_complex.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Jaipur_Feb_2020_015.jpg/1200px-Jaipur_Feb_2020_015.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Jaipur_Feb_2020_016.jpg/1200px-Jaipur_Feb_2020_016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Jaipur_Feb_2020_017.jpg/1200px-Jaipur_Feb_2020_017.jpg"
+    ],
+    "zone": "Northern"
+  },
+  {
+    "name": "City Palace",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.9262372,
+      "lon": 75.8238122
+    },
+    "type": "Palace",
+    "significance": "Historical",
+    "rating": 4.4,
+    "entrance_fee_inr": 200,
+    "best_time_to_visit": "Morning",
+    "time_needed_hrs": 2.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1727",
+    "wikidata": "Q2723395",
+    "wikipedia": "en:City Palace, Jaipur",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Guards_at_City_Palace%2C_Jaipur.jpg/1600px-Guards_at_City_Palace%2C_Jaipur.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Jaipur_03-2016_24_City_Palace_complex.jpg/1600px-Jaipur_03-2016_24_City_Palace_complex.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Jaipur_Feb_2020_015.jpg/1200px-Jaipur_Feb_2020_015.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Jaipur_Feb_2020_016.jpg/1200px-Jaipur_Feb_2020_016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Jaipur_Feb_2020_017.jpg/1200px-Jaipur_Feb_2020_017.jpg"
+    ],
+    "zone": "Northern"
+  },
+  {
+    "name": "Diwan-i-Khas",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9264601,
+      "lon": 75.8238638
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Ajmeri Gate",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9172468,
+      "lon": 75.8167456
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Chulgiri Digamber Jain Temple",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.890849,
+      "lon": 75.8605003
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9243502,
+      "lon": 75.8227281
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Jaipur-Jantar_Mantar-Laghu_Samrat_Yantra-20131016.jpg/1600px-Jaipur-Jantar_Mantar-Laghu_Samrat_Yantra-20131016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Jantar_Mantar_Astronomical_Observatory_-_Jaipur_-_panoramio_%281%29.jpg/1600px-Jantar_Mantar_Astronomical_Observatory_-_Jaipur_-_panoramio_%281%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Jantar_Mantar_Astronomical_Observatory_-_Jaipur_-_panoramio_%283%29.jpg/1600px-Jantar_Mantar_Astronomical_Observatory_-_Jaipur_-_panoramio_%283%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Jaipur_Feb_2020_028.jpg/1200px-Jaipur_Feb_2020_028.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Ajmeri Gate",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9176077,
+      "lon": 75.8166363
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Ajmeri Gate",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9173114,
+      "lon": 75.8162882
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Bhawani Singh Tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9427782,
+      "lon": 75.8248825
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9432634,
+      "lon": 75.8245503
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Man Singh II Tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9427212,
+      "lon": 75.8245063
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Madho Singh II’s tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9429156,
+      "lon": 75.8246661
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Jai Singh ll Tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9437849,
+      "lon": 75.8247527
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9438799,
+      "lon": 75.824935
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9439838,
+      "lon": 75.824921
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9436535,
+      "lon": 75.8249877
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sawai Pratap Singh tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9437407,
+      "lon": 75.8244289
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9233442,
+      "lon": 75.8260525
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Hawa_Mahal_-_Jaipur_-_Interior.jpg/1600px-Hawa_Mahal_-_Jaipur_-_Interior.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/5/53/A_close-up_of_Hawa_Mahal.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Hawa_Mahal_Jaipur%2C_Rajasthan.jpg/1600px-Hawa_Mahal_Jaipur%2C_Rajasthan.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Hawa_Mahal_Palace.JPG/1600px-Hawa_Mahal_Palace.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Kareng_Ghar.jpg/1600px-Kareng_Ghar.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9387261,
+      "lon": 75.847077
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Khole_k_Hanuman_Jee_Temple_02.jpg/1600px-Khole_k_Hanuman_Jee_Temple_02.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Khole_k_Hanuman_Jee_Temple_04.jpg/1193px-Khole_k_Hanuman_Jee_Temple_04.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Khole_k_Hanuman_Jee_Temple_05.jpg/1600px-Khole_k_Hanuman_Jee_Temple_05.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Police Shahid Smarak",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8988968,
+      "lon": 75.8162136
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Red_Fort-Agra.jpg/1280px-Red_Fort-Agra.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Rambagh_Palace_Jaipur_interior%2C_July_2016.jpg/1600px-Rambagh_Palace_Jaipur_interior%2C_July_2016.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/7a/Alla_fontana_-_panoramio.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Shaheed Smarak",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9174202,
+      "lon": 75.8017635
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/India-6835_-_Flickr_-_archer10_%28Dennis%29.jpg/1600px-India-6835_-_Flickr_-_archer10_%28Dennis%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/India-6487_-_Flickr_-_archer10_%28Dennis%29.jpg/1600px-India-6487_-_Flickr_-_archer10_%28Dennis%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/India-6516_-_Flickr_-_archer10_%28Dennis%29.jpg/1200px-India-6516_-_Flickr_-_archer10_%28Dennis%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/India-6537_-_Flickr_-_archer10_%28Dennis%29.jpg/1200px-India-6537_-_Flickr_-_archer10_%28Dennis%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/India-6546_-_Flickr_-_archer10_%28Dennis%29.jpg/1600px-India-6546_-_Flickr_-_archer10_%28Dennis%29.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "Suraj Pol Gate",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.919156,
+      "lon": 75.8449354
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/4/40/Artisant_tapissier_%28Jaipur%29_%288489741899%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Tikki_chole.jpg/960px-Tikki_chole.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/2/23/Skull-like_lorries_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Jaipur_welcome_sign.jpg/1600px-Jaipur_welcome_sign.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Sun_Temple_Galta_-Lal_Dungri_-Jaipur_-Rajasthan_-IMG_20200101.jpg/1600px-Sun_Temple_Galta_-Lal_Dungri_-Jaipur_-Rajasthan_-IMG_20200101.jpg"
+    ],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9208829,
+      "lon": 75.754626
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Ram Singh II tomb",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9439205,
+      "lon": 75.8247196
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9426659,
+      "lon": 75.824974
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9430942,
+      "lon": 75.824689
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "nan",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9430732,
+      "lon": 75.8245844
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Vidyadhar Garden",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8996805,
+      "lon": 75.8536914
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "Sisodiya Rani Bagh",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.8993536,
+      "lon": 75.8587376
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "en:Sisodiya Rani Bagh",
+    "images": [],
+    "zone": ""
+  },
+  {
+    "name": "hawa mahal",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.9231388,
+      "lon": 75.8277144
+    },
+    "type": "Palace",
+    "significance": "Architectural",
+    "rating": 4.4,
+    "entrance_fee_inr": 50,
+    "best_time_to_visit": "Morning",
+    "time_needed_hrs": 1.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1799",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": "Northern"
+  },
+  {
+    "name": "hawa mahal",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "coordinates": {
+      "lat": 26.9231275,
+      "lon": 75.8277348
+    },
+    "type": "Palace",
+    "significance": "Architectural",
+    "rating": 4.4,
+    "entrance_fee_inr": 50,
+    "best_time_to_visit": "Morning",
+    "time_needed_hrs": 1.0,
+    "dslr_allowed": "Yes",
+    "weekly_off": "",
+    "establishment_year": "1799",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": "Northern"
+  },
+  {
+    "name": "Nahargah Fort",
+    "city": "nan",
+    "state": "nan",
+    "coordinates": {
+      "lat": 26.9374923,
+      "lon": 75.8157287
+    },
+    "type": "",
+    "significance": "",
+    "rating": null,
+    "entrance_fee_inr": null,
+    "best_time_to_visit": "",
+    "time_needed_hrs": null,
+    "dslr_allowed": "",
+    "weekly_off": "",
+    "establishment_year": "",
+    "wikidata": "",
+    "wikipedia": "",
+    "images": [],
+    "zone": ""
+  }
+]
