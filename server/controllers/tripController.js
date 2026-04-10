@@ -1,4 +1,5 @@
 const Trip = require("../models/Trip");
+const Destination = require("../models/Destination");
 
 // Create new trip
 exports.createTrip = async (req, res) => {
@@ -13,9 +14,20 @@ exports.createTrip = async (req, res) => {
       transportation,
     } = req.body;
 
+    // Default images
+    let images = [];
+    if (destination) {
+      // Find destination in DB by name case-insensitively
+      const dest = await Destination.findOne({ name: { $regex: new RegExp(`^${destination}$`, "i") } });
+      if (dest && dest.images && dest.images.length > 0) {
+        images = dest.images;
+      }
+    }
+
     const newTrip = new Trip({
       user: req.user.id,
       destination,
+      images,
       startDate,
       endDate,
       description,
@@ -84,6 +96,14 @@ exports.updateTrip = async (req, res) => {
     }
 
     const updateData = { ...req.body, updatedAt: Date.now() };
+
+    // Update images if destination changed
+    if (updateData.destination && updateData.destination !== trip.destination) {
+      const dest = await Destination.findOne({ name: { $regex: new RegExp(`^${updateData.destination}$`, "i") } });
+      if (dest && dest.images && dest.images.length > 0) {
+        updateData.images = dest.images;
+      }
+    }
 
     trip = await Trip.findByIdAndUpdate(
       req.params.id,

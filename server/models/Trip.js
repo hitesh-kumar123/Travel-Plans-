@@ -10,6 +10,9 @@ const TripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  images: [{
+    type: String
+  }],
   startDate: {
     type: Date,
     required: true,
