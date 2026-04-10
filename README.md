@@ -1,4 +1,4 @@
-# Travel Planner
+# PackGo - Travel Planner
 
 AIzaSyBcoAYJ2Hkxp1e-aBBRsFKFTmj8zYKKemQ == apio key
 
