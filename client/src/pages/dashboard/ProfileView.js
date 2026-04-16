@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
-import EditIcon from "@mui/icons-material/Edit";
+
 import SaveIcon from "@mui/icons-material/Save";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
