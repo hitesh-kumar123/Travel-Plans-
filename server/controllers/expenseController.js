@@ -2,6 +2,19 @@ const Expense = require("../models/Expense");
 const Trip = require("../models/Trip");
 const mongoose = require("mongoose");
 
+// Get all expenses for a user (across all trips) - for analytics
+exports.getAllUserExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.find({ user: req.user.id })
+      .populate("trip", "destination startDate endDate")
+      .sort({ date: -1 });
+    res.json(expenses);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
 // Create a new expense
 exports.createExpense = async (req, res) => {
   try {
@@ -139,7 +152,7 @@ exports.deleteExpense = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    await expense.remove();
+    await expense.deleteOne();
     res.json({ msg: "Expense removed" });
   } catch (err) {
     console.error(err.message);
@@ -166,7 +179,7 @@ exports.getExpenseSummary = async (req, res) => {
     }
 
     const summary = await Expense.aggregate([
-      { $match: { trip: mongoose.Types.ObjectId(tripId) } },
+      { $match: { trip: new mongoose.Types.ObjectId(tripId) } },
       {
         $group: {
           _id: "$category",

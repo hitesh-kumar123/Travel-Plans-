@@ -3,6 +3,11 @@ const router = express.Router();
 const expenseController = require("../controllers/expenseController");
 const auth = require("../middleware/auth");
 
+// @route   GET api/expenses
+// @desc    Get all user expenses (all trips) - for analytics
+// @access  Private
+router.get("/", auth, expenseController.getAllUserExpenses);
+
 // @route   POST api/expenses
 // @desc    Create a new expense
 // @access  Private

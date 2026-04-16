@@ -1,5 +1,6 @@
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
+const Expense = require("../models/Expense");
 
 // Create new trip
 exports.createTrip = async (req, res) => {
@@ -9,6 +10,8 @@ exports.createTrip = async (req, res) => {
       startDate,
       endDate,
       description,
+      budget,
+      status,
       activities,
       accommodation,
       transportation,
@@ -31,6 +34,8 @@ exports.createTrip = async (req, res) => {
       startDate,
       endDate,
       description,
+      budget: budget || 0,
+      status: status || "planned",
       activities,
       accommodation,
       transportation,
@@ -135,7 +140,9 @@ exports.deleteTrip = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    await trip.remove();
+    // Also delete all expenses for this trip
+    await Expense.deleteMany({ trip: req.params.id });
+    await trip.deleteOne();
     res.json({ msg: "Trip removed" });
   } catch (err) {
     console.error(err.message);

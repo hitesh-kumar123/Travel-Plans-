@@ -24,6 +24,15 @@ const TripSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  budget: {
+    type: Number,
+    default: 0,
+  },
+  status: {
+    type: String,
+    enum: ["planned", "ongoing", "completed"],
+    default: "planned",
+  },
   activities: [
     {
       name: String,

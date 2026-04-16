@@ -1,52 +1,74 @@
-const axios = require("axios");
+const translate = require("google-translate-api-x");
 
-// Translate text
+// @desc    Translate text
+// @route   POST /api/translator/translate
+// @access  Public
 exports.translateText = async (req, res) => {
   try {
-    const { text, targetLanguage, sourceLanguage } = req.body;
+    const { text, sourceLanguage, targetLanguage } = req.body;
 
     if (!text || !targetLanguage) {
-      return res
-        .status(400)
-        .json({ msg: "Please provide text and target language" });
+      return res.status(400).json({ msg: "Text and target language are required" });
     }
 
-    // Using an example translation API (Replace with your preferred API)
-    // This is using LibreTranslate API as an example
-    const response = await axios.post("https://libretranslate.de/translate", {
-      q: text,
-      source: sourceLanguage || "auto",
-      target: targetLanguage,
-      format: "text",
-    });
+    const options = { to: targetLanguage };
+    if (sourceLanguage && sourceLanguage !== "auto") {
+      options.from = sourceLanguage;
+    }
+
+    const result = await translate(text, options);
 
     res.json({
-      originalText: text,
-      translatedText: response.data.translatedText,
-      sourceLanguage:
-        response.data.detectedLanguage?.language || sourceLanguage,
+      translatedText: result.text,
+      detectedLanguage: result.from?.language?.iso || sourceLanguage || "auto",
+      sourceLanguage: sourceLanguage || "auto",
       targetLanguage,
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    console.error("Translation error:", err.message);
+    res.status(500).json({ msg: "Translation failed. Please try again." });
   }
 };
 
-// Get supported languages
+// @desc    Get supported languages
+// @route   GET /api/translator/languages
+// @access  Public
 exports.getSupportedLanguages = async (req, res) => {
   try {
-    // Using an example translation API (Replace with your preferred API)
-    const response = await axios.get("https://libretranslate.de/languages");
-
-    const languages = response.data.map((lang) => ({
-      code: lang.code,
-      name: lang.name,
-    }));
+    const languages = [
+      { code: "auto", name: "Auto Detect" },
+      { code: "en", name: "English" },
+      { code: "hi", name: "Hindi" },
+      { code: "es", name: "Spanish" },
+      { code: "fr", name: "French" },
+      { code: "de", name: "German" },
+      { code: "it", name: "Italian" },
+      { code: "ja", name: "Japanese" },
+      { code: "ko", name: "Korean" },
+      { code: "zh-CN", name: "Chinese (Simplified)" },
+      { code: "ar", name: "Arabic" },
+      { code: "pt", name: "Portuguese" },
+      { code: "ru", name: "Russian" },
+      { code: "bn", name: "Bengali" },
+      { code: "ta", name: "Tamil" },
+      { code: "te", name: "Telugu" },
+      { code: "mr", name: "Marathi" },
+      { code: "gu", name: "Gujarati" },
+      { code: "kn", name: "Kannada" },
+      { code: "ml", name: "Malayalam" },
+      { code: "pa", name: "Punjabi" },
+      { code: "th", name: "Thai" },
+      { code: "vi", name: "Vietnamese" },
+      { code: "tr", name: "Turkish" },
+      { code: "nl", name: "Dutch" },
+      { code: "pl", name: "Polish" },
+      { code: "sv", name: "Swedish" },
+      { code: "uk", name: "Ukrainian" },
+    ];
 
     res.json(languages);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    console.error("Languages error:", err.message);
+    res.status(500).json({ msg: "Failed to get languages" });
   }
 };

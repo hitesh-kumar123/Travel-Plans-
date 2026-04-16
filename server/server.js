@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const errorHandler = require("./middleware/errorHandler");
 
 // Load environment variables
 dotenv.config();
@@ -9,7 +12,18 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
-// Middleware
+// Security Middleware
+app.use(helmet());
+
+// Rate limiter - 100 requests per 15 min per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { msg: "Too many requests from this IP, please try again later." },
+});
+app.use("/api/auth", limiter);
+
+// Core Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -35,6 +49,9 @@ app.use("/api/destinations", destinationRoutes);
 app.get("/", (req, res) => {
   res.send("Travel Planner API is running!");
 });
+
+// Global error handler (must be last)
+app.use(errorHandler);
 
 // Connect to MongoDB
 mongoose
