@@ -5,8 +5,7 @@ import {
   InputAdornment, CircularProgress, Divider
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
+
 import AirIcon from "@mui/icons-material/Air";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import { getCurrentWeather, getForecast } from "../../redux/actions/weatherActions";
