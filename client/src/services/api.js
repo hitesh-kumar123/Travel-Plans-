@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Use the same hostname as the browser so it works on LAN too
-const API_BASE = `http://${window.location.hostname}:5000/api`;
+// Standard professional approach: Strictly using environment variable
+const API_BASE = process.env.REACT_APP_API_URL;
 
 // Create an axios instance with defaults
 const api = axios.create({
