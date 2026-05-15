@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
@@ -153,6 +154,39 @@ exports.deleteTrip = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
+    res.status(500).send("Server error");
+  }
+};
+// Generate shareable link for a trip
+exports.shareTrip = async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+    if (!trip) return res.status(404).json({ msg: "Trip not found" });
+    if (trip.user.toString() !== req.user.id)
+      return res.status(401).json({ msg: "User not authorized" });
+
+    const token = crypto.randomBytes(20).toString("hex");
+    trip.shareToken = token;
+    trip.shareEnabled = true;
+    await trip.save();
+
+    res.json({ shareToken: token });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// View shared trip (public, no auth needed)
+exports.getSharedTrip = async (req, res) => {
+  try {
+    const trip = await Trip.findOne({ shareToken: req.params.token });
+    if (!trip || !trip.shareEnabled)
+      return res.status(404).json({ msg: "Shared trip not found or disabled" });
+
+    res.json(trip);
+  } catch (err) {
+    console.error(err.message);
     res.status(500).send("Server error");
   }
 };
