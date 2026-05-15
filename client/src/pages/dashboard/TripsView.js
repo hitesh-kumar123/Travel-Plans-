@@ -80,7 +80,10 @@ const TripsView = () => {
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
     dispatch(
-      addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
+      addTrip(
+        { ...formData, budget: parseFloat(formData.budget) || 0 },
+        navigate,
+      ),
     );
     setOpen(false);
     setFormData({
@@ -176,17 +179,6 @@ const TripsView = () => {
                   {...params}
                   label="Destination *"
                   name="destination"
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <React.Fragment>
-                        {loadingOpts ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </React.Fragment>
-                    ),
-                  }}
                 />
               )}
             />
