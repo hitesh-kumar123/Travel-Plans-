@@ -11,3 +11,7 @@ code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+/* Fix: Hide date input placeholder when not focused */
+input[type="date"]:not(:focus)::-webkit-datetime-edit {
+  color: transparent;
+}
