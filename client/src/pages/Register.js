@@ -101,7 +101,12 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       };
-      dispatch(register(payload));
+      (async () => {
+        const res = await dispatch(register(payload));
+        if (res?.success) {
+          navigate("/dashboard");
+        }
+      })();
     } else {
       handleNext();
     }

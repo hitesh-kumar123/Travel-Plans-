@@ -15,7 +15,7 @@ export const loadUser = () => async (dispatch) => {
   const token = localStorage.getItem("token");
   if (!token) {
     dispatch({ type: AUTH_ERROR });
-    return;
+    return { success: false };
   }
 
   try {
@@ -25,10 +25,12 @@ export const loadUser = () => async (dispatch) => {
       type: USER_LOADED,
       payload: res.data,
     });
+    return { success: true, data: res.data };
   } catch (err) {
     dispatch({
       type: AUTH_ERROR,
     });
+    return { success: false, error: err.response?.data?.msg || "Failed to load user" };
   }
 };
 
@@ -44,9 +46,9 @@ export const login = (userData) => async (dispatch) => {
 
     // Set token to local storage
     localStorage.setItem("token", res.data.token);
-
-    dispatch(loadUser());
+    const loadResult = await dispatch(loadUser());
     toast.success("Welcome back! 🎉");
+    return { success: true, data: res.data, loadResult };
   } catch (error) {
     const msg = error.response?.data?.msg || "Login failed";
     dispatch({
@@ -54,6 +56,7 @@ export const login = (userData) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
+    return { success: false, error: msg };
   }
 };
 
@@ -69,9 +72,9 @@ export const register = (userData) => async (dispatch) => {
 
     // Set token to local storage
     localStorage.setItem("token", res.data.token);
-
-    dispatch(loadUser());
+    const loadResult = await dispatch(loadUser());
     toast.success("Account created successfully! 🚀");
+    return { success: true, data: res.data, loadResult };
   } catch (error) {
     const msg = error.response?.data?.msg || "Registration failed";
     dispatch({
@@ -79,6 +82,7 @@ export const register = (userData) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
+    return { success: false, error: msg };
   }
 };
 
