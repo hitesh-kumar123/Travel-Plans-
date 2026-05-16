@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+// import { useSelector } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
-// import { register } from "../redux/actions/authActions";
-// import { addTrip } from "../redux/actions/tripActions";
 import AuthModal from "../components/AuthModal";
 
 /* ── SVG SCENES ─────────────────────────────────────────────── */
@@ -138,40 +136,6 @@ const SceneSantorini = () => (
   </svg>
 );
 
-/* const SceneAngkor = () => (
-  <svg
-    viewBox="0 0 240 220"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-  >
-    <rect width="240" height="220" fill="#3D2910" />
-    <rect y="140" width="240" height="80" fill="#1E1208" />
-    <circle cx="40" cy="60" r="50" fill="#1A4A1A" opacity="0.7" />
-    <circle cx="120" cy="40" r="60" fill="#154015" opacity="0.6" />
-    <circle cx="200" cy="55" r="45" fill="#1A4A1A" opacity="0.7" />
-    <path
-      d="M80,220 L80,120 L90,105 L100,100 L110,105 L120,120 L120,220Z"
-      fill="#2C1A08"
-    />
-    <rect x="88" y="95" width="24" height="12" fill="#3D2410" />
-    <rect x="92" y="83" width="16" height="14" fill="#2C1A08" />
-    <rect x="96" y="72" width="8" height="13" fill="#1E0F04" />
-    <path
-      d="M80,150 Q65,140 60,155 Q55,170 70,165"
-      stroke="#1A4A1A"
-      strokeWidth="3"
-      fill="none"
-    />
-    <path
-      d="M120,160 Q135,148 140,163 Q145,178 130,173"
-      stroke="#154015"
-      strokeWidth="3"
-      fill="none"
-    />
-    <rect x="0" y="100" width="240" height="40" fill="rgba(200,200,200,0.06)" />
-  </svg>
-); */
-
 const SceneBali = () => (
   <svg
     viewBox="0 0 240 220"
@@ -272,67 +236,8 @@ const SceneSahara = () => (
     </g>
   </svg>
 );
-/* ─────────────────────────────────────────────────────────────── */
 
-const FEATURES = [
-  {
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1A4A6B"
-        strokeWidth="2"
-      >
-        <path d="M3 11l19-9-9 19-2-8-8-2z" />
-      </svg>
-    ),
-    title: "Curated Itineraries",
-    desc: "Every route handcrafted by travel experts with on-ground knowledge of each destination.",
-  },
-  {
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1A4A6B"
-        strokeWidth="2"
-      >
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    title: "Safe & Insured Travel",
-    desc: "Full trip protection, 24/7 emergency support, and medical coverage included in every package.",
-  },
-  {
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1A4A6B"
-        strokeWidth="2"
-      >
-        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-      </svg>
-    ),
-    title: "Best Price Guarantee",
-    desc: "Found a better price elsewhere? We'll match it and give you an extra 5% discount on your next trip.",
-  },
-];
-
-const STATS = [
-  { big: "2.4K+", desc: "Destinations available" },
-  { big: "98%", desc: "Customer satisfaction" },
-  { big: "14yr", desc: "Of travel expertise" },
-  { big: "180+", desc: "Countries covered" },
-];
-
-/* ── SVG Search Icon ── */
+/* ── SVG ICONS ── */
 const SearchIcon = ({ className }) => (
   <svg
     className={className}
@@ -374,10 +279,6 @@ const UserIcon = () => (
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
-
-/* ══════════════════════════════════════════════════════════════ */
-/*  COMPONENT                                                      */
-/* ══════════════════════════════════════════════════════════════ */
 
 const SUGGESTED_DESTS = [
   { name: "Nearby", desc: "Find what's around you", icon: "📍" },
@@ -471,32 +372,22 @@ const MOCK_DESTS = [
   },
 ];
 
-const HERO_SCENES = MOCK_DESTS.map((d) => ({
-  _id: d._id,
-  image: d.images[0],
-  name: d.name,
-  price: `₹${d.entrance_fee_inr.toLocaleString("en-IN")}`,
-  rating: d.rating,
-  reviews: d.reviews,
-  nights: "7 nights",
-}));
-
-const Home = () => {
+const SearchResults = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((s) => s.auth);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q") || "";
+
+  // const { isAuthenticated } = useSelector((s) => s.auth);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [where, setWhere] = useState("");
+  const [where, setWhere] = useState(query);
   const [checkIn, setCheckIn] = useState("");
-  // const [travellers, setTravellers] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [heroIdx, setHeroIdx] = useState(0);
   const [activeField, setActiveField] = useState(null);
   const [guestCount, setGuestCount] = useState({
     adults: 0,
@@ -508,6 +399,10 @@ const Home = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    setWhere(query);
+  }, [query]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -539,7 +434,6 @@ const Home = () => {
 
   const daysInMonth = (date) =>
     new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  // const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
   const handleDateClick = (day) => {
     const d = new Date(
@@ -558,17 +452,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIdx((prev) => (prev + 1) % HERO_SCENES.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 150);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -600,17 +486,39 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     api
-      .get("/destinations")
+      .get(`/destinations?q=${encodeURIComponent(query)}`)
       .then((r) => {
-        setDestinations(r.data.length > 0 ? r.data : MOCK_DESTS);
+        if (r.data && r.data.length > 0) {
+          setDestinations(r.data);
+        } else {
+          // Fallback filter mock dests
+          const filtered = query.trim()
+            ? MOCK_DESTS.filter(
+                (d) =>
+                  (d.name || "").toLowerCase().includes(query.toLowerCase()) ||
+                  (d.city || "").toLowerCase().includes(query.toLowerCase()) ||
+                  (d.state || "").toLowerCase().includes(query.toLowerCase()),
+              )
+            : MOCK_DESTS;
+          setDestinations(filtered);
+        }
         setLoading(false);
       })
       .catch(() => {
-        setDestinations(MOCK_DESTS);
+        const filtered = query.trim()
+          ? MOCK_DESTS.filter(
+              (d) =>
+                (d.name || "").toLowerCase().includes(query.toLowerCase()) ||
+                (d.city || "").toLowerCase().includes(query.toLowerCase()) ||
+                (d.state || "").toLowerCase().includes(query.toLowerCase()),
+            )
+          : MOCK_DESTS;
+        setDestinations(filtered);
         setLoading(false);
       });
-  }, []);
+  }, [query]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -621,9 +529,6 @@ const Home = () => {
       navigate(`/search`);
     }
   };
-
-  /* Home page shows unfiltered destinations */
-  const filteredDestinations = destinations;
 
   return (
     <div className="wander-page">
@@ -668,13 +573,7 @@ const Home = () => {
                 </svg>
               </button>
             </div>
-            <li
-              className="active"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            >
+            <li onClick={() => setMobileMenuOpen(false)}>
               <Link to="/">
                 <svg
                   className="nav-icon show-mobile-only"
@@ -694,12 +593,10 @@ const Home = () => {
             <li
               onClick={() => {
                 setMobileMenuOpen(false);
-                document
-                  .getElementById("wander-dest-section")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                navigate("/");
               }}
             >
-              <a href="#wander-dest-section">
+              <Link to="/">
                 <svg
                   className="nav-icon show-mobile-only"
                   width="20"
@@ -713,7 +610,7 @@ const Home = () => {
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
                 <span>India</span>
-              </a>
+              </Link>
             </li>
             <li
               onClick={() => {
@@ -806,12 +703,10 @@ const Home = () => {
             <li
               onClick={() => {
                 setMobileMenuOpen(false);
-                document
-                  .getElementById("wander-features")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                navigate("/");
               }}
             >
-              <a href="#wander-features">
+              <Link to="/">
                 <svg
                   className="nav-icon show-mobile-only"
                   width="20"
@@ -826,7 +721,7 @@ const Home = () => {
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
                 <span>About</span>
-              </a>
+              </Link>
             </li>
             <li
               onClick={() => {
@@ -850,10 +745,6 @@ const Home = () => {
                 <span>Contact</span>
               </Link>
             </li>
-            <div className="mobile-menu-footer show-mobile-only">
-              <p>Explore the world with passion.</p>
-              <span>© PackGo Luxe</span>
-            </div>
           </ul>
 
           <div className="wander-nav-right">
@@ -975,7 +866,6 @@ const Home = () => {
               <>
                 {/* 💻 STANDARD DESKTOP SEARCH BAR */}
                 {!(isExpanded && isMobile) && (
-                  /* 💻 STANDARD DESKTOP SEARCH BAR */
                   <form
                     ref={searchBarRef}
                     className={`wander-search-bar ${activeField ? "field-active" : ""} ${scrolled ? "compact" : ""}`}
@@ -1120,11 +1010,11 @@ const Home = () => {
                               (_, i) => (
                                 <div
                                   key={i + 1}
-                                  className="calendar-day"
+                                  className={`calendar-day ${checkIn === `${i + 1} ${currentMonth.toLocaleString("default", { month: "short" })}` ? "selected" : ""}`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDateClick(i + 1);
-                                    setIsExpanded(false);
+                                    setActiveField("who");
                                   }}
                                 >
                                   {i + 1}
@@ -1150,23 +1040,9 @@ const Home = () => {
                               (a, b) => a + b,
                               0,
                             );
-                            if (total === 0) return "Add guests";
-                            const parts = [];
-                            const guests =
-                              guestCount.adults + guestCount.children;
-                            if (guests > 0)
-                              parts.push(
-                                `${guests} guest${guests > 1 ? "s" : ""}`,
-                              );
-                            if (guestCount.infants > 0)
-                              parts.push(
-                                `${guestCount.infants} infant${guestCount.infants > 1 ? "s" : ""}`,
-                              );
-                            if (guestCount.pets > 0)
-                              parts.push(
-                                `${guestCount.pets} pet${guestCount.pets > 1 ? "s" : ""}`,
-                              );
-                            return parts.join(", ");
+                            return total > 0
+                              ? `${total} guest${total > 1 ? "s" : ""}`
+                              : "Add guests";
                           })()}
                         </div>
                       </div>
@@ -1195,36 +1071,48 @@ const Home = () => {
                         </button>
                       )}
                       {activeField === "who" && (
-                        <div className="search-dropdown guests-dropdown">
+                        <div
+                          className="search-dropdown guest-dropdown"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {["adults", "children", "infants", "pets"].map(
                             (k) => (
                               <div key={k} className="guest-row">
-                                <span>
-                                  {k.charAt(0).toUpperCase() + k.slice(1)}
-                                </span>
+                                <div className="guest-info">
+                                  <div className="guest-type">
+                                    {k.charAt(0).toUpperCase() + k.slice(1)}
+                                  </div>
+                                  <div className="guest-age">
+                                    {k === "adults"
+                                      ? "Ages 13+"
+                                      : k === "children"
+                                        ? "Ages 2–12"
+                                        : k === "infants"
+                                          ? "Under 2"
+                                          : "Service animals"}
+                                  </div>
+                                </div>
                                 <div className="guest-controls">
                                   <button
                                     type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
+                                    onClick={() =>
                                       setGuestCount((p) => ({
                                         ...p,
                                         [k]: Math.max(0, p[k] - 1),
-                                      }));
-                                    }}
+                                      }))
+                                    }
                                   >
                                     -
                                   </button>
                                   <span>{guestCount[k]}</span>
                                   <button
                                     type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
+                                    onClick={() =>
                                       setGuestCount((p) => ({
                                         ...p,
                                         [k]: p[k] + 1,
-                                      }));
-                                    }}
+                                      }))
+                                    }
                                   >
                                     +
                                   </button>
@@ -1236,7 +1124,7 @@ const Home = () => {
                       )}
                     </div>
 
-                    <button type="submit" className="wander-search-btn">
+                    <button className="wander-search-btn" type="submit">
                       <SearchIcon />
                       <span>Search</span>
                     </button>
@@ -1248,108 +1136,36 @@ const Home = () => {
         </div>
       </header>
 
-      {/* ═══ HERO ═══ */}
-      <section className="wander-hero">
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
-            <div className="wander-dot" />
-            &nbsp;2,400+ destinations worldwide
-          </div>
-          <h1>
-            Travel is the only thing you buy that makes you <em>richer</em>
-          </h1>
-          <p>
-            Curated journeys to the world's most extraordinary places.
-            Handpicked experiences, flawless planning, memories that last
-            forever.
-          </p>
-          <div className="wander-hero-actions">
-            <button
-              className="wander-btn-primary"
-              onClick={() =>
-                document
-                  .getElementById("wander-dest-section")
-                  .scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Explore Destinations
-            </button>
-            <button
-              className="wander-btn-ghost"
-              onClick={() => {
-                setAuthMode("register");
-                setIsAuthModalOpen(true);
-              }}
-            >
-              {isAuthenticated ? "Dashboard →" : "Start Free"}
-            </button>
-          </div>
-        </div>
-
-        {/* Hero Visual (Hidden on Mobile) */}
-        <div
-          className="wander-hero-visual hide-mobile"
-          onClick={() => navigate(`/destination/${HERO_SCENES[heroIdx]._id}`)}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="wander-scene-container">
-            <img
-              key={heroIdx}
-              src={HERO_SCENES[heroIdx].image}
-              alt={HERO_SCENES[heroIdx].name}
-              className="wander-hero-img-animate"
-            />
-            {/* Badges ... */}
-            <div className="wander-hero-badge-card badge-rating-premium">
-              <div className="badge-value-row">
-                <span className="rating-num">
-                  {HERO_SCENES[heroIdx].rating}★
-                </span>
-              </div>
-              <div className="badge-reviews">
-                {HERO_SCENES[heroIdx].reviews} reviews
-              </div>
-            </div>
-            <div className="wander-hero-badge-card badge-price-premium">
-              <div className="badge-label-small">FROM / PERSON</div>
-              <div className="badge-price-row">
-                <span className="price-symbol">₹</span>
-                <span className="price-val">
-                  {HERO_SCENES[heroIdx].price.replace("₹", "")}
-                </span>
-                <span className="price-duration">
-                  / {HERO_SCENES[heroIdx].nights}
-                </span>
-              </div>
-            </div>
-            <div key={`name-${heroIdx}`} className="wander-hero-place-name">
-              {HERO_SCENES[heroIdx].name.toUpperCase()}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ DESTINATIONS ═══ */}
-      <section className="wander-section" id="wander-dest-section">
+      {/* ═══ SEARCH RESULTS SECTION ═══ */}
+      <section
+        className="wander-section"
+        style={{
+          paddingTop: scrolled ? "140px" : "220px",
+          minHeight: "85vh",
+          transition: "padding-top 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
         <div className="wander-section-header">
           <div>
-            <div className="wander-section-label">Top Picks</div>
+            <div className="wander-section-label">Search Results</div>
             <div className="wander-section-title">
               {loading
-                ? "Loading destinations…"
-                : "Destinations that steal hearts"}
+                ? "Searching destinations…"
+                : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""} found ${query ? `for "${query}"` : ""}`}
             </div>
           </div>
-          <button
-            className="wander-see-all"
-            onClick={() => navigate("/search")}
-          >
-            View all destinations →
-          </button>
+          {query && (
+            <button
+              className="wander-see-all"
+              onClick={() => navigate("/search")}
+            >
+              Clear search filter →
+            </button>
+          )}
         </div>
 
         <div className="wander-dest-grid">
-          {filteredDestinations.map((dest, i) => (
+          {destinations.map((dest, i) => (
             <div
               key={dest._id || i}
               className="wander-dest-card"
@@ -1403,97 +1219,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ FEATURES ═══ */}
-      <section className="wander-features-section" id="wander-features">
-        <div
-          style={{ textAlign: "center", maxWidth: 500, margin: "0 auto 1rem" }}
-        >
-          <div className="wander-section-label" style={{ textAlign: "center" }}>
-            Why PackGo
-          </div>
-          <div className="wander-section-title" style={{ textAlign: "center" }}>
-            Travel smarter,
-            <br />
-            not harder
-          </div>
-        </div>
-        <div className="wander-feat-grid">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="wander-feat-card">
-              <div className="wander-feat-icon">{f.icon}</div>
-              <div className="wander-feat-title">{f.title}</div>
-              <div className="wander-feat-desc">{f.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
-        <div>
-          <div className="wander-testi-label">Traveller Stories</div>
-          <div className="wander-testi-heading">
-            Journeys that changed everything
-          </div>
-          <div className="wander-stars">★★★★★</div>
-          <p className="wander-testi-quote">
-            "PackGo turned our anniversary trip into something we'll tell
-            grandkids about. Every single detail was perfect — from the sunrise
-            hike in Santorini to the candlelit dinner by the Aegean."
-          </p>
-          <div className="wander-testi-author">
-            <div className="wander-author-avatar">PS</div>
-            <div>
-              <div className="wander-author-name">Priya Sharma</div>
-              <div className="wander-author-loc">Mumbai, India</div>
-            </div>
-          </div>
-        </div>
-        <div className="wander-stats-grid">
-          {STATS.map((s, i) => (
-            <div key={i} className="wander-stat-box">
-              <div className="wander-stat-big">{s.big}</div>
-              <div className="wander-stat-desc">{s.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
-        <div className="wander-cta-text">
-          <div className="wander-cta-badge">✨ EXPLORE THE UNEXPLORED</div>
-          <h2>
-            Your next adventure
-            <br />
-            is one click away
-          </h2>
-          <p>Join 40,000+ travellers who explored the world with PackGo</p>
-        </div>
-        <div className="wander-cta-actions">
-          <button
-            className="wander-btn-primary"
-            onClick={() => {
-              setAuthMode("register");
-              setIsAuthModalOpen(true);
-            }}
-          >
-            {isAuthenticated ? "Plan My Trip" : "Create Free Account"}
-          </button>
-          {!isAuthenticated && (
-            <button
-              className="wander-btn-ghost-premium"
-              onClick={() => {
-                setAuthMode("login");
-                setIsAuthModalOpen(true);
-              }}
-            >
-              Log In
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-main">
@@ -1503,37 +1228,40 @@ const Home = () => {
               Help Centre
             </button>
             <button type="button" className="footer-link-btn">
-              Safety information
+              AirCover
+            </button>
+            <button type="button" className="footer-link-btn">
+              Anti-discrimination
+            </button>
+            <button type="button" className="footer-link-btn">
+              Disability support
             </button>
             <button type="button" className="footer-link-btn">
               Cancellation options
             </button>
             <button type="button" className="footer-link-btn">
-              Our COVID-19 response
-            </button>
-            <button type="button" className="footer-link-btn">
-              Supporting people with disabilities
-            </button>
-            <button type="button" className="footer-link-btn">
-              Report a neighbourhood concern
+              Report neighbourhood concern
             </button>
           </div>
           <div className="footer-col">
             <h4>Hosting</h4>
             <button type="button" className="footer-link-btn">
-              Try hosting
+              PackGo your home
             </button>
             <button type="button" className="footer-link-btn">
-              AirCover: protection for Hosts
+              AirCover for Hosts
             </button>
             <button type="button" className="footer-link-btn">
-              Explore hosting resources
+              Hosting resources
             </button>
             <button type="button" className="footer-link-btn">
-              Visit our community forum
+              Community forum
             </button>
             <button type="button" className="footer-link-btn">
-              How to host responsibly
+              Hosting responsibly
+            </button>
+            <button type="button" className="footer-link-btn">
+              Join a free hosting class
             </button>
           </div>
           <div className="footer-col">
@@ -1542,10 +1270,7 @@ const Home = () => {
               Newsroom
             </button>
             <button type="button" className="footer-link-btn">
-              Learn about new features
-            </button>
-            <button type="button" className="footer-link-btn">
-              Letter from our founders
+              New features
             </button>
             <button type="button" className="footer-link-btn">
               Careers
@@ -1554,7 +1279,10 @@ const Home = () => {
               Investors
             </button>
             <button type="button" className="footer-link-btn">
-              PackGo Luxe
+              PackGo stays
+            </button>
+            <button type="button" className="footer-link-btn">
+              Emergency support
             </button>
           </div>
         </div>
@@ -1610,7 +1338,7 @@ const Home = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.92 4.92 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                 </svg>
               </button>
               <button
@@ -1933,4 +1661,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SearchResults;

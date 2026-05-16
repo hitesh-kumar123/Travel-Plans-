@@ -2,15 +2,28 @@
 const router = require("express").Router();
 const Destination = require("../models/Destination");
 
-// Sab destinations
+// Sab destinations with robust search filtering
 router.get("/", async (req, res) => {
-  const { city, state, type } = req.query;
-  let filter = {};
-  if (city) filter.city = city;
-  if (state) filter.state = state;
-  if (type) filter.type = type;
-  const data = await Destination.find(filter);
-  res.json(data);
+  try {
+    const { city, state, type, q } = req.query;
+    let filter = {};
+    if (city) filter.city = city;
+    if (state) filter.state = state;
+    if (type) filter.type = type;
+    if (q) {
+      filter.$or = [
+        { name: { $regex: q, $options: "i" } },
+        { city: { $regex: q, $options: "i" } },
+        { state: { $regex: q, $options: "i" } },
+        { type: { $regex: q, $options: "i" } },
+        { zone: { $regex: q, $options: "i" } },
+      ];
+    }
+    const data = await Destination.find(filter);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // Search destinations for autocomplete
