@@ -29,7 +29,7 @@ const ProfileView = () => {
     email: user?.email || "",
   });
   const [pwForm, setPwForm] = useState({
-    currentPassword: "",
+    otp: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -37,6 +37,7 @@ const ProfileView = () => {
   const [pwMsg, setPwMsg] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPw, setSavingPw] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
 
   const totalTrips = trips?.length || 0;
   const completedTrips =
@@ -62,8 +63,28 @@ const ProfileView = () => {
     }
   };
 
+  const handleSendOtp = async () => {
+    setSendingOtp(true);
+    try {
+      await api.post("/auth/change-password/request-otp");
+      setPwMsg({ type: "success", text: "OTP sent to your email" });
+    } catch (err) {
+      setPwMsg({
+        type: "error",
+        text: err.response?.data?.msg || "Failed to send OTP",
+      });
+    } finally {
+      setSendingOtp(false);
+      setTimeout(() => setPwMsg(null), 3000);
+    }
+  };
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
+    if (!pwForm.otp) {
+      setPwMsg({ type: "error", text: "Please enter the OTP" });
+      return;
+    }
     if (pwForm.newPassword !== pwForm.confirmPassword) {
       setPwMsg({ type: "error", text: "New passwords don't match!" });
       return;
@@ -77,11 +98,11 @@ const ProfileView = () => {
     }
     setSavingPw(true);
     try {
-      await api.put("/auth/change-password", {
-        currentPassword: pwForm.currentPassword,
+      await api.put("/auth/change-password/verify-otp", {
+        otp: pwForm.otp,
         newPassword: pwForm.newPassword,
       });
-      setPwForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPwForm({ otp: "", newPassword: "", confirmPassword: "" });
       setPwMsg({ type: "success", text: "Password changed successfully!" });
     } catch (err) {
       setPwMsg({
@@ -282,13 +303,11 @@ const ProfileView = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Current Password"
-                    type="password"
-                    value={pwForm.currentPassword}
+                    label="OTP Code"
+                    value={pwForm.otp}
                     onChange={(e) =>
-                      setPwForm({ ...pwForm, currentPassword: e.target.value })
+                      setPwForm({ ...pwForm, otp: e.target.value })
                     }
-                    required
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -316,6 +335,14 @@ const ProfileView = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleSendOtp}
+                    disabled={sendingOtp}
+                    sx={{ mr: 2, borderRadius: 3 }}
+                  >
+                    {sendingOtp ? "Sending OTP..." : "Send OTP"}
+                  </Button>
                   <Button
                     type="submit"
                     variant="outlined"
