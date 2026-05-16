@@ -28,4 +28,14 @@ router.put("/profile", auth, authController.updateProfile);
 // @access  Private
 router.put("/change-password", auth, authController.changePassword);
 
+// @route   POST api/auth/forgot-password
+// @desc    Forgot password (send email)
+// @access  Public
+router.post("/forgot-password", authController.forgotPassword);
+
+// @route   PUT api/auth/reset-password/:token
+// @desc    Reset password
+// @access  Public
+router.put("/reset-password/:token", authController.resetPassword);
+
 module.exports = router;

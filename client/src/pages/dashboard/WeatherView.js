@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -12,7 +12,6 @@ import {
   Divider,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
 import AirIcon from "@mui/icons-material/Air";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import {
@@ -35,11 +34,28 @@ const getWeatherIcon = (desc) => {
 const WeatherView = () => {
   const [location, setLocation] = useState("");
   const dispatch = useDispatch();
-  const { currentWeather, forecast, loading, error } = useSelector(
+  const { currentWeather, forecast, loading, error, fetchedAt } = useSelector(
     (state) => state.weather,
   );
 
   const forecastList = forecast?.forecast || [];
+
+  // ✅ FIX: Re-fetch on every mount so data is never stale
+  useEffect(() => {
+    if (currentWeather?.location) {
+      dispatch(getCurrentWeather(currentWeather.location));
+      dispatch(getForecast(currentWeather.location));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ✅ Manual refresh handler
+  const handleRefresh = useCallback(() => {
+    const city = location.trim() || currentWeather?.location;
+    if (city) {
+      dispatch(getCurrentWeather(city));
+      dispatch(getForecast(city));
+    }
+  }, [dispatch, location, currentWeather]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -224,9 +240,24 @@ const WeatherView = () => {
                 </Typography>
               )}
               <Box sx={{ mt: "auto", pt: 3 }}>
+                {/* ✅ Real fetchedAt timestamp */}
                 <Typography variant="caption" color="text.disabled">
-                  Last updated: {new Date().toLocaleTimeString()}
+                  Last updated:{" "}
+                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
                 </Typography>
+
+                {/* ✅ Manual refresh button */}
+                <Box mt={1}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleRefresh}
+                    disabled={loading}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    {loading ? "Refreshing..." : "🔄 Refresh"}
+                  </Button>
+                </Box>
               </Box>
             </Paper>
           </Grid>
