@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Standard professional approach: Strictly using environment variable
-const API_BASE = process.env.REACT_APP_API_URL;
+// Standard professional approach: Strictly using environment variable with fallback
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 // Create an axios instance with defaults
 const api = axios.create({

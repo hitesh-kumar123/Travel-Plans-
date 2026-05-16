@@ -1,19 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+// import { useSelector } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
-// import { register } from "../redux/actions/authActions";
-// import { addTrip } from "../redux/actions/tripActions";
 import AuthModal from "../components/AuthModal";
 
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
-  <svg
-    viewBox="0 0 460 360"
-    xmlns="http://www.w3.org/2000/svg"
-    className="wander-scene-svg"
-  >
+  <svg viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" className="wander-scene-svg">
     <rect width="460" height="360" fill="#1A3A5C" />
     <circle cx="60" cy="30" r="1.2" fill="white" opacity="0.7" />
     <circle cx="120" cy="55" r="0.8" fill="white" opacity="0.5" />
@@ -24,45 +18,16 @@ const SceneIceland = () => (
     <circle cx="160" cy="70" r="0.7" fill="white" opacity="0.4" />
     <circle cx="390" cy="55" r="22" fill="#FFF5D6" opacity="0.9" />
     <circle cx="400" cy="48" r="17" fill="#1A3A5C" />
-    <path
-      d="M0,120 Q115,80 230,110 Q345,140 460,100"
-      stroke="#2ECC87"
-      strokeWidth="3"
-      fill="none"
-      opacity="0.4"
-    />
-    <path
-      d="M0,140 Q115,100 230,130 Q345,160 460,120"
-      stroke="#2ECC87"
-      strokeWidth="2"
-      fill="none"
-      opacity="0.25"
-    />
-    <path
-      d="M0,105 Q115,65 230,95 Q345,125 460,85"
-      stroke="#7B5EA7"
-      strokeWidth="2.5"
-      fill="none"
-      opacity="0.3"
-    />
-    <path
-      d="M0,280 L60,190 L120,230 L180,170 L240,220 L310,155 L370,210 L420,175 L460,200 L460,360 L0,360Z"
-      fill="#0D2438"
-    />
-    <path
-      d="M0,360 L0,290 L40,250 L90,280 L150,235 L200,260 L260,220 L320,255 L380,230 L420,250 L460,235 L460,360Z"
-      fill="#081828"
-    />
+    <path d="M0,120 Q115,80 230,110 Q345,140 460,100" stroke="#2ECC87" strokeWidth="3" fill="none" opacity="0.4" />
+    <path d="M0,140 Q115,100 230,130 Q345,160 460,120" stroke="#2ECC87" strokeWidth="2" fill="none" opacity="0.25" />
+    <path d="M0,105 Q115,65 230,95 Q345,125 460,85" stroke="#7B5EA7" strokeWidth="2.5" fill="none" opacity="0.3" />
+    <path d="M0,280 L60,190 L120,230 L180,170 L240,220 L310,155 L370,210 L420,175 L460,200 L460,360 L0,360Z" fill="#0D2438" />
+    <path d="M0,360 L0,290 L40,250 L90,280 L150,235 L200,260 L260,220 L320,255 L380,230 L420,250 L460,235 L460,360Z" fill="#081828" />
     <path d="M150,235 L165,252 L135,252Z" fill="rgba(255,255,255,0.6)" />
     <path d="M260,220 L278,240 L242,240Z" fill="rgba(255,255,255,0.6)" />
     <path d="M380,230 L394,246 L366,246Z" fill="rgba(255,255,255,0.5)" />
     <ellipse cx="230" cy="330" rx="140" ry="22" fill="#1A3A5C" opacity="0.7" />
-    <path
-      d="M110,320 Q180,310 230,318 Q280,310 350,320"
-      stroke="rgba(139,175,196,0.4)"
-      strokeWidth="1.5"
-      fill="none"
-    />
+    <path d="M110,320 Q180,310 230,318 Q280,310 350,320" stroke="rgba(139,175,196,0.4)" strokeWidth="1.5" fill="none" />
     <g fill="#0A1F30">
       <polygon points="30,310 42,275 54,310" />
       <polygon points="26,310 42,268 58,310" />
@@ -71,39 +36,14 @@ const SceneIceland = () => (
       <polygon points="386,305 402,262 418,305" />
       <polygon points="415,312 428,280 441,312" />
     </g>
-    <path
-      d="M0,340 Q115,325 230,335 Q345,345 460,330 L460,360 L0,360Z"
-      fill="#06121E"
-    />
-    <rect
-      x="15"
-      y="15"
-      width="140"
-      height="28"
-      rx="14"
-      fill="rgba(255,255,255,0.1)"
-      stroke="rgba(255,255,255,0.15)"
-      strokeWidth="0.5"
-    />
-    <text
-      x="27"
-      y="33"
-      fontFamily="DM Sans,sans-serif"
-      fontSize="11"
-      fill="rgba(255,255,255,0.85)"
-      fontWeight="500"
-    >
-      Iceland Northern Lights
-    </text>
+    <path d="M0,340 Q115,325 230,335 Q345,345 460,330 L460,360 L0,360Z" fill="#06121E" />
+    <rect x="15" y="15" width="140" height="28" rx="14" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
+    <text x="27" y="33" fontFamily="DM Sans,sans-serif" fontSize="11" fill="rgba(255,255,255,0.85)" fontWeight="500">Iceland Northern Lights</text>
   </svg>
 );
 
 const SceneSantorini = () => (
-  <svg
-    viewBox="0 0 300 460"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-  >
+  <svg viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
     <rect width="300" height="460" fill="#1A4060" />
     <rect y="280" width="300" height="180" fill="#0D2D44" />
     <ellipse cx="80" cy="90" rx="55" ry="22" fill="rgba(255,255,255,0.12)" />
@@ -116,151 +56,43 @@ const SceneSantorini = () => (
     <path d="M95,460 L95,340 Q110,310 130,340 L130,460Z" fill="#081828" />
     <path d="M165,460 L165,340 Q150,310 130,340 L130,460Z" fill="#081828" />
     <ellipse cx="130" cy="340" rx="35" ry="12" fill="#081828" />
-    <path
-      d="M195,260 Q215,255 235,260 L230,272 L200,272Z"
-      fill="#F5EFE0"
-      opacity="0.9"
-    />
-    <line
-      x1="215"
-      y1="258"
-      x2="215"
-      y2="230"
-      stroke="rgba(255,255,255,0.7)"
-      strokeWidth="1"
-    />
-    <path
-      d="M20,310 Q75,305 130,312 Q185,305 240,312"
-      stroke="rgba(255,255,255,0.15)"
-      strokeWidth="1"
-      fill="none"
-    />
+    <path d="M195,260 Q215,255 235,260 L230,272 L200,272Z" fill="#F5EFE0" opacity="0.9" />
+    <line x1="215" y1="258" x2="215" y2="230" stroke="rgba(255,255,255,0.7)" strokeWidth="1" />
+    <path d="M20,310 Q75,305 130,312 Q185,305 240,312" stroke="rgba(255,255,255,0.15)" strokeWidth="1" fill="none" />
   </svg>
 );
 
-/* const SceneAngkor = () => (
-  <svg
-    viewBox="0 0 240 220"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-  >
-    <rect width="240" height="220" fill="#3D2910" />
-    <rect y="140" width="240" height="80" fill="#1E1208" />
-    <circle cx="40" cy="60" r="50" fill="#1A4A1A" opacity="0.7" />
-    <circle cx="120" cy="40" r="60" fill="#154015" opacity="0.6" />
-    <circle cx="200" cy="55" r="45" fill="#1A4A1A" opacity="0.7" />
-    <path
-      d="M80,220 L80,120 L90,105 L100,100 L110,105 L120,120 L120,220Z"
-      fill="#2C1A08"
-    />
-    <rect x="88" y="95" width="24" height="12" fill="#3D2410" />
-    <rect x="92" y="83" width="16" height="14" fill="#2C1A08" />
-    <rect x="96" y="72" width="8" height="13" fill="#1E0F04" />
-    <path
-      d="M80,150 Q65,140 60,155 Q55,170 70,165"
-      stroke="#1A4A1A"
-      strokeWidth="3"
-      fill="none"
-    />
-    <path
-      d="M120,160 Q135,148 140,163 Q145,178 130,173"
-      stroke="#154015"
-      strokeWidth="3"
-      fill="none"
-    />
-    <rect x="0" y="100" width="240" height="40" fill="rgba(200,200,200,0.06)" />
-  </svg>
-); */
-
-
 const SceneBali = () => (
-  <svg
-    viewBox="0 0 240 220"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-  >
+  <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
     <rect width="240" height="220" fill="#1A3A28" />
     <rect width="240" height="140" fill="#0D2A1E" />
     <rect y="140" width="240" height="80" fill="#0A1E14" />
-    <path
-      d="M0,220 L0,170 Q60,155 120,165 Q180,175 240,160 L240,220Z"
-      fill="#1A5C2A"
-    />
-    <path
-      d="M0,200 L0,175 Q60,162 120,172 Q180,182 240,167 L240,200Z"
-      fill="#145022"
-    />
-    <path
-      d="M0,185 L0,178 Q60,165 120,175 Q180,185 240,170 L240,185Z"
-      fill="#3D8A3A"
-    />
-    <path
-      d="M20,172 Q80,167 140,170"
-      stroke="rgba(100,180,130,0.4)"
-      strokeWidth="1"
-      fill="none"
-    />
-    <line
-      x1="180"
-      y1="220"
-      x2="175"
-      y2="145"
-      stroke="#2C1A08"
-      strokeWidth="5"
-    />
-    <ellipse
-      cx="165"
-      cy="148"
-      rx="22"
-      ry="10"
-      fill="#1A5018"
-      transform="rotate(-15 165 148)"
-    />
-    <ellipse
-      cx="185"
-      cy="143"
-      rx="18"
-      ry="8"
-      fill="#154015"
-      transform="rotate(10 185 143)"
-    />
+    <path d="M0,220 L0,170 Q60,155 120,165 Q180,175 240,160 L240,220Z" fill="#1A5C2A" />
+    <path d="M0,200 L0,175 Q60,162 120,172 Q180,182 240,167 L240,200Z" fill="#145022" />
+    <path d="M0,185 L0,178 Q60,165 120,175 Q180,185 240,170 L240,185Z" fill="#3D8A3A" />
+    <path d="M20,172 Q80,167 140,170" stroke="rgba(100,180,130,0.4)" strokeWidth="1" fill="none" />
+    <line x1="180" y1="220" x2="175" y2="145" stroke="#2C1A08" strokeWidth="5" />
+    <ellipse cx="165" cy="148" rx="22" ry="10" fill="#1A5018" transform="rotate(-15 165 148)" />
+    <ellipse cx="185" cy="143" rx="18" ry="8" fill="#154015" transform="rotate(10 185 143)" />
     <rect x="60" y="165" width="18" height="12" fill="#5C3A10" />
     <path d="M56,167 L69,155 L82,167Z" fill="#3D2408" />
   </svg>
 );
 
 const SceneSahara = () => (
-  <svg
-    viewBox="0 0 240 220"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-  >
+  <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
     <rect width="240" height="220" fill="#2A1510" />
     <rect width="240" height="130" fill="#1A3050" />
-    <path
-      d="M0,50 Q120,30 240,60"
-      stroke="rgba(200,210,255,0.15)"
-      strokeWidth="20"
-      fill="none"
-    />
+    <path d="M0,50 Q120,30 240,60" stroke="rgba(200,210,255,0.15)" strokeWidth="20" fill="none" />
     <circle cx="30" cy="25" r="1" fill="white" opacity="0.8" />
     <circle cx="80" cy="15" r="1.2" fill="white" opacity="0.7" />
     <circle cx="150" cy="30" r="0.8" fill="white" opacity="0.9" />
     <circle cx="200" cy="20" r="1" fill="white" opacity="0.6" />
     <circle cx="60" cy="45" r="0.7" fill="white" opacity="0.5" />
     <circle cx="170" cy="55" r="1.1" fill="white" opacity="0.8" />
-    <path
-      d="M0,220 L0,160 Q50,130 100,148 Q150,165 200,140 Q225,128 240,135 L240,220Z"
-      fill="#5C3A1A"
-    />
-    <path
-      d="M0,220 L0,175 Q40,155 90,167 Q140,178 190,160 L240,165 L240,220Z"
-      fill="#3D2510"
-    />
-    <path
-      d="M0,220 L0,188 Q50,172 100,182 Q150,190 200,178 L240,182 L240,220Z"
-      fill="#2A1A08"
-    />
+    <path d="M0,220 L0,160 Q50,130 100,148 Q150,165 200,140 Q225,128 240,135 L240,220Z" fill="#5C3A1A" />
+    <path d="M0,220 L0,175 Q40,155 90,167 Q140,178 190,160 L240,165 L240,220Z" fill="#3D2510" />
+    <path d="M0,220 L0,188 Q50,172 100,182 Q150,190 200,178 L240,182 L240,220Z" fill="#2A1A08" />
     <g fill="#1A0C04">
       <ellipse cx="130" cy="168" rx="20" ry="10" />
       <ellipse cx="120" cy="162" rx="10" ry="7" />
@@ -273,60 +105,8 @@ const SceneSahara = () => (
     </g>
   </svg>
 );
-/* ─────────────────────────────────────────────────────────────── */
 
-const FEATURES = [
-  {
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1A4A6B"
-        strokeWidth="2"
-      >
-        <path d="M3 11l19-9-9 19-2-8-8-2z" />
-      </svg>
-    ),
-    title: "Curated Itineraries",
-    desc: "Every route handcrafted by travel experts with on-ground knowledge of each destination.",
-  },
-  {
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1A4A6B"
-        strokeWidth="2"
-      >
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    title: "Safe & Insured Travel",
-    desc: "Full trip protection, 24/7 emergency support, and medical coverage included in every package.",
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A4A6B" strokeWidth="2">
-        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-      </svg>
-    ),
-    title: "Best Price Guarantee",
-    desc: "Found a better price elsewhere? We'll match it and give you an extra 5% discount on your next trip.",
-  },
-];
-
-const STATS = [
-  { big: "2.4K+", desc: "Destinations available" },
-  { big: "98%", desc: "Customer satisfaction" },
-  { big: "14yr", desc: "Of travel expertise" },
-  { big: "180+", desc: "Countries covered" },
-];
-
-/* ── SVG Search Icon ── */
+/* ── SVG ICONS ── */
 const SearchIcon = ({ className }) => (
   <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
     <circle cx="11" cy="11" r="8" />
@@ -346,10 +126,6 @@ const UserIcon = () => (
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
-
-/* ══════════════════════════════════════════════════════════════ */
-/*  COMPONENT                                                      */
-/* ══════════════════════════════════════════════════════════════ */
 
 const SUGGESTED_DESTS = [
   { name: "Nearby", desc: "Find what's around you", icon: "📍" },
@@ -427,38 +203,32 @@ const MOCK_DESTS = [
   }
 ];
 
-const HERO_SCENES = MOCK_DESTS.map(d => ({
-  _id: d._id,
-  image: d.images[0],
-  name: d.name,
-  price: `₹${d.entrance_fee_inr.toLocaleString('en-IN')}`,
-  rating: d.rating,
-  reviews: d.reviews,
-  nights: "7 nights"
-}));
-
-const Home = () => {
+const SearchResults = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((s) => s.auth);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q") || "";
+
+  // const { isAuthenticated } = useSelector((s) => s.auth);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [where, setWhere] = useState("");
+  const [where, setWhere] = useState(query);
   const [checkIn, setCheckIn] = useState("");
-  // const [travellers, setTravellers] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [heroIdx, setHeroIdx] = useState(0);
   const [activeField, setActiveField] = useState(null);
   const [guestCount, setGuestCount] = useState({ adults: 0, children: 0, infants: 0, pets: 0 });
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isExpanded, setIsExpanded] = useState(false);
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    setWhere(query);
+  }, [query]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -478,8 +248,8 @@ const Home = () => {
       document.body.classList.remove("body-lock");
       document.documentElement.classList.remove("body-lock");
     }
-    return () => {
-      document.body.style.overflow = "auto";
+    return () => { 
+      document.body.style.overflow = "auto"; 
       document.documentElement.style.overflow = "auto";
       document.body.classList.remove("body-lock");
       document.documentElement.classList.remove("body-lock");
@@ -489,7 +259,6 @@ const Home = () => {
   const searchBarRef = useRef(null);
 
   const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  // const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
   const handleDateClick = (day) => {
     const d = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
@@ -498,17 +267,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIdx((prev) => (prev + 1) % HERO_SCENES.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 150);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -537,17 +298,39 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     api
-      .get("/destinations")
+      .get(`/destinations?q=${encodeURIComponent(query)}`)
       .then((r) => {
-        setDestinations(r.data.length > 0 ? r.data : MOCK_DESTS);
+        if (r.data && r.data.length > 0) {
+          setDestinations(r.data);
+        } else {
+          // Fallback filter mock dests
+          const filtered = query.trim()
+            ? MOCK_DESTS.filter(
+              (d) =>
+                (d.name || "").toLowerCase().includes(query.toLowerCase()) ||
+                (d.city || "").toLowerCase().includes(query.toLowerCase()) ||
+                (d.state || "").toLowerCase().includes(query.toLowerCase())
+            )
+            : MOCK_DESTS;
+          setDestinations(filtered);
+        }
         setLoading(false);
       })
       .catch(() => {
-        setDestinations(MOCK_DESTS);
+        const filtered = query.trim()
+          ? MOCK_DESTS.filter(
+            (d) =>
+              (d.name || "").toLowerCase().includes(query.toLowerCase()) ||
+              (d.city || "").toLowerCase().includes(query.toLowerCase()) ||
+              (d.state || "").toLowerCase().includes(query.toLowerCase())
+          )
+          : MOCK_DESTS;
+        setDestinations(filtered);
         setLoading(false);
       });
-  }, []);
+  }, [query]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -558,9 +341,6 @@ const Home = () => {
       navigate(`/search`);
     }
   };
-
-  /* Home page shows unfiltered destinations */
-  const filteredDestinations = destinations;
 
   return (
     <div className="wander-page">
@@ -580,17 +360,17 @@ const Home = () => {
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
-            <li className="active" onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <li onClick={() => setMobileMenuOpen(false)}>
               <Link to="/">
                 <svg className="nav-icon show-mobile-only" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Home</span>
               </Link>
             </li>
-            <li onClick={() => { setMobileMenuOpen(false); document.getElementById('wander-dest-section')?.scrollIntoView({ behavior: 'smooth' }); }}>
-              <a href="#wander-dest-section">
+            <li onClick={() => { setMobileMenuOpen(false); navigate("/"); }}>
+              <Link to="/">
                 <svg className="nav-icon show-mobile-only" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 <span>India</span>
-              </a>
+              </Link>
             </li>
             <li onClick={() => { setMobileMenuOpen(false); setIsComingSoonModalOpen(true); }}>
               <Link to="/group-tours">
@@ -616,11 +396,11 @@ const Home = () => {
                 <span>Wedding</span>
               </Link>
             </li>
-            <li onClick={() => { setMobileMenuOpen(false); document.getElementById('wander-features')?.scrollIntoView({ behavior: 'smooth' }); }}>
-              <a href="#wander-features">
+            <li onClick={() => { setMobileMenuOpen(false); navigate("/"); }}>
+              <Link to="/">
                 <svg className="nav-icon show-mobile-only" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                 <span>About</span>
-              </a>
+              </Link>
             </li>
             <li onClick={() => { setMobileMenuOpen(false); setIsComingSoonModalOpen(true); }}>
               <Link to="/contact">
@@ -628,10 +408,6 @@ const Home = () => {
                 <span>Contact</span>
               </Link>
             </li>
-            <div className="mobile-menu-footer show-mobile-only">
-              <p>Explore the world with passion.</p>
-              <span>© PackGo Luxe</span>
-            </div>
           </ul>
 
           <div className="wander-nav-right">
@@ -686,7 +462,6 @@ const Home = () => {
               <>
                 {/* 💻 STANDARD DESKTOP SEARCH BAR */}
                 {!(isExpanded && isMobile) && (
-                  /* 💻 STANDARD DESKTOP SEARCH BAR */
                   <form
                     ref={searchBarRef}
                     className={`wander-search-bar ${activeField ? "field-active" : ""} ${scrolled ? "compact" : ""}`}
@@ -737,7 +512,13 @@ const Home = () => {
                           </div>
                           <div className="calendar-grid">
                             {[...Array(daysInMonth(currentMonth))].map((_, i) => (
-                              <div key={i + 1} className="calendar-day" onClick={(e) => { e.stopPropagation(); handleDateClick(i + 1); setIsExpanded(false); }}>{i + 1}</div>
+                              <div
+                                key={i + 1}
+                                className={`calendar-day ${checkIn === `${i + 1} ${currentMonth.toLocaleString('default', { month: 'short' })}` ? "selected" : ""}`}
+                                onClick={(e) => { e.stopPropagation(); handleDateClick(i + 1); setActiveField("who"); }}
+                              >
+                                {i + 1}
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -750,30 +531,27 @@ const Home = () => {
                         <div className="wander-sf-val">
                           {(() => {
                             const total = Object.values(guestCount).reduce((a, b) => a + b, 0);
-                            if (total === 0) return "Add guests";
-                            const parts = [];
-                            const guests = guestCount.adults + guestCount.children;
-                            if (guests > 0) parts.push(`${guests} guest${guests > 1 ? "s" : ""}`);
-                            if (guestCount.infants > 0) parts.push(`${guestCount.infants} infant${guestCount.infants > 1 ? "s" : ""}`);
-                            if (guestCount.pets > 0) parts.push(`${guestCount.pets} pet${guestCount.pets > 1 ? "s" : ""}`);
-                            return parts.join(", ");
+                            return total > 0 ? `${total} guest${total > 1 ? "s" : ""}` : "Add guests";
                           })()}
                         </div>
                       </div>
-                      {Object.values(guestCount).some(v => v > 0) && (
+                      {Object.values(guestCount).some((v) => v > 0) && (
                         <button type="button" className="sf-clear-btn" onClick={(e) => { e.stopPropagation(); setGuestCount({ adults: 0, children: 0, infants: 0, pets: 0 }); }}>
                           <svg width="12" height="12" viewBox="0 0 32 32"><path d="m6 6 20 20M26 6 6 26" stroke="currentColor" strokeWidth="4" fill="none" /></svg>
                         </button>
                       )}
                       {activeField === "who" && (
-                        <div className="search-dropdown guests-dropdown">
-                          {['adults', 'children', 'infants', 'pets'].map(k => (
+                        <div className="search-dropdown guest-dropdown" onClick={(e) => e.stopPropagation()}>
+                          {['adults', 'children', 'infants', 'pets'].map((k) => (
                             <div key={k} className="guest-row">
-                              <span>{k.charAt(0).toUpperCase() + k.slice(1)}</span>
+                              <div className="guest-info">
+                                <div className="guest-type">{k.charAt(0).toUpperCase() + k.slice(1)}</div>
+                                <div className="guest-age">{k === 'adults' ? 'Ages 13+' : k === 'children' ? 'Ages 2–12' : k === 'infants' ? 'Under 2' : 'Service animals'}</div>
+                              </div>
                               <div className="guest-controls">
-                                <button type="button" onClick={(e) => { e.stopPropagation(); setGuestCount(p => ({ ...p, [k]: Math.max(0, p[k] - 1) })) }}>-</button>
+                                <button type="button" onClick={() => setGuestCount((p) => ({ ...p, [k]: Math.max(0, p[k] - 1) }))}>-</button>
                                 <span>{guestCount[k]}</span>
-                                <button type="button" onClick={(e) => { e.stopPropagation(); setGuestCount(p => ({ ...p, [k]: p[k] + 1 })) }}>+</button>
+                                <button type="button" onClick={() => setGuestCount((p) => ({ ...p, [k]: p[k] + 1 }))}>+</button>
                               </div>
                             </div>
                           ))}
@@ -781,7 +559,7 @@ const Home = () => {
                       )}
                     </div>
 
-                    <button type="submit" className="wander-search-btn">
+                    <button className="wander-search-btn" type="submit">
                       <SearchIcon />
                       <span>Search</span>
                     </button>
@@ -793,83 +571,26 @@ const Home = () => {
         </div>
       </header>
 
-      {/* ═══ HERO ═══ */}
-      <section className="wander-hero">
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
-            <div className="wander-dot" />
-            &nbsp;2,400+ destinations worldwide
-          </div>
-          <h1>
-            Travel is the only thing you buy that makes you <em>richer</em>
-          </h1>
-          <p>
-            Curated journeys to the world's most extraordinary places.
-            Handpicked experiences, flawless planning, memories that last forever.
-          </p>
-          <div className="wander-hero-actions">
-            <button className="wander-btn-primary" onClick={() => document.getElementById('wander-dest-section').scrollIntoView({ behavior: 'smooth' })}>
-              Explore Destinations
-            </button>
-            <button className="wander-btn-ghost" onClick={() => { setAuthMode("register"); setIsAuthModalOpen(true); }}>
-              {isAuthenticated ? "Dashboard →" : "Start Free"}
-            </button>
-          </div>
-        </div>
-
-        {/* Hero Visual (Hidden on Mobile) */}
-        <div className="wander-hero-visual hide-mobile" onClick={() => navigate(`/destination/${HERO_SCENES[heroIdx]._id}`)} style={{ cursor: "pointer" }}>
-          <div className="wander-scene-container">
-            <img
-              key={heroIdx}
-              src={HERO_SCENES[heroIdx].image}
-              alt={HERO_SCENES[heroIdx].name}
-              className="wander-hero-img-animate"
-            />
-            {/* Badges ... */}
-            <div className="wander-hero-badge-card badge-rating-premium">
-              <div className="badge-value-row">
-                <span className="rating-num">{HERO_SCENES[heroIdx].rating}★</span>
-              </div>
-              <div className="badge-reviews">{HERO_SCENES[heroIdx].reviews} reviews</div>
-            </div>
-            <div className="wander-hero-badge-card badge-price-premium">
-              <div className="badge-label-small">FROM / PERSON</div>
-              <div className="badge-price-row">
-                <span className="price-symbol">₹</span>
-                <span className="price-val">{HERO_SCENES[heroIdx].price.replace('₹', '')}</span>
-                <span className="price-duration">/ {HERO_SCENES[heroIdx].nights}</span>
-              </div>
-            </div>
-            <div key={`name-${heroIdx}`} className="wander-hero-place-name">
-              {HERO_SCENES[heroIdx].name.toUpperCase()}
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ═══ DESTINATIONS ═══ */}
-      <section className="wander-section" id="wander-dest-section">
+      {/* ═══ SEARCH RESULTS SECTION ═══ */}
+      <section className="wander-section" style={{ paddingTop: scrolled ? "140px" : "220px", minHeight: "85vh", transition: "padding-top 0.5s cubic-bezier(0.16, 1, 0.3, 1)" }}>
         <div className="wander-section-header">
           <div>
-            <div className="wander-section-label">Top Picks</div>
+            <div className="wander-section-label">Search Results</div>
             <div className="wander-section-title">
               {loading
-                ? "Loading destinations…"
-                : "Destinations that steal hearts"}
+                ? "Searching destinations…"
+                : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""} found ${query ? `for "${query}"` : ""}`}
             </div>
           </div>
-          <button
-            className="wander-see-all"
-            onClick={() => navigate("/search")}
-          >
-            View all destinations →
-          </button>
+          {query && (
+            <button className="wander-see-all" onClick={() => navigate("/search")}>
+              Clear search filter →
+            </button>
+          )}
         </div>
 
         <div className="wander-dest-grid">
-          {filteredDestinations.map((dest, i) => (
+          {destinations.map((dest, i) => (
             <div
               key={dest._id || i}
               className="wander-dest-card"
@@ -912,111 +633,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ FEATURES ═══ */}
-      <section className="wander-features-section" id="wander-features">
-        <div
-          style={{ textAlign: "center", maxWidth: 500, margin: "0 auto 1rem" }}
-        >
-          <div className="wander-section-label" style={{ textAlign: "center" }}>
-            Why PackGo
-          </div>
-          <div className="wander-section-title" style={{ textAlign: "center" }}>
-            Travel smarter,
-            <br />
-            not harder
-          </div>
-        </div>
-        <div className="wander-feat-grid">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="wander-feat-card">
-              <div className="wander-feat-icon">{f.icon}</div>
-              <div className="wander-feat-title">{f.title}</div>
-              <div className="wander-feat-desc">{f.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
-        <div>
-          <div className="wander-testi-label">Traveller Stories</div>
-          <div className="wander-testi-heading">
-            Journeys that changed everything
-          </div>
-          <div className="wander-stars">★★★★★</div>
-          <p className="wander-testi-quote">
-            "PackGo turned our anniversary trip into something we'll tell
-            grandkids about. Every single detail was perfect — from the sunrise
-            hike in Santorini to the candlelit dinner by the Aegean."
-          </p>
-          <div className="wander-testi-author">
-            <div className="wander-author-avatar">PS</div>
-            <div>
-              <div className="wander-author-name">Priya Sharma</div>
-              <div className="wander-author-loc">Mumbai, India</div>
-            </div>
-          </div>
-        </div>
-        <div className="wander-stats-grid">
-          {STATS.map((s, i) => (
-            <div key={i} className="wander-stat-box">
-              <div className="wander-stat-big">{s.big}</div>
-              <div className="wander-stat-desc">{s.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
-        <div className="wander-cta-text">
-          <div className="wander-cta-badge">✨ EXPLORE THE UNEXPLORED</div>
-          <h2>
-            Your next adventure
-            <br />
-            is one click away
-          </h2>
-          <p>Join 40,000+ travellers who explored the world with PackGo</p>
-        </div>
-        <div className="wander-cta-actions">
-          <button className="wander-btn-primary" onClick={() => { setAuthMode("register"); setIsAuthModalOpen(true); }}>
-            {isAuthenticated ? "Plan My Trip" : "Create Free Account"}
-          </button>
-          {!isAuthenticated && (
-            <button className="wander-btn-ghost-premium" onClick={() => { setAuthMode("login"); setIsAuthModalOpen(true); }}>Log In</button>
-          )}
-        </div>
-      </div>
-
       {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-main">
           <div className="footer-col">
             <h4>Support</h4>
             <button type="button" className="footer-link-btn">Help Centre</button>
-            <button type="button" className="footer-link-btn">Safety information</button>
+            <button type="button" className="footer-link-btn">AirCover</button>
+            <button type="button" className="footer-link-btn">Anti-discrimination</button>
+            <button type="button" className="footer-link-btn">Disability support</button>
             <button type="button" className="footer-link-btn">Cancellation options</button>
-            <button type="button" className="footer-link-btn">Our COVID-19 response</button>
-            <button type="button" className="footer-link-btn">Supporting people with disabilities</button>
-            <button type="button" className="footer-link-btn">Report a neighbourhood concern</button>
+            <button type="button" className="footer-link-btn">Report neighbourhood concern</button>
           </div>
           <div className="footer-col">
             <h4>Hosting</h4>
-            <button type="button" className="footer-link-btn">Try hosting</button>
-            <button type="button" className="footer-link-btn">AirCover: protection for Hosts</button>
-            <button type="button" className="footer-link-btn">Explore hosting resources</button>
-            <button type="button" className="footer-link-btn">Visit our community forum</button>
-            <button type="button" className="footer-link-btn">How to host responsibly</button>
+            <button type="button" className="footer-link-btn">PackGo your home</button>
+            <button type="button" className="footer-link-btn">AirCover for Hosts</button>
+            <button type="button" className="footer-link-btn">Hosting resources</button>
+            <button type="button" className="footer-link-btn">Community forum</button>
+            <button type="button" className="footer-link-btn">Hosting responsibly</button>
+            <button type="button" className="footer-link-btn">Join a free hosting class</button>
           </div>
           <div className="footer-col">
             <h4>PackGo</h4>
             <button type="button" className="footer-link-btn">Newsroom</button>
-            <button type="button" className="footer-link-btn">Learn about new features</button>
-            <button type="button" className="footer-link-btn">Letter from our founders</button>
+            <button type="button" className="footer-link-btn">New features</button>
             <button type="button" className="footer-link-btn">Careers</button>
             <button type="button" className="footer-link-btn">Investors</button>
-            <button type="button" className="footer-link-btn">PackGo Luxe</button>
+            <button type="button" className="footer-link-btn">PackGo stays</button>
+            <button type="button" className="footer-link-btn">Emergency support</button>
           </div>
         </div>
 
@@ -1039,7 +684,7 @@ const Home = () => {
             </div>
             <div className="footer-socials">
               <button type="button" className="footer-link-btn" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg></button>
-              <button type="button" className="footer-link-btn" aria-label="Twitter"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg></button>
+              <button type="button" className="footer-link-btn" aria-label="Twitter"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.92 4.92 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg></button>
               <button type="button" className="footer-link-btn" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.332 3.608 1.308.975.975 1.245 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.332 2.633-1.308 3.608-.975.975-2.242 1.245-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.332-3.608-1.308-.975-.975-1.245-2.242-1.308-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.332-2.633 1.308-3.608.975-.975 2.242-1.245 3.608-1.308 1.266-.058 1.646-.07 4.85-.07M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.355 2.618 6.778 6.98 6.978 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.058-1.28.072-1.689.072-4.948 0-3.259-.014-3.668-.072-4.948-.199-4.345-2.621-6.777-6.979-6.978C15.668.014 15.259 0 12 0z" /><path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4.162 4.162 0 110-8.324 4.162 4.162 0 010 8.324zM18.406 4.137a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z" /></svg></button>
             </div>
           </div>
@@ -1204,4 +849,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SearchResults;
