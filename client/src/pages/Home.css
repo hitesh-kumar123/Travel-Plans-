@@ -868,4 +868,7 @@
     flex-direction: column;
     text-align: center;
   }
+  .wander-cta-actions {
+    flex-direction: column;
+  }
 }
