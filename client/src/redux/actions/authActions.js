@@ -82,6 +82,59 @@ export const register = (userData) => async (dispatch) => {
   }
 };
 
+// Request OTP for registration
+export const requestRegisterOtp = (userData) => async () => {
+  await api.post("/auth/register/request-otp", userData);
+};
+
+// Verify OTP for registration
+export const verifyRegisterOtp = (payload) => async (dispatch) => {
+  try {
+    const res = await api.post("/auth/register/verify-otp", payload);
+
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: res.data,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    dispatch(loadUser());
+    toast.success("Account verified successfully! 🎉");
+  } catch (error) {
+    const msg = error.response?.data?.msg || "OTP verification failed";
+    dispatch({
+      type: REGISTER_FAIL,
+      payload: msg,
+    });
+    toast.error(msg);
+    throw error;
+  }
+};
+
+// Google Login
+export const googleLogin = (idToken) => async (dispatch) => {
+  try {
+    const res = await api.post("/auth/google", { idToken });
+
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    dispatch(loadUser());
+    toast.success("Signed in with Google!");
+  } catch (error) {
+    const msg = error.response?.data?.msg || "Google sign-in failed";
+    dispatch({
+      type: LOGIN_FAIL,
+      payload: msg,
+    });
+    toast.error(msg);
+    throw error;
+  }
+};
+
 // Logout User
 export const logout = () => (dispatch) => {
   localStorage.removeItem("token");

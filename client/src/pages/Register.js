@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/actions/authActions";
+import {
+  requestRegisterOtp,
+  verifyRegisterOtp,
+  googleLogin,
+} from "../redux/actions/authActions";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 import {
   Box,
   TextField,
@@ -26,7 +32,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/TaskAlt";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
-import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
@@ -42,6 +47,9 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [otp, setOtp] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,7 +63,11 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const steps = ["Personal Information", "Account Setup", "Confirmation"];
+  const steps = [
+    "Personal Information",
+    "Account Setup",
+    "Email Verification",
+  ];
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -93,18 +105,43 @@ const Register = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (activeStep === steps.length - 1) {
-      const payload = {
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
-        email: formData.email,
-        password: formData.password,
-      };
-      dispatch(register(payload));
-    } else {
-      handleNext();
+
+    if (activeStep === 1) {
+      setSendingOtp(true);
+      try {
+        const payload = {
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          password: formData.password,
+        };
+        await dispatch(requestRegisterOtp(payload));
+        toast.success("OTP sent to your email");
+        handleNext();
+      } catch (error) {
+        const msg =
+          error.response?.data?.msg || "Failed to send registration OTP";
+        toast.error(msg);
+      } finally {
+        setSendingOtp(false);
+      }
+      return;
     }
+
+    if (activeStep === steps.length - 1) {
+      setVerifyingOtp(true);
+      try {
+        await dispatch(
+          verifyRegisterOtp({ email: formData.email, otp: otp.trim() }),
+        );
+      } finally {
+        setVerifyingOtp(false);
+      }
+      return;
+    }
+
+    handleNext();
   };
 
   const isNextDisabled = () => {
@@ -118,6 +155,8 @@ const Register = () => {
         passwordError ||
         !formData.agreeTerms
       );
+    } else if (activeStep === 2) {
+      return otp.trim().length < 6;
     }
     return false;
   };
@@ -256,29 +295,47 @@ const Register = () => {
         );
       case 2:
         return (
-          <Box sx={{ textAlign: "center", py: 2 }}>
-            <CheckCircleOutlineIcon
-              color="success"
-              sx={{ fontSize: 64, mb: 2 }}
-            />
-            <Typography variant="h6" gutterBottom>
-              Almost there!
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Please review your information:
-            </Typography>
-            <Box sx={{ textAlign: "left", mb: 3 }}>
-              <Typography variant="body2" gutterBottom>
-                <strong>Name:</strong> {formData.firstName} {formData.lastName}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                <strong>Email:</strong> {formData.email}
-              </Typography>
+          <Box sx={{ py: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+              <CheckCircleOutlineIcon color="success" />
+              <Typography variant="h6">Verify your email</Typography>
             </Box>
-            <Typography variant="body2" color="text.secondary">
-              By clicking "Create Account", you agree to our terms and privacy
-              policy, and confirm that all information provided is accurate.
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Enter the 6-digit OTP sent to {formData.email} to activate your
+              account.
             </Typography>
+            <TextField
+              fullWidth
+              label="OTP Code"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              inputProps={{ maxLength: 6 }}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              variant="text"
+              onClick={async () => {
+                setSendingOtp(true);
+                try {
+                  const payload = {
+                    name: `${formData.firstName} ${formData.lastName}`.trim(),
+                    email: formData.email,
+                    password: formData.password,
+                  };
+                  await dispatch(requestRegisterOtp(payload));
+                  toast.success("OTP resent");
+                } catch (error) {
+                  const msg =
+                    error.response?.data?.msg || "Failed to resend OTP";
+                  toast.error(msg);
+                } finally {
+                  setSendingOtp(false);
+                }
+              }}
+              disabled={sendingOtp}
+            >
+              Resend OTP
+            </Button>
           </Box>
         );
       default:
@@ -426,7 +483,7 @@ const Register = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={isNextDisabled()}
+                  disabled={isNextDisabled() || sendingOtp || verifyingOtp}
                   endIcon={
                     activeStep === steps.length - 1 ? (
                       <HowToRegIcon />
@@ -435,7 +492,13 @@ const Register = () => {
                     )
                   }
                 >
-                  {activeStep === steps.length - 1 ? "Create Account" : "Next"}
+                  {activeStep === steps.length - 1
+                    ? verifyingOtp
+                      ? "Verifying..."
+                      : "Verify & Create"
+                    : sendingOtp
+                      ? "Sending..."
+                      : "Next"}
                 </Button>
               </Box>
 
@@ -450,23 +513,21 @@ const Register = () => {
                   <Box
                     sx={{ display: "flex", justifyContent: "center", gap: 2 }}
                   >
-                    <Button
-                      variant="outlined"
-                      startIcon={<GoogleIcon />}
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        flexGrow: 1,
-                        color: "#DB4437",
-                        borderColor: "#DB4437",
-                        "&:hover": {
-                          borderColor: "#DB4437",
-                          backgroundColor: "rgba(219, 68, 55, 0.1)",
-                        },
-                      }}
-                    >
-                      Google
-                    </Button>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                          if (credentialResponse?.credential) {
+                            dispatch(
+                              googleLogin(credentialResponse.credential),
+                            );
+                          }
+                        }}
+                        onError={() => {
+                          toast.error("Google sign-in failed");
+                        }}
+                        useOneTap={false}
+                      />
+                    </Box>
                     <Button
                       variant="outlined"
                       startIcon={<FacebookIcon />}

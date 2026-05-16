@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/actions/authActions";
+import { login, googleLogin } from "../redux/actions/authActions";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Box,
   TextField,
@@ -19,7 +20,6 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
@@ -58,6 +58,12 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login(formData));
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    if (credentialResponse?.credential) {
+      dispatch(googleLogin(credentialResponse.credential));
+    }
   };
 
   return (
@@ -277,19 +283,18 @@ const Login = () => {
                   justifyContent: "center",
                   gap: 2,
                   mb: 3,
+                  flexWrap: "wrap",
                 }}
               >
-                <IconButton
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: 2,
-                    p: 1.5,
-                    color: "#DB4437",
-                  }}
-                >
-                  <GoogleIcon />
-                </IconButton>
+                <Box sx={{ minWidth: 220 }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => {
+                      /* Google widget handles errors internally */
+                    }}
+                    useOneTap={false}
+                  />
+                </Box>
                 <IconButton
                   sx={{
                     border: "1px solid",
