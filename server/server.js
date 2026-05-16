@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 // Connect to MongoDB
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))

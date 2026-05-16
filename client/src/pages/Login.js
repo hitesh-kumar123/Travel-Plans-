@@ -37,20 +37,22 @@ const Login = () => {
     <div className="auth-page">
       {/* Left Visual Side */}
       <div className="auth-visual">
-        <img 
-          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" 
-          alt="Adventure" 
-          className="auth-visual-img" 
+        <img
+          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop"
+          alt="Adventure"
+          className="auth-visual-img"
         />
         <div className="auth-visual-overlay" />
         <div className="auth-logo">PackGo</div>
-        
+
         <div className="auth-visual-content">
           <h2 className="auth-visual-tagline">
-            Collect moments,<br />not things.
+            Collect moments,
+            <br />
+            not things.
           </h2>
           <p className="auth-visual-sub">
-            Join thousands of travelers who have already discovered their next 
+            Join thousands of travelers who have already discovered their next
             great adventure with PackGo's curated experiences.
           </p>
         </div>
@@ -67,7 +69,11 @@ const Login = () => {
           {/* Social Auth */}
           <div className="auth-social-row">
             <button className="social-btn">
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18" />
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                width="18"
+              />
               Google
             </button>
             <button className="social-btn">
@@ -82,12 +88,12 @@ const Login = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="auth-field">
-              <input 
-                type="email" 
-                name="email" 
-                className="auth-input" 
-                placeholder=" " 
-                required 
+              <input
+                type="email"
+                name="email"
+                className="auth-input"
+                placeholder=" "
+                required
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -95,30 +101,30 @@ const Login = () => {
             </div>
 
             <div className="auth-field">
-              <input 
-                type={showPassword ? "text" : "password"} 
-                name="password" 
-                className="auth-input" 
-                placeholder=" " 
-                required 
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                className="auth-input"
+                placeholder=" "
+                required
                 value={formData.password}
                 onChange={handleChange}
               />
               <label className="auth-label">Password</label>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
-                  position: 'absolute',
-                  right: '1rem',
-                  top: '1.2rem',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#999',
-                  fontSize: '0.8rem',
-                  fontWeight: '700'
+                  position: "absolute",
+                  right: "1rem",
+                  top: "1.2rem",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#999",
+                  fontSize: "0.8rem",
+                  fontWeight: "700",
                 }}
               >
                 {showPassword ? "HIDE" : "SHOW"}
@@ -126,11 +132,24 @@ const Login = () => {
             </div>
 
             <div className="auth-options">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <input type="checkbox" style={{ accentColor: '#ff385c' }} />
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <input type="checkbox" style={{ accentColor: "#ff385c" }} />
                 <span>Remember me</span>
               </label>
-              <Link to="/forgot-password" title="Forgot Password" className="forgot-link">Forgot Password?</Link>
+              <Link
+                to="/forgot-password"
+                title="Forgot Password"
+                className="forgot-link"
+              >
+                Forgot Password?
+              </Link>
             </div>
 
             <button type="submit" className="auth-submit-btn">

@@ -4,7 +4,10 @@
   display: flex;
   min-height: 100vh;
   background: #fff;
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
   overflow: hidden;
 }
 
@@ -62,7 +65,7 @@
 }
 
 .auth-visual-tagline {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1.1;
@@ -95,8 +98,14 @@
 }
 
 @keyframes authFadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .auth-header {
@@ -282,8 +291,14 @@
 }
 
 @keyframes modalScaleUp {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .auth-modal-close {
@@ -369,8 +384,20 @@
 
 /* Mobile Adjustments */
 @media (max-width: 900px) {
-  .auth-modal-container .auth-visual { display: none; }
-  .auth-modal-container { max-width: 500px; height: auto; padding: 2rem 0; }
-  .otp-container { gap: 0.8rem; }
-  .otp-input { width: 50px; height: 60px; font-size: 1.5rem; }
+  .auth-modal-container .auth-visual {
+    display: none;
+  }
+  .auth-modal-container {
+    max-width: 500px;
+    height: auto;
+    padding: 2rem 0;
+  }
+  .otp-container {
+    gap: 0.8rem;
+  }
+  .otp-input {
+    width: 50px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
 }

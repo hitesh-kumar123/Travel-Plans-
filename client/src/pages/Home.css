@@ -237,10 +237,12 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: 0.5s;
 }
 
@@ -323,7 +325,11 @@
 /* ═══ HERO ═══ */
 .wander-hero {
   min-height: 100vh;
-  background: radial-gradient(circle at 10% 20%, rgba(30, 90, 128, 1) 0%, rgba(15, 45, 64, 1) 90.2%);
+  background: radial-gradient(
+    circle at 10% 20%,
+    rgba(30, 90, 128, 1) 0%,
+    rgba(15, 45, 64, 1) 90.2%
+  );
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
@@ -345,9 +351,11 @@
   right: -5%;
   width: 60%;
   height: 140%;
-  background: radial-gradient(ellipse,
-      rgba(232, 115, 90, 0.12) 0%,
-      transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(232, 115, 90, 0.12) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 
@@ -376,7 +384,6 @@
 }
 
 @keyframes wander-pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -604,7 +611,6 @@
 }
 
 @keyframes wander-float {
-
   0%,
   100% {
     transform: translateY(0) rotateX(0) rotateY(0);
@@ -1258,7 +1264,9 @@
   height: 480px;
   cursor: pointer;
   background: #f8f9fa;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
@@ -1288,10 +1296,12 @@
 .wander-dest-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.2) 50%,
-      transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    transparent 100%
+  );
 }
 
 .wander-card-tag {
@@ -1561,7 +1571,9 @@
   gap: 3rem;
   flex-wrap: wrap;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 50px rgba(13, 39, 62, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 24px 50px rgba(13, 39, 62, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .wander-cta-badge {
@@ -1570,7 +1582,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.5rem 1.2rem;
   border-radius: 100px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   color: #ff385c;
@@ -1598,14 +1610,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 70% 50%, rgba(255, 56, 92, 0.2), transparent 65%);
+  background: radial-gradient(
+    circle at 70% 50%,
+    rgba(255, 56, 92, 0.2),
+    transparent 65%
+  );
   pointer-events: none;
 }
 
 .cta-pattern {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 1px
+  );
   background-size: 24px 24px;
   pointer-events: none;
 }
@@ -1641,7 +1660,7 @@
 }
 
 .wander-cta-text h2 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-size: 3.2rem;
   font-weight: 800;
   color: white;
@@ -1652,7 +1671,7 @@
 }
 
 .wander-cta-text p {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   color: rgba(255, 255, 255, 0.85);
   font-size: 1.15rem;
   font-weight: 500;
@@ -1676,7 +1695,7 @@
   color: white;
   padding: 1.1rem 2.5rem;
   border-radius: 100px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
@@ -2041,10 +2060,12 @@
 
 /* 📱 AIRBNB-STYLE MOBILE NAVIGATION 📱 */
 @media (max-width: 768px) {
-
   /* Sticky Header & Search Pill Transition */
   .wander-header {
-    transition: background 0.3s ease, border-bottom 0.3s ease, padding 0.3s ease;
+    transition:
+      background 0.3s ease,
+      border-bottom 0.3s ease,
+      padding 0.3s ease;
   }
 
   .wander-header.scrolled {
@@ -2076,7 +2097,9 @@
     backdrop-filter: blur(20px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    box-shadow:
+      0 8px 28px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04) !important;
     border-radius: 1000px !important;
     padding: 0.75rem 1.4rem 0.75rem 1rem !important;
     width: 92% !important;
@@ -2090,7 +2113,9 @@
 
   .wander-header.scrolled .mobile-search-pill {
     max-width: 92% !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.12),
+      0 2px 10px rgba(0, 0, 0, 0.06) !important;
     background: rgba(255, 255, 255, 0.98) !important;
     border-color: rgba(0, 0, 0, 0.06) !important;
   }
@@ -2116,7 +2141,9 @@
     padding: 10px !important;
     box-shadow: 0 4px 14px rgba(255, 56, 92, 0.35) !important;
     flex-shrink: 0 !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease !important;
   }
 
   .mobile-search-pill:hover .pill-search-icon {
@@ -2507,7 +2534,7 @@
   }
 
   .italic-richer {
-    font-family: 'Playfair Display', serif;
+    font-family: "Playfair Display", serif;
     /* Assuming a serif font is available or fallbacks to generic */
     font-style: italic;
     color: #ffb8a1;
@@ -2563,7 +2590,11 @@
     justify-content: center;
     min-height: 80vh;
     padding: 100px 20px 40px;
-    background: radial-gradient(circle at 10% 20%, rgba(30, 90, 128, 1) 0%, rgba(15, 45, 64, 1) 90.2%);
+    background: radial-gradient(
+      circle at 10% 20%,
+      rgba(30, 90, 128, 1) 0%,
+      rgba(15, 45, 64, 1) 90.2%
+    );
     text-align: center;
   }
 
@@ -2603,7 +2634,12 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: linear-gradient(135deg, #0d273e 0%, #163857 50%, #102a42) !important;
+    background: linear-gradient(
+      135deg,
+      #0d273e 0%,
+      #163857 50%,
+      #102a42
+    ) !important;
     border-radius: 28px !important;
   }
 
@@ -2619,7 +2655,7 @@
   }
 
   .wander-cta-text h2 {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
     font-size: 2.4rem !important;
     line-height: 1.15 !important;
     margin-bottom: 1rem !important;
@@ -2628,7 +2664,7 @@
   }
 
   .wander-cta-text p {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
     font-size: 1.05rem !important;
     line-height: 1.6 !important;
     max-width: 28ch !important;
@@ -2646,7 +2682,7 @@
   .wander-cta-actions .wander-btn-primary {
     width: 90% !important;
     padding: 1.2rem 2rem !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
     font-size: 1.1rem !important;
     font-weight: 700 !important;
     box-shadow: 0 8px 24px rgba(255, 56, 92, 0.4) !important;
@@ -2660,7 +2696,7 @@
     color: white !important;
     padding: 1.2rem 2rem !important;
     border-radius: 100px !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
     font-size: 1.1rem !important;
     font-weight: 700 !important;
     backdrop-filter: blur(12px) !important;
@@ -3177,7 +3213,6 @@
 
 /* 📱 MOBILE RESPONSIVE HEADER & PREMIUM SIDER FIXES 📱 */
 @media (max-width: 768px) {
-
   /* ULTIMATE MOBILE SCROLL LOCK */
   html.body-lock,
   body.body-lock {
