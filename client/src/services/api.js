@@ -9,7 +9,9 @@ const normalizeApiBase = (baseUrl) => {
   }
 
   const trimmedBaseUrl = baseUrl.replace(/\/$/, "");
-  return trimmedBaseUrl.endsWith("/api") ? trimmedBaseUrl : `${trimmedBaseUrl}/api`;
+  return trimmedBaseUrl.endsWith("/api")
+    ? trimmedBaseUrl
+    : `${trimmedBaseUrl}/api`;
 };
 
 const API_BASE = normalizeApiBase(process.env.REACT_APP_API_URL);

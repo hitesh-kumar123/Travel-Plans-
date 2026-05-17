@@ -26,7 +26,10 @@ export const getTrips = () => async (dispatch) => {
       type: TRIP_ERROR,
       payload: err.response?.data?.msg || "Error fetching trips",
     });
-    return { success: false, error: err.response?.data?.msg || "Error fetching trips" };
+    return {
+      success: false,
+      error: err.response?.data?.msg || "Error fetching trips",
+    };
   }
 };
 
@@ -47,7 +50,10 @@ export const getTrip = (id) => async (dispatch) => {
       payload: err.response?.data?.msg || "Error fetching trip",
     });
     toast.error("Failed to load trip details");
-    return { success: false, error: err.response?.data?.msg || "Error fetching trip" };
+    return {
+      success: false,
+      error: err.response?.data?.msg || "Error fetching trip",
+    };
   }
 };
 

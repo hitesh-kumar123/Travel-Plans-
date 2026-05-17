@@ -30,7 +30,10 @@ export const loadUser = () => async (dispatch) => {
     dispatch({
       type: AUTH_ERROR,
     });
-    return { success: false, error: err.response?.data?.msg || "Failed to load user" };
+    return {
+      success: false,
+      error: err.response?.data?.msg || "Failed to load user",
+    };
   }
 };
 
