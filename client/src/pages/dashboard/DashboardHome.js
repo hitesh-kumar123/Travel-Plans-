@@ -74,7 +74,7 @@ const DashboardHome = () => {
   const upcomingTrips = tripsArr
     .filter((t) => new Date(t.startDate) >= today)
     .slice(0, 3);
-  
+
   // Monthly trip chart data from trips
   const monthlyData = (() => {
     const months = [
@@ -395,10 +395,13 @@ const DashboardHome = () => {
           </Paper>
         ) : (
           <Grid container spacing={3}>
-  {(upcomingTrips.length > 0 ? upcomingTrips : tripsArr.slice(0, 3)).map((trip) => (
-    <Grid item xs={12} md={6} lg={4} key={trip._id}>
-      <Card
-        elevation={0}
+            {(upcomingTrips.length > 0
+              ? upcomingTrips
+              : tripsArr.slice(0, 3)
+            ).map((trip) => (
+              <Grid item xs={12} md={6} lg={4} key={trip._id}>
+                <Card
+                  elevation={0}
                   sx={{
                     borderRadius: 3,
                     border: "1px solid",
@@ -428,21 +431,31 @@ const DashboardHome = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <Box sx={{ position: "absolute", top: 10, right: 10, display: "flex", flexDirection: "column", gap: 0.5, alignItems: "flex-end" }}>
-  <Chip
-    label={
-      trip.status?.charAt(0).toUpperCase() +
-      trip.status?.slice(1)
-    }
-    color={STATUS_COLORS[trip.status] || "default"}
-    size="small"
-    sx={{ fontWeight: 700 }}
-  />
-  <TripCountdownBadge
-    startDate={trip.startDate}
-    endDate={trip.endDate}
-  />
-</Box>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.5,
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Chip
+                          label={
+                            trip.status?.charAt(0).toUpperCase() +
+                            trip.status?.slice(1)
+                          }
+                          color={STATUS_COLORS[trip.status] || "default"}
+                          size="small"
+                          sx={{ fontWeight: 700 }}
+                        />
+                        <TripCountdownBadge
+                          startDate={trip.startDate}
+                          endDate={trip.endDate}
+                        />
+                      </Box>
                     </Box>
                     <CardContent>
                       <Typography variant="h6" fontWeight={700}>

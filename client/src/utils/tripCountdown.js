@@ -11,8 +11,9 @@ export function getTripCountdown(startDate, endDate) {
   const daysToStart = Math.round((start - today) / MS_PER_DAY);
   const daysToEnd = Math.round((end - today) / MS_PER_DAY);
 
-  if (daysToEnd < 0) return { type: 'completed', label: 'Completed' };
-  if (daysToStart === 0) return { type: 'today', label: 'Trip starts today! 🎉' };
-  if (daysToStart < 0) return { type: 'ongoing', label: 'Trip in progress ✈️' };
-  return { type: 'upcoming', label: `${daysToStart} days to go` };
+  if (daysToEnd < 0) return { type: "completed", label: "Completed" };
+  if (daysToStart === 0)
+    return { type: "today", label: "Trip starts today! 🎉" };
+  if (daysToStart < 0) return { type: "ongoing", label: "Trip in progress ✈️" };
+  return { type: "upcoming", label: `${daysToStart} days to go` };
 }

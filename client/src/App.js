@@ -32,7 +32,14 @@ function App() {
         <Router>
           <div className="App">
             <Routes>
-              <Route path="/dashboard/*" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route
+                path="/dashboard/*"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
