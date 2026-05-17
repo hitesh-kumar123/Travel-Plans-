@@ -20,11 +20,16 @@ export const getTrips = () => async (dispatch) => {
       type: GET_TRIPS,
       payload: res.data,
     });
+    return { success: true, data: res.data };
   } catch (err) {
     dispatch({
       type: TRIP_ERROR,
       payload: err.response?.data?.msg || "Error fetching trips",
     });
+    return {
+      success: false,
+      error: err.response?.data?.msg || "Error fetching trips",
+    };
   }
 };
 
@@ -38,12 +43,17 @@ export const getTrip = (id) => async (dispatch) => {
       type: GET_TRIP,
       payload: res.data,
     });
+    return { success: true, data: res.data };
   } catch (err) {
     dispatch({
       type: TRIP_ERROR,
       payload: err.response?.data?.msg || "Error fetching trip",
     });
     toast.error("Failed to load trip details");
+    return {
+      success: false,
+      error: err.response?.data?.msg || "Error fetching trip",
+    };
   }
 };
 
@@ -57,6 +67,7 @@ export const addTrip = (formData) => async (dispatch) => {
       payload: res.data,
     });
     toast.success(`Trip to ${formData.destination} created! ✈️`);
+    return { success: true, data: res.data };
   } catch (err) {
     const msg = err.response?.data?.msg || "Error adding trip";
     dispatch({
@@ -64,6 +75,7 @@ export const addTrip = (formData) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
+    return { success: false, error: msg };
   }
 };
 
@@ -77,6 +89,7 @@ export const updateTrip = (id, formData) => async (dispatch) => {
       payload: res.data,
     });
     toast.success("Trip updated successfully! ✏️");
+    return { success: true, data: res.data };
   } catch (err) {
     const msg = err.response?.data?.msg || "Error updating trip";
     dispatch({
@@ -84,6 +97,7 @@ export const updateTrip = (id, formData) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
+    return { success: false, error: msg };
   }
 };
 
@@ -97,6 +111,7 @@ export const deleteTrip = (id) => async (dispatch) => {
       payload: id,
     });
     toast.success("Trip deleted 🗑️");
+    return { success: true };
   } catch (err) {
     const msg = err.response?.data?.msg || "Error deleting trip";
     dispatch({
@@ -104,6 +119,7 @@ export const deleteTrip = (id) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
+    return { success: false, error: msg };
   }
 };
 

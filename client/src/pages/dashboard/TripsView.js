@@ -79,18 +79,23 @@ const TripsView = () => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
-    dispatch(
-      addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
-    );
-    setOpen(false);
-    setFormData({
-      destination: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-      budget: "",
-      status: "planned",
-    });
+    (async () => {
+      const res = await dispatch(
+        addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
+      );
+      if (res?.success) {
+        setOpen(false);
+        setFormData({
+          destination: "",
+          startDate: "",
+          endDate: "",
+          description: "",
+          budget: "",
+          status: "planned",
+        });
+      }
+      // on failure, keep modal open so user can retry
+    })();
   };
 
   const filteredTrips = trips

@@ -117,33 +117,46 @@ const TripDetail = () => {
       : 0;
 
   const handleDeleteTrip = () => {
-    dispatch(deleteTrip(id));
-    navigate("/dashboard/trips");
+    (async () => {
+      const res = await dispatch(deleteTrip(id));
+      if (res?.success) {
+        navigate("/dashboard/trips");
+      }
+    })();
   };
 
   const handleAddExpense = (e) => {
     e.preventDefault();
-    dispatch(
-      addExpense({
-        ...expenseForm,
-        trip: id,
-        amount: parseFloat(expenseForm.amount),
-      }),
-    );
-    setExpenseOpen(false);
-    setExpenseForm({
-      amount: "",
-      category: "Food",
-      description: "",
-      date: new Date().toISOString().split("T")[0],
-      currency: "INR",
-    });
+    (async () => {
+      const res = await dispatch(
+        addExpense({
+          ...expenseForm,
+          trip: id,
+          amount: parseFloat(expenseForm.amount),
+        }),
+      );
+      if (res?.success) {
+        setExpenseOpen(false);
+        setExpenseForm({
+          amount: "",
+          category: "Food",
+          description: "",
+          date: new Date().toISOString().split("T")[0],
+          currency: "INR",
+        });
+      }
+      // keep open on failure for retry
+    })();
   };
 
   const handleEditTrip = (e) => {
     e.preventDefault();
-    dispatch(updateTrip(id, editForm));
-    setEditOpen(false);
+    (async () => {
+      const res = await dispatch(updateTrip(id, editForm));
+      if (res?.success) {
+        setEditOpen(false);
+      }
+    })();
   };
 
   const tripImage =

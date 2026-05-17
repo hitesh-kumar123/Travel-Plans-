@@ -57,7 +57,12 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login(formData));
+    (async () => {
+      const res = await dispatch(login(formData));
+      if (res?.success) {
+        navigate("/dashboard");
+      }
+    })();
   };
 
   return (
