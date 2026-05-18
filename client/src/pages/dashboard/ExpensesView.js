@@ -421,13 +421,13 @@ const ExpensesView = () => {
             </Typography>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
+                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
                   <Pie
                     data={chartData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={100}
+                    outerRadius={85}
                     paddingAngle={4}
                     dataKey="value"
                   >
