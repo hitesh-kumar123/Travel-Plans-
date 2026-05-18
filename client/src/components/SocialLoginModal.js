@@ -14,7 +14,6 @@ import {
   ListItemButton,
   ListItemAvatar,
   ListItemText,
-  Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
