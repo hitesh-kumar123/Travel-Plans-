@@ -482,6 +482,9 @@
   padding: 2rem;
   border: 0.5px solid rgba(26, 74, 107, 0.08);
   transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .wander-feat-card:hover {
   box-shadow: 0 8px 32px rgba(26, 74, 107, 0.1);
