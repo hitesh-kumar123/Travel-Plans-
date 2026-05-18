@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/actions/authActions";
+import { register, socialLogin } from "../redux/actions/authActions";
+import SocialLoginModal from "../components/SocialLoginModal";
 import {
   Box,
   TextField,
@@ -42,6 +43,17 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [socialModalOpen, setSocialModalOpen] = useState(false);
+  const [socialProvider, setSocialProvider] = useState("google");
+
+  const handleOpenSocial = (provider) => {
+    setSocialProvider(provider);
+    setSocialModalOpen(true);
+  };
+
+  const handleSocialSubmit = (socialData) => {
+    dispatch(socialLogin(socialData, navigate));
+  };
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -452,6 +464,7 @@ const Register = () => {
                   >
                     <Button
                       variant="outlined"
+                      onClick={() => handleOpenSocial("google")}
                       startIcon={<GoogleIcon />}
                       sx={{
                         borderRadius: 2,
@@ -469,6 +482,7 @@ const Register = () => {
                     </Button>
                     <Button
                       variant="outlined"
+                      onClick={() => handleOpenSocial("facebook")}
                       startIcon={<FacebookIcon />}
                       sx={{
                         borderRadius: 2,
@@ -511,6 +525,12 @@ const Register = () => {
           </Typography>
         </Box>
       </Box>
+      <SocialLoginModal
+        open={socialModalOpen}
+        onClose={() => setSocialModalOpen(false)}
+        provider={socialProvider}
+        onSocialSubmit={handleSocialSubmit}
+      />
     </Box>
   );
 };

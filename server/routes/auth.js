@@ -63,6 +63,11 @@ router.post("/verify-otp", authController.verifyOtp);
 // @access  Public
 router.post("/resend-otp", authController.resendOtp);
 
+// @route   POST api/auth/social-login
+// @desc    Register or Login with social provider (Google/Facebook)
+// @access  Public
+router.post("/social-login", authController.socialLogin);
+
 // @route   POST api/auth/otp-status
 // @desc    Get remaining OTP expiration and cooldown times
 // @access  Public
