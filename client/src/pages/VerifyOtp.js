@@ -39,6 +39,7 @@ const VerifyOtp = () => {
   // States
   const [isVerifying, setIsVerifying] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoadingOtpStatus, setIsLoadingOtpStatus] = useState(true);
 
   // Timer State (5 minutes = 300 seconds)
   const [timeLeft, setTimeLeft] = useState(300);
@@ -107,6 +108,8 @@ const VerifyOtp = () => {
         }
       } catch (err) {
         console.error("Failed to fetch OTP status:", err);
+      } finally {
+        setIsLoadingOtpStatus(false);
       }
     };
 
@@ -504,8 +507,15 @@ const VerifyOtp = () => {
               </Box>
 
               {/* Expiry Timer */}
-              <Box sx={{ mb: 3 }}>
-                {isTimerActive ? (
+              <Box sx={{ mb: 3, display: "flex", justifyContent: "center", alignItems: "center", minHeight: "20px" }}>
+                {isLoadingOtpStatus ? (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <CircularProgress size={14} thickness={5} sx={{ color: theme.palette.primary.main }} />
+                    <Typography variant="body2" sx={{ color: "#718096", fontSize: "0.85rem" }}>
+                      Syncing session...
+                    </Typography>
+                  </Box>
+                ) : isTimerActive ? (
                   <Typography variant="body2" sx={{ color: "#718096", display: "inline-flex", gap: 0.5 }}>
                     Code expires in{" "}
                     <strong style={{ color: theme.palette.primary.main }}>

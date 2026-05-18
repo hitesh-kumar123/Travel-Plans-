@@ -123,7 +123,7 @@ const ProfileView = () => {
 
   // Expiration countdown
   useEffect(() => {
-    if (!isOtpDialogOpen) return;
+    if (!newEmailPending) return;
     if (timeLeft <= 0) {
       setIsTimerActive(false);
       return;
@@ -134,20 +134,20 @@ const ProfileView = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, isOtpDialogOpen]);
+  }, [timeLeft, newEmailPending]);
 
   // Cooldown countdown
   useEffect(() => {
-    if (!isOtpDialogOpen || resendCooldown <= 0) return;
+    if (!newEmailPending || resendCooldown <= 0) return;
     const timer = setTimeout(() => {
       setResendCooldown((prev) => prev - 1);
     }, 1000);
     return () => clearTimeout(timer);
-  }, [resendCooldown, isOtpDialogOpen]);
+  }, [resendCooldown, newEmailPending]);
 
   // Lockout countdown checker
   useEffect(() => {
-    if (!isOtpDialogOpen || !blockedUntil) return;
+    if (!newEmailPending || !blockedUntil) return;
     const checkLockout = () => {
       const now = Date.now();
       const blockEnd = new Date(blockedUntil).getTime();
@@ -165,7 +165,7 @@ const ProfileView = () => {
     checkLockout();
     const interval = setInterval(checkLockout, 10000);
     return () => clearInterval(interval);
-  }, [blockedUntil, isOtpDialogOpen]);
+  }, [blockedUntil, newEmailPending]);
 
   // Shifting focus grid handlers
   const handleOtpChange = (index, value) => {
