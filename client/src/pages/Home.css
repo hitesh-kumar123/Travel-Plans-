@@ -909,7 +909,7 @@
 }
 
 .wander-footer-logo span {
-  color: #00d4aa; /* teal accent matching TourEase green */
+  color: #00d4aa;
 }
 
 .wander-footer-brand p {
@@ -966,7 +966,9 @@
   cursor: pointer;
   padding: 4px 10px;
   border-radius: 999px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .lang-btn.active {
@@ -1012,13 +1014,13 @@
   color: #00d4aa;
 }
 
-/* Dot bullet (orange in image2, using accent here) */
+/* Dot bullet */
 .footer-dot {
   display: inline-block;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #f97316; /* orange dot like TourEase */
+  background-color: #f97316;
   flex-shrink: 0;
 }
 
@@ -1091,7 +1093,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #7c3aed; /* purple like TourEase */
+  background: #7c3aed;
   color: #ffffff;
   font-size: 18px;
   border: none;
@@ -1099,7 +1101,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .wander-scroll-top:hover {

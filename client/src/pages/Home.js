@@ -873,34 +873,61 @@ const Home = () => {
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
-              </p>
+            </p>
           </div>
 
           <div className="wander-footer-links-wrapper">
             <div className="wander-footer-col">
               <h4>Explore</h4>
-              <a href="#wander-dest-section"><span className="footer-dot" />Destinations</a>
-              <a href="#wander-features"><span className="footer-dot" />Experiences</a>
-              <a href="#wander-features"><span className="footer-dot" />Features</a>
+              <a href="#wander-dest-section">
+                <span className="footer-dot" />
+                Destinations
+              </a>
+              <a href="#wander-features">
+                <span className="footer-dot" />
+                Experiences
+              </a>
+              <a href="#wander-features">
+                <span className="footer-dot" />
+                Features
+              </a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/"><span className="footer-dot" />About</a>
-              <a href="/"><span className="footer-dot" />Careers</a>
-              <a href="/"><span className="footer-dot" />Contact</a>
+              <a href="/">
+                <span className="footer-dot" />
+                About
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Careers
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Contact
+              </a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/"><span className="footer-dot" />Help Center</a>
-              <a href="/"><span className="footer-dot" />Privacy Policy</a>
-              <a href="/"><span className="footer-dot" />Terms & Conditions</a>
+              <a href="/">
+                <span className="footer-dot" />
+                Help Center
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Privacy Policy
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Terms & Conditions
+              </a>
             </div>
 
             <div className="wander-footer-col wander-footer-newsletter">
               <h4>Newsletter</h4>
-                <input
+              <input
                 type="email"
                 placeholder="Your email address"
                 className="wander-newsletter-input"
@@ -920,19 +947,18 @@ const Home = () => {
             <a href="/">IG</a>
             <a href="/">TW</a>
           </div>
+        </div>
 
-      </div>
-
-      {/* Scroll to top button */}
-      <button
-        className="wander-scroll-top"
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        aria-label="Scroll to top"
-      >
-      ↑
-      </button>
-    </footer>
-  </div>
+        {/* Scroll to top button */}
+        <button
+          className="wander-scroll-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
+        >
+          ↑
+        </button>
+      </footer>
+    </div>
   );
 };
 
