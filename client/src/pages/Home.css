@@ -870,5 +870,11 @@
   }
   .wander-cta-actions {
     flex-direction: column;
+    width: 100%;
+  }
+  .wander-btn-primary,
+  .wander-btn-ghost {
+    width: 100%;
+    text-align: center;
   }
 }
