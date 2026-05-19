@@ -1,8 +1,7 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 
 // Standard professional approach: Strictly using environment variable
-const API_BASE = process.env.REACT_APP_API_URL;
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 // Create an axios instance with defaults
 const api = axios.create({
@@ -29,13 +28,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message =
-      error?.response?.data?.message ||
-      error?.message ||
-      "Something went wrong";
-
-    toast.error(message);
-
     return Promise.reject(error);
   },
 );
