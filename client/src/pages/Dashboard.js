@@ -175,35 +175,41 @@ const Dashboard = () => {
       <List sx={{ flexGrow: 1, pt: 1, px: 1 }}>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-            <ListItemButton
-              component={Link}
-              to={`/dashboard/${item.path}`}
-              onClick={() => setMobileOpen(false)}
-              selected={isActive(item.path)}
-              sx={{
-                borderRadius: 2.5,
-                "&.Mui-selected": {
-                  bgcolor: "primary.main",
-                  color: "white",
-                  "& .MuiListItemIcon-root": { color: "white" },
-                  "&:hover": { bgcolor: "primary.dark" },
-                },
-                "&:hover": { bgcolor: "rgba(63, 81, 181, 0.08)" },
-              }}
-            >
-              <ListItemIcon
+            <Tooltip title={item.text} placement="right" arrow>
+              <ListItemButton
+                component={Link}
+                to={`/dashboard/${item.path}`}
+                onClick={() => setMobileOpen(false)}
+                selected={isActive(item.path)}
                 sx={{
-                  minWidth: 40,
-                  color: isActive(item.path) ? "white" : "text.secondary",
+                  borderRadius: 2.5,
+                  "&.Mui-selected": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                    "& .MuiListItemIcon-root": { color: "white" },
+                    "&:hover": { bgcolor: "primary.dark" },
+                  },
+                  "&:hover": { bgcolor: "rgba(63, 81, 181, 0.08)" },
                 }}
               >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                primaryTypographyProps={{ fontWeight: 600, fontSize: "0.9rem" }}
-              />
-            </ListItemButton>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 40,
+                    color: isActive(item.path) ? "white" : "text.secondary",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={{
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                  }}
+                />
+              </ListItemButton>
+            </Tooltip>
           </ListItem>
         ))}
       </List>

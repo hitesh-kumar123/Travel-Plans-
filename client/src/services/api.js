@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Standard professional approach: Strictly using environment variable
-const API_BASE = process.env.REACT_APP_API_URL;
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 // Create an axios instance with defaults
 const api = axios.create({
@@ -20,6 +20,13 @@ api.interceptors.request.use(
     }
     return config;
   },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+// handle API errors globally
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
     return Promise.reject(error);
   },
