@@ -5,16 +5,32 @@ const crypto = require("crypto");
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "Name is required"],
+    trim: true,
+    minlength: [2, "Name must be at least 2 characters"],
+    match: [/^[A-Za-z\s]+$/, "Name can only contain letters"],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
     unique: true,
+    trim: true,
+    lowercase: true,
+    // Strict RFC 5322 email regex: forbids leading dots and enforces valid domain/TLD structure
+    match: [
+      /^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email",
+    ],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Password is required"],
+    // Strong password complexity: min 8 chars, >=1 uppercase, >=1 lowercase, >=1 number, >=1 special char
+    minlength: [8, "Password must be atleast 8 characters"],
+    match: [
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/,
+      "Password must include atleast 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+    ],
   },
   date: {
     type: Date,

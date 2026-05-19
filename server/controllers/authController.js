@@ -16,6 +16,27 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ msg: "Please provide all fields" });
     }
 
+    if (!/^[A-Za-z\s]+$/.test(name) || name.trim().length < 2) {
+      return res.status(400).json({
+        msg: "Name must be at least 2 characters and contain only letters",
+      });
+    }
+
+    // RFC 5322 email pre-validation: reject leading dots and malformed structures before DB queries
+    if (
+      !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      return res.status(400).json({ msg: "Please enter a valid email" });
+    }
+
+    // Enforce strong password complexity rules at the controller level (atleast 8 characters and atleast contain 1 uppercase, 1 lowercase, 1 number, and 1 special character)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        msg: "Password must be at least 8 characters and atleast contain 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      });
+    }
+
     // Check if user already exists
     let user = await User.findOne({ email });
     if (user) {
@@ -26,9 +47,9 @@ exports.register = async (req, res, next) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpire = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-    // Create new user
+    // Create new user with normalized single-spaced name and OTP verification fields
     user = new User({
-      name,
+      name: name.trim().replace(/\s+/g, " "),
       email,
       password,
       isVerified: false,
@@ -82,6 +103,13 @@ exports.login = async (req, res, next) => {
 
     if (!email || !password) {
       return res.status(400).json({ msg: "Please provide email and password" });
+    }
+
+    // RFC 5322 email pre-validation for login attempts
+    if (
+      !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      return res.status(400).json({ msg: "Please enter a valid email" });
     }
 
     // Check if user exists
@@ -240,7 +268,6 @@ exports.updateProfile = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
-
     const user = await User.findById(req.user.id);
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
