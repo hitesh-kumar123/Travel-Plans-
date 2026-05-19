@@ -33,7 +33,7 @@ import {
   Alert,
   Grid,
 } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import WorkIcon from "@mui/icons-material/Work";
