@@ -48,7 +48,7 @@ export const getTrip = (id) => async (dispatch) => {
 };
 
 // Add trip
-export const addTrip = (formData) => async (dispatch) => {
+export const addTrip = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.post("/trips", formData);
 
@@ -57,6 +57,7 @@ export const addTrip = (formData) => async (dispatch) => {
       payload: res.data,
     });
     toast.success(`Trip to ${formData.destination} created! ✈️`);
+    navigate(`/dashboard/trips/${res.data._id}`);
   } catch (err) {
     const msg = err.response?.data?.msg || "Error adding trip";
     dispatch({
