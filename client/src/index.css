@@ -15,3 +15,55 @@ code {
 input[type="date"]:not(:focus)::-webkit-datetime-edit {
   color: transparent;
 }
+
+/* Theme-based scrollbar styles */
+html[data-theme="light"]::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-theme="light"]::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+html[data-theme="light"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3f51b5 0%, #757de8 100%);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+html[data-theme="light"]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #002984 0%, #3f51b5 100%);
+}
+
+html[data-theme="dark"]::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-theme="dark"]::-webkit-scrollbar-track {
+  background: #1a1a2e;
+  border-radius: 10px;
+}
+
+html[data-theme="dark"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #757de8 0%, #3f51b5 100%);
+  border-radius: 10px;
+  border: 2px solid #1a1a2e;
+}
+
+html[data-theme="dark"]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3f51b5 0%, #757de8 100%);
+}
+
+/* Firefox scrollbar */
+html[data-theme="light"] * {
+  scrollbar-width: thin;
+  scrollbar-color: #3f51b5 #f1f1f1;
+}
+
+html[data-theme="dark"] * {
+  scrollbar-width: thin;
+  scrollbar-color: #757de8 #1a1a2e;
+}

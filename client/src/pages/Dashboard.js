@@ -36,8 +36,11 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import HotelIcon from "@mui/icons-material/Hotel";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 import { logout } from "../redux/actions/authActions";
+import { useTheme } from "../contexts/ThemeContext";
 
 // Views
 import DashboardHome from "./dashboard/DashboardHome";
@@ -59,6 +62,7 @@ const Dashboard = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { mode, toggleTheme } = useTheme();
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -301,6 +305,13 @@ const Dashboard = () => {
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip
+                title={`Switch to ${mode === "light" ? "dark" : "light"} mode`}
+              >
+                <IconButton size="large" onClick={toggleTheme} color="inherit">
+                  {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Notifications">
                 <IconButton size="large" color="inherit">
                   <Badge badgeContent={0} color="error">
