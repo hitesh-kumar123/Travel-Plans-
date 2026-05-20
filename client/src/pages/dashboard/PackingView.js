@@ -40,6 +40,10 @@ import WorkIcon from "@mui/icons-material/Work";
 import ForestIcon from "@mui/icons-material/Forest";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import LuggageIcon from "@mui/icons-material/Luggage";
+import TerrainIcon from "@mui/icons-material/Terrain";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import ExploreIcon from "@mui/icons-material/Explore";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 
 const CATEGORIES = [
   "Clothing",
@@ -64,6 +68,26 @@ const TEMPLATES = [
     key: "beach",
     label: "Beach Trip",
     icon: <BeachAccessIcon fontSize="small" />,
+  },
+  {
+    key: "mountain",
+    label: "Mountain/Hiking",
+    icon: <TerrainIcon fontSize="small" />,
+  },
+  {
+    key: "city",
+    label: "City/Sightseeing",
+    icon: <ApartmentIcon fontSize="small" />,
+  },
+  {
+    key: "adventure",
+    label: "Adventure/Sports",
+    icon: <ExploreIcon fontSize="small" />,
+  },
+  {
+    key: "international",
+    label: "International",
+    icon: <FlightTakeoffIcon fontSize="small" />,
   },
   {
     key: "business",
