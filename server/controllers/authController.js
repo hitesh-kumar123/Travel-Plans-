@@ -866,3 +866,55 @@ exports.getEmailChangeStatus = async (req, res, next) => {
     next(err);
   }
 };
+
+// Social Login (Google / Facebook)
+exports.socialLogin = async (req, res, next) => {
+  try {
+    const { email, name, provider } = req.body;
+
+    if (!email || !name) {
+      return res.status(400).json({ msg: "Please provide email and name" });
+    }
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      // Create new user (automatically verified as it's signed in via social OAuth)
+      user = new User({
+        name,
+        email,
+        password: crypto.randomBytes(16).toString("hex"), // Random secure password
+        isVerified: true,
+      });
+      await user.save();
+    } else {
+      // If user exists but is not verified, verify them since they authenticated with a trusted provider
+      if (!user.isVerified) {
+        user.isVerified = true;
+        user.otp = null;
+        user.otpExpire = null;
+        user.otpResendAttempts = 0;
+        user.otpLastResent = null;
+        user.otpBlockedUntil = null;
+        await user.save();
+      }
+    }
+
+    // Create JWT token
+    const payload = { user: { id: user.id } };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "5d" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          user: { id: user.id, name: user.name, email: user.email },
+        });
+      },
+    );
+  } catch (err) {
+    next(err);
+  }
+};

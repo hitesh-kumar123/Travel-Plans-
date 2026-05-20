@@ -90,6 +90,32 @@ export const register = (userData, navigate) => async (dispatch) => {
   }
 };
 
+// Social Login
+export const socialLogin = (socialData, navigate) => async (dispatch) => {
+  try {
+    const res = await api.post("/auth/social-login", socialData);
+
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    dispatch(loadUser());
+    toast.success(
+      `Welcome to PackGo! Signed in via ${socialData.provider === "google" ? "Google" : "Facebook"} 🎉`,
+    );
+    navigate("/dashboard");
+  } catch (error) {
+    const msg = error.response?.data?.msg || "Social sign-in failed";
+    dispatch({
+      type: LOGIN_FAIL,
+      payload: msg,
+    });
+    toast.error(msg);
+  }
+};
+
 // Verify OTP
 export const verifyOtp = (email, otp, navigate) => async (dispatch) => {
   try {
