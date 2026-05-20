@@ -142,7 +142,16 @@ const BookingView = () => {
                     fullWidth
                     type="date"
                     label="Departure"
+                    variant="outlined"
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{ placeholder: "" }}
+                    sx={{
+                      "& .MuiOutlinedInput-input[type='date']": {
+                        paddingTop: "12px",
+                        paddingBottom: "12px",
+                        minWidth: "150px",
+                      },
+                    }}
                     value={flightForm.departureDate}
                     onChange={(e) =>
                       setFlightForm({
@@ -158,7 +167,16 @@ const BookingView = () => {
                     fullWidth
                     type="date"
                     label="Return (optional)"
+                    variant="outlined"
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{ placeholder: "" }}
+                    sx={{
+                      "& .MuiOutlinedInput-input[type='date']": {
+                        paddingTop: "12px",
+                        paddingBottom: "12px",
+                        minWidth: "150px",
+                      },
+                    }}
                     value={flightForm.returnDate}
                     onChange={(e) =>
                       setFlightForm({
@@ -206,7 +224,16 @@ const BookingView = () => {
                     fullWidth
                     type="date"
                     label="Check-in"
+                    variant="outlined"
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{ placeholder: "" }}
+                    sx={{
+                      "& .MuiOutlinedInput-input[type='date']": {
+                        paddingTop: "12px",
+                        paddingBottom: "12px",
+                        minWidth: "150px",
+                      },
+                    }}
                     value={hotelForm.checkIn}
                     onChange={(e) =>
                       setHotelForm({ ...hotelForm, checkIn: e.target.value })
@@ -219,7 +246,16 @@ const BookingView = () => {
                     fullWidth
                     type="date"
                     label="Check-out"
+                    variant="outlined"
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{ placeholder: "" }}
+                    sx={{
+                      "& .MuiOutlinedInput-input[type='date']": {
+                        paddingTop: "12px",
+                        paddingBottom: "12px",
+                        minWidth: "150px",
+                      },
+                    }}
                     value={hotelForm.checkOut}
                     onChange={(e) =>
                       setHotelForm({ ...hotelForm, checkOut: e.target.value })
