@@ -80,9 +80,9 @@
 }
 .wander-nav-cta:hover {
   background: var(--coral);
-  border-color: var(--coral); 
-  transform: translateY(-2px); 
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); 
+  border-color: var(--coral);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 .wander-mobile-menu {
   display: none;
