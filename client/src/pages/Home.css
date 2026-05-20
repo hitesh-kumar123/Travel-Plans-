@@ -67,17 +67,22 @@
 .wander-nav-cta {
   background: var(--ocean);
   color: var(--white);
-  border: none;
-  padding: 0.55rem 1.4rem;
+  border: 2px solid var(--ocean);
+  padding: 0.65rem 1.8rem;
   border-radius: 100px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
   font-family: "DM Sans", sans-serif;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 .wander-nav-cta:hover {
   background: var(--coral);
+  border-color: var(--coral); 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); 
 }
 .wander-mobile-menu {
   display: none;
