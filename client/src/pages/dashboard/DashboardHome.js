@@ -24,6 +24,7 @@ import WbSunnyIcon from "@mui/icons-material/WbSunny";
 
 import HotelIcon from "@mui/icons-material/Hotel";
 import { getTrips } from "../../redux/actions/tripActions";
+import TripCountdownBadge from "../../components/TripCountdownBadge";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
 import {
   BarChart,
@@ -430,7 +431,17 @@ const DashboardHome = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.5,
+                          alignItems: "flex-end",
+                        }}
+                      >
                         <Chip
                           label={
                             trip.status?.charAt(0).toUpperCase() +
@@ -439,6 +450,10 @@ const DashboardHome = () => {
                           color={STATUS_COLORS[trip.status] || "default"}
                           size="small"
                           sx={{ fontWeight: 700 }}
+                        />
+                        <TripCountdownBadge
+                          startDate={trip.startDate}
+                          endDate={trip.endDate}
                         />
                       </Box>
                     </Box>
