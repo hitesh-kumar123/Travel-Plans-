@@ -179,7 +179,11 @@ const ExpensesView = () => {
   };
 
   const handleExportCSV = () => {
-    if (!expenses || expenses.length === 0) return;
+    console.log("Export clicked, expenses:", expenses);
+    if (!expenses || expenses.length === 0) {
+      alert("No expenses to export!");
+      return;
+    }
     const headers = ["Date", "Category", "Description", "Amount", "Currency"];
     const rows = expenses.map((e) => [
       new Date(e.date).toLocaleDateString(),
@@ -194,7 +198,9 @@ const ExpensesView = () => {
     const a = document.createElement("a");
     a.href = url;
     a.download = `expenses_${activeTrip?.destination || "trip"}.csv`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -223,6 +229,7 @@ const ExpensesView = () => {
               variant="outlined"
               startIcon={<DownloadIcon />}
               onClick={handleExportCSV}
+              disabled={!activeTripId || !expenses || expenses.length === 0} // ← ADD THIS
               sx={{ borderRadius: 3 }}
             >
               Export
@@ -458,13 +465,13 @@ const ExpensesView = () => {
             </Typography>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
+                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
                   <Pie
                     data={chartData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={100}
+                    outerRadius={85}
                     paddingAngle={4}
                     dataKey="value"
                   >
