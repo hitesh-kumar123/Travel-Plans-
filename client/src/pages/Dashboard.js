@@ -57,14 +57,52 @@ const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [notificationAnchor, setNotificationAnchor] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
+  const notifications = [
+    {
+      id: 1,
+      title: "Trip created successfully",
+      time: "2 min ago",
+    },
+    {
+      id: 2,
+      title: "Weather forecast updated",
+      time: "10 min ago",
+    },
+    {
+      id: 3,
+      title: "Budget exceeded for Goa trip",
+      time: "1 hour ago",
+    },
+    {
+      id: 4,
+      title: "New destination suggestions available",
+      time: "Today",
+    },
+    {
+      id: 5,
+      title: "Manali trip completed",
+      time: "Yesterday",
+    },
+  ];
+
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const handleNotificationOpen = (event) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
+  };
 
   const handleLogout = () => {
     handleClose();
@@ -305,8 +343,12 @@ const Dashboard = () => {
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Tooltip title="Notifications">
-                <IconButton size="large" color="inherit">
-                  <Badge badgeContent={0} color="error">
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={handleNotificationOpen}
+                >
+                  <Badge badgeContent={notifications.length} color="error">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
@@ -350,6 +392,79 @@ const Dashboard = () => {
                   </ListItemIcon>
                   Logout
                 </MenuItem>
+              </Menu>
+
+              <Menu
+                anchorEl={notificationAnchor}
+                open={Boolean(notificationAnchor)}
+                onClose={handleNotificationClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    mt: 1.5,
+                    width: 340,
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "0 10px 35px rgba(0,0,0,0.15)",
+                    border: "1px solid",
+                    borderColor: "divider",
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                    bgcolor: "background.paper",
+                  }}
+                >
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    Notifications
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    maxHeight: 320,
+                    overflowY: "auto",
+                  }}
+                >
+                  {notifications.map((notification) => (
+                    <MenuItem
+                      key={notification.id}
+                      onClick={handleNotificationClose}
+                      sx={{
+                        py: 1.5,
+                        alignItems: "flex-start",
+                        borderBottom: "1px solid",
+                        borderColor: "grey.100",
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            color: "text.primary",
+                          }}
+                        >
+                          {notification.title}
+                        </Typography>
+
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "text.secondary",
+                          }}
+                        >
+                          {notification.time}
+                        </Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Box>
               </Menu>
             </Box>
           </Toolbar>
