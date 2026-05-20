@@ -870,7 +870,6 @@ const Home = () => {
             <Link to="/" className="wander-footer-logo">
               Pack<span>Go</span>
             </Link>
-
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
@@ -880,30 +879,67 @@ const Home = () => {
           <div className="wander-footer-links-wrapper">
             <div className="wander-footer-col">
               <h4>Explore</h4>
-              <a href="#wander-dest-section">Destinations</a>
-              <a href="#wander-features">Experiences</a>
-              <a href="#wander-features">Features</a>
+              <a href="#wander-dest-section">
+                <span className="footer-dot" />
+                Destinations
+              </a>
+              <a href="#wander-features">
+                <span className="footer-dot" />
+                Experiences
+              </a>
+              <a href="#wander-features">
+                <span className="footer-dot" />
+                Features
+              </a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <a href="/">
+                <span className="footer-dot" />
+                About
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Careers
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Contact
+              </a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <a href="/">
+                <span className="footer-dot" />
+                Help Center
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Privacy Policy
+              </a>
+              <a href="/">
+                <span className="footer-dot" />
+                Terms & Conditions
+              </a>
+            </div>
+
+            <div className="wander-footer-col wander-footer-newsletter">
+              <h4>Newsletter</h4>
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="wander-newsletter-input"
+              />
+              <button className="wander-newsletter-btn">SUBSCRIBE NOW</button>
             </div>
           </div>
         </div>
 
         <div className="wander-footer-bottom">
           <div className="wander-footer-copy">
-            © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
+            © {new Date().getFullYear()} PACKGO TRAVEL CO. ALL RIGHTS RESERVED.
           </div>
 
           <div className="wander-footer-socials">
@@ -912,6 +948,15 @@ const Home = () => {
             <a href="/">TW</a>
           </div>
         </div>
+
+        {/* Scroll to top button */}
+        <button
+          className="wander-scroll-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
+        >
+          ↑
+        </button>
       </footer>
     </div>
   );
