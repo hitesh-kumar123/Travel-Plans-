@@ -22,11 +22,16 @@ import {
   IconButton,
   CircularProgress,
   Tooltip,
+  Select,
+  FormControl,
+  InputLabel,
+  Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import WalletIcon from "@mui/icons-material/Wallet";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import {
   PieChart,
   Pie,
@@ -42,6 +47,9 @@ import {
   getExpenseSummary,
 } from "../../redux/actions/expenseActions";
 import { getTrips } from "../../redux/actions/tripActions";
+import useCurrencyConverter, {
+  SUPPORTED_CURRENCIES,
+} from "../../hooks/useCurrencyConverter";
 
 const EXPENSE_CATEGORIES = [
   "Accommodation",
@@ -69,6 +77,22 @@ const CATEGORY_COLORS = {
   Other: "#F44336",
 };
 
+// Currency symbol map
+const CURRENCY_SYMBOLS = {
+  INR: "₹",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  AUD: "A$",
+  CAD: "C$",
+  SGD: "S$",
+  AED: "د.إ",
+  THB: "฿",
+};
+
+const sym = (currency) => CURRENCY_SYMBOLS[currency] || currency;
+
 const ExpensesView = () => {
   const dispatch = useDispatch();
   const { expenses, expenseSummary, loading } = useSelector(
@@ -78,6 +102,7 @@ const ExpensesView = () => {
 
   const [activeTripId, setActiveTripId] = useState("");
   const [open, setOpen] = useState(false);
+  const [homeCurrency, setHomeCurrency] = useState("INR");
   const [amountError, setAmountError] = useState("");
   const [form, setForm] = useState({
     amount: "",
@@ -86,6 +111,12 @@ const ExpensesView = () => {
     date: new Date().toISOString().split("T")[0],
     currency: "INR",
   });
+
+  const {
+    convert,
+    loading: ratesLoading,
+    error: ratesError,
+  } = useCurrencyConverter(homeCurrency);
 
   useEffect(() => {
     dispatch(getTrips());
@@ -104,9 +135,14 @@ const ExpensesView = () => {
     }
   }, [dispatch, activeTripId]);
 
+  // Total spent converted to home currency
   const totalSpent = expenses
-    ? expenses.reduce((acc, e) => acc + e.amount, 0)
+    ? expenses.reduce((acc, e) => {
+        const converted = convert(e.amount, e.currency);
+        return acc + (converted !== null ? converted : e.amount);
+      }, 0)
     : 0;
+
   const activeTrip = trips?.find((t) => t._id === activeTripId);
   const budget = activeTrip?.budget || 0;
   const remaining = budget > 0 ? budget - totalSpent : null;
@@ -133,14 +169,11 @@ const ExpensesView = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
-
-    // Guard: reject if empty, zero, or negative
     if (!form.amount || isNaN(parsed) || parsed <= 0) {
       setAmountError("Please enter a valid amount greater than zero.");
       return;
     }
     if (!activeTripId) return;
-
     dispatch(
       addExpense({
         ...form,
@@ -157,7 +190,6 @@ const ExpensesView = () => {
       currency: "INR",
     });
     setAmountError("");
-    // refresh summary
     setTimeout(() => dispatch(getExpenseSummary(activeTripId)), 500);
   };
 
@@ -180,14 +212,25 @@ const ExpensesView = () => {
 
   const handleExportCSV = () => {
     if (!expenses || expenses.length === 0) return;
-    const headers = ["Date", "Category", "Description", "Amount", "Currency"];
-    const rows = expenses.map((e) => [
-      new Date(e.date).toLocaleDateString(),
-      e.category,
-      e.description || "",
-      e.amount,
-      e.currency,
-    ]);
+    const headers = [
+      "Date",
+      "Category",
+      "Description",
+      "Amount",
+      "Currency",
+      `Converted (${homeCurrency})`,
+    ];
+    const rows = expenses.map((e) => {
+      const converted = convert(e.amount, e.currency);
+      return [
+        new Date(e.date).toLocaleDateString(),
+        e.category,
+        e.description || "",
+        e.amount,
+        e.currency,
+        converted !== null ? converted : "N/A",
+      ];
+    });
     const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -217,7 +260,30 @@ const ExpensesView = () => {
             Track and manage trip expenses
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          {/* Home Currency Selector */}
+          <Tooltip title="Your home currency — all totals are converted to this">
+            <FormControl size="small" sx={{ minWidth: 110 }}>
+              <InputLabel>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                  <CurrencyExchangeIcon sx={{ fontSize: 14 }} />
+                  Home
+                </Box>
+              </InputLabel>
+              <Select
+                value={homeCurrency}
+                label="Home Currency"
+                onChange={(e) => setHomeCurrency(e.target.value)}
+              >
+                {SUPPORTED_CURRENCIES.map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {sym(c)} {c}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Tooltip>
+
           <Tooltip title="Export CSV">
             <Button
               variant="outlined"
@@ -240,6 +306,13 @@ const ExpensesView = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Exchange rate error */}
+      {ratesError && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {ratesError}
+        </Alert>
+      )}
 
       {/* Trip Selector */}
       {trips && trips.length > 0 && (
@@ -292,7 +365,14 @@ const ExpensesView = () => {
               Total Spent
             </Typography>
             <Typography variant="h5" fontWeight={700}>
-              ₹{totalSpent.toLocaleString()}
+              {ratesLoading ? (
+                <CircularProgress size={20} sx={{ color: "white" }} />
+              ) : (
+                `${sym(homeCurrency)}${totalSpent.toLocaleString()}`
+              )}
+            </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.7 }}>
+              in {homeCurrency}
             </Typography>
           </Paper>
         </Grid>
@@ -310,7 +390,9 @@ const ExpensesView = () => {
               Budget
             </Typography>
             <Typography variant="h5" fontWeight={700} color="success.main">
-              {budget > 0 ? `₹${budget.toLocaleString()}` : "—"}
+              {budget > 0
+                ? `${sym(homeCurrency)}${budget.toLocaleString()}`
+                : "—"}
             </Typography>
           </Paper>
         </Grid>
@@ -345,7 +427,9 @@ const ExpensesView = () => {
                 remaining !== null && remaining < 0 ? "error.main" : "info.main"
               }
             >
-              {remaining !== null ? `₹${remaining.toLocaleString()}` : "—"}
+              {remaining !== null
+                ? `${sym(homeCurrency)}${remaining.toLocaleString()}`
+                : "—"}
             </Typography>
           </Paper>
         </Grid>
@@ -377,57 +461,97 @@ const ExpensesView = () => {
                     <TableCell align="right" sx={{ fontWeight: 700 }}>
                       Amount
                     </TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700 }}>
+                      {homeCurrency}
+                    </TableCell>
                     <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                      <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
                         <CircularProgress size={28} />
                       </TableCell>
                     </TableRow>
                   ) : expenses && expenses.length > 0 ? (
-                    expenses.map((expense) => (
-                      <TableRow key={expense._id} hover>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          {new Date(expense.date).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={expense.category}
-                            size="small"
+                    expenses.map((expense) => {
+                      const converted = convert(
+                        expense.amount,
+                        expense.currency,
+                      );
+                      const isSameCurrency = expense.currency === homeCurrency;
+                      return (
+                        <TableRow key={expense._id} hover>
+                          <TableCell sx={{ whiteSpace: "nowrap" }}>
+                            {new Date(expense.date).toLocaleDateString(
+                              "en-IN",
+                              { day: "2-digit", month: "short" },
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={expense.category}
+                              size="small"
+                              sx={{
+                                bgcolor:
+                                  CATEGORY_COLORS[expense.category] + "22",
+                                color: CATEGORY_COLORS[expense.category],
+                                fontWeight: 600,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ color: "text.secondary" }}>
+                            {expense.description || "—"}
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 700 }}>
+                            {sym(expense.currency)}
+                            {expense.amount.toLocaleString()}{" "}
+                            <Typography
+                              component="span"
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {expense.currency}
+                            </Typography>
+                          </TableCell>
+                          <TableCell
+                            align="right"
                             sx={{
-                              bgcolor: CATEGORY_COLORS[expense.category] + "22",
-                              color: CATEGORY_COLORS[expense.category],
                               fontWeight: 600,
+                              color: isSameCurrency
+                                ? "text.secondary"
+                                : "primary.main",
                             }}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ color: "text.secondary" }}>
-                          {expense.description || "—"}
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 700 }}>
-                          ₹{expense.amount.toLocaleString()}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleDelete(expense._id)}
                           >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
+                            {ratesLoading ? (
+                              <CircularProgress size={12} />
+                            ) : converted !== null ? (
+                              isSameCurrency ? (
+                                "—"
+                              ) : (
+                                `${sym(homeCurrency)}${converted.toLocaleString()}`
+                              )
+                            ) : (
+                              "N/A"
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleDelete(expense._id)}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                   ) : (
                     <TableRow>
                       <TableCell
-                        colSpan={5}
+                        colSpan={6}
                         align="center"
                         sx={{ py: 4, color: "text.secondary" }}
                       >
@@ -476,7 +600,10 @@ const ExpensesView = () => {
                     ))}
                   </Pie>
                   <ReTooltip
-                    formatter={(value) => [`₹${value.toLocaleString()}`, ""]}
+                    formatter={(value) => [
+                      `${sym(homeCurrency)}${value.toLocaleString()}`,
+                      "",
+                    ]}
                   />
                   <Legend />
                 </PieChart>
@@ -513,7 +640,7 @@ const ExpensesView = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="Amount (₹) *"
+                  label="Amount *"
                   type="number"
                   value={form.amount}
                   onChange={handleAmountChange}
@@ -532,14 +659,52 @@ const ExpensesView = () => {
                     setForm({ ...form, currency: e.target.value })
                   }
                 >
-                  {["INR", "USD", "EUR", "GBP"].map((c) => (
+                  {SUPPORTED_CURRENCIES.map((c) => (
                     <MenuItem key={c} value={c}>
-                      {c}
+                      {sym(c)} {c}
                     </MenuItem>
                   ))}
                 </TextField>
               </Grid>
             </Grid>
+
+            {/* Live conversion preview */}
+            {form.amount && !amountError && form.currency !== homeCurrency && (
+              <Box
+                sx={{
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  bgcolor: "primary.light",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <CurrencyExchangeIcon
+                  sx={{ fontSize: 16, color: "primary.main" }}
+                />
+                <Typography variant="body2" color="primary.main">
+                  {ratesLoading ? (
+                    "Fetching rates..."
+                  ) : (
+                    <>
+                      {sym(form.currency)}
+                      {parseFloat(form.amount).toLocaleString()} {form.currency}{" "}
+                      ≈{" "}
+                      <strong>
+                        {sym(homeCurrency)}
+                        {(
+                          convert(form.amount, form.currency) || 0
+                        ).toLocaleString()}{" "}
+                        {homeCurrency}
+                      </strong>
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
+
             <TextField
               fullWidth
               select
