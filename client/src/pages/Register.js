@@ -46,6 +46,7 @@ const Register = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   const navigate = useNavigate();
@@ -120,6 +121,10 @@ const Register = () => {
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleNext = () => {
@@ -264,13 +269,30 @@ const Register = () => {
               fullWidth
               name="confirmPassword"
               label="Confirm Password"
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={handleChange}
               error={!!passwordError}
               helperText={passwordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirm password visibility"
+                      onClick={toggleShowConfirmPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               sx={{ mb: 2 }}
             />
             <FormControlLabel
@@ -468,7 +490,16 @@ const Register = () => {
               <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
 
               <Box sx={{ display: "flex", gap: 2 }}>
-                {activeStep > 0 && (
+                {activeStep === 0 ? (
+                  <Button
+                    onClick={() => navigate("/login")}
+                    startIcon={<ArrowBackIcon />}
+                    variant="outlined"
+                    sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
+                  >
+                    Back to Login
+                  </Button>
+                ) : (
                   <Button
                     onClick={handleBack}
                     startIcon={<ArrowBackIcon />}
