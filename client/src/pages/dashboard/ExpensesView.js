@@ -42,6 +42,7 @@ import {
   getExpenseSummary,
 } from "../../redux/actions/expenseActions";
 import { getTrips } from "../../redux/actions/tripActions";
+import PrimaryButton from "../../components/PrimaryButton";
 
 const EXPENSE_CATEGORIES = [
   "Accommodation",
@@ -115,7 +116,6 @@ const ExpensesView = () => {
     ? expenseSummary.map((s) => ({ name: s._id, value: s.totalAmount }))
     : [];
 
-  // Validate amount on every change
   const handleAmountChange = (e) => {
     const value = e.target.value;
     setForm({ ...form, amount: value });
@@ -134,7 +134,6 @@ const ExpensesView = () => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
 
-    // Guard: reject if empty, zero, or negative
     if (!form.amount || isNaN(parsed) || parsed <= 0) {
       setAmountError("Please enter a valid amount greater than zero.");
       return;
@@ -157,7 +156,6 @@ const ExpensesView = () => {
       currency: "INR",
     });
     setAmountError("");
-    // refresh summary
     setTimeout(() => dispatch(getExpenseSummary(activeTripId)), 500);
   };
 
@@ -228,16 +226,14 @@ const ExpensesView = () => {
               Export
             </Button>
           </Tooltip>
-          <Button
-            variant="contained"
-            color="primary"
+          <PrimaryButton
             startIcon={<AddIcon />}
             onClick={() => setOpen(true)}
             disabled={!activeTripId}
             sx={{ borderRadius: 3 }}
           >
             Add Expense
-          </Button>
+          </PrimaryButton>
         </Box>
       </Box>
 
@@ -573,14 +569,13 @@ const ExpensesView = () => {
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button
+          <PrimaryButton
             onClick={handleSubmit}
-            variant="contained"
             sx={{ px: 3 }}
             disabled={Boolean(amountError) || !form.amount}
           >
             Save
-          </Button>
+          </PrimaryButton>
         </DialogActions>
       </Dialog>
     </Box>

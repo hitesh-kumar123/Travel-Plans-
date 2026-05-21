@@ -21,8 +21,8 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
-
 import HotelIcon from "@mui/icons-material/Hotel";
+import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips } from "../../redux/actions/tripActions";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
 import {
@@ -55,7 +55,6 @@ const DashboardHome = () => {
   const tripsArr = trips || [];
   const userName = user?.name?.split(" ")[0] || "Traveler";
 
-  // Stats
   const totalTrips = tripsArr.length;
   const completedTrips = tripsArr.filter(
     (t) => t.status === "completed",
@@ -68,13 +67,11 @@ const DashboardHome = () => {
     ? allExpenses.reduce((acc, e) => acc + (e.amount || 0), 0)
     : 0;
 
-  // Upcoming trips
   const today = new Date();
   const upcomingTrips = tripsArr
     .filter((t) => new Date(t.startDate) >= today)
     .slice(0, 3);
 
-  // Monthly trip chart data from trips
   const monthlyData = (() => {
     const months = [
       "Jan",
@@ -382,15 +379,14 @@ const DashboardHome = () => {
             <Typography variant="h6" color="text.secondary" gutterBottom>
               No trips yet
             </Typography>
-            <Button
+            <PrimaryButton
               component={Link}
               to="/dashboard/trips"
-              variant="contained"
               startIcon={<AddIcon />}
               sx={{ mt: 1 }}
             >
               Plan Your First Trip
-            </Button>
+            </PrimaryButton>
           </Paper>
         ) : (
           <Grid container spacing={3}>
@@ -458,7 +454,10 @@ const DashboardHome = () => {
                         <Typography variant="body2" color="text.secondary">
                           {new Date(trip.startDate).toLocaleDateString(
                             "en-IN",
-                            { day: "2-digit", month: "short" },
+                            {
+                              day: "2-digit",
+                              month: "short",
+                            },
                           )}{" "}
                           –{" "}
                           {new Date(trip.endDate).toLocaleDateString("en-IN", {
