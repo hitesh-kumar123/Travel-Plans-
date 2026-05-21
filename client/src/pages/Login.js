@@ -29,6 +29,10 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -45,19 +49,76 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    if (name === "email") {
+      // Real-time strict RFC 5322 email pre-validation for login inputs
+      if (
+        value &&
+        !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+          value,
+        )
+      ) {
+        setErrors((prev) => ({ ...prev, email: "Please enter a valid email" }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    } else if (name === "password") {
+      if (!value || value.trim() === "") {
+        setErrors((prev) => ({ ...prev, password: "Password is required" }));
+      } else {
+        setErrors((prev) => ({ ...prev, password: "" }));
+      }
+    }
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    let tempErrors = { email: "", password: "" };
+
+    if (
+      !formData.email ||
+      !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        formData.email,
+      )
+    ) {
+      tempErrors.email = "Please enter a valid email";
+      isValid = false;
+    }
+    if (!formData.password || formData.password.trim() === "") {
+      tempErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
+  // Dynamically disable Sign In button when email or password fields are empty or invalid
+  const isSignInDisabled = () => {
+    return (
+      !formData.email ||
+      formData.email.trim() === "" ||
+      !!errors.email ||
+      !formData.password ||
+      formData.password.trim() === "" ||
+      !!errors.password
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login(formData));
+    if (validateForm()) {
+      dispatch(login(formData));
+    }
   };
 
   return (
@@ -189,6 +250,8 @@ const Login = () => {
                 autoFocus
                 value={formData.email}
                 onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
                 sx={{ mb: 3 }}
               />
               <TextField
@@ -202,6 +265,8 @@ const Login = () => {
                 autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -254,6 +319,7 @@ const Login = () => {
                 fullWidth
                 variant="contained"
                 size="large"
+                disabled={isSignInDisabled()}
                 sx={{
                   py: 1.5,
                   mb: 3,

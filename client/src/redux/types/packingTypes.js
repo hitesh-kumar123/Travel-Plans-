@@ -1,0 +1,6 @@
+export const PACKING_FETCH_REQUEST = "PACKING_FETCH_REQUEST";
+export const PACKING_FETCH_SUCCESS = "PACKING_FETCH_SUCCESS";
+export const PACKING_FETCH_FAIL = "PACKING_FETCH_FAIL";
+
+export const PACKING_UPDATE_SUCCESS = "PACKING_UPDATE_SUCCESS"; // used for add / toggle / delete / template / clear
+export const PACKING_UPDATE_FAIL = "PACKING_UPDATE_FAIL";

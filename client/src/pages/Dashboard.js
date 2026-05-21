@@ -36,6 +36,7 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import HotelIcon from "@mui/icons-material/Hotel";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import LuggageIcon from "@mui/icons-material/Luggage";
 
 import { logout } from "../redux/actions/authActions";
 
@@ -48,6 +49,7 @@ import TranslatorView from "./dashboard/TranslatorView";
 import BookingView from "./dashboard/BookingView";
 import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
+import PackingView from "./dashboard/PackingView";
 
 const drawerWidth = 280;
 
@@ -77,6 +79,7 @@ const Dashboard = () => {
     { text: "Weather", path: "weather", icon: <WbSunnyIcon /> },
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
+    { text: "Packing", path: "packing", icon: <LuggageIcon /> },
   ];
 
   const isActive = (path) => {
@@ -362,6 +365,7 @@ const Dashboard = () => {
             <Route path="translator" element={<TranslatorView />} />
             <Route path="bookings" element={<BookingView />} />
             <Route path="profile" element={<ProfileView />} />
+            <Route path="packing" element={<PackingView />} />
           </Routes>
         </Box>
       </Box>
