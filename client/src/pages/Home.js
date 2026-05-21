@@ -447,10 +447,7 @@ const Home = () => {
   const editorialDests = filteredDestinations.slice(0, 4);
 
   return (
-    <div
-      className="wander-page"
-      data-theme={darkMode ? "dark" : "light"}
-    >
+    <div className="wander-page" data-theme={darkMode ? "dark" : "light"}>
       {/* ═══ NAVBAR ═══ */}
       <nav className="wander-nav">
         <Link to="/" className="wander-logo">
@@ -730,13 +727,23 @@ const Home = () => {
                 {/* Wishlist button */}
                 <button
                   className={`wander-wishlist-btn${
-                    isWishlisted(editorialDests[0].name || "Santorini") ? " wishlisted" : ""
+                    isWishlisted(editorialDests[0].name || "Santorini")
+                      ? " wishlisted"
+                      : ""
                   }`}
-                  onClick={(e) => toggleWishlist(e, editorialDests[0].name || "Santorini")}
+                  onClick={(e) =>
+                    toggleWishlist(e, editorialDests[0].name || "Santorini")
+                  }
                   aria-label="Save to wishlist"
-                  title={isWishlisted(editorialDests[0].name || "Santorini") ? "Remove from wishlist" : "Save to wishlist"}
+                  title={
+                    isWishlisted(editorialDests[0].name || "Santorini")
+                      ? "Remove from wishlist"
+                      : "Save to wishlist"
+                  }
                 >
-                  {isWishlisted(editorialDests[0].name || "Santorini") ? "♥" : "♡"}
+                  {isWishlisted(editorialDests[0].name || "Santorini")
+                    ? "♥"
+                    : "♡"}
                 </button>
                 <div className="wander-dest-info">
                   <div className="wander-dest-name">
@@ -769,7 +776,11 @@ const Home = () => {
                   className={`wander-wishlist-btn${isWishlisted("Santorini") ? " wishlisted" : ""}`}
                   onClick={(e) => toggleWishlist(e, "Santorini")}
                   aria-label="Save to wishlist"
-                  title={isWishlisted("Santorini") ? "Remove from wishlist" : "Save to wishlist"}
+                  title={
+                    isWishlisted("Santorini")
+                      ? "Remove from wishlist"
+                      : "Save to wishlist"
+                  }
                 >
                   {isWishlisted("Santorini") ? "♥" : "♡"}
                 </button>
@@ -835,11 +846,19 @@ const Home = () => {
                   {/* Wishlist button */}
                   <button
                     className={`wander-wishlist-btn${
-                      isWishlisted(dest?.name || item.fallbackName) ? " wishlisted" : ""
+                      isWishlisted(dest?.name || item.fallbackName)
+                        ? " wishlisted"
+                        : ""
                     }`}
-                    onClick={(e) => toggleWishlist(e, dest?.name || item.fallbackName)}
+                    onClick={(e) =>
+                      toggleWishlist(e, dest?.name || item.fallbackName)
+                    }
                     aria-label="Save to wishlist"
-                    title={isWishlisted(dest?.name || item.fallbackName) ? "Remove from wishlist" : "Save to wishlist"}
+                    title={
+                      isWishlisted(dest?.name || item.fallbackName)
+                        ? "Remove from wishlist"
+                        : "Save to wishlist"
+                    }
                   >
                     {isWishlisted(dest?.name || item.fallbackName) ? "♥" : "♡"}
                   </button>
