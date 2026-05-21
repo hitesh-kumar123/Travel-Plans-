@@ -882,3 +882,141 @@
     text-align: center;
   }
 }
+
+/* ═══ DARK MODE ═══ */
+[data-theme="dark"] {
+  --sand: #16162a;
+  --ocean: #8bafc4;
+  --coral: #e8735a;
+  --mist: #6b8fa3;
+  --dark: #e0e8f0;
+  --white: #12121e;
+}
+[data-theme="dark"] .wander-page {
+  background: #12121e;
+  color: #e0e8f0;
+}
+[data-theme="dark"] .wander-nav {
+  background: rgba(18, 18, 30, 0.96);
+  border-bottom-color: rgba(139, 175, 196, 0.12);
+}
+[data-theme="dark"] .wander-search-bar {
+  background: #1e1e32;
+  border-color: rgba(139, 175, 196, 0.15);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .wander-sf input {
+  color: #c8d8e8;
+  background: transparent;
+}
+[data-theme="dark"] .wander-sf input::placeholder {
+  color: #4a6070;
+}
+[data-theme="dark"] .wander-sf {
+  border-right-color: rgba(139, 175, 196, 0.08);
+}
+[data-theme="dark"] .wander-features-section {
+  background: #16162a;
+}
+[data-theme="dark"] .wander-feat-card {
+  background: #1e1e32;
+  border-color: rgba(139, 175, 196, 0.08);
+}
+[data-theme="dark"] .wander-feat-title {
+  color: #c8d8e8;
+}
+[data-theme="dark"] .wander-feat-desc {
+  color: #6b8fa3;
+}
+[data-theme="dark"] .wander-price-tag {
+  background: #1e1e32;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] .wander-price-val {
+  color: #8bafc4;
+}
+[data-theme="dark"] .wander-section-title {
+  color: #c8d8e8;
+}
+[data-theme="dark"] .wander-testi-heading {
+  color: #c8d8e8;
+}
+[data-theme="dark"] .wander-testi-quote {
+  color: #6b8fa3;
+}
+[data-theme="dark"] .wander-author-name {
+  color: #c8d8e8;
+}
+[data-theme="dark"] .wander-stat-box {
+  border-color: rgba(139, 175, 196, 0.12);
+}
+[data-theme="dark"] .wander-stat-box:hover {
+  border-color: #8bafc4;
+}
+[data-theme="dark"] .wander-stat-big {
+  color: #c8d8e8;
+}
+[data-theme="dark"] .wander-mobile-menu {
+  color: #8bafc4;
+}
+
+/* ── Dark mode toggle button ── */
+.wander-theme-toggle {
+  background: none;
+  border: 0.5px solid rgba(26, 74, 107, 0.2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ocean);
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.wander-theme-toggle:hover {
+  background: rgba(26, 74, 107, 0.08);
+  transform: rotate(15deg);
+}
+[data-theme="dark"] .wander-theme-toggle {
+  border-color: rgba(139, 175, 196, 0.2);
+  color: #f4c430;
+}
+[data-theme="dark"] .wander-theme-toggle:hover {
+  background: rgba(139, 175, 196, 0.08);
+}
+
+/* ═══ WISHLIST BUTTON ═══ */
+.wander-wishlist-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  color: white;
+}
+.wander-wishlist-btn:hover {
+  background: rgba(232, 115, 90, 0.3);
+  transform: scale(1.1);
+}
+.wander-wishlist-btn.wishlisted {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: white;
+}
+.wander-wishlist-btn.wishlisted:hover {
+  background: #d65e42;
+}

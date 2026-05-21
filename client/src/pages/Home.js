@@ -361,6 +361,41 @@ const Home = () => {
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Dark mode — persisted in localStorage
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("packgo-theme") === "dark";
+  });
+
+  // Wishlist — persisted in localStorage
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("packgo-wishlist") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => {
+      const next = !prev;
+      localStorage.setItem("packgo-theme", next ? "dark" : "light");
+      return next;
+    });
+  };
+
+  const toggleWishlist = (e, destName) => {
+    e.stopPropagation();
+    setWishlist((prev) => {
+      const updated = prev.includes(destName)
+        ? prev.filter((n) => n !== destName)
+        : [...prev, destName];
+      localStorage.setItem("packgo-wishlist", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const isWishlisted = (destName) => wishlist.includes(destName);
+
   useEffect(() => {
     api
       .get("/destinations")
@@ -412,7 +447,10 @@ const Home = () => {
   const editorialDests = filteredDestinations.slice(0, 4);
 
   return (
-    <div className="wander-page">
+    <div
+      className="wander-page"
+      data-theme={darkMode ? "dark" : "light"}
+    >
       {/* ═══ NAVBAR ═══ */}
       <nav className="wander-nav">
         <Link to="/" className="wander-logo">
@@ -445,6 +483,16 @@ const Home = () => {
             <button className="wander-nav-cta">Book Now</button>
           </Link>
         )}
+
+        {/* Dark mode toggle */}
+        <button
+          className="wander-theme-toggle"
+          onClick={toggleDarkMode}
+          aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          title={darkMode ? "Light mode" : "Dark mode"}
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
 
         <button
           className="wander-mobile-menu"
@@ -679,6 +727,17 @@ const Home = () => {
                 )}
                 <div className="wander-dest-overlay" />
                 <div className="wander-dest-tag">Trending</div>
+                {/* Wishlist button */}
+                <button
+                  className={`wander-wishlist-btn${
+                    isWishlisted(editorialDests[0].name || "Santorini") ? " wishlisted" : ""
+                  }`}
+                  onClick={(e) => toggleWishlist(e, editorialDests[0].name || "Santorini")}
+                  aria-label="Save to wishlist"
+                  title={isWishlisted(editorialDests[0].name || "Santorini") ? "Remove from wishlist" : "Save to wishlist"}
+                >
+                  {isWishlisted(editorialDests[0].name || "Santorini") ? "♥" : "♡"}
+                </button>
                 <div className="wander-dest-info">
                   <div className="wander-dest-name">
                     {editorialDests[0].name || "Santorini"}
@@ -706,6 +765,14 @@ const Home = () => {
                 <SceneSantorini />
                 <div className="wander-dest-overlay" />
                 <div className="wander-dest-tag">Trending</div>
+                <button
+                  className={`wander-wishlist-btn${isWishlisted("Santorini") ? " wishlisted" : ""}`}
+                  onClick={(e) => toggleWishlist(e, "Santorini")}
+                  aria-label="Save to wishlist"
+                  title={isWishlisted("Santorini") ? "Remove from wishlist" : "Save to wishlist"}
+                >
+                  {isWishlisted("Santorini") ? "♥" : "♡"}
+                </button>
                 <div className="wander-dest-info">
                   <div className="wander-dest-name">Santorini</div>
                   <div className="wander-dest-country">
@@ -765,6 +832,17 @@ const Home = () => {
                     item.svgScene
                   )}
                   <div className="wander-dest-overlay" />
+                  {/* Wishlist button */}
+                  <button
+                    className={`wander-wishlist-btn${
+                      isWishlisted(dest?.name || item.fallbackName) ? " wishlisted" : ""
+                    }`}
+                    onClick={(e) => toggleWishlist(e, dest?.name || item.fallbackName)}
+                    aria-label="Save to wishlist"
+                    title={isWishlisted(dest?.name || item.fallbackName) ? "Remove from wishlist" : "Save to wishlist"}
+                  >
+                    {isWishlisted(dest?.name || item.fallbackName) ? "♥" : "♡"}
+                  </button>
                   <div className="wander-dest-info">
                     <div className="wander-dest-name">
                       {dest?.name || item.fallbackName}
