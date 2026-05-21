@@ -25,7 +25,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/TaskAlt";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
-import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
@@ -59,6 +58,54 @@ const Register = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  const handleGoogleCallback = (response) => {
+    // Google Sign-In disabled in this commit since googleLogin action
+    // is not present in authActions.js in the current repo.
+    // Keep this handler to avoid runtime errors.
+    console.log("Google callback received", response);
+  };
+
+  useEffect(() => {
+    // Only initialize Google Sign-In if activeStep is 0 (Personal Information / first step)
+    if (activeStep !== 0) return;
+
+    const initializeGoogleSignIn = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id:
+            process.env.REACT_APP_GOOGLE_CLIENT_ID ||
+            "643113382684-q82ot662op6kq7fnc1brg3ivclq3pmvk.apps.googleusercontent.com",
+          callback: handleGoogleCallback,
+        });
+
+        const googleBtn = document.getElementById("google-signin-btn");
+        if (googleBtn) {
+          window.google.accounts.id.renderButton(googleBtn, {
+            theme: "outline",
+            size: "large",
+            text: "signup_with",
+            width: isMobile ? 280 : 360,
+          });
+        }
+      }
+    };
+
+    initializeGoogleSignIn();
+
+    const script = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+    if (script) {
+      script.addEventListener("load", initializeGoogleSignIn);
+    }
+
+    return () => {
+      if (script) {
+        script.removeEventListener("load", initializeGoogleSignIn);
+      }
+    };
+  }, [activeStep, isMobile, dispatch]);
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];
 
@@ -505,38 +552,25 @@ const Register = () => {
                   </Divider>
 
                   <Box
-                    sx={{ display: "flex", justifyContent: "center", gap: 2 }}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
                   >
-                    <Button
-                      variant="outlined"
-                      startIcon={<GoogleIcon />}
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        flexGrow: 1,
-                        color: "#DB4437",
-                        borderColor: "#DB4437",
-                        "&:hover": {
-                          borderColor: "#DB4437",
-                          backgroundColor: "rgba(219, 68, 55, 0.1)",
-                        },
-                      }}
-                    >
-                      Google
-                    </Button>
+                    <div id="google-signin-btn" />
                     <Button
                       variant="outlined"
                       startIcon={<FacebookIcon />}
+                      disabled
                       sx={{
                         borderRadius: 2,
                         py: 1,
-                        flexGrow: 1,
+                        width: isMobile ? 280 : 360,
                         color: "#4267B2",
                         borderColor: "#4267B2",
-                        "&:hover": {
-                          borderColor: "#4267B2",
-                          backgroundColor: "rgba(66, 103, 178, 0.1)",
-                        },
+                        opacity: 0.5,
                       }}
                     >
                       Facebook
