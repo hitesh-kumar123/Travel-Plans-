@@ -282,6 +282,7 @@ const FEATURES = [
         fill="none"
         stroke="#1A4A6B"
         strokeWidth="2"
+        style={{ marginLeft: "2px" }}
       >
         <path d="M3 11l19-9-9 19-2-8-8-2z" />
       </svg>
@@ -298,6 +299,7 @@ const FEATURES = [
         fill="none"
         stroke="#1A4A6B"
         strokeWidth="2"
+        style={{ marginLeft: "2px" }}
       >
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
@@ -314,6 +316,7 @@ const FEATURES = [
         fill="none"
         stroke="#1A4A6B"
         strokeWidth="2"
+        style={{ marginLeft: "2px" }}
       >
         <circle cx="12" cy="12" r="10" />
         <polyline points="12 6 12 12 16 14" />
