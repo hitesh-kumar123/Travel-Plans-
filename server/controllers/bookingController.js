@@ -148,7 +148,6 @@ exports.bookFlight = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
-
 // Book a hotel
 exports.bookHotel = async (req, res) => {
   try {
@@ -157,6 +156,24 @@ exports.bookHotel = async (req, res) => {
     if (!hotelId || !roomType || !guests || !checkIn || !checkOut || !tripId) {
       return res.status(400).json({
         msg: "Please provide all required booking details",
+      });
+    }
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+      return res.status(400).json({
+        msg: "Please provide valid check-in and check-out dates",
+      });
+    }
+
+    const durationInNights =
+      (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+
+    if (durationInNights < 1) {
+      return res.status(400).json({
+        msg: "Booking duration must be at least 1 night",
       });
     }
 
@@ -169,9 +186,7 @@ exports.bookHotel = async (req, res) => {
       checkOut,
       guests,
       status: "confirmed",
-      totalPrice:
-        (199.99 * (new Date(checkOut) - new Date(checkIn))) /
-        (1000 * 60 * 60 * 24),
+      totalPrice: 199.99 * durationInNights,
       currency: "USD",
     };
 
