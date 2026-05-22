@@ -1,17 +1,70 @@
-body {
-  margin: 0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 1. THE BOX SIZE FIX */
+.MuiTextField-root .MuiOutlinedInput-root input[type="date"] {
+  display: block !important;
+  /* ✅ Back to block, not flex */
+  height: 1.4375em !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  padding-left: 14px !important;
+  padding-right: 40px !important;
+  /* ✅ Reserve space for icon */
+  min-width: 160px !important;
+  box-sizing: content-box !important;
+  /* ❌ Remove appearance:none — it breaks MUI outlined field */
 }
 
-code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+/* 2. Hide sub-text fields when empty */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #9ca3af !important;
 }
-/* Fix: Hide date input placeholder when not focused */
-input[type="date"]:not(:focus)::-webkit-datetime-edit {
-  color: transparent;
+
+/* 3. Reveal on focus or when value exists */
+input[type="date"]:focus::-webkit-datetime-edit-text,
+input[type="date"]:focus::-webkit-datetime-edit-month-field,
+input[type="date"]:focus::-webkit-datetime-edit-day-field,
+input[type="date"]:focus::-webkit-datetime-edit-year-field,
+input[type="date"]:not([value=""])::-webkit-datetime-edit-text,
+input[type="date"]:not([value=""])::-webkit-datetime-edit-month-field,
+input[type="date"]:not([value=""])::-webkit-datetime-edit-day-field,
+input[type="date"]:not([value=""])::-webkit-datetime-edit-year-field {
+  color: inherit !important;
+}
+
+/* 4. ICON FIX — absolute position to far right */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute !important;
+  /* ✅ Pulls out of text flow */
+  right: 10px !important;
+  /* ✅ Pins to right edge */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  height: 20px !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  margin: 0 !important;
+  z-index: 2 !important;
+}
+
+/* 5. Required: parent must be relative for absolute icon to anchor */
+.MuiTextField-root .MuiOutlinedInput-root {
+  position: relative !important;
+  /* ✅ Anchor for the absolute icon */
+}
+
+/* 6. MUI Floating Label fix */
+.MuiTextField-root .MuiInputLabel-root {
+  background-color: #ffffff;
+  padding: 0 6px;
+}
+
+.MuiTextField-root label[data-shrink="true"] {
+  transform: translate(14px, -9px) scale(0.75) !important;
+  background-color: #ffffff;
+  z-index: 2;
 }

@@ -371,6 +371,14 @@ const ProfileView = () => {
       });
       return;
     }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(pwForm.newPassword)) {
+      setPwMsg({
+        type: "error",
+        text: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
+      });
+      return;
+    }
     setSavingPw(true);
     try {
       await api.put("/auth/change-password", {
@@ -598,11 +606,11 @@ const ProfileView = () => {
                     fullWidth
                     label="Email Address"
                     type="email"
+                    disabled={true}
                     value={profileForm.email}
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, email: e.target.value })
                     }
-                    required
                   />
                 </Grid>
                 <Grid item xs={12}>

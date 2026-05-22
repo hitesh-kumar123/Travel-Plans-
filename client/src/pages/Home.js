@@ -610,12 +610,28 @@ const Home = () => {
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
-            <input
-              className="wander-sf-val"
-              type="date"
-              value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
-            />
+
+            <div style={{ position: "relative" }}>
+              <input
+                className="wander-sf-val"
+                type="date"
+                value={checkIn}
+                onChange={(e) => setCheckIn(e.target.value)}
+                style={{ paddingRight: "35px" }}
+              />
+
+              <span
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                }}
+              >
+                📅
+              </span>
+            </div>
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Travellers</div>
