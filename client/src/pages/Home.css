@@ -21,19 +21,20 @@
   background: var(--white);
   color: var(--dark);
   overflow-x: hidden;
+  height: 100vh;
 }
 
 /* ═══ NAV ═══ */
 .wander-nav {
   display: flex;
   align-items: center;
+  position: sticky;
+  top: 0;
   justify-content: space-between;
   padding: 1.2rem 3rem;
   background: rgba(253, 250, 245, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 0.5px solid rgba(26, 74, 107, 0.12);
-  position: sticky;
-  top: 0;
   z-index: 100;
 }
 
