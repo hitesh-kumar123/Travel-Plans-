@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -46,6 +46,7 @@ import {
   addExpense,
   deleteExpense,
 } from "../../redux/actions/expenseActions";
+import useTripDraft from "../../components/useTripDraft";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -75,6 +76,14 @@ const TripDetail = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+
+  const [restoreEditOpen, setRestoreEditOpen] = useState(false);
+  const [confirmEditDiscardOpen, setConfirmEditDiscardOpen] = useState(false);
+
+  const editRestoredRef = useRef(false);
+
+  const { hasSavedDraft, savedDraft, clearDraft, discardDraft, isDirty } =
+    useTripDraft(`trip_draft_edit_${id}`, editForm, editOpen);
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -107,6 +116,60 @@ const TripDetail = () => {
       });
     }
   }, [currentTrip]);
+
+  useEffect(() => {
+    if (editOpen && hasSavedDraft && savedDraft && !editRestoredRef.current) {
+      setRestoreEditOpen(true);
+    }
+  }, [editOpen, hasSavedDraft, savedDraft]);
+
+  const handleEditOpen = () => {
+    editRestoredRef.current = false;
+    setEditOpen(true);
+  };
+
+  const handleEditClose = () => {
+    if (isDirty) {
+      setConfirmEditDiscardOpen(true);
+    } else {
+      setEditOpen(false);
+    }
+  };
+
+  const handleRestoreEditDraft = () => {
+    if (savedDraft) {
+      setEditForm(savedDraft);
+      editRestoredRef.current = true;
+    }
+    setRestoreEditOpen(false);
+  };
+
+  const handleDiscardEditDraft = () => {
+    discardDraft();
+    editRestoredRef.current = true;
+    setRestoreEditOpen(false);
+  };
+
+  const handleConfirmEditDiscard = () => {
+    clearDraft();
+    setConfirmEditDiscardOpen(false);
+    setEditOpen(false);
+    if (currentTrip) {
+      setEditForm({
+        destination: currentTrip.destination || "",
+        startDate: currentTrip.startDate
+          ? new Date(currentTrip.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: currentTrip.endDate
+          ? new Date(currentTrip.endDate).toISOString().split("T")[0]
+          : "",
+        description: currentTrip.description || "",
+        budget: currentTrip.budget || 0,
+        status: currentTrip.status || "planned",
+      });
+    }
+    editRestoredRef.current = false;
+  };
 
   const totalSpent = expenses
     ? expenses.reduce((acc, e) => acc + e.amount, 0)
@@ -142,8 +205,10 @@ const TripDetail = () => {
 
   const handleEditTrip = (e) => {
     e.preventDefault();
+    clearDraft();
     dispatch(updateTrip(id, editForm));
     setEditOpen(false);
+    editRestoredRef.current = false;
   };
 
   const tripImage =
@@ -190,7 +255,7 @@ const TripDetail = () => {
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title="Edit Trip">
             <IconButton
-              onClick={() => setEditOpen(true)}
+              onClick={handleEditOpen}
               color="primary"
               sx={{ bgcolor: "primary.light" }}
             >
@@ -745,12 +810,7 @@ const TripDetail = () => {
       </Dialog>
 
       {/* Edit Trip Dialog */}
-      <Dialog
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+      <Dialog open={editOpen} onClose={handleEditClose} maxWidth="sm" fullWidth>
         <DialogTitle>Edit Trip</DialogTitle>
         <DialogContent>
           <Box
@@ -832,9 +892,54 @@ const TripDetail = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setEditOpen(false)}>Cancel</Button>
+          <Button onClick={handleEditClose}>Cancel</Button>
           <Button onClick={handleEditTrip} variant="contained">
             Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Restore Edit Draft Dialog */}
+      <Dialog open={restoreEditOpen} maxWidth="sm" fullWidth>
+        <DialogTitle>Unsaved Draft Found</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have an unsaved edit draft from your last session. Would you
+            like to restore it?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={handleDiscardEditDraft} color="inherit">
+            Discard
+          </Button>
+          <Button onClick={handleRestoreEditDraft} variant="contained">
+            Restore
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirm Edit Discard Dialog */}
+      <Dialog open={confirmEditDiscardOpen} maxWidth="sm" fullWidth>
+        <DialogTitle>Discard Changes?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have unsaved changes to this trip. Are you sure you want to
+            discard them?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setConfirmEditDiscardOpen(false)}
+            color="inherit"
+          >
+            Keep Editing
+          </Button>
+          <Button
+            onClick={handleConfirmEditDiscard}
+            variant="contained"
+            color="error"
+          >
+            Discard
           </Button>
         </DialogActions>
       </Dialog>
