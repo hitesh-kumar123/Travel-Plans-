@@ -82,6 +82,8 @@ const TripDetail = () => {
 
   const editRestoredRef = useRef(false);
 
+  const [editForm, setEditForm] = useState({});
+
   const { hasSavedDraft, savedDraft, clearDraft, discardDraft, isDirty } =
     useTripDraft(`trip_draft_edit_${id}`, editForm, editOpen);
 
@@ -92,8 +94,6 @@ const TripDetail = () => {
     date: new Date().toISOString().split("T")[0],
     currency: "INR",
   });
-
-  const [editForm, setEditForm] = useState({});
 
   useEffect(() => {
     dispatch(getTrip(id));

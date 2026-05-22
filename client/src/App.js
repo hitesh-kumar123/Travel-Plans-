@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+  createRoutesFromElements,
+  Outlet,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
@@ -21,6 +27,34 @@ import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
+const AppLayout = () => (
+  <div className="App">
+    <Outlet />
+  </div>
+);
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<AppLayout />}>
+      <Route path="/" element={<Home />} />
+      <Route
+        path="/dashboard/*"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="*" element={<NotFound />} />
+    </Route>,
+  ),
+);
+
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -30,30 +64,7 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route
-                path="/dashboard/*"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
-                path="/reset-password/:token"
-                element={<ResetPassword />}
-              />
-              <Route path="/verify-otp" element={<VerifyOtp />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Router>
+        <RouterProvider router={router} />
       </ThemeProvider>
       <ToastContainer
         position="bottom-right"

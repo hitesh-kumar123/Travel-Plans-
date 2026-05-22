@@ -24,6 +24,7 @@ const useTripDraft = (draftKey, formData, isActive) => {
       setIsDirty(false);
       isDirtyRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   useEffect(() => {
