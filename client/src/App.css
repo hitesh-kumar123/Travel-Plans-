@@ -13,7 +13,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f7fa;
   color: #2d3748;
-  height: 70vh;
+  min-height: 100vh;
 }
 
 a {
