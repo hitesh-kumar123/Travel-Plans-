@@ -1,7 +1,9 @@
+```javascript
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/authActions";
+
 import {
   Box,
   TextField,
@@ -17,28 +19,33 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
+import GoogleIcon from "@mui/icons-material/Google";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const { isAuthenticated } = useSelector((state) => state.auth);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -50,28 +57,42 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({
       ...formData,
       [name]: value,
     });
 
     if (name === "email") {
-      // Real-time strict RFC 5322 email pre-validation for login inputs
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-          value,
+          value
         )
       ) {
-        setErrors((prev) => ({ ...prev, email: "Please enter a valid email" }));
+        setErrors((prev) => ({
+          ...prev,
+          email: "Please enter a valid email",
+        }));
       } else {
-        setErrors((prev) => ({ ...prev, email: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          email: "",
+        }));
       }
-    } else if (name === "password") {
+    }
+
+    if (name === "password") {
       if (!value || value.trim() === "") {
-        setErrors((prev) => ({ ...prev, password: "Password is required" }));
+        setErrors((prev) => ({
+          ...prev,
+          password: "Password is required",
+        }));
       } else {
-        setErrors((prev) => ({ ...prev, password: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          password: "",
+        }));
       }
     }
   };
@@ -82,27 +103,32 @@ const Login = () => {
 
   const validateForm = () => {
     let isValid = true;
-    let tempErrors = { email: "", password: "" };
+
+    const tempErrors = {
+      email: "",
+      password: "",
+    };
 
     if (
       !formData.email ||
       !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-        formData.email,
+        formData.email
       )
     ) {
       tempErrors.email = "Please enter a valid email";
       isValid = false;
     }
+
     if (!formData.password || formData.password.trim() === "") {
       tempErrors.password = "Password is required";
       isValid = false;
     }
 
     setErrors(tempErrors);
+
     return isValid;
   };
 
-  // Dynamically disable Sign In button when email or password fields are empty or invalid
   const isSignInDisabled = () => {
     return (
       !formData.email ||
@@ -116,9 +142,19 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (validateForm()) {
       dispatch(login(formData));
     }
+  };
+
+  const handleGoogleLogin = () => {
+    const apiBase =
+      process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
+    const url = `${apiBase.replace(/\/api$/, "")}/api/auth/google`;
+
+    window.location.assign(url);
   };
 
   return (
@@ -129,7 +165,6 @@ const Login = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {/* Left side with image - shown only on desktop */}
       {!isMobile && (
         <Box
           sx={{
@@ -155,6 +190,7 @@ const Login = () => {
               backdropFilter: "blur(2px)",
             }}
           />
+
           <Box
             sx={{
               position: "relative",
@@ -169,10 +205,12 @@ const Login = () => {
             >
               PackGo
             </Typography>
+
             <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
               Your ultimate companion for discovering and planning your dream
               adventures
             </Typography>
+
             <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
               <Box
                 sx={{
@@ -182,6 +220,7 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
+
               <Box
                 sx={{
                   width: 12,
@@ -190,6 +229,7 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
+
               <Box
                 sx={{
                   width: 12,
@@ -203,7 +243,6 @@ const Login = () => {
         </Box>
       )}
 
-      {/* Right side with login form */}
       <Box
         sx={{
           flex: 1,
@@ -224,6 +263,7 @@ const Login = () => {
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Welcome Back
             </Typography>
+
             <Typography variant="body1" color="text.secondary">
               Sign in to continue to PackGo
             </Typography>
@@ -254,6 +294,7 @@ const Login = () => {
                 helperText={errors.email}
                 sx={{ mb: 3 }}
               />
+
               <TextField
                 margin="normal"
                 required
@@ -305,6 +346,7 @@ const Login = () => {
                   }
                   label="Remember me"
                 />
+
                 <Link
                   component={RouterLink}
                   to="/forgot-password"
@@ -340,7 +382,8 @@ const Login = () => {
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "center",
+                  flexDirection: "column",
+                  alignItems: "center",
                   gap: 2,
                   mb: 3,
                 }}
@@ -353,38 +396,40 @@ const Login = () => {
                     p: 1.5,
                     color: "#DB4437",
                   }}
-                  onClick={() => {
-                    // OAuth must be started via full page navigation.
-                    const apiBase =
-                      process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-                    const url = `${apiBase.replace(/\/api$/, "")}/api/auth/google`;
-                    window.location.assign(url);
-                  }}
+                  onClick={handleGoogleLogin}
                 >
                   <GoogleIcon />
                 </IconButton>
-                <IconButton
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: 2,
-                    p: 1.5,
-                    color: "#4267B2",
-                  }}
-                >
-                  <FacebookIcon />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    border: "1px solid",
-                    borderColor: "divider",
-                    borderRadius: 2,
-                    p: 1.5,
-                    color: "#1DA1F2",
-                  }}
-                >
-                  <TwitterIcon />
-                </IconButton>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <IconButton
+                    disabled
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: 2,
+                      p: 1.5,
+                      color: "#4267B2",
+                      opacity: 0.5,
+                    }}
+                  >
+                    <FacebookIcon />
+                  </IconButton>
+
+                  <IconButton
+                    disabled
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: 2,
+                      p: 1.5,
+                      color: "#1DA1F2",
+                      opacity: 0.5,
+                    }}
+                  >
+                    <TwitterIcon />
+                  </IconButton>
+                </Box>
               </Box>
             </form>
           </Paper>
@@ -415,3 +460,4 @@ const Login = () => {
 };
 
 export default Login;
+```

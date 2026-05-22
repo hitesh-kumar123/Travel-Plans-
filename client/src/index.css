@@ -18,7 +18,7 @@ input[type="date"]::-webkit-datetime-edit-text,
 input[type="date"]::-webkit-datetime-edit-month-field,
 input[type="date"]::-webkit-datetime-edit-day-field,
 input[type="date"]::-webkit-datetime-edit-year-field {
-  color: transparent !important;
+  color: #9ca3af !important;
 }
 
 /* 3. Reveal on focus or when value exists */

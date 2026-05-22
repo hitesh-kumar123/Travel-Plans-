@@ -149,7 +149,7 @@ const BookingView = () => {
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
-                        minWidth: "150px",
+                        width: "100%",
                       },
                     }}
                     value={flightForm.departureDate}
@@ -174,7 +174,7 @@ const BookingView = () => {
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
-                        minWidth: "150px",
+                        width: "100%",
                       },
                     }}
                     value={flightForm.returnDate}
@@ -231,7 +231,7 @@ const BookingView = () => {
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
-                        minWidth: "150px",
+                        width: "100%",
                       },
                     }}
                     value={hotelForm.checkIn}
@@ -253,7 +253,7 @@ const BookingView = () => {
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
-                        minWidth: "150px",
+                        width: "100%",
                       },
                     }}
                     value={hotelForm.checkOut}

@@ -129,9 +129,81 @@ const WeatherView = () => {
       {error && (
         <Paper
           elevation={0}
-          sx={{ p: 2, mb: 3, bgcolor: "error.light", borderRadius: 3 }}
+          sx={{
+            p: { xs: 2, sm: 2.2 },
+            mb: 3,
+            borderRadius: 3,
+            border: "1px solid",
+            borderColor: "error.light",
+            background:
+              "linear-gradient(135deg, rgba(244,67,54,0.08) 0%, rgba(255,205,210,0.42) 100%)",
+            backdropFilter: "blur(6px)",
+            transition: "all 0.25s ease",
+          }}
         >
-          <Typography color="error.dark">{error}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              placeContent: "center",
+              gap: 1.8,
+            }}
+          >
+            <Box
+              sx={{
+                minWidth: 42,
+                width: 42,
+                height: 42,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "error.main",
+                color: "common.white",
+                boxShadow: "0 4px 10px rgba(244,67,54,0.28)",
+                flexShrink: 0,
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                fontWeight={800}
+                sx={{
+                  lineHeight: 1,
+                  mt: "-1px",
+                }}
+              >
+                !
+              </Typography>
+            </Box>
+
+            <Box sx={{ minWidth: 0 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  color: "error.dark",
+                  lineHeight: 1.2,
+                  mb: 0.4,
+                  fontSize: { xs: "0.96rem", sm: "1rem" },
+                }}
+              >
+                Unable to find location
+              </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "error.dark",
+                  opacity: 0.9,
+                  lineHeight: 1.5,
+                  fontSize: { xs: "0.82rem", sm: "0.88rem" },
+                  wordBreak: "break-word",
+                }}
+              >
+                {error}. Please check the spelling or try a nearby city.
+              </Typography>
+            </Box>
+          </Box>
         </Paper>
       )}
 
@@ -325,7 +397,7 @@ const WeatherView = () => {
       )}
 
       {/* Empty state */}
-      {!currentWeather && !loading && (
+      {!currentWeather && !loading && !error && (
         <Paper
           elevation={0}
           sx={{
