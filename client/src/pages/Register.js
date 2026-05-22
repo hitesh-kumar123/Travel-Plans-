@@ -50,11 +50,6 @@ const Register = () => {
   const [socialModalOpen, setSocialModalOpen] = useState(false);
   const [socialProvider, setSocialProvider] = useState("google");
 
-  const handleOpenSocial = (provider) => {
-    setSocialProvider(provider);
-    setSocialModalOpen(true);
-  };
-
   const handleSocialSubmit = (socialData) => {
     dispatch(socialLogin(socialData, navigate));
   };
@@ -574,7 +569,6 @@ const Register = () => {
                     <div id="google-signin-btn" />
                     <Button
                       variant="outlined"
-                      onClick={() => handleOpenSocial("facebook")}
                       startIcon={<FacebookIcon />}
                       disabled
                       sx={{
