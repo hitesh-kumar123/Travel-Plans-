@@ -39,6 +39,11 @@ const Login = () => {
   // eslint-disable-next-line no-unused-vars
   const [socialProvider, setSocialProvider] = useState("google");
 
+  const handleOpenSocial = (provider) => {
+    setSocialProvider(provider);
+    setSocialModalOpen(true);
+  };
+
   const handleSocialSubmit = (socialData) => {
     dispatch(socialLogin(socialData, navigate));
   };
