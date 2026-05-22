@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register, socialLogin } from "../redux/actions/authActions";
-import SocialLoginModal from "../components/SocialLoginModal";
+import { register } from "../redux/actions/authActions";
 import {
   Box,
   TextField,
