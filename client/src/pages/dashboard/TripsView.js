@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   TextField,
   Autocomplete,
@@ -26,11 +27,21 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
+import useTripDraft from "../../components/useTripDraft";
 
 const STATUS_COLORS = {
   planned: "primary",
   ongoing: "warning",
   completed: "success",
+};
+
+const INITIAL_FORM = {
+  destination: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  budget: "",
+  status: "planned",
 };
 
 const TripsView = () => {
@@ -39,14 +50,15 @@ const TripsView = () => {
   const { trips, loading } = useSelector((state) => state.trips);
 
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    destination: "",
-    startDate: "",
-    endDate: "",
-    description: "",
-    budget: "",
-    status: "planned",
-  });
+  const [formData, setFormData] = useState({ ...INITIAL_FORM });
+
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [confirmDiscardOpen, setConfirmDiscardOpen] = useState(false);
+
+  const hasRestoredRef = useRef(false);
+
+  const { hasSavedDraft, savedDraft, clearDraft, discardDraft, isDirty } =
+    useTripDraft("trip_draft_create", formData, open);
 
   const [filter, setFilter] = useState("all");
   const [options, setOptions] = useState([]);
@@ -55,6 +67,48 @@ const TripsView = () => {
   useEffect(() => {
     dispatch(getTrips());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (open && hasSavedDraft && savedDraft && !hasRestoredRef.current) {
+      setRestoreOpen(true);
+    }
+  }, [open, hasSavedDraft, savedDraft]);
+
+  const handleOpen = () => {
+    hasRestoredRef.current = false;
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    if (isDirty) {
+      setConfirmDiscardOpen(true);
+    } else {
+      setOpen(false);
+      setFormData({ ...INITIAL_FORM });
+    }
+  };
+
+  const handleRestoreDraft = () => {
+    if (savedDraft) {
+      setFormData(savedDraft);
+      hasRestoredRef.current = true;
+    }
+    setRestoreOpen(false);
+  };
+
+  const handleDiscardDraft = () => {
+    discardDraft();
+    hasRestoredRef.current = true;
+    setRestoreOpen(false);
+  };
+
+  const handleConfirmDiscard = () => {
+    clearDraft();
+    setConfirmDiscardOpen(false);
+    setOpen(false);
+    setFormData({ ...INITIAL_FORM });
+    hasRestoredRef.current = false;
+  };
 
   const fetchDestinations = async (query) => {
     if (!query) {
@@ -79,18 +133,13 @@ const TripsView = () => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
+    clearDraft();
     dispatch(
       addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
     );
     setOpen(false);
-    setFormData({
-      destination: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-      budget: "",
-      status: "planned",
-    });
+    setFormData({ ...INITIAL_FORM });
+    hasRestoredRef.current = false;
   };
 
   const filteredTrips = trips
@@ -121,7 +170,7 @@ const TripsView = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => setOpen(true)}
+          onClick={handleOpen}
           sx={{ borderRadius: 3, px: 3 }}
         >
           New Trip
@@ -142,12 +191,7 @@ const TripsView = () => {
       </Box>
 
       {/* NEW TRIP MODAL */}
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700 }}>Plan a New Trip</DialogTitle>
         <DialogContent>
           <Box
@@ -252,7 +296,7 @@ const TripsView = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setOpen(false)} color="inherit">
+          <Button onClick={handleClose} color="inherit">
             Cancel
           </Button>
           <Button
@@ -262,6 +306,48 @@ const TripsView = () => {
             sx={{ px: 3 }}
           >
             Create Trip
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Restore Draft Dialog */}
+      <Dialog open={restoreOpen} maxWidth="sm" fullWidth>
+        <DialogTitle>Unsaved Draft Found</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have an unsaved trip draft from your last session. Would you
+            like to restore it?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={handleDiscardDraft} color="inherit">
+            Discard
+          </Button>
+          <Button onClick={handleRestoreDraft} variant="contained">
+            Restore
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirm Discard Dialog */}
+      <Dialog open={confirmDiscardOpen} maxWidth="sm" fullWidth>
+        <DialogTitle>Discard Changes?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have unsaved changes to this trip. Are you sure you want to
+            discard them?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setConfirmDiscardOpen(false)} color="inherit">
+            Keep Editing
+          </Button>
+          <Button
+            onClick={handleConfirmDiscard}
+            variant="contained"
+            color="error"
+          >
+            Discard
           </Button>
         </DialogActions>
       </Dialog>
@@ -401,7 +487,7 @@ const TripsView = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setOpen(true)}
+                onClick={handleOpen}
                 sx={{ mt: 1 }}
               >
                 Plan Your First Trip
