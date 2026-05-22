@@ -47,12 +47,6 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [socialModalOpen, setSocialModalOpen] = useState(false);
-  const [socialProvider, setSocialProvider] = useState("google");
-
-  const handleSocialSubmit = (socialData) => {
-    dispatch(socialLogin(socialData, navigate));
-  };
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -609,12 +603,6 @@ const Register = () => {
           </Typography>
         </Box>
       </Box>
-      <SocialLoginModal
-        open={socialModalOpen}
-        onClose={() => setSocialModalOpen(false)}
-        provider={socialProvider}
-        onSocialSubmit={handleSocialSubmit}
-      />
     </Box>
   );
 };
