@@ -36,6 +36,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [socialModalOpen, setSocialModalOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [socialProvider, setSocialProvider] = useState("google");
 
   const handleSocialSubmit = (socialData) => {
