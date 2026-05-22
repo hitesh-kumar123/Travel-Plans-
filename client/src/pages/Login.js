@@ -38,11 +38,6 @@ const Login = () => {
   const [socialModalOpen, setSocialModalOpen] = useState(false);
   const [socialProvider, setSocialProvider] = useState("google");
 
-  const handleOpenSocial = (provider) => {
-    setSocialProvider(provider);
-    setSocialModalOpen(true);
-  };
-
   const handleSocialSubmit = (socialData) => {
     dispatch(socialLogin(socialData, navigate));
   };
