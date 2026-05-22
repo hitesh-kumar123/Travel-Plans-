@@ -353,6 +353,13 @@ const Login = () => {
                     p: 1.5,
                     color: "#DB4437",
                   }}
+                  onClick={() => {
+                    // OAuth must be started via full page navigation.
+                    const apiBase =
+                      process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+                    const url = `${apiBase.replace(/\/api$/, "")}/api/auth/google`;
+                    window.location.assign(url);
+                  }}
                 >
                   <GoogleIcon />
                 </IconButton>

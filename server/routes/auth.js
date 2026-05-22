@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
+const passport = require("passport");
 
 // @route   POST api/auth/register
 // @desc    Register a user
@@ -68,4 +69,26 @@ router.post("/resend-otp", authController.resendOtp);
 // @access  Public
 router.post("/otp-status", authController.getOtpStatus);
 
+// ==============================
+// Google OAuth
+// ==============================
+
+// Start OAuth flow
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+
+// OAuth callback
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Ensure backend session is set, then redirect to app.
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    return res.redirect(`${frontendUrl}/dashboard`);
+  },
+);
+
 module.exports = router;
+

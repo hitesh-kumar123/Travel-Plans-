@@ -4,10 +4,16 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const session = require("express-session");
+const passport = require("passport");
+
 const errorHandler = require("./middleware/errorHandler");
 
 // Load environment variables
 dotenv.config();
+
+// Passport config
+require("./config/passport");
 
 // Initialize express app
 const app = express();
@@ -19,34 +25,60 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: { msg: "Too many requests from this IP, please try again later." },
+  message: {
+    msg: "Too many requests from this IP, please try again later.",
+  },
 });
+
 app.use("/api/auth", limiter);
 
-// Core Middleware
+// Allowed frontend origins
 const allowedOrigins = ["http://localhost:3000"];
+
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }
 
+// CORS Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin
       if (!origin) return callback(null, true);
+
       if (
-        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.includes(origin) ||
         process.env.NODE_ENV !== "production"
       ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  }),
+  })
 );
+
+// Body parser
 app.use(express.json());
+
+// Session Middleware (IMPORTANT for Google Auth)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "travelplannersecret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -73,17 +105,31 @@ app.get("/", (req, res) => {
   res.send("Travel Planner API is running!");
 });
 
-// Global error handler (must be last)
+// Health check route
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is healthy",
+  });
+});
+
+// Global error handler
 app.use(errorHandler);
 
-// Connect to MongoDB
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Could not connect to MongoDB", err));
+  .then(() => {
+    console.log("Connected to MongoDB");
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    // Start server only after DB connection
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Could not connect to MongoDB:", err.message);
+    process.exit(1);
+  });
