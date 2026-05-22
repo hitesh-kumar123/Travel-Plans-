@@ -39,6 +39,7 @@ const Login = () => {
   // eslint-disable-next-line no-unused-vars
   const [socialProvider, setSocialProvider] = useState("google");
 
+  // eslint-disable-next-line no-unused-vars
   const handleOpenSocial = (provider) => {
     setSocialProvider(provider);
     setSocialModalOpen(true);
