@@ -19,6 +19,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../utils/error";
 
 const VerifyOtp = () => {
   const location = useLocation();
@@ -248,7 +249,7 @@ const VerifyOtp = () => {
     try {
       await dispatch(verifyOtp(email, otpCode, navigate));
     } catch (err) {
-      const msg = err.response?.data?.msg || "Invalid code. Please try again.";
+      const msg = getErrorMessage(err, "Invalid code. Please try again.");
       setErrorMsg(msg);
     } finally {
       setIsVerifying(false);
@@ -282,7 +283,7 @@ const VerifyOtp = () => {
       }
     } catch (err) {
       const data = err.response?.data;
-      const msg = data?.msg || "Failed to resend code";
+      const msg = getErrorMessage(err, "Failed to resend code");
       setErrorMsg(msg);
 
       if (data?.blocked) {

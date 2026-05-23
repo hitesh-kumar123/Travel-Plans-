@@ -1,5 +1,6 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 import {
   SEARCH_FLIGHTS,
   SEARCH_HOTELS,
@@ -20,7 +21,7 @@ export const searchFlights = (formData) => async (dispatch) => {
     });
     toast.success(`Found ${res.data.flights?.length || 0} flights! ✈️`);
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error searching flights";
+    const msg = getErrorMessage(err, "Error searching flights");
     dispatch({
       type: BOOKING_ERROR,
       payload: msg,
@@ -40,7 +41,7 @@ export const searchHotels = (formData) => async (dispatch) => {
     });
     toast.success(`Found ${res.data.hotels?.length || 0} hotels! 🏨`);
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error searching hotels";
+    const msg = getErrorMessage(err, "Error searching hotels");
     dispatch({
       type: BOOKING_ERROR,
       payload: msg,
@@ -59,7 +60,7 @@ export const bookFlight = (formData) => async (dispatch) => {
     });
     toast.success("Flight booked successfully! 🎉");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error booking flight";
+    const msg = getErrorMessage(err, "Error booking flight");
     dispatch({
       type: BOOKING_ERROR,
       payload: msg,
@@ -78,7 +79,7 @@ export const bookHotel = (formData) => async (dispatch) => {
     });
     toast.success("Hotel booked successfully! 🎉");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error booking hotel";
+    const msg = getErrorMessage(err, "Error booking hotel");
     dispatch({
       type: BOOKING_ERROR,
       payload: msg,

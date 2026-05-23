@@ -1,5 +1,6 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 import {
   TRANSLATE_TEXT,
   GET_LANGUAGES,
@@ -17,7 +18,7 @@ export const translateText = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    const msg = err.response?.data?.msg || "Translation failed";
+    const msg = getErrorMessage(err, "Translation failed");
     dispatch({
       type: TRANSLATOR_ERROR,
       payload: msg,
@@ -37,7 +38,7 @@ export const getLanguages = () => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TRANSLATOR_ERROR,
-      payload: err.response?.data?.msg || "Error fetching languages",
+      payload: getErrorMessage(err, "Error fetching languages"),
     });
   }
 };

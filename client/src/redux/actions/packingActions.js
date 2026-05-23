@@ -1,4 +1,5 @@
 import api from "../../services/api";
+import { getErrorMessage } from "../../utils/error";
 import {
   PACKING_FETCH_REQUEST,
   PACKING_FETCH_SUCCESS,
@@ -16,7 +17,7 @@ export const fetchPackingList = (tripId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_FETCH_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error fetching packing list"),
     });
   }
 };
@@ -32,7 +33,7 @@ export const addPackingItem = (tripId, name, category) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_UPDATE_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error updating packing list"),
     });
   }
 };
@@ -45,7 +46,7 @@ export const togglePackingItem = (tripId, itemId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_UPDATE_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error updating packing list"),
     });
   }
 };
@@ -58,7 +59,7 @@ export const deletePackingItem = (tripId, itemId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_UPDATE_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error updating packing list"),
     });
   }
 };
@@ -73,7 +74,7 @@ export const applyTemplate = (tripId, template) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_UPDATE_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error updating packing list"),
     });
   }
 };
@@ -86,7 +87,7 @@ export const clearPackingList = (tripId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PACKING_UPDATE_FAIL,
-      payload: err.response?.data?.message || err.message,
+      payload: getErrorMessage(err, "Error updating packing list"),
     });
   }
 };

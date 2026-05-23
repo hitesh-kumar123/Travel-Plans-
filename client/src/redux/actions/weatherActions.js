@@ -1,5 +1,6 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 import {
   GET_CURRENT_WEATHER,
   GET_FORECAST,
@@ -17,7 +18,7 @@ export const getCurrentWeather = (location) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error fetching current weather";
+    const msg = getErrorMessage(err, "Error fetching current weather");
     dispatch({
       type: WEATHER_ERROR,
       payload: msg,
@@ -36,7 +37,7 @@ export const getForecast = (location) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error fetching forecast";
+    const msg = getErrorMessage(err, "Error fetching forecast");
     dispatch({
       type: WEATHER_ERROR,
       payload: msg,

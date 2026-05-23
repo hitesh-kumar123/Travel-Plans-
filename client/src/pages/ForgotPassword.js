@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import api from "../services/api";
+import { getErrorMessage } from "../utils/error";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ const ForgotPassword = () => {
       setMessage(response.data.data || "Email sent");
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.msg || "Server error");
+      setError(getErrorMessage(err, "Server error"));
       setMessage(null);
     }
   };

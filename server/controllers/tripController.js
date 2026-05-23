@@ -1,6 +1,7 @@
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // Create new trip
 exports.createTrip = async (req, res) => {
@@ -46,8 +47,7 @@ exports.createTrip = async (req, res) => {
     const trip = await newTrip.save();
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -59,8 +59,7 @@ exports.getUserTrips = async (req, res) => {
     });
     res.json(trips);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -70,21 +69,20 @@ exports.getTrip = async (req, res) => {
     const trip = await Trip.findById(req.params.id);
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
 
     // Make sure user owns the trip
     if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -94,12 +92,12 @@ exports.updateTrip = async (req, res) => {
     let trip = await Trip.findById(req.params.id);
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
 
     // Make sure user owns the trip
     if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     const updateData = { ...req.body, updatedAt: Date.now() };
@@ -122,11 +120,10 @@ exports.updateTrip = async (req, res) => {
 
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -136,23 +133,22 @@ exports.deleteTrip = async (req, res) => {
     const trip = await Trip.findById(req.params.id);
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
 
     // Make sure user owns the trip
     if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     // Also delete all expenses for this trip
     await Expense.deleteMany({ trip: req.params.id });
     await trip.deleteOne();
-    res.json({ msg: "Trip removed" });
+      res.json({ success: true, message: "Trip removed" });
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };

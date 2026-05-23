@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // Get current weather for a location
 exports.getCurrentWeather = async (req, res) => {
@@ -22,11 +23,10 @@ exports.getCurrentWeather = async (req, res) => {
 
     res.json(weatherData);
   } catch (err) {
-    console.error(err.message);
     if (err.response && err.response.status === 404) {
-      return res.status(404).json({ msg: "Location not found" });
+      return sendError(res, 404, "Location not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -55,10 +55,9 @@ exports.getForecast = async (req, res) => {
       forecast: forecastData,
     });
   } catch (err) {
-    console.error(err.message);
     if (err.response && err.response.status === 404) {
-      return res.status(404).json({ msg: "Location not found" });
+      return sendError(res, 404, "Location not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };

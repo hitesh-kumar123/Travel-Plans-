@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { sendError } = require("../utils/apiResponse");
 
 module.exports = function (req, res, next) {
   // Get token from header
@@ -6,7 +7,7 @@ module.exports = function (req, res, next) {
 
   // Check if no token
   if (!token) {
-    return res.status(401).json({ msg: "No token, authorization denied" });
+    return sendError(res, 401, "No token, authorization denied");
   }
 
   // Verify token
@@ -16,6 +17,6 @@ module.exports = function (req, res, next) {
     req.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+    return sendError(res, 401, "Token is not valid");
   }
 };

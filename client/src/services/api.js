@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getErrorMessage } from "../utils/error";
 
 // Standard professional approach: Strictly using environment variable
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
@@ -28,6 +29,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    error.userMessage = getErrorMessage(error);
     return Promise.reject(error);
   },
 );

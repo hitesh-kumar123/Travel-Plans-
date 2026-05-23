@@ -1,4 +1,5 @@
 const translate = require("google-translate-api-x");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // @desc    Translate text
 // @route   POST /api/translator/translate
@@ -8,9 +9,7 @@ exports.translateText = async (req, res) => {
     const { text, sourceLanguage, targetLanguage } = req.body;
 
     if (!text || !targetLanguage) {
-      return res
-        .status(400)
-        .json({ msg: "Text and target language are required" });
+      return sendError(res, 400, "Text and target language are required");
     }
 
     const options = { to: targetLanguage };
@@ -28,7 +27,7 @@ exports.translateText = async (req, res) => {
     });
   } catch (err) {
     console.error("Translation error:", err.message);
-    res.status(500).json({ msg: "Translation failed. Please try again." });
+    return sendServerError(res, err, "Translation failed. Please try again.");
   }
 };
 
@@ -71,6 +70,6 @@ exports.getSupportedLanguages = async (req, res) => {
     res.json(languages);
   } catch (err) {
     console.error("Languages error:", err.message);
-    res.status(500).json({ msg: "Failed to get languages" });
+    return sendServerError(res, err, "Failed to get languages");
   }
 };

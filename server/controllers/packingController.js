@@ -1,4 +1,5 @@
 const PackingList = require("../models/PackingList");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // Preset templates
 const TEMPLATES = {
@@ -51,7 +52,7 @@ exports.getPackingList = async (req, res) => {
     }
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };
 
@@ -59,8 +60,7 @@ exports.getPackingList = async (req, res) => {
 exports.addItem = async (req, res) => {
   try {
     const { name, category } = req.body;
-    if (!name)
-      return res.status(400).json({ message: "Item name is required" });
+    if (!name) return sendError(res, 400, "Item name is required");
 
     const list = await PackingList.findOneAndUpdate(
       { trip: req.params.tripId, user: req.user.id },
@@ -73,7 +73,7 @@ exports.addItem = async (req, res) => {
     );
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };
 
@@ -85,16 +85,16 @@ exports.toggleItem = async (req, res) => {
       user: req.user.id,
     });
     if (!list)
-      return res.status(404).json({ message: "Packing list not found" });
+      return sendError(res, 404, "Packing list not found");
 
     const item = list.items.id(req.params.itemId);
-    if (!item) return res.status(404).json({ message: "Item not found" });
+    if (!item) return sendError(res, 404, "Item not found");
 
     item.packed = !item.packed;
     await list.save();
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };
 
@@ -107,10 +107,10 @@ exports.deleteItem = async (req, res) => {
       { new: true },
     );
     if (!list)
-      return res.status(404).json({ message: "Packing list not found" });
+      return sendError(res, 404, "Packing list not found");
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };
 
@@ -119,8 +119,7 @@ exports.applyTemplate = async (req, res) => {
   try {
     const { template } = req.body; // "beach" | "business" | "camping"
     const items = TEMPLATES[template];
-    if (!items)
-      return res.status(400).json({ message: "Invalid template name" });
+    if (!items) return sendError(res, 400, "Invalid template name");
 
     const templateItems = items.map((i) => ({ ...i, packed: false }));
 
@@ -131,7 +130,7 @@ exports.applyTemplate = async (req, res) => {
     );
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };
 
@@ -145,6 +144,6 @@ exports.clearAll = async (req, res) => {
     );
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return sendServerError(res, err);
   }
 };

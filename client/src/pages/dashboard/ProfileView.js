@@ -26,6 +26,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 
 const ProfileView = () => {
   const dispatch = useDispatch();
@@ -235,7 +236,7 @@ const ProfileView = () => {
         await syncEmailChangeTimers();
 
         toast.success(
-          res.data.msg || "Verification code sent to your new email.",
+          res.data.message || res.data.msg || "Verification code sent to your new email.",
         );
       } else {
         // Simple name change update
@@ -247,7 +248,7 @@ const ProfileView = () => {
         });
       }
     } catch (err) {
-      const msg = err.response?.data?.msg || "Failed to update profile";
+      const msg = getErrorMessage(err, "Failed to update profile");
       setProfileMsg({
         type: "error",
         text: msg,
@@ -299,7 +300,7 @@ const ProfileView = () => {
       setIsOtpDialogOpen(false);
     } catch (err) {
       setOtpErrorMsg(
-        err.response?.data?.msg || "Invalid code. Please try again.",
+        getErrorMessage(err, "Invalid code. Please try again."),
       );
     } finally {
       setIsVerifyingOtp(false);
@@ -321,7 +322,9 @@ const ProfileView = () => {
       const res = await api.post("/auth/request-email-change", {
         email: newEmailPending,
       });
-      toast.success(res.data.msg || "Verification code resent successfully!");
+      toast.success(
+        res.data.message || res.data.msg || "Verification code resent successfully!",
+      );
 
       setResendCooldown(60);
       setOtp(["", "", "", "", "", ""]);
@@ -332,7 +335,7 @@ const ProfileView = () => {
       }, 100);
     } catch (err) {
       const data = err.response?.data;
-      setOtpErrorMsg(data?.msg || "Failed to resend code");
+      setOtpErrorMsg(getErrorMessage(err, "Failed to resend code"));
 
       if (data?.blocked) {
         setIsBlocked(true);
@@ -371,14 +374,6 @@ const ProfileView = () => {
       });
       return;
     }
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    if (!passwordRegex.test(pwForm.newPassword)) {
-      setPwMsg({
-        type: "error",
-        text: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
-      });
-      return;
-    }
     setSavingPw(true);
     try {
       await api.put("/auth/change-password", {
@@ -390,7 +385,7 @@ const ProfileView = () => {
     } catch (err) {
       setPwMsg({
         type: "error",
-        text: err.response?.data?.msg || "Failed to change password",
+        text: getErrorMessage(err, "Failed to change password"),
       });
     } finally {
       setSavingPw(false);
@@ -606,11 +601,11 @@ const ProfileView = () => {
                     fullWidth
                     label="Email Address"
                     type="email"
-                    disabled={true}
                     value={profileForm.email}
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, email: e.target.value })
                     }
+                    required
                   />
                 </Grid>
                 <Grid item xs={12}>

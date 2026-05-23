@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // Search for flights
 exports.searchFlights = async (req, res) => {
@@ -12,9 +13,11 @@ exports.searchFlights = async (req, res) => {
     } = req.body;
 
     if (!origin || !destination || !departureDate) {
-      return res.status(400).json({
-        msg: "Please provide origin, destination, and departure date",
-      });
+      return sendError(
+        res,
+        400,
+        "Please provide origin, destination, and departure date",
+      );
     }
 
     // Normally you would use a real flight API here
@@ -60,8 +63,7 @@ exports.searchFlights = async (req, res) => {
 
     res.json({ flights: mockFlights });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -71,9 +73,11 @@ exports.searchHotels = async (req, res) => {
     const { location, checkIn, checkOut, guests = 2, rooms = 1 } = req.body;
 
     if (!location || !checkIn || !checkOut) {
-      return res.status(400).json({
-        msg: "Please provide location, check-in, and check-out dates",
-      });
+      return sendError(
+        res,
+        400,
+        "Please provide location, check-in, and check-out dates",
+      );
     }
 
     // Normally you would use a real hotel API here
@@ -116,8 +120,7 @@ exports.searchHotels = async (req, res) => {
 
     res.json({ hotels: mockHotels });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -127,9 +130,11 @@ exports.bookFlight = async (req, res) => {
     const { flightId, passengers, tripId } = req.body;
 
     if (!flightId || !passengers || !tripId) {
-      return res.status(400).json({
-        msg: "Please provide flight ID, passenger details, and trip ID",
-      });
+      return sendError(
+        res,
+        400,
+        "Please provide flight ID, passenger details, and trip ID",
+      );
     }
 
     // Mock booking confirmation
@@ -144,8 +149,7 @@ exports.bookFlight = async (req, res) => {
 
     res.json(bookingConfirmation);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -155,9 +159,11 @@ exports.bookHotel = async (req, res) => {
     const { hotelId, roomType, guests, checkIn, checkOut, tripId } = req.body;
 
     if (!hotelId || !roomType || !guests || !checkIn || !checkOut || !tripId) {
-      return res.status(400).json({
-        msg: "Please provide all required booking details",
-      });
+      return sendError(
+        res,
+        400,
+        "Please provide all required booking details",
+      );
     }
 
     // Mock booking confirmation
@@ -177,7 +183,6 @@ exports.bookHotel = async (req, res) => {
 
     res.json(bookingConfirmation);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };

@@ -1,5 +1,6 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 
 // Action Types
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -50,7 +51,7 @@ export const login = (userData, navigate) => async (dispatch) => {
   } catch (error) {
     const data = error.response?.data;
     if (data?.unverified) {
-      toast.warning(data.msg);
+      toast.warning(data.message || data.msg);
       navigate("/verify-otp", {
         state: {
           email: data.email,
@@ -60,7 +61,7 @@ export const login = (userData, navigate) => async (dispatch) => {
       });
       return;
     }
-    const msg = data?.msg || "Login failed";
+    const msg = getErrorMessage(error, "Login failed");
     dispatch({
       type: LOGIN_FAIL,
       payload: msg,
@@ -81,7 +82,7 @@ export const register = (userData, navigate) => async (dispatch) => {
     );
     navigate("/verify-otp", { state: { email: userData.email } });
   } catch (error) {
-    const msg = error.response?.data?.msg || "Registration failed";
+    const msg = getErrorMessage(error, "Registration failed");
     dispatch({
       type: REGISTER_FAIL,
       payload: msg,
@@ -105,7 +106,7 @@ export const verifyOtp = (email, otp, navigate) => async (dispatch) => {
     toast.success("Email verified successfully! Welcome to PackGo! 🚀");
     navigate("/dashboard");
   } catch (error) {
-    const msg = error.response?.data?.msg || "Verification failed";
+    const msg = getErrorMessage(error, "Verification failed");
     toast.error(msg);
     throw error;
   }

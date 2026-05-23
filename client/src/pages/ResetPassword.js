@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import api from "../services/api";
+import { getErrorMessage } from "../utils/error";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -41,7 +42,7 @@ const ResetPassword = () => {
       setError(null);
       setTimeout(() => navigate("/login"), 3000); // Redirect to login after 3s
     } catch (err) {
-      setError(err.response?.data?.msg || "Server error");
+      setError(getErrorMessage(err, "Server error"));
       setMessage(null);
     }
   };

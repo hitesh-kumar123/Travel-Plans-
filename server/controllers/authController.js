@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 const {
   getOtpEmailTemplate,
   getPasswordResetTemplate,
@@ -13,34 +14,38 @@ exports.register = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ msg: "Please provide all fields" });
+      return sendError(res, 400, "Please provide all fields");
     }
 
     if (!/^[A-Za-z\s]+$/.test(name) || name.trim().length < 2) {
-      return res.status(400).json({
-        msg: "Name must be at least 2 characters and contain only letters",
-      });
+      return sendError(
+        res,
+        400,
+        "Name must be at least 2 characters and contain only letters",
+      );
     }
 
     // RFC 5322 email pre-validation: reject leading dots and malformed structures before DB queries
     if (
       !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
-      return res.status(400).json({ msg: "Please enter a valid email" });
+      return sendError(res, 400, "Please enter a valid email");
     }
 
     // Enforce strong password complexity rules at the controller level (atleast 8 characters and atleast contain 1 uppercase, 1 lowercase, 1 number, and 1 special character)
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        msg: "Password must be at least 8 characters and atleast contain 1 uppercase, 1 lowercase, 1 number, and 1 special character",
-      });
+      return sendError(
+        res,
+        400,
+        "Password must be at least 8 characters and atleast contain 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      );
     }
 
     // Check if user already exists
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      return sendError(res, 400, "User already exists");
     }
 
     // Generate 6-digit OTP
@@ -102,26 +107,26 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ msg: "Please provide email and password" });
+      return sendError(res, 400, "Please provide email and password");
     }
 
     // RFC 5322 email pre-validation for login attempts
     if (
       !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
-      return res.status(400).json({ msg: "Please enter a valid email" });
+      return sendError(res, 400, "Please enter a valid email");
     }
 
     // Check if user exists
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return sendError(res, 400, "Invalid credentials");
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return sendError(res, 400, "Invalid credentials");
     }
 
     // Prevent login if not verified
@@ -135,8 +140,7 @@ exports.login = async (req, res, next) => {
       ) {
         const timeLeft = new Date(user.otpBlockedUntil).getTime() - now;
         const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-        return res.status(401).json({
-          msg: `Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`,
+        return sendError(res, 401, `Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`, {
           unverified: true,
           email: user.email,
           blocked: true,
@@ -154,8 +158,7 @@ exports.login = async (req, res, next) => {
           user.otpBlockedUntil = blockedTime;
           await user.save();
 
-          return res.status(401).json({
-            msg: "Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in 24 hours.",
+          return sendError(res, 401, "Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in 24 hours.", {
             unverified: true,
             email: user.email,
             blocked: true,
@@ -200,16 +203,14 @@ exports.login = async (req, res, next) => {
           );
         }
 
-        return res.status(401).json({
-          msg: "Please verify your email before logging in. A new 6-digit code has been sent to your email.",
+        return sendError(res, 401, "Please verify your email before logging in. A new 6-digit code has been sent to your email.", {
           unverified: true,
           email: user.email,
         });
       }
 
       // Current OTP is still valid, redirect user without sending a new email
-      return res.status(401).json({
-        msg: "Please verify your email before logging in. Use the verification code previously sent to your email.",
+      return sendError(res, 401, "Please verify your email before logging in. Use the verification code previously sent to your email.", {
         unverified: true,
         email: user.email,
       });
@@ -271,13 +272,13 @@ exports.changePassword = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
-      return res.status(400).json({ msg: "Current password is incorrect" });
+      return sendError(res, 400, "Current password is incorrect");
     }
 
     user.password = newPassword;
     await user.save();
 
-    res.json({ msg: "Password updated successfully" });
+    res.json({ success: true, message: "Password updated successfully" });
   } catch (err) {
     next(err);
   }
@@ -289,7 +290,7 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(404).json({ msg: "There is no user with that email" });
+      return sendError(res, 404, "There is no user with that email");
     }
 
     // Get reset token
@@ -331,9 +332,7 @@ exports.forgotPassword = async (req, res, next) => {
       await user.save({ validateBeforeSave: false });
 
       // Return a proper 500 error in production
-      return res
-        .status(500)
-        .json({ msg: "Email could not be sent. Please try again later." });
+      return sendError(res, 500, "Email could not be sent. Please try again later.");
     }
   } catch (err) {
     next(err);
@@ -355,7 +354,7 @@ exports.resetPassword = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(400).json({ msg: "Invalid token" });
+      return sendError(res, 400, "Invalid token");
     }
 
     // Set new password
@@ -373,7 +372,8 @@ exports.resetPassword = async (req, res, next) => {
       (err, token) => {
         if (err) throw err;
         res.json({
-          msg: "Password reset successful",
+          success: true,
+          message: "Password reset successful",
           token,
           user: { id: user.id, name: user.name, email: user.email },
         });
@@ -390,14 +390,16 @@ exports.verifyOtp = async (req, res, next) => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
-      return res
-        .status(400)
-        .json({ msg: "Please provide email and verification code" });
+      return sendError(
+        res,
+        400,
+        "Please provide email and verification code",
+      );
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
+      return sendError(res, 400, "User does not exist");
     }
 
     if (user.isVerified) {
@@ -409,7 +411,8 @@ exports.verifyOtp = async (req, res, next) => {
         (err, token) => {
           if (err) throw err;
           res.json({
-            msg: "Email is already verified",
+            success: true,
+            message: "Email is already verified",
             token,
             user: { id: user.id, name: user.name, email: user.email },
           });
@@ -419,16 +422,12 @@ exports.verifyOtp = async (req, res, next) => {
 
     // Check if OTP matches
     if (user.otp !== otp) {
-      return res.status(400).json({
-        msg: "Invalid verification code. Please check and try again.",
-      });
+      return sendError(res, 400, "Invalid verification code. Please check and try again.");
     }
 
     // Check if OTP is expired
     if (new Date(user.otpExpire).getTime() < Date.now()) {
-      return res.status(400).json({
-        msg: "Verification code has expired. Please request a new one.",
-      });
+      return sendError(res, 400, "Verification code has expired. Please request a new one.");
     }
 
     // Successful verification
@@ -449,7 +448,8 @@ exports.verifyOtp = async (req, res, next) => {
       (err, token) => {
         if (err) throw err;
         res.json({
-          msg: "Email verified successfully! 🎉",
+            success: true,
+            message: "Email verified successfully! 🎉",
           token,
           user: { id: user.id, name: user.name, email: user.email },
         });
@@ -466,16 +466,16 @@ exports.resendOtp = async (req, res, next) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ msg: "Please provide email address" });
+      return sendError(res, 400, "Please provide email address");
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
+      return sendError(res, 400, "User does not exist");
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ msg: "This email is already verified" });
+      return sendError(res, 400, "This email is already verified");
     }
 
     const now = Date.now();
@@ -487,11 +487,15 @@ exports.resendOtp = async (req, res, next) => {
     ) {
       const timeLeft = new Date(user.otpBlockedUntil).getTime() - now;
       const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-      return res.status(429).json({
-        msg: `Too many resend attempts. You are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`,
-        blocked: true,
-        blockedUntil: user.otpBlockedUntil,
-      });
+      return sendError(
+        res,
+        429,
+        `Too many resend attempts. You are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`,
+        {
+          blocked: true,
+          blockedUntil: user.otpBlockedUntil,
+        },
+      );
     }
 
     // Enforce cooldown (60 seconds)
@@ -502,9 +506,11 @@ exports.resendOtp = async (req, res, next) => {
       const timeLeftSeconds = Math.ceil(
         (60000 - (now - new Date(user.otpLastResent).getTime())) / 1000,
       );
-      return res.status(400).json({
-        msg: `Please wait ${timeLeftSeconds} seconds before requesting another code.`,
-      });
+      return sendError(
+        res,
+        400,
+        `Please wait ${timeLeftSeconds} seconds before requesting another code.`,
+      );
     }
 
     // Check if they are about to exceed limits (limit is 5 attempts)
@@ -513,11 +519,15 @@ exports.resendOtp = async (req, res, next) => {
       user.otpBlockedUntil = blockedTime;
       await user.save();
 
-      return res.status(429).json({
-        msg: "You have reached the maximum number of resend attempts (5). You are blocked from requesting new codes for 24 hours.",
-        blocked: true,
-        blockedUntil: blockedTime,
-      });
+      return sendError(
+        res,
+        429,
+        "You have reached the maximum number of resend attempts (5). You are blocked from requesting new codes for 24 hours.",
+        {
+          blocked: true,
+          blockedUntil: blockedTime,
+        },
+      );
     }
 
     // Generate new OTP
@@ -569,12 +579,12 @@ exports.getOtpStatus = async (req, res, next) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ msg: "Please provide email address" });
+      return sendError(res, 400, "Please provide email address");
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ msg: "User does not exist" });
+      return sendError(res, 404, "User does not exist");
     }
 
     if (user.isVerified) {
@@ -631,29 +641,23 @@ exports.requestEmailChange = async (req, res, next) => {
     const { email } = req.body;
 
     if (!email) {
-      return res
-        .status(400)
-        .json({ msg: "Please provide the new email address." });
+      return sendError(res, 400, "Please provide the new email address.");
     }
 
     // Check if same as current email
     const currentUser = await User.findById(req.user.id);
     if (!currentUser) {
-      return res.status(404).json({ msg: "User not found" });
+      return sendError(res, 404, "User not found");
     }
 
     if (currentUser.email.toLowerCase() === email.toLowerCase()) {
-      return res
-        .status(400)
-        .json({ msg: "This is already your current email address." });
+      return sendError(res, 400, "This is already your current email address.");
     }
 
     // Check if new email is taken by another account
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ msg: "Email is already taken by another account." });
+      return sendError(res, 400, "Email is already taken by another account.");
     }
 
     const now = Date.now();
@@ -665,11 +669,15 @@ exports.requestEmailChange = async (req, res, next) => {
     ) {
       const timeLeft = new Date(currentUser.otpBlockedUntil).getTime() - now;
       const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-      return res.status(429).json({
-        msg: `Too many attempts. You are blocked from requesting codes. Please try again in ${hoursLeft} hours.`,
-        blocked: true,
-        blockedUntil: currentUser.otpBlockedUntil,
-      });
+      return sendError(
+        res,
+        429,
+        `Too many attempts. You are blocked from requesting codes. Please try again in ${hoursLeft} hours.`,
+        {
+          blocked: true,
+          blockedUntil: currentUser.otpBlockedUntil,
+        },
+      );
     }
 
     // Check 60s cooldown
@@ -677,10 +685,12 @@ exports.requestEmailChange = async (req, res, next) => {
       const lastResentTime = new Date(currentUser.otpLastResent).getTime();
       if (now - lastResentTime < 60000) {
         const cooldownLeft = Math.ceil((60000 - (now - lastResentTime)) / 1000);
-        return res.status(429).json({
-          msg: `Please wait ${cooldownLeft} seconds before requesting a new code.`,
-          cooldownLeft,
-        });
+        return sendError(
+          res,
+          429,
+          `Please wait ${cooldownLeft} seconds before requesting a new code.`,
+          { cooldownLeft },
+        );
       }
     }
 
@@ -691,11 +701,15 @@ exports.requestEmailChange = async (req, res, next) => {
       currentUser.otpBlockedUntil = blockedTime;
       await currentUser.save();
 
-      return res.status(429).json({
-        msg: "You have reached the maximum number of attempts (5). You are blocked from requesting new codes for 24 hours.",
-        blocked: true,
-        blockedUntil: blockedTime,
-      });
+      return sendError(
+        res,
+        429,
+        "You have reached the maximum number of attempts (5). You are blocked from requesting new codes for 24 hours.",
+        {
+          blocked: true,
+          blockedUntil: blockedTime,
+        },
+      );
     }
 
     // Generate new OTP
@@ -751,7 +765,7 @@ exports.verifyEmailChange = async (req, res, next) => {
 
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return sendError(res, 404, "User not found");
     }
 
     if (discard) {
@@ -769,15 +783,11 @@ exports.verifyEmailChange = async (req, res, next) => {
     }
 
     if (!otpCode) {
-      return res
-        .status(400)
-        .json({ msg: "Please enter the verification code." });
+      return sendError(res, 400, "Please enter the verification code.");
     }
 
     if (!user.tempEmail) {
-      return res
-        .status(400)
-        .json({ msg: "No active email change request found." });
+      return sendError(res, 400, "No active email change request found.");
     }
 
     // Check expiration
@@ -787,16 +797,12 @@ exports.verifyEmailChange = async (req, res, next) => {
       !user.otpExpire ||
       new Date(user.otpExpire).getTime() < now
     ) {
-      return res.status(400).json({
-        msg: "Verification code has expired. Please request a new one.",
-      });
+      return sendError(res, 400, "Verification code has expired. Please request a new one.");
     }
 
     // Check value
     if (user.otp !== otpCode) {
-      return res
-        .status(400)
-        .json({ msg: "Invalid verification code. Please try again." });
+      return sendError(res, 400, "Invalid verification code. Please try again.");
     }
 
     // Success! Update email
@@ -828,7 +834,7 @@ exports.verifyEmailChange = async (req, res, next) => {
 exports.getEmailChangeStatus = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ msg: "User not found" });
+    if (!user) return sendError(res, 404, "User not found");
 
     const now = Date.now();
     let timeLeft = 0;

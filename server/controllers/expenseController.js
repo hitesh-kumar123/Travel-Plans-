@@ -1,6 +1,7 @@
 const Expense = require("../models/Expense");
 const Trip = require("../models/Trip");
 const mongoose = require("mongoose");
+const { sendError, sendServerError } = require("../utils/apiResponse");
 
 // Get all expenses for a user (across all trips) - for analytics
 exports.getAllUserExpenses = async (req, res) => {
@@ -10,8 +11,7 @@ exports.getAllUserExpenses = async (req, res) => {
       .sort({ date: -1 });
     res.json(expenses);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -23,9 +23,11 @@ exports.createExpense = async (req, res) => {
     // Validate amount: must be a positive number
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      return res
-        .status(400)
-        .json({ msg: "Amount must be a positive number greater than zero." });
+      return sendError(
+        res,
+        400,
+        "Amount must be a positive number greater than zero.",
+      );
     }
 
     // Check if trip exists and belongs to user
@@ -35,7 +37,7 @@ exports.createExpense = async (req, res) => {
     });
 
     if (!tripExists) {
-      return res.status(404).json({ msg: "Trip not found or unauthorized" });
+      return sendError(res, 404, "Trip not found or unauthorized");
     }
 
     const newExpense = new Expense({
@@ -51,8 +53,7 @@ exports.createExpense = async (req, res) => {
     const expense = await newExpense.save();
     res.json(expense);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -68,17 +69,16 @@ exports.getTripExpenses = async (req, res) => {
     });
 
     if (!tripExists) {
-      return res.status(404).json({ msg: "Trip not found or unauthorized" });
+      return sendError(res, 404, "Trip not found or unauthorized");
     }
 
     const expenses = await Expense.find({ trip: tripId }).sort({ date: -1 });
     res.json(expenses);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -88,21 +88,20 @@ exports.getExpense = async (req, res) => {
     const expense = await Expense.findById(req.params.id);
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
 
     // Check if expense belongs to user
     if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     res.json(expense);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -112,12 +111,12 @@ exports.updateExpense = async (req, res) => {
     let expense = await Expense.findById(req.params.id);
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
 
     // Check if expense belongs to user
     if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     const { amount, currency, category, description, date } = req.body;
@@ -126,9 +125,11 @@ exports.updateExpense = async (req, res) => {
     if (amount !== undefined) {
       const parsedAmount = parseFloat(amount);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
-        return res
-          .status(400)
-          .json({ msg: "Amount must be a positive number greater than zero." });
+        return sendError(
+          res,
+          400,
+          "Amount must be a positive number greater than zero.",
+        );
       }
     }
 
@@ -148,11 +149,10 @@ exports.updateExpense = async (req, res) => {
 
     res.json(expense);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -162,22 +162,21 @@ exports.deleteExpense = async (req, res) => {
     const expense = await Expense.findById(req.params.id);
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
 
     // Check if expense belongs to user
     if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return sendError(res, 401, "User not authorized");
     }
 
     await expense.deleteOne();
-    res.json({ msg: "Expense removed" });
+      res.json({ success: true, message: "Expense removed" });
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return sendError(res, 404, "Expense not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };
 
@@ -193,7 +192,7 @@ exports.getExpenseSummary = async (req, res) => {
     });
 
     if (!tripExists) {
-      return res.status(404).json({ msg: "Trip not found or unauthorized" });
+      return sendError(res, 404, "Trip not found or unauthorized");
     }
 
     const summary = await Expense.aggregate([
@@ -210,10 +209,9 @@ exports.getExpenseSummary = async (req, res) => {
 
     res.json(summary);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return sendError(res, 404, "Trip not found");
     }
-    res.status(500).send("Server error");
+    return sendServerError(res, err);
   }
 };

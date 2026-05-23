@@ -1,5 +1,6 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/error";
 import {
   GET_TRIPS,
   GET_TRIP,
@@ -23,7 +24,7 @@ export const getTrips = () => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TRIP_ERROR,
-      payload: err.response?.data?.msg || "Error fetching trips",
+      payload: getErrorMessage(err, "Error fetching trips"),
     });
   }
 };
@@ -41,7 +42,7 @@ export const getTrip = (id) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TRIP_ERROR,
-      payload: err.response?.data?.msg || "Error fetching trip",
+      payload: getErrorMessage(err, "Error fetching trip"),
     });
     toast.error("Failed to load trip details");
   }
@@ -58,7 +59,7 @@ export const addTrip = (formData) => async (dispatch) => {
     });
     toast.success(`Trip to ${formData.destination} created! ✈️`);
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error adding trip";
+    const msg = getErrorMessage(err, "Error adding trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
@@ -78,7 +79,7 @@ export const updateTrip = (id, formData) => async (dispatch) => {
     });
     toast.success("Trip updated successfully! ✏️");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error updating trip";
+    const msg = getErrorMessage(err, "Error updating trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
@@ -98,7 +99,7 @@ export const deleteTrip = (id) => async (dispatch) => {
     });
     toast.success("Trip deleted 🗑️");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error deleting trip";
+    const msg = getErrorMessage(err, "Error deleting trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
