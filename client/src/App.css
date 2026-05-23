@@ -5,6 +5,26 @@
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.15s ease;
+}
+
+/* Don't transition these to prevent glitches */
+input,
+button,
+a,
+svg,
+[class*="MuiCircularProgress"] {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -28,13 +48,16 @@ a:hover {
 .fade-enter {
   opacity: 0;
 }
+
 .fade-enter-active {
   opacity: 1;
   transition: opacity 300ms;
 }
+
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms;
@@ -58,6 +81,18 @@ a:hover {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #1a2535;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #3a4a5c;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #4a5f75;
 }
 
 /* Utility classes */
@@ -175,6 +210,7 @@ a:hover {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

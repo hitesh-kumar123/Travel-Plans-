@@ -9,11 +9,14 @@
     "mongoose": "^8.12.1"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
     "prettier": "^3.8.3"
   },
   "scripts": {
+    "start": "concurrently \"npm run start --prefix client\" \"npm run start --prefix server\"",
+    "dev": "concurrently \"npm run start --prefix client\" \"npm run dev --prefix server\"",
     "prepare": "husky"
   },
   "lint-staged": {

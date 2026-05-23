@@ -9,6 +9,32 @@
   --mist: #8bafc4;
   --dark: #0f2d40;
   --white: #fdfaf5;
+  /* New semantic tokens */
+  --nav-bg: rgba(253, 250, 245, 0.92);
+  --nav-border: rgba(26, 74, 107, 0.12);
+  --card-bg: #ffffff;
+  --card-shadow: 0 4px 20px rgba(26, 74, 107, 0.08);
+  --body-bg: #fdfaf5;
+  --body-text: #0f2d40;
+}
+
+[data-theme="dark"] {
+  --sand: #1e2d3d;
+  --ocean: #7ba7c8;
+  /* lightened ocean for dark bg readability */
+  --coral: #ff8a65;
+  /* slightly brighter coral */
+  --mist: #5d8aa0;
+  --dark: #0f2d40;
+  /* inverted: what was dark text is now light */
+  --white: #0f1923;
+  /* inverted: page background */
+  --nav-bg: rgba(15, 25, 35, 0.92);
+  --nav-border: rgba(123, 167, 200, 0.12);
+  --card-bg: #1a2535;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --body-bg: #0f1923;
+  --body-text: #e8eaf0;
 }
 
 /* ── Reset ── */
@@ -18,8 +44,8 @@
 
 .wander-page {
   font-family: "DM Sans", sans-serif;
-  background: var(--white);
-  color: var(--dark);
+  background: var(--body-bg);
+  color: var(--body-text);
   overflow-x: hidden;
 }
 
@@ -29,9 +55,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 3rem;
-  background: rgba(253, 250, 245, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(8px);
-  border-bottom: 0.5px solid rgba(26, 74, 107, 0.12);
+  border-bottom: 0.5px solid var(--nav-border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -96,10 +122,39 @@
   color: var(--ocean);
 }
 
+.wander-theme-toggle {
+  background: none;
+  border: 1.5px solid var(--ocean);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s,
+    transform 0.2s,
+    color 0.2s;
+  color: var(--ocean);
+}
+
+.wander-theme-toggle:hover {
+  background: var(--ocean);
+  color: var(--white);
+  transform: scale(1.1);
+}
+
 /* ═══ HERO ═══ */
 .wander-hero {
   min-height: 88vh;
-  background: linear-gradient(145deg, #0f2d40 0%, #1a4a6b 50%, #1e5a80 100%);
+  background: linear-gradient(
+    145deg,
+    var(--ocean) 0%,
+    var(--dark) 50%,
+    #1e5a80 100%
+  );
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -162,7 +217,8 @@
 .wander-hero h1 {
   font-family: "Playfair Display", serif;
   font-size: clamp(2.4rem, 4.5vw, 4rem);
-  color: var(--white);
+  color: #fdfaf5;
+  /* Hardcoded light color for hero since it has a permanent dark theme? */
   line-height: 1.1;
   margin-bottom: 1.5rem;
   font-weight: 700;
@@ -444,7 +500,7 @@
   position: relative;
   cursor: pointer;
   transition: transform 0.3s;
-  background: #1a4a6b;
+  background: var(--ocean);
 }
 
 .wander-dest-card:hover {
@@ -530,10 +586,10 @@
 }
 
 .wander-feat-card {
-  background: var(--white);
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 2rem;
-  border: 0.5px solid rgba(26, 74, 107, 0.08);
+  border: 0.5px solid var(--nav-border);
   transition: box-shadow 0.2s;
   display: flex;
   flex-direction: column;
@@ -553,7 +609,7 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: rgba(26, 74, 107, 0.08);
+  background: var(--nav-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -654,7 +710,7 @@
 }
 
 .wander-stat-box {
-  border: 0.5px solid rgba(26, 74, 107, 0.12);
+  border: 0.5px solid var(--nav-border);
   border-radius: 14px;
   padding: 1.5rem;
   transition: border-color 0.2s;
@@ -977,6 +1033,7 @@
     flex-direction: column;
     width: 100%;
   }
+
   .wander-btn-primary,
   .wander-btn-ghost {
     width: 100%;

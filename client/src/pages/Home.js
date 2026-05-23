@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
+import { useThemeMode } from "../context/ThemeContext";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 
@@ -353,6 +354,7 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
+  const { mode, toggleMode } = useThemeMode();
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -445,6 +447,15 @@ const Home = () => {
             <button className="wander-nav-cta">Book Now</button>
           </Link>
         )}
+
+        <button
+          className="wander-theme-toggle"
+          onClick={toggleMode}
+          aria-label="Toggle dark mode"
+          style={{ marginLeft: "1rem" }}
+        >
+          {mode === "dark" ? "☀️" : "🌙"}
+        </button>
 
         <button
           className="wander-mobile-menu"

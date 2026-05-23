@@ -38,6 +38,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { useThemeMode } from "../context/ThemeContext";
 import { logout } from "../redux/actions/authActions";
 
 // Views
@@ -61,6 +64,7 @@ const Dashboard = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { mode, toggleMode } = useThemeMode();
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -281,7 +285,7 @@ const Dashboard = () => {
         sx={{
           flexGrow: 1,
           width: { md: `calc(100% - ${drawerWidth}px)` },
-          bgcolor: "grey.50",
+          bgcolor: "background.default",
         }}
       >
         <AppBar
@@ -304,6 +308,25 @@ const Dashboard = () => {
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip
+                title={
+                  mode === "dark"
+                    ? "Switch to Light Mode"
+                    : "Switch to Dark Mode"
+                }
+              >
+                <IconButton
+                  onClick={toggleMode}
+                  color="inherit"
+                  size="large"
+                  sx={{
+                    transition: "rotate 0.3s ease",
+                    rotate: mode === "dark" ? "180deg" : "0deg",
+                  }}
+                >
+                  {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Notifications">
                 <IconButton size="large" color="inherit">
                   <Badge badgeContent={0} color="error">

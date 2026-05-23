@@ -1,3 +1,11 @@
+:root {
+  --input-label-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --input-label-bg: #1a2535;
+}
+
 /* 1. THE BOX SIZE FIX */
 .MuiTextField-root .MuiOutlinedInput-root input[type="date"] {
   display: block !important;
@@ -59,12 +67,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* 6. MUI Floating Label fix */
 .MuiTextField-root .MuiInputLabel-root {
-  background-color: #ffffff;
+  background-color: var(--input-label-bg);
   padding: 0 6px;
 }
 
 .MuiTextField-root label[data-shrink="true"] {
   transform: translate(14px, -9px) scale(0.75) !important;
-  background-color: #ffffff;
+  background-color: var(--input-label-bg);
   z-index: 2;
 }
