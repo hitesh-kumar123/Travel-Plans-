@@ -38,9 +38,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 
-import { logout } from "../redux/actions/authActions";
+import { logout, loadUser } from "../redux/actions/authActions";
 
 // Views
+
 import DashboardHome from "./dashboard/DashboardHome";
 import TripsView from "./dashboard/TripsView";
 import ExpensesView from "./dashboard/ExpensesView";
@@ -66,6 +67,10 @@ const Dashboard = () => {
     if (tokenFromUrl) {
       localStorage.setItem("token", tokenFromUrl);
 
+      // Trigger a user reload immediately after token is stored.
+      // This avoids race conditions with `App` initial `loadUser()`.
+      dispatch(loadUser());
+
       // Clean the URL so token isn't kept in browser address bar.
       params.delete("token");
       const newQuery = params.toString();
@@ -73,6 +78,7 @@ const Dashboard = () => {
       window.history.replaceState({}, document.title, newUrl);
     }
   }, []);
+
 
 
   const navigate = useNavigate();

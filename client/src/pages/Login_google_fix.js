@@ -1,4 +1,3 @@
-```javascript
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +26,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
 import GoogleIcon from "@mui/icons-material/Google";
 
-const Login = () => {
+const Login_google_fix = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -67,7 +66,7 @@ const Login = () => {
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-          value
+          value,
         )
       ) {
         setErrors((prev) => ({
@@ -112,7 +111,7 @@ const Login = () => {
     if (
       !formData.email ||
       !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-        formData.email
+        formData.email,
       )
     ) {
       tempErrors.email = "Please enter a valid email";
@@ -125,7 +124,6 @@ const Login = () => {
     }
 
     setErrors(tempErrors);
-
     return isValid;
   };
 
@@ -148,15 +146,14 @@ const Login = () => {
     }
   };
 
+  // Force string concatenation (no template literal) to avoid CRA parser issues.
   const handleGoogleLogin = () => {
     const apiBase =
       process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-
-    const url = apiBase.replace(/\/api$/, "") + "/api/auth/google";
+    const normalized = apiBase.replace(/\/api$/, "");
+    const url = normalized + "/api/auth/google";
     window.location.assign(url);
   };
-
-
 
   return (
     <Box
@@ -199,11 +196,7 @@ const Login = () => {
               color: "white",
             }}
           >
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
-            >
+            <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 2 }}>
               PackGo
             </Typography>
 
@@ -221,7 +214,6 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
-
               <Box
                 sx={{
                   width: 12,
@@ -230,7 +222,6 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
-
               <Box
                 sx={{
                   width: 12,
@@ -264,7 +255,6 @@ const Login = () => {
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Welcome Back
             </Typography>
-
             <Typography variant="body1" color="text.secondary">
               Sign in to continue to PackGo
             </Typography>
@@ -317,11 +307,7 @@ const Login = () => {
                         onClick={toggleShowPassword}
                         edge="end"
                       >
-                        {showPassword ? (
-                          <VisibilityOffIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -348,11 +334,7 @@ const Login = () => {
                   label="Remember me"
                 />
 
-                <Link
-                  component={RouterLink}
-                  to="/forgot-password"
-                  variant="body2"
-                >
+                <Link component={RouterLink} to="/forgot-password" variant="body2">
                   Forgot password?
                 </Link>
               </Box>
@@ -416,7 +398,6 @@ const Login = () => {
                   >
                     <FacebookIcon />
                   </IconButton>
-
                   <IconButton
                     disabled
                     sx={{
@@ -460,5 +441,5 @@ const Login = () => {
   );
 };
 
-export default Login;
-```
+export default Login_google_fix;
+

@@ -79,32 +79,49 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
+// Centralized error-safe redirect for OAuth failures
+function redirectToLoginWithReason(res, reason) {
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  return res.redirect(
+    `${frontendUrl}/login?oauth=${encodeURIComponent(reason)}`,
+  );
+}
+
 // OAuth callback
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    // After successful Google auth, the app uses JWT for protected routes.
-    // Generate a JWT from req.user and redirect to the frontend with it.
-    const jwt = require("jsonwebtoken");
+router.get("/google/callback", (req, res, next) => {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "/login" },
+    (err, user) => {
+      if (err) {
+        return redirectToLoginWithReason(res, "google_oauth_error");
+      }
+      if (!user) {
+        return redirectToLoginWithReason(res, "google_oauth_failed");
+      }
 
-    const user = req.user;
-    if (!user) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL || "http://localhost:3000"}/login`,
-      );
-    }
+      try {
+        const jwt = require("jsonwebtoken");
 
-    const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "5d",
-    });
+        if (!process.env.JWT_SECRET) {
+          return redirectToLoginWithReason(res, "jwt_secret_missing");
+        }
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    return res.redirect(`${frontendUrl}/dashboard?token=${token}`);
-  },
-);
+        const payload = { user: { id: user.id } };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "5d",
+        });
+
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+        return res.redirect(`${frontendUrl}/dashboard?token=${token}`);
+      } catch (e) {
+        return redirectToLoginWithReason(res, "jwt_sign_failed");
+      }
+    },
+  )(req, res, next);
+});
 
 
 module.exports = router;
+
 

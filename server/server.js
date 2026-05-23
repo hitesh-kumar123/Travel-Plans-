@@ -68,8 +68,11 @@ app.use(
     secret: process.env.SESSION_SECRET || "travelplannersecret",
     resave: false,
     saveUninitialized: false,
+    // If you're behind a proxy (e.g., Vercel), `secure` cookies require `trust proxy`.
+    // SameSite=Lax is the safest default for OAuth redirects.
     cookie: {
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
@@ -78,6 +81,7 @@ app.use(
 
 // Passport Middleware
 app.use(passport.initialize());
+
 app.use(passport.session());
 
 // Import routes

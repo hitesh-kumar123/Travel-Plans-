@@ -50,7 +50,19 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
           let user = await User.findOne({ email: email.toLowerCase() });
 
           if (!user) {
-            const randomPassword = crypto.randomBytes(32).toString("hex");
+            // IMPORTANT: `User.password` schema enforces strong password rules.
+            // Random hex may fail validation in some cases, causing OAuth to fail.
+            // Generate a password that always satisfies:
+            // - min 8 chars
+            // - >=1 uppercase, >=1 lowercase, >=1 number, >=1 special char
+            const upper = "A";
+            const lower = "a";
+            const number = "1";
+            const special = "!";
+            // base64 may include letters/numbers; prefix guarantees complexity.
+            const rest = crypto.randomBytes(24).toString("base64");
+            const randomPassword = `${upper}${lower}${number}${special}${rest}`;
+
             user = await User.create({
               name,
               email: email.toLowerCase(),
@@ -60,6 +72,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
           }
 
           return done(null, user);
+
         } catch (err) {
           return done(err);
         }
