@@ -84,11 +84,27 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    // Ensure backend session is set, then redirect to app.
+    // After successful Google auth, the app uses JWT for protected routes.
+    // Generate a JWT from req.user and redirect to the frontend with it.
+    const jwt = require("jsonwebtoken");
+
+    const user = req.user;
+    if (!user) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL || "http://localhost:3000"}/login`,
+      );
+    }
+
+    const payload = { user: { id: user.id } };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "5d",
+    });
+
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    return res.redirect(`${frontendUrl}/dashboard`);
+    return res.redirect(`${frontendUrl}/dashboard?token=${token}`);
   },
 );
+
 
 module.exports = router;
 

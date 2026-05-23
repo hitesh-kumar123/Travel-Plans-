@@ -57,6 +57,24 @@ const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  // If we came from Google OAuth redirect with a token in the URL,
+  // persist it so PrivateRoute/JWT-protected APIs can work.
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get("token");
+
+    if (tokenFromUrl) {
+      localStorage.setItem("token", tokenFromUrl);
+
+      // Clean the URL so token isn't kept in browser address bar.
+      params.delete("token");
+      const newQuery = params.toString();
+      const newUrl = `${window.location.pathname}${newQuery ? `?${newQuery}` : ""}`;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
+
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();

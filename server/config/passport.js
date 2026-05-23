@@ -20,7 +20,6 @@ passport.deserializeUser(async (id, done) => {
 // Only register the Google strategy if we have the required credentials.
 // This prevents the server from crashing during local dev when env vars are missing.
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  // eslint-disable-next-line no-console
   console.warn(
     "[Google OAuth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET. Google login will not work until these env vars are set.",
   );
