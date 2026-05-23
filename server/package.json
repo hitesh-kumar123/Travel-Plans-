@@ -7,6 +7,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "dev": "nodemon server.js",
+    "test": "echo \"no tests\" && exit 0",
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "format": "prettier --write ."

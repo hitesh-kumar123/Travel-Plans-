@@ -2,12 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler");
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from repo root .env (so server can be started from /server)
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 // Initialize express app
 const app = express();
