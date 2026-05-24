@@ -438,12 +438,23 @@ const Home = () => {
 
         {isAuthenticated ? (
           <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
+            <button className="wander-nav-cta" id="nav-dashboard-btn">
+              My Dashboard
+            </button>
           </Link>
         ) : (
-          <Link to="/register">
-            <button className="wander-nav-cta">Book Now</button>
-          </Link>
+          <div className="wander-nav-auth-btns">
+            <Link to="/login">
+              <button className="wander-nav-signin" id="nav-signin-btn">
+                Sign In
+              </button>
+            </Link>
+            <Link to="/register">
+              <button className="wander-nav-cta" id="nav-create-account-btn">
+                Create Free Account
+              </button>
+            </Link>
+          </div>
         )}
 
         <button
@@ -510,6 +521,17 @@ const Home = () => {
             }}
             onClick={() => setMobileOpen(false)}
           >
+            Experiences
+          </a>
+          <a
+            href="#wander-features"
+            style={{
+              color: "var(--ocean)",
+              textDecoration: "none",
+              fontWeight: 500,
+            }}
+            onClick={() => setMobileOpen(false)}
+          >
             Features
           </a>
           {isAuthenticated ? (
@@ -525,26 +547,25 @@ const Home = () => {
               Dashboard →
             </Link>
           ) : (
-            <>
+            <div className="wander-mobile-auth-btns">
               <Link
                 to="/login"
-                style={{ color: "var(--ocean)", textDecoration: "none" }}
+                id="mobile-signin-btn"
+                className="wander-mobile-signin-link"
                 onClick={() => setMobileOpen(false)}
               >
-                Log In
+                Sign In
               </Link>
               <Link
                 to="/register"
-                style={{
-                  color: "var(--coral)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
+                id="mobile-create-account-btn"
                 onClick={() => setMobileOpen(false)}
               >
-                Sign Up Free →
+                <button className="wander-mobile-cta-btn">
+                  Create Free Account
+                </button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       )}

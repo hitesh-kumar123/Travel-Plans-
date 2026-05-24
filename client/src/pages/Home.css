@@ -33,6 +33,7 @@
   backdrop-filter: blur(8px);
   border-bottom: 0.5px solid rgba(26, 74, 107, 0.12);
   position: sticky;
+  width: 100vw;
   top: 0;
   z-index: 100;
 }
@@ -85,6 +86,86 @@
 }
 
 .wander-nav-cta:hover {
+  background: var(--coral);
+}
+
+/* ── Nav Auth Button Group (Sign In + Create Free Account) ── */
+.wander-nav-auth-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Ghost "Sign In" button — ocean border, transparent fill */
+.wander-nav-signin {
+  background: transparent;
+  color: var(--ocean);
+  border: 1.5px solid rgba(26, 74, 107, 0.6);
+  border-radius: 100px;
+  padding: 0rem 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+  font-family: "DM Sans", sans-serif;
+  min-height: 35px; /* WCAG touch target */
+}
+
+.wander-nav-signin:hover {
+  border-color: var(--ocean);
+  background: rgba(26, 74, 107, 0.06);
+  color: var(--ocean);
+}
+
+/* Mobile auth button container */
+.wander-mobile-auth-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Mobile Sign In link */
+.wander-mobile-signin-link {
+  color: var(--ocean);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white);
+  border: 0.5px solid rgba(26, 74, 107, 0.6);
+  border-radius: 30px;
+  font-weight: 600;
+}
+
+.wander-mobile-signin-link:hover {
+  color: var(--coral);
+}
+
+/* Mobile Create Free Account button */
+.wander-mobile-cta-btn {
+  background: var(--ocean);
+  color: var(--white);
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: "DM Sans", sans-serif;
+  width: 100%;
+  min-height: 44px; /* WCAG touch target */
+  text-align: center;
+}
+
+.wander-mobile-cta-btn:hover {
   background: var(--coral);
 }
 
@@ -921,6 +1002,11 @@
 
   .wander-mobile-menu {
     display: block;
+  }
+
+  /* Hide desktop auth button group on mobile — hamburger menu takes over */
+  .wander-nav-auth-btns {
+    display: none;
   }
 
   .wander-search-section {
