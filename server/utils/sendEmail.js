@@ -31,7 +31,9 @@ const sendEmail = async (options) => {
           pass: testAccount.pass,
         },
       });
-      console.log(`🚀 Ethereal test SMTP account generated successfully in ${Date.now() - start}ms!`);
+      console.log(
+        `🚀 Ethereal test SMTP account generated successfully in ${Date.now() - start}ms!`,
+      );
       console.log(`User: ${testAccount.user}`);
     }
     transporter = cachedTransporter;
