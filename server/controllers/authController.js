@@ -75,6 +75,13 @@ exports.register = async (req, res, next) => {
       });
     } catch (emailErr) {
       console.error("Failed to send registration email:", emailErr);
+      if (process.env.SMTP_HOST) {
+        // Rollback user creation to prevent orphaned unverified accounts in production
+        await User.findByIdAndDelete(user._id);
+        return res.status(500).json({
+          msg: "Failed to send verification email. Registration rolled back. Please try again later.",
+        });
+      }
     }
 
     // Dev mode log
@@ -163,6 +170,11 @@ exports.login = async (req, res, next) => {
           });
         }
 
+        const oldOtp = user.otp;
+        const oldOtpExpire = user.otpExpire;
+        const oldOtpLastResent = user.otpLastResent;
+        const oldOtpResendAttempts = user.otpResendAttempts;
+
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.otp = otp;
         user.otpExpire = new Date(now + 5 * 60 * 1000);
@@ -186,6 +198,17 @@ exports.login = async (req, res, next) => {
             "Failed to send verification email on login:",
             emailErr,
           );
+          if (process.env.SMTP_HOST) {
+            // Rollback
+            user.otp = oldOtp;
+            user.otpExpire = oldOtpExpire;
+            user.otpLastResent = oldOtpLastResent;
+            user.otpResendAttempts = oldOtpResendAttempts;
+            await user.save();
+            return res.status(500).json({
+              msg: "Failed to send verification email. Please try again later.",
+            });
+          }
         }
 
         if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -524,6 +547,11 @@ exports.resendOtp = async (req, res, next) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Save to user
+    const oldOtp = user.otp;
+    const oldOtpExpire = user.otpExpire;
+    const oldOtpResendAttempts = user.otpResendAttempts;
+    const oldOtpLastResent = user.otpLastResent;
+
     user.otp = otp;
     user.otpExpire = new Date(now + 5 * 60 * 1000); // 5 minutes
     user.otpResendAttempts += 1;
@@ -544,6 +572,17 @@ exports.resendOtp = async (req, res, next) => {
       });
     } catch (emailErr) {
       console.error("Failed to send new verification email:", emailErr);
+      if (process.env.SMTP_HOST) {
+        // Rollback state in production
+        user.otp = oldOtp;
+        user.otpExpire = oldOtpExpire;
+        user.otpResendAttempts = oldOtpResendAttempts;
+        user.otpLastResent = oldOtpLastResent;
+        await user.save();
+        return res.status(500).json({
+          msg: "Failed to send verification email. Please try again later.",
+        });
+      }
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -701,6 +740,12 @@ exports.requestEmailChange = async (req, res, next) => {
     // Generate new OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
+    const oldOtp = currentUser.otp;
+    const oldOtpExpire = currentUser.otpExpire;
+    const oldOtpResendAttempts = currentUser.otpResendAttempts;
+    const oldOtpLastResent = currentUser.otpLastResent;
+    const oldTempEmail = currentUser.tempEmail;
+
     currentUser.otp = otp;
     currentUser.otpExpire = new Date(now + 5 * 60 * 1000); // 5 minutes
     currentUser.otpResendAttempts = newAttempts;
@@ -725,6 +770,18 @@ exports.requestEmailChange = async (req, res, next) => {
         "Failed to send email change verification email:",
         emailErr,
       );
+      if (process.env.SMTP_HOST) {
+        // Rollback
+        currentUser.otp = oldOtp;
+        currentUser.otpExpire = oldOtpExpire;
+        currentUser.otpResendAttempts = oldOtpResendAttempts;
+        currentUser.otpLastResent = oldOtpLastResent;
+        currentUser.tempEmail = oldTempEmail;
+        await currentUser.save();
+        return res.status(500).json({
+          msg: "Failed to send verification email to your new address. Please try again later.",
+        });
+      }
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {

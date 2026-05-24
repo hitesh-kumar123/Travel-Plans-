@@ -1,5 +1,7 @@
 const nodemailer = require("nodemailer");
 
+let cachedTransporter = null;
+
 const sendEmail = async (options) => {
   let transporter;
 
@@ -15,17 +17,24 @@ const sendEmail = async (options) => {
       },
     });
   } else {
-    // Generate test SMTP service account from ethereal.email for local testing
-    let testAccount = await nodemailer.createTestAccount();
-    transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
+    if (!cachedTransporter) {
+      console.log("Creating Ethereal test account...");
+      const start = Date.now();
+      // Generate test SMTP service account from ethereal.email for local testing
+      let testAccount = await nodemailer.createTestAccount();
+      cachedTransporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      console.log(`🚀 Ethereal test SMTP account generated successfully in ${Date.now() - start}ms!`);
+      console.log(`User: ${testAccount.user}`);
+    }
+    transporter = cachedTransporter;
   }
 
   const message = {
