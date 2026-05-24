@@ -360,6 +360,7 @@ const Home = () => {
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     api
@@ -370,6 +371,16 @@ const Home = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 20);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const handleAddTrip = (dest) => {
     if (!isAuthenticated) {
@@ -414,7 +425,7 @@ const Home = () => {
   return (
     <div className="wander-page">
       {/* ═══ NAVBAR ═══ */}
-      <nav className="wander-nav">
+      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
         <Link to="/" className="wander-logo">
           Pack<span>Go</span>
         </Link>

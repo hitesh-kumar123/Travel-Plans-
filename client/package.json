@@ -54,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-react-app": "^7.0.1",
     "prettier": "^3.8.3"
   }
 }
