@@ -20,6 +20,9 @@ import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 function App() {
   useEffect(() => {
@@ -50,6 +53,12 @@ function App() {
                 element={<ResetPassword />}
               />
               <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route
+                path="/terms-and-conditions"
+                element={<TermsConditions />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
