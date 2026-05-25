@@ -11,7 +11,6 @@ import {
   CardContent,
   CardActionArea,
   Chip,
-  LinearProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ExploreIcon from "@mui/icons-material/Explore";
