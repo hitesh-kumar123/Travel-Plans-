@@ -57,6 +57,14 @@ const TripSchema = new mongoose.Schema({
     departureTime: Date,
     arrivalTime: Date,
   },
+  shareToken: {
+    type: String,
+    default: null,
+  },
+  shareEnabled: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

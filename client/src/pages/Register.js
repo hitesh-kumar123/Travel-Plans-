@@ -27,6 +27,7 @@ import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import PrimaryButton from "../components/PrimaryButton";
 
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -120,14 +121,12 @@ const Register = () => {
 
     const newErrors = { ...fieldErrors };
     if (name === "firstName" || name === "lastName") {
-      // Real-time alphabetical name pre-validation
       if (value && (!/^[A-Za-z\s]+$/.test(value) || value.trim().length < 1)) {
         newErrors[name] = "Name can only contain letters and spaces";
       } else {
         newErrors[name] = "";
       }
     } else if (name === "email") {
-      // Real-time strict RFC 5322 email pre-validation
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
@@ -139,7 +138,6 @@ const Register = () => {
         newErrors.email = "";
       }
     } else if (name === "password") {
-      // Real-time strong password complexity pre-validation (min 8 chars, 1 upper, 1 lower, 1 num, 1 special)
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (value && !passwordRegex.test(value)) {
         newErrors.password =
@@ -150,7 +148,6 @@ const Register = () => {
     }
     setFieldErrors(newErrors);
 
-    // Password match validation
     if (
       name === "confirmPassword" ||
       (name === "password" && formData.confirmPassword)
@@ -194,7 +191,6 @@ const Register = () => {
     }
   };
 
-  // Dynamically disable Next/Create Account button when step fields are empty or invalid
   const isNextDisabled = () => {
     if (activeStep === 0) {
       return (
@@ -421,13 +417,7 @@ const Register = () => {
               backdropFilter: "blur(2px)",
             }}
           />
-          <Box
-            sx={{
-              position: "relative",
-              p: 6,
-              color: "white",
-            }}
-          >
+          <Box sx={{ position: "relative", p: 6, color: "white" }}>
             <Typography
               variant="h3"
               component="h1"
@@ -479,12 +469,7 @@ const Register = () => {
           p: 4,
         }}
       >
-        <Box
-          sx={{
-            maxWidth: 480,
-            width: "100%",
-          }}
-        >
+        <Box sx={{ maxWidth: 480, width: "100%" }}>
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
@@ -525,10 +510,8 @@ const Register = () => {
                     Back
                   </Button>
                 )}
-                <Button
+                <PrimaryButton
                   type="submit"
-                  variant="contained"
-                  color="primary"
                   disabled={isNextDisabled()}
                   sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
                   endIcon={
@@ -540,7 +523,7 @@ const Register = () => {
                   }
                 >
                   {activeStep === steps.length - 1 ? "Create Account" : "Next"}
-                </Button>
+                </PrimaryButton>
               </Box>
 
               {activeStep === 0 && (
