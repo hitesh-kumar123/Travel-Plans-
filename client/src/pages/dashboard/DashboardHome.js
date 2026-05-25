@@ -144,6 +144,25 @@ const DashboardHome = () => {
             : `You have ${plannedTrips} upcoming and ${ongoingTrips} ongoing trips.`}
         </Typography>
       </Box>
+      <Paper
+        elevation={0}
+        sx={{
+          mb: 4,
+          p: 4,
+          borderRadius: 4,
+          background: "linear-gradient(135deg, #1976D2 0%, #42A5F5 100%)",
+          color: "white",
+          overflow: "hidden",
+        }}
+      >
+        <Typography variant="h4" fontWeight={800}>
+          Explore the World 🌍
+        </Typography>
+
+        <Typography sx={{ mt: 1, opacity: 0.9 }}>
+          Organize trips, manage expenses, and plan smarter journeys.
+        </Typography>
+      </Paper>
 
       {/* Stats Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
@@ -185,8 +204,11 @@ const DashboardHome = () => {
                 borderRadius: 3,
                 background: stat.bg,
                 color: "white",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "translateY(-2px)" },
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-6px) scale(1.02)",
+                  boxShadow: 8,
+                },
               }}
             >
               <Box
@@ -245,8 +267,9 @@ const DashboardHome = () => {
                       borderColor: "divider",
                       transition: "all 0.2s",
                       "&:hover": {
-                        boxShadow: 4,
-                        transform: "translateY(-2px)",
+                        boxShadow: 6,
+                        transform: "translateY(-4px) scale(1.03)",
+                        backgroundColor: "#fafafa",
                       },
                     }}
                   >
@@ -364,7 +387,21 @@ const DashboardHome = () => {
         </Box>
 
         {loading ? (
-          <LinearProgress sx={{ borderRadius: 2 }} />
+          <Grid container spacing={3}>
+            {[1, 2, 3].map((item) => (
+              <Grid item xs={12} md={4} key={item}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    height: 220,
+                    backgroundColor: "#f5f5f5",
+                    animation: "pulse 1.5s infinite",
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
         ) : tripsArr.length === 0 ? (
           <Paper
             elevation={0}
@@ -379,8 +416,18 @@ const DashboardHome = () => {
             <FlightTakeoffIcon
               sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
             />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No trips yet
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              color="text.primary"
+              gutterBottom
+            >
+              ✈️ No Trips Planned Yet
+            </Typography>
+
+            <Typography color="text.secondary" sx={{ mb: 2 }}>
+              Start planning your dream destinations and manage your journeys
+              easily.
             </Typography>
             <Button
               component={Link}
@@ -446,6 +493,13 @@ const DashboardHome = () => {
                       <Typography variant="h6" fontWeight={700}>
                         {trip.destination}
                       </Typography>
+
+                      <Chip
+                        label={`Budget ₹${trip.budget || 0}`}
+                        size="small"
+                        color="primary"
+                        sx={{ mt: 1 }}
+                      />
                       <Box
                         sx={{
                           display: "flex",
