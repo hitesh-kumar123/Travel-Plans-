@@ -559,7 +559,7 @@ const Register = () => {
                         opacity: 0.5,
                       }}
                     >
-                      Facebook
+                      Facebook Coming Soon
                     </Button>
                   </Box>
                 </>
