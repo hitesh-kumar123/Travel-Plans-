@@ -13,8 +13,10 @@ import {
 // Get all user trips
 export const getTrips = () => async (dispatch) => {
   dispatch({ type: SET_LOADING });
+
   try {
     const res = await api.get("/trips");
+
     dispatch({
       type: GET_TRIPS,
       payload: res.data,
@@ -30,8 +32,10 @@ export const getTrips = () => async (dispatch) => {
 // Get single trip
 export const getTrip = (id) => async (dispatch) => {
   dispatch({ type: SET_LOADING });
+
   try {
     const res = await api.get(`/trips/${id}`);
+
     dispatch({
       type: GET_TRIP,
       payload: res.data,
@@ -41,25 +45,34 @@ export const getTrip = (id) => async (dispatch) => {
       type: TRIP_ERROR,
       payload: err.response?.data?.msg || "Error fetching trip",
     });
+
     toast.error("Failed to load trip details");
   }
 };
 
 // Add trip
-export const addTrip = (formData) => async (dispatch) => {
+export const addTrip = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.post("/trips", formData);
+
     dispatch({
       type: ADD_TRIP,
       payload: res.data,
     });
+
     toast.success(`Trip to ${formData.destination} created! ✈️`);
+
+    if (navigate && res.data?._id) {
+      navigate(`/dashboard/trips/${res.data._id}`);
+    }
   } catch (err) {
     const msg = err.response?.data?.msg || "Error adding trip";
+
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
     });
+
     toast.error(msg);
   }
 };
@@ -68,17 +81,21 @@ export const addTrip = (formData) => async (dispatch) => {
 export const updateTrip = (id, formData) => async (dispatch) => {
   try {
     const res = await api.put(`/trips/${id}`, formData);
+
     dispatch({
       type: UPDATE_TRIP,
       payload: res.data,
     });
+
     toast.success("Trip updated successfully! ✏️");
   } catch (err) {
     const msg = err.response?.data?.msg || "Error updating trip";
+
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
     });
+
     toast.error(msg);
   }
 };
@@ -87,17 +104,21 @@ export const updateTrip = (id, formData) => async (dispatch) => {
 export const deleteTrip = (id) => async (dispatch) => {
   try {
     await api.delete(`/trips/${id}`);
+
     dispatch({
       type: DELETE_TRIP,
       payload: id,
     });
+
     toast.success("Trip deleted 🗑️");
   } catch (err) {
     const msg = err.response?.data?.msg || "Error deleting trip";
+
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
     });
+
     toast.error(msg);
   }
 };
@@ -113,7 +134,9 @@ export const setLoading = () => {
 export const shareTrip = (id) => async () => {
   try {
     const res = await api.post(`/trips/${id}/share`);
+
     toast.success("Shareable link generated! 🔗");
+
     return res.data.shareToken;
   } catch (err) {
     toast.error("Failed to generate share link");

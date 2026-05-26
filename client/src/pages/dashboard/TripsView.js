@@ -62,7 +62,9 @@ const TripsView = () => {
       setOptions([]);
       return;
     }
+
     setLoadingOpts(true);
+
     try {
       const res = await api.get(`/destinations/search?q=${query}`);
       setOptions(res.data.map((d) => d.name));
@@ -78,12 +80,22 @@ const TripsView = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
+
     dispatch(
-      addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
+      addTrip(
+        {
+          ...formData,
+          budget: parseFloat(formData.budget) || 0,
+        },
+        navigate,
+      ),
     );
+
     setOpen(false);
+
     setFormData({
       destination: "",
       startDate: "",
@@ -114,10 +126,12 @@ const TripsView = () => {
           <Typography variant="h4" fontWeight={700}>
             My Trips
           </Typography>
+
           <Typography variant="body2" color="text.secondary">
             {trips?.length || 0} trips so far
           </Typography>
         </Box>
+
         <PrimaryButton
           startIcon={<AddIcon />}
           onClick={() => setOpen(true)}
@@ -147,7 +161,10 @@ const TripsView = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ fontWeight: 700 }}>Plan a New Trip</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>
+          Plan a New Trip
+        </DialogTitle>
+
         <DialogContent>
           <Box
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2.5 }}
@@ -158,8 +175,12 @@ const TripsView = () => {
               loading={loadingOpts}
               onInputChange={(event, newInputValue) => {
                 handleChange({
-                  target: { name: "destination", value: newInputValue },
+                  target: {
+                    name: "destination",
+                    value: newInputValue,
+                  },
                 });
+
                 if (newInputValue && newInputValue.length >= 2)
                   fetchDestinations(newInputValue);
                 else setOptions([]);
@@ -167,7 +188,10 @@ const TripsView = () => {
               value={formData.destination}
               onChange={(event, newValue) => {
                 handleChange({
-                  target: { name: "destination", value: newValue || "" },
+                  target: {
+                    name: "destination",
+                    value: newValue || "",
+                  },
                 });
               }}
               renderInput={(params) => (
@@ -182,6 +206,7 @@ const TripsView = () => {
                         {loadingOpts ? (
                           <CircularProgress color="inherit" size={20} />
                         ) : null}
+
                         {params.InputProps.endAdornment}
                       </React.Fragment>
                     ),
@@ -189,6 +214,7 @@ const TripsView = () => {
                 />
               )}
             />
+
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField
@@ -201,6 +227,7 @@ const TripsView = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -213,6 +240,7 @@ const TripsView = () => {
                 />
               </Grid>
             </Grid>
+
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField
@@ -224,6 +252,7 @@ const TripsView = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -239,6 +268,7 @@ const TripsView = () => {
                 </TextField>
               </Grid>
             </Grid>
+
             <TextField
               fullWidth
               name="description"
@@ -250,10 +280,12 @@ const TripsView = () => {
             />
           </Box>
         </DialogContent>
+
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setOpen(false)} color="inherit">
             Cancel
           </Button>
+
           <PrimaryButton onClick={handleSubmit} sx={{ px: 3 }}>
             Create Trip
           </PrimaryButton>
@@ -277,6 +309,7 @@ const TripsView = () => {
                       (1000 * 60 * 60 * 24),
                   )
                 : 0;
+
             return (
               <Grid item xs={12} md={6} lg={4} key={trip._id}>
                 <Card
@@ -287,11 +320,16 @@ const TripsView = () => {
                     borderColor: "divider",
                     overflow: "hidden",
                     transition: "transform 0.25s, box-shadow 0.25s",
-                    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 6,
+                    },
                   }}
                 >
                   <CardActionArea
-                    onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
+                    onClick={() =>
+                      navigate(`/dashboard/trips/${trip._id}`)
+                    }
                   >
                     <Box sx={{ position: "relative", pt: "55%" }}>
                       <Box
@@ -311,7 +349,14 @@ const TripsView = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <Box sx={{ position: "absolute", top: 12, right: 12 }}>
+
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                        }}
+                      >
                         <Chip
                           label={
                             trip.status?.charAt(0).toUpperCase() +
@@ -323,10 +368,16 @@ const TripsView = () => {
                         />
                       </Box>
                     </Box>
+
                     <CardContent sx={{ pb: "12px !important" }}>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        gutterBottom
+                      >
                         {trip.destination}
                       </Typography>
+
                       <Box
                         sx={{
                           display: "flex",
@@ -336,20 +387,31 @@ const TripsView = () => {
                         }}
                       >
                         <DateRangeIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
+
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                        >
                           {new Date(trip.startDate).toLocaleDateString(
                             "en-IN",
-                            { day: "2-digit", month: "short" },
+                            {
+                              day: "2-digit",
+                              month: "short",
+                            },
                           )}{" "}
                           →{" "}
-                          {new Date(trip.endDate).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {new Date(trip.endDate).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )}
                           {days > 0 && ` (${days}d)`}
                         </Typography>
                       </Box>
+
                       {trip.budget > 0 && (
                         <Box
                           sx={{
@@ -358,7 +420,11 @@ const TripsView = () => {
                             gap: 0.5,
                           }}
                         >
-                          <WalletIcon fontSize="small" color="success" />
+                          <WalletIcon
+                            fontSize="small"
+                            color="success"
+                          />
+
                           <Typography
                             variant="body2"
                             color="success.main"
@@ -387,11 +453,23 @@ const TripsView = () => {
               elevation={0}
             >
               <FlightTakeoffIcon
-                sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
+                sx={{
+                  fontSize: 56,
+                  color: "text.disabled",
+                  mb: 2,
+                }}
               />
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                {filter === "all" ? "No trips yet!" : `No ${filter} trips`}
+
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                gutterBottom
+              >
+                {filter === "all"
+                  ? "No trips yet!"
+                  : `No ${filter} trips`}
               </Typography>
+
               <PrimaryButton
                 startIcon={<AddIcon />}
                 onClick={() => setOpen(true)}
