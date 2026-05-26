@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -347,6 +347,247 @@ const SearchIcon = () => (
 );
 
 /* ══════════════════════════════════════════════════════════════ */
+/*  CUSTOM CALENDAR PICKER                                         */
+/* ══════════════════════════════════════════════════════════════ */
+const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const MONTHS = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+];
+
+const CustomDatePicker = ({ value, onChange, placeholder = "Select date" }) => {
+  const today = new Date();
+  const parsed = value ? new Date(value + "T00:00:00") : null;
+
+  // view: "days" | "months" | "years"
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState("days");
+  const [viewYear, setViewYear] = useState((parsed || today).getFullYear());
+  const [viewMonth, setViewMonth] = useState((parsed || today).getMonth());
+  const [hovered, setHovered] = useState(null);
+  const [popupStyle, setPopupStyle] = useState({});
+  // years grid: show 12 years starting from yearRangeStart
+  const [yearRangeStart, setYearRangeStart] = useState(
+    Math.floor((parsed || today).getFullYear() / 12) * 12
+  );
+  const triggerRef = useRef(null);
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target) &&
+        popupRef.current && !popupRef.current.contains(e.target)
+      ) { setOpen(false); setView("days"); }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const openPopup = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const popupWidth = 310;
+      const popupHeight = 360;
+      const left = Math.min(
+        Math.max(8, rect.left + rect.width / 2 - popupWidth / 2),
+        window.innerWidth - popupWidth - 8
+      );
+      // flip upward if not enough space below
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const top = spaceBelow >= popupHeight + 16
+        ? rect.bottom + 10
+        : rect.top - popupHeight - 10;
+      setPopupStyle({ position: "fixed", top, left });
+    }
+    setOpen(o => !o);
+    setView("days");
+  };
+
+  const getDays = (y, m) => {
+    const first = new Date(y, m, 1).getDay();
+    const total = new Date(y, m + 1, 0).getDate();
+    return { first, total };
+  };
+
+  const selectDate = (day) => {
+    const d = new Date(viewYear, viewMonth, day);
+    onChange(d.toISOString().split("T")[0]);
+    setOpen(false);
+    setView("days");
+  };
+
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(v => v - 1); }
+    else setViewMonth(m => m - 1);
+  };
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(v => v + 1); }
+    else setViewMonth(m => m + 1);
+  };
+
+  const { first, total } = getDays(viewYear, viewMonth);
+  const cells = Array(first).fill(null).concat(Array.from({ length: total }, (_, i) => i + 1));
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const isSelected = (day) => {
+    if (!day || !parsed) return false;
+    return parsed.getFullYear() === viewYear && parsed.getMonth() === viewMonth && parsed.getDate() === day;
+  };
+  const isToday = (day) => {
+    if (!day) return false;
+    return today.getFullYear() === viewYear && today.getMonth() === viewMonth && today.getDate() === day;
+  };
+  const isPast = (day) => {
+    if (!day) return false;
+    const d = new Date(viewYear, viewMonth, day);
+    d.setHours(0,0,0,0);
+    const t = new Date(); t.setHours(0,0,0,0);
+    return d < t;
+  };
+
+  const displayValue = parsed
+    ? parsed.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    : "";
+
+  // years for the grid
+  const years = Array.from({ length: 12 }, (_, i) => yearRangeStart + i);
+
+  return (
+    <div className="wcp-root">
+      <button type="button" ref={triggerRef} className={`wcp-trigger ${open ? "wcp-trigger--open" : ""}`} onClick={openPopup}>
+        <span className={displayValue ? "wcp-val" : "wcp-placeholder"}>
+          {displayValue || placeholder}
+        </span>
+        <span className="wcp-cal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+            <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+          </svg>
+        </span>
+      </button>
+
+      {open && (
+        <div className="wcp-popup" ref={popupRef} style={popupStyle}>
+
+          {/* ── DAYS VIEW ── */}
+          {view === "days" && (<>
+            <div className="wcp-header">
+              <button type="button" className="wcp-nav" onClick={prevMonth}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <div className="wcp-month-year">
+                <button type="button" className="wcp-month wcp-picker-btn" onClick={() => setView("months")}>
+                  {MONTHS[viewMonth]}
+                  <svg className="wcp-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <button type="button" className="wcp-year wcp-picker-btn" onClick={() => { setYearRangeStart(Math.floor(viewYear / 12) * 12); setView("years"); }}>
+                  {viewYear}
+                  <svg className="wcp-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+              </div>
+              <button type="button" className="wcp-nav" onClick={nextMonth}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div className="wcp-grid wcp-days-row">
+              {DAYS.map(d => <div key={d} className="wcp-day-name">{d}</div>)}
+            </div>
+            <div className="wcp-grid wcp-cells">
+              {cells.map((day, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  disabled={!day || isPast(day)}
+                  onClick={() => day && !isPast(day) && selectDate(day)}
+                  onMouseEnter={() => setHovered(day)}
+                  onMouseLeave={() => setHovered(null)}
+                  className={[
+                    "wcp-cell",
+                    !day ? "wcp-cell--empty" : "",
+                    day && isPast(day) ? "wcp-cell--past" : "",
+                    day && isToday(day) ? "wcp-cell--today" : "",
+                    day && isSelected(day) ? "wcp-cell--selected" : "",
+                    day && hovered === day && !isPast(day) && !isSelected(day) ? "wcp-cell--hover" : "",
+                  ].filter(Boolean).join(" ")}
+                >{day || ""}</button>
+              ))}
+            </div>
+            <div className="wcp-footer">
+              <button type="button" className="wcp-today-btn" onClick={() => {
+                setViewYear(today.getFullYear());
+                setViewMonth(today.getMonth());
+                selectDate(today.getDate());
+              }}>Today</button>
+              {parsed && <button type="button" className="wcp-clear-btn" onClick={() => { onChange(""); setOpen(false); }}>Clear</button>}
+            </div>
+          </>)}
+
+          {/* ── MONTHS VIEW ── */}
+          {view === "months" && (<>
+            <div className="wcp-header">
+              <button type="button" className="wcp-nav" onClick={() => setViewYear(y => y - 1)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button type="button" className="wcp-year wcp-picker-btn" onClick={() => { setYearRangeStart(Math.floor(viewYear / 12) * 12); setView("years"); }}>
+                {viewYear}
+                <svg className="wcp-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <button type="button" className="wcp-nav" onClick={() => setViewYear(y => y + 1)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div className="wcp-month-grid">
+              {MONTHS.map((m, i) => (
+                <button
+                  key={m}
+                  type="button"
+                  className={[
+                    "wcp-month-cell",
+                    i === viewMonth ? "wcp-month-cell--selected" : "",
+                    i === today.getMonth() && viewYear === today.getFullYear() ? "wcp-month-cell--today" : "",
+                  ].filter(Boolean).join(" ")}
+                  onClick={() => { setViewMonth(i); setView("days"); }}
+                >{m.slice(0, 3)}</button>
+              ))}
+            </div>
+          </>)}
+
+          {/* ── YEARS VIEW ── */}
+          {view === "years" && (<>
+            <div className="wcp-header">
+              <button type="button" className="wcp-nav" onClick={() => setYearRangeStart(s => s - 12)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <span className="wcp-year-range">{yearRangeStart} – {yearRangeStart + 11}</span>
+              <button type="button" className="wcp-nav" onClick={() => setYearRangeStart(s => s + 12)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div className="wcp-year-grid">
+              {years.map(y => (
+                <button
+                  key={y}
+                  type="button"
+                  className={[
+                    "wcp-year-cell",
+                    y === viewYear ? "wcp-year-cell--selected" : "",
+                    y === today.getFullYear() ? "wcp-year-cell--today" : "",
+                  ].filter(Boolean).join(" ")}
+                  onClick={() => { setViewYear(y); setView("months"); }}
+                >{y}</button>
+              ))}
+            </div>
+          </>)}
+
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════ */
 /*  COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
 const Home = () => {
@@ -609,54 +850,66 @@ const Home = () => {
 
       {/* ═══ SEARCH BAR ═══ */}
       <div className="wander-search-section">
-        <form className="wander-search-bar" onSubmit={handleSearch}>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Where to</div>
-            <input
-              className="wander-sf-val"
-              placeholder="Bali, Indonesia"
-              value={where}
-              onChange={(e) => setWhere(e.target.value)}
-            />
-          </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Check In</div>
-
-            <div style={{ position: "relative" }}>
+        <div className="wander-search-wrapper">
+          <div className="wander-search-glow" />
+          <form className="wander-search-bar" onSubmit={handleSearch}>
+            {/* Where to */}
+            <div className="wander-sf">
+              <div className="wander-sf-label">
+                <svg className="wander-sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                  <circle cx="12" cy="9" r="2.5"/>
+                </svg>
+                Where to
+              </div>
               <input
                 className="wander-sf-val"
-                type="date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                style={{ paddingRight: "35px" }}
+                placeholder="Bali, Indonesia"
+                value={where}
+                onChange={(e) => setWhere(e.target.value)}
               />
-
-              <span
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                }}
-              >
-                📅
-              </span>
             </div>
-          </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Travellers</div>
-            <input
-              className="wander-sf-val"
-              placeholder="2 Adults, 1 Child"
-              value={travellers}
-              onChange={(e) => setTravellers(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="wander-search-btn">
-            <SearchIcon /> Search
-          </button>
-        </form>
+
+            {/* Check In */}
+            <div className="wander-sf">
+              <div className="wander-sf-label">
+                <svg className="wander-sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <rect x="3" y="4" width="18" height="18" rx="3"/>
+                  <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                Check In
+              </div>
+              <CustomDatePicker
+                value={checkIn}
+                onChange={setCheckIn}
+                placeholder="Pick a date"
+              />
+            </div>
+
+            {/* Travellers */}
+            <div className="wander-sf">
+              <div className="wander-sf-label">
+                <svg className="wander-sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/>
+                </svg>
+                Travellers
+              </div>
+              <input
+                className="wander-sf-val"
+                placeholder="2 Adults, 1 Child"
+                value={travellers}
+                onChange={(e) => setTravellers(e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="wander-search-btn">
+              <SearchIcon />
+              <span className="wander-search-btn-text">Search</span>
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* ═══ DESTINATIONS ═══ */}
