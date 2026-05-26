@@ -914,16 +914,16 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <a href="/about">About</a>
+              <a href="/careers">Careers</a>
+              <a href="/contact">Contact</a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <a href="/help-center">Help Center</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/terms">Terms & Conditions</a>
             </div>
           </div>
         </div>
