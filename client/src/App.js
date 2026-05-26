@@ -35,7 +35,6 @@ function App() {
         <Router>
           <div className="App">
             <Routes>
-              <Route path="/" element={<Home />} />
               <Route
                 path="/dashboard/*"
                 element={
@@ -44,13 +43,11 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
-                path="/reset-password/:token"
-                element={<ResetPassword />}
-              />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
