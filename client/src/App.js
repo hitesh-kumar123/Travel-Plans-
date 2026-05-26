@@ -8,8 +8,8 @@ import theme from "./theme";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
 
-// Import components
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -21,36 +21,47 @@ import SharedTripView from "./pages/dashboard/SharedTripView";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+import TermsOfService from "./pages/TermsOfService";
+
+// ← new wrapper to use hooks inside Router
+const AppRoutes = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/shared-trip/:token" element={<SharedTripView />} />
+      <Route
+        path="/dashboard/*"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 function App() {
-  useEffect(() => {
-    store.dispatch(loadUser());
-  }, []);
-
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
           <div className="App">
-            <Routes>
-              <Route
-                path="/dashboard/*"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-otp" element={<VerifyOtp />} />
-              <Route path="/shared-trip/:token" element={<SharedTripView />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppRoutes /> {/* ← replaces inline Routes */}
           </div>
         </Router>
       </ThemeProvider>

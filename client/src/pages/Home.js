@@ -923,7 +923,7 @@ const Home = () => {
               <h4>Support</h4>
               <a href="/">Help Center</a>
               <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <Link to="/terms-of-service">Terms & Conditions</Link>
             </div>
           </div>
         </div>

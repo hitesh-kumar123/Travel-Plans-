@@ -331,9 +331,14 @@ const Register = () => {
                   I agree to the{" "}
                   <Link
                     component={RouterLink}
-                    to="/terms"
-                    variant="body2"
+                    to="/terms-of-service"
+                    underline="hover"
                     sx={{ fontWeight: 600 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate("/terms-of-service");
+                    }}
                   >
                     Terms of Service
                   </Link>{" "}
