@@ -9,6 +9,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 // Load environment variables from repo root .env (so server can be started from /server)
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
 // Initialize express app
 const app = express();
