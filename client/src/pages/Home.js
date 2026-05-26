@@ -400,12 +400,12 @@ const Home = () => {
   /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
     ? destinations.filter(
-        (d) =>
-          (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase()),
-      )
+      (d) =>
+        (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
+        (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
+        (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
+        (d.category || "").toLowerCase().includes(where.toLowerCase()),
+    )
     : destinations;
 
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
@@ -788,7 +788,7 @@ const Home = () => {
                     <div className="wander-dest-country">
                       {dest
                         ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
+                        item.fallbackLoc
                         : item.fallbackLoc}
                     </div>
                   </div>
@@ -911,8 +911,8 @@ const Home = () => {
             <div className="wander-footer-col">
               <h4>Support</h4>
               <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms & Conditions</Link>
             </div>
           </div>
         </div>
