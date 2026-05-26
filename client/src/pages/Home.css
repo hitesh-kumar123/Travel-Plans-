@@ -328,33 +328,115 @@ html {
 /* ═══ SEARCH BAR ═══ */
 .wander-search-section {
   padding: 0 3rem;
-  margin-top: -2.5rem;
+  margin-top: -3rem;
   position: relative;
-  z-index: 10;
+  z-index: 100;
+}
+
+.wander-search-wrapper {
+  position: relative;
+}
+
+.wander-search-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 22px;
+  background: linear-gradient(
+    135deg,
+    rgba(232, 115, 90, 0.35) 0%,
+    rgba(26, 74, 107, 0.2) 50%,
+    rgba(139, 175, 196, 0.25) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.wander-search-wrapper:focus-within .wander-search-glow {
+  opacity: 1;
 }
 
 .wander-search-bar {
-  background: var(--white);
-  border-radius: 16px;
-  box-shadow: 0 12px 48px rgba(15, 45, 64, 0.14);
+  background: rgba(253, 250, 245, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(15, 45, 64, 0.18),
+    0 4px 16px rgba(15, 45, 64, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  overflow: hidden;
-  border: 0.5px solid rgba(26, 74, 107, 0.1);
+  grid-template-columns: 1.2fr 1fr 1fr auto;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  position: relative;
+}
+
+.wander-search-bar:focus-within {
+  box-shadow:
+    0 28px 72px rgba(15, 45, 64, 0.22),
+    0 8px 24px rgba(15, 45, 64, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
 }
 
 .wander-sf {
-  padding: 1.4rem 1.5rem;
-  border-right: 0.5px solid rgba(26, 74, 107, 0.08);
+  padding: 1.5rem 1.6rem;
+  border-right: 1px solid rgba(26, 74, 107, 0.07);
+  position: relative;
+  transition: background 0.25s ease;
+  cursor: pointer;
+}
+
+.wander-sf:first-child {
+  border-radius: 20px 0 0 20px;
+}
+
+.wander-search-btn {
+  border-radius: 0 20px 20px 0;
+}
+
+.wander-sf::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 1.6rem;
+  right: 1.6rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--coral), var(--ocean));
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wander-sf:focus-within::after {
+  transform: scaleX(1);
+}
+
+.wander-sf:focus-within {
+  background: rgba(26, 74, 107, 0.03);
 }
 
 .wander-sf-label {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--mist);
-  letter-spacing: 0.8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--coral);
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wander-sf-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
 }
 
 .wander-sf-val {
@@ -377,31 +459,188 @@ html {
   font-weight: 500;
   font-family: "DM Sans", sans-serif;
   background: transparent;
+  transition: color 0.2s;
+}
+
+.wander-sf input:focus {
+  color: var(--dark);
 }
 
 .wander-sf input::placeholder {
-  color: #bdc8d0;
+  color: #c0cdd6;
   font-weight: 400;
 }
 
-.wander-search-btn {
-  background: var(--coral);
-  color: white;
-  border: none;
-  padding: 1.4rem 2rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
+/* ── Date field (legacy fallback, replaced by CustomDatePicker) ── */
+.wander-date-field {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background 0.2s;
+}
+
+.wander-date-input-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.wander-calendar-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(26, 74, 107, 0.08), rgba(232, 115, 90, 0.08));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(26, 74, 107, 0.1);
+}
+
+.wander-sf:focus-within .wander-calendar-icon {
+  background: linear-gradient(135deg, var(--coral), #d65e42);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(232, 115, 90, 0.3);
+}
+
+.wander-calendar-icon svg {
+  width: 15px;
+  height: 15px;
+  color: var(--ocean);
+  transition: color 0.25s ease;
+}
+
+.wander-sf:focus-within .wander-calendar-icon svg {
+  color: white;
+}
+
+/* ── Search Button ── */
+.wander-search-btn {
+  background: linear-gradient(135deg, var(--coral) 0%, #d65e42 100%);
+  color: white;
+  border: none;
+  padding: 0 2.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   white-space: nowrap;
   font-family: "DM Sans", sans-serif;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 140px;
+}
+
+.wander-search-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wander-search-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: inherit;
 }
 
 .wander-search-btn:hover {
-  background: #d65e42;
+  background: linear-gradient(135deg, #e8735a 0%, #c04e32 100%);
+  box-shadow:
+    0 8px 24px rgba(232, 115, 90, 0.45),
+    0 2px 8px rgba(232, 115, 90, 0.3);
+  transform: translateY(-1px);
+}
+
+.wander-search-btn:hover::before {
+  opacity: 1;
+}
+
+.wander-search-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.wander-search-btn:active::after {
+  transform: scale(2.5);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.wander-search-btn-text {
+  position: relative;
+  z-index: 1;
+}
+
+.wander-search-btn svg {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.wander-search-btn:hover svg {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+/* ── Search divider lines ── */
+.wander-sf-divider {
+  position: absolute;
+  right: -1px;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(26,74,107,0.12), transparent);
+}
+
+/* ── Responsive search ── */
+@media (max-width: 1024px) {
+  .wander-search-bar {
+    grid-template-columns: 1fr 1fr 1fr auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .wander-search-section {
+    padding: 0 1.25rem;
+    margin-top: -1.5rem;
+  }
+
+  .wander-search-bar {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+
+  .wander-sf {
+    border-right: none;
+    border-bottom: 1px solid rgba(26, 74, 107, 0.07);
+    padding: 1.1rem 1.4rem;
+  }
+
+  .wander-sf::after {
+    left: 1.4rem;
+    right: 1.4rem;
+  }
+
+  .wander-search-btn {
+    padding: 1.3rem 2rem;
+    border-radius: 0 0 16px 16px;
+    min-width: unset;
+    justify-content: center;
+  }
 }
 
 /* ═══ SECTION COMMON ═══ */
@@ -942,16 +1181,24 @@ html {
   }
 
   .wander-search-section {
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
+    margin-top: -1.5rem;
   }
 
   .wander-search-bar {
     grid-template-columns: 1fr;
+    border-radius: 16px;
   }
 
   .wander-sf {
     border-right: none;
-    border-bottom: 0.5px solid rgba(26, 74, 107, 0.08);
+    border-bottom: 1px solid rgba(26, 74, 107, 0.07);
+    padding: 1.1rem 1.4rem;
+  }
+
+  .wander-sf::after {
+    left: 1.4rem;
+    right: 1.4rem;
   }
 
   .wander-section {
@@ -1000,4 +1247,470 @@ html {
     width: 100%;
     text-align: center;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* CUSTOM CALENDAR PICKER                                       */
+/* ═══════════════════════════════════════════════════════════ */
+
+.wcp-root {
+  position: relative;
+  width: 100%;
+}
+
+/* ── Trigger button ── */
+.wcp-trigger {
+  width: 100%;
+  background: rgba(235, 233, 233, 0.99);
+  border: none;
+  padding: 0 px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-family: "DM Sans", sans-serif;
+  text-align: left;
+}
+
+.wcp-val {
+  font-size: 0.95rem;
+  color: var(--ocean);
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  transition: color 0.2s;
+}
+
+.wcp-placeholder {
+  font-size: 0.95rem;
+  color: #c0cdd6;
+  font-weight: 400;
+}
+
+.wcp-cal-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(26, 74, 107, 0.08), rgba(232, 115, 90, 0.08));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(26, 74, 107, 0.1);
+  transition: all 0.25s ease;
+}
+
+.wcp-cal-icon svg {
+  width: 15px;
+  height: 15px;
+  color: var(--ocean);
+  transition: color 0.25s ease;
+}
+
+.wcp-trigger--open .wcp-cal-icon,
+.wcp-trigger:hover .wcp-cal-icon {
+  background: linear-gradient(135deg, var(--coral), #d65e42);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(232, 115, 90, 0.3);
+}
+
+.wcp-trigger--open .wcp-cal-icon svg,
+.wcp-trigger:hover .wcp-cal-icon svg {
+  color: white;
+}
+
+/* ── Popup ── */
+.wcp-popup {
+  position: fixed;
+  width: 380px;
+  background: rgba(253, 250, 245, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  box-shadow:
+    0 24px 64px rgba(15, 45, 64, 0.2),
+    0 6px 20px rgba(15, 45, 64, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 0 1px rgba(26, 74, 107, 0.07);
+  padding: 0.1rem;
+  z-index: 9999;
+  animation: wcp-appear 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wcp-popup::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: rgba(212, 210, 207, 0.97);
+  border-left: 1px solid rgba(26, 74, 107, 0.07);
+  border-top: 1px solid rgba(26, 74, 107, 0.07);
+  border-radius: 3px 0 0 0;
+  transform: translateX(-50%) rotate(45deg);
+  box-shadow: -2px -2px 5px rgba(15, 45, 64, 0.04);
+}
+
+@keyframes wcp-appear {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ── */
+.wcp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0 0.15rem;
+}
+
+.wcp-month-year {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.wcp-month {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  color: var(--ocean);
+  font-weight: 700;
+}
+
+.wcp-year {
+  font-size: 0.82rem;
+  color: var(--mist);
+  font-weight: 500;
+}
+
+.wcp-nav {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 74, 107, 0.12);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--ocean);
+}
+
+.wcp-nav svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wcp-nav:hover {
+  background: var(--ocean);
+  border-color: var(--ocean);
+  color: white;
+  box-shadow: 0 4px 12px rgba(26, 74, 107, 0.25);
+  transform: scale(1.05);
+}
+
+/* ── Grid layout ── */
+.wcp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+/* ── Day names row ── */
+.wcp-days-row {
+  margin-bottom: 5px;
+}
+
+.wcp-day-name {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--mist);
+  letter-spacing: 0.5px;
+  padding: 0.3rem 0;
+  text-transform: uppercase;
+}
+
+/* ── Day cells ── */
+.wcp-cells {
+  gap: 3px;
+}
+
+.wcp-cell {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--dark);
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1;
+}
+
+.wcp-cell--empty {
+  pointer-events: none;
+  background: transparent !important;
+}
+
+/* Past days */
+.wcp-cell--past {
+  color: #cdd6db;
+  cursor: not-allowed;
+  font-weight: 400;
+}
+
+/* Today highlight */
+.wcp-cell--today {
+  color: var(--coral);
+  font-weight: 700;
+}
+
+.wcp-cell--today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+/* Hover state */
+.wcp-cell--hover:not(.wcp-cell--past):not(.wcp-cell--empty) {
+  background: rgba(26, 74, 107, 0.08);
+  color: var(--ocean);
+  transform: scale(1.08);
+}
+
+/* Selected state */
+.wcp-cell--selected {
+  background: linear-gradient(135deg, var(--coral) 0%, #d65e42 100%) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  box-shadow:
+    0 6px 18px rgba(232, 115, 90, 0.45),
+    0 2px 6px rgba(232, 115, 90, 0.3);
+  transform: scale(1.12) !important;
+}
+
+.wcp-cell--selected::after {
+  display: none;
+}
+
+/* Weekends (col 1 = Su, col 7 = Sa) */
+.wcp-cell:nth-child(7n + 1):not(.wcp-cell--empty):not(.wcp-cell--past):not(.wcp-cell--selected)
+/* .wcp-cell:nth-child(7n):not(.wcp-cell--empty):not(.wcp-cell--past):not(.wcp-cell--selected) { */
+{
+  color: #f80e0e;
+}
+
+/* ── Footer ── */
+.wcp-footer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(26, 74, 107, 0.07);
+}
+
+.wcp-today-btn,
+.wcp-clear-btn {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 0.45rem 1rem;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+}
+
+.wcp-today-btn {
+  background: var(--ocean);
+  color: white;
+  box-shadow: 0 2px 8px rgba(26, 74, 107, 0.2);
+}
+
+.wcp-today-btn:hover {
+  background: var(--dark);
+  box-shadow: 0 4px 14px rgba(26, 74, 107, 0.35);
+  transform: translateY(-1px);
+}
+
+.wcp-clear-btn {
+  background: rgba(232, 115, 90, 0.1);
+  color: var(--coral);
+}
+
+.wcp-clear-btn:hover {
+  background: rgba(232, 115, 90, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .wcp-popup {
+    left: 0;
+    transform: none;
+    width: 100%;
+    border-radius: 14px;
+  }
+
+  @keyframes wcp-appear {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+/* ── Picker buttons (month / year in header) ── */
+.wcp-picker-btn {
+  background: white ;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0.2rem 0.45rem;
+  border-radius: 8px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.wcp-picker-btn.wcp-month {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  color: var(--ocean);
+  font-weight: 700;
+}
+
+.wcp-picker-btn.wcp-year {
+  font-size: 0.88rem;
+  color: var(--mist);
+  font-weight: 600;
+}
+
+.wcp-picker-btn:hover {
+  background: rgba(26, 74, 107, 0.08);
+  color: var(--coral) !important;
+}
+
+.wcp-caret {
+  width: 13px;
+  height: 13px;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.wcp-picker-btn:hover .wcp-caret {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ── Year range label ── */
+.wcp-year-range {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ocean);
+  letter-spacing: 0.3px;
+}
+
+/* ── Month grid ── */
+.wcp-month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.wcp-month-cell {
+  padding: 0.65rem 0.4rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--dark);
+  font-family: "DM Sans", sans-serif;
+  text-align: center;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wcp-month-cell:hover {
+  background: rgba(26, 74, 107, 0.08);
+  color: var(--ocean);
+  transform: scale(1.05);
+}
+
+.wcp-month-cell--today {
+  color: var(--coral);
+  font-weight: 700;
+  border-color: rgba(232, 115, 90, 0.25);
+}
+
+.wcp-month-cell--selected {
+  background: linear-gradient(135deg, var(--coral), #d65e42) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(232, 115, 90, 0.4);
+  transform: scale(1.06) !important;
+}
+
+/* ── Year grid ── */
+.wcp-year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.wcp-year-cell {
+  padding: 0.65rem 0.4rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--dark);
+  font-family: "DM Sans", sans-serif;
+  text-align: center;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wcp-year-cell:hover {
+  background: rgba(26, 74, 107, 0.08);
+  color: var(--ocean);
+  transform: scale(1.05);
+}
+
+.wcp-year-cell--today {
+  color: var(--coral);
+  font-weight: 700;
+  border-color: rgba(232, 115, 90, 0.25);
+}
+
+.wcp-year-cell--selected {
+  background: linear-gradient(135deg, var(--coral), #d65e42) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(232, 115, 90, 0.4);
+  transform: scale(1.06) !important;
 }
