@@ -242,14 +242,16 @@ travel-planner/
 
 ## 🚀 Getting Started
 
+> **Important:** This project has **separate** `client` (frontend) and `server` (backend) directories.  
+> **Do not run `npm run dev` from the root directory** – there is no `package.json` there.  
+> Always navigate into `client` or `server` first.
+
 ### Prerequisites
 
-Make sure you have the following installed:
-
-- **Node.js** v18 or higher → [Download](https://nodejs.org/)
-- **MongoDB** (local) or a free **MongoDB Atlas** cluster → [Get Atlas](https://www.mongodb.com/cloud/atlas)
-- **npm** (bundled with Node.js)
-- **OpenWeatherMap API Key** (free) → [Get Key](https://openweathermap.org/api)
+- Node.js v18 or higher → [Download](https://nodejs.org/)
+- MongoDB (local) or a free **MongoDB Atlas** cluster → [Get Atlas](https://www.mongodb.com/cloud/atlas)
+- npm (bundled with Node.js)
+- OpenWeatherMap API Key (free) → [Get Key](https://openweathermap.org/api)
 
 ---
 
@@ -271,6 +273,10 @@ npm install
 cd ../client
 npm install
 ```
+> **⚠️ VERY IMPORTANT**  
+> This project has **separate** `client` and `server` folders.  
+> **Do NOT run `npm run dev` from the root directory** – it will fail.  
+> Always `cd client` or `cd server` first.
 
 ### 3. Configure Environment Variables
 
