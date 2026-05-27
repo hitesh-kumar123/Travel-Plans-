@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import {
   Box,
   Typography,
@@ -36,10 +37,12 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
+import ShareIcon from "@mui/icons-material/Share";
 import {
   getTrip,
   updateTrip,
   deleteTrip,
+  shareTrip,
 } from "../../redux/actions/tripActions";
 import {
   getExpenses,
@@ -75,6 +78,9 @@ const TripDetail = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const [shareLoading, setShareLoading] = useState(false);
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -146,6 +152,16 @@ const TripDetail = () => {
     setEditOpen(false);
   };
 
+  const handleShare = async () => {
+    setShareLoading(true);
+    const token = await dispatch(shareTrip(id));
+    if (token) {
+      setShareLink(`${window.location.origin}/trip/share/${token}`);
+      setShareOpen(true);
+    }
+    setShareLoading(false);
+  };
+
   const tripImage =
     currentTrip?.images?.[0] ||
     "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200";
@@ -188,6 +204,16 @@ const TripDetail = () => {
           Back to Trips
         </Button>
         <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Share Trip">
+            <IconButton
+              onClick={handleShare}
+              color="success"
+              sx={{ bgcolor: "success.light" }}
+              disabled={shareLoading}
+            >
+              <ShareIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Edit Trip">
             <IconButton
               onClick={() => setEditOpen(true)}
@@ -835,6 +861,40 @@ const TripDetail = () => {
           <Button onClick={() => setEditOpen(false)}>Cancel</Button>
           <Button onClick={handleEditTrip} variant="contained">
             Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Share Trip Dialog */}
+      <Dialog
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Share Trip 🔗</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Anyone with this link can view your trip to{" "}
+            <strong>{currentTrip.destination}</strong> (read-only).
+          </DialogContentText>
+          <TextField
+            fullWidth
+            value={shareLink}
+            InputProps={{ readOnly: true }}
+            onClick={(e) => e.target.select()}
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setShareOpen(false)}>Close</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigator.clipboard.writeText(shareLink);
+              toast.success("Link copied to clipboard! 📋");
+            }}
+          >
+            Copy Link
           </Button>
         </DialogActions>
       </Dialog>
