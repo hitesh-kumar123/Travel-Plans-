@@ -520,14 +520,26 @@ const ProfileView = () => {
                 variant="body2"
                 color="primary.dark"
                 fontWeight={600}
-                sx={{ display: "flex", alignItems: "center", gap: 1, fontSize: 0 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  fontSize: 0,
+                }}
               >
                 <Box
                   component="span"
-                  sx={{ display: "inline-flex", alignItems: "center", gap: 1, fontSize: "0.875rem" }}
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 1,
+                    fontSize: "0.875rem",
+                  }}
                 >
                   <ExploreIcon sx={{ fontSize: 18, color: "primary.dark" }} />
-                  <Box component="span">Keep exploring! Your next adventure awaits.</Box>
+                  <Box component="span">
+                    Keep exploring! Your next adventure awaits.
+                  </Box>
                 </Box>
                 🌍 Keep exploring! Your next adventure awaits.
               </Typography>
