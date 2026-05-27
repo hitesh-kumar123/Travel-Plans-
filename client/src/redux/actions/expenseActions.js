@@ -1,4 +1,4 @@
-import api from "../../services/api";
+import api, { formatApiError } from "../../services/api";
 import { toast } from "react-toastify";
 import {
   GET_EXPENSES,
@@ -8,6 +8,19 @@ import {
   EXPENSE_ERROR,
   SET_LOADING,
 } from "../types/expenseTypes";
+
+const reportExpenseError = (operation, err, fallbackMessage) => {
+  const apiError = formatApiError(err, fallbackMessage);
+  console.error(`[expense:${operation}]`, {
+    operation,
+    message: apiError.message,
+    requestId: apiError.requestId,
+    status: apiError.status,
+    method: apiError.method,
+    url: apiError.url,
+  });
+  return apiError.message;
+};
 
 // Get all user expenses (across all trips) — for dashboard analytics
 export const getAllUserExpenses = () => async (dispatch) => {
@@ -19,9 +32,10 @@ export const getAllUserExpenses = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    const msg = reportExpenseError("getAllUserExpenses", err, "Error fetching all expenses");
     dispatch({
       type: EXPENSE_ERROR,
-      payload: err.response?.data?.msg || "Error fetching all expenses",
+      payload: msg,
     });
   }
 };
@@ -37,9 +51,10 @@ export const getExpenses = (tripId) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    const msg = reportExpenseError("getExpenses", err, "Error fetching expenses");
     dispatch({
       type: EXPENSE_ERROR,
-      payload: err.response?.data?.msg || "Error fetching expenses",
+      payload: msg,
     });
   }
 };
@@ -55,7 +70,7 @@ export const addExpense = (formData) => async (dispatch) => {
     });
     toast.success("Expense added! 💰");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error adding expense";
+    const msg = reportExpenseError("addExpense", err, "Error adding expense");
     dispatch({
       type: EXPENSE_ERROR,
       payload: msg,
@@ -75,7 +90,7 @@ export const deleteExpense = (id) => async (dispatch) => {
     });
     toast.success("Expense deleted 🗑️");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error deleting expense";
+    const msg = reportExpenseError("deleteExpense", err, "Error deleting expense");
     dispatch({
       type: EXPENSE_ERROR,
       payload: msg,
@@ -94,9 +109,10 @@ export const getExpenseSummary = (tripId) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    const msg = reportExpenseError("getExpenseSummary", err, "Error fetching expense summary");
     dispatch({
       type: EXPENSE_ERROR,
-      payload: err.response?.data?.msg || "Error fetching expense summary",
+      payload: msg,
     });
   }
 };

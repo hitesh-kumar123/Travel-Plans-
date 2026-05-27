@@ -6,6 +6,7 @@ const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler");
+const crypto = require("crypto");
 
 // Load environment variables from repo root .env (so server can be started from /server)
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -49,6 +50,14 @@ app.use(
   }),
 );
 app.use(express.json());
+
+// Attach a stable request id to every response so failures can be traced in the UI.
+app.use((req, res, next) => {
+  const requestId = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString("hex");
+  req.requestId = requestId;
+  res.setHeader("X-Request-Id", requestId);
+  next();
+});
 
 // Import routes
 const authRoutes = require("./routes/auth");
