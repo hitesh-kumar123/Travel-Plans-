@@ -628,20 +628,7 @@ const Home = () => {
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
-                style={{ paddingRight: "35px" }}
               />
-
-              <span
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                }}
-              >
-                📅
-              </span>
             </div>
           </div>
           <div className="wander-sf">
