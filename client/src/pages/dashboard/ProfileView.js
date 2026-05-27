@@ -23,6 +23,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
 import EmailIcon from "@mui/icons-material/Email";
+import ExploreIcon from "@mui/icons-material/Explore";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
 import { toast } from "react-toastify";
@@ -515,7 +516,19 @@ const ProfileView = () => {
 
             <Divider sx={{ my: 3 }} />
             <Box sx={{ p: 2, bgcolor: "primary.light", borderRadius: 2 }}>
-              <Typography variant="body2" color="primary.dark" fontWeight={600}>
+              <Typography
+                variant="body2"
+                color="primary.dark"
+                fontWeight={600}
+                sx={{ display: "flex", alignItems: "center", gap: 1, fontSize: 0 }}
+              >
+                <Box
+                  component="span"
+                  sx={{ display: "inline-flex", alignItems: "center", gap: 1, fontSize: "0.875rem" }}
+                >
+                  <ExploreIcon sx={{ fontSize: 18, color: "primary.dark" }} />
+                  <Box component="span">Keep exploring! Your next adventure awaits.</Box>
+                </Box>
                 🌍 Keep exploring! Your next adventure awaits.
               </Typography>
             </Box>
