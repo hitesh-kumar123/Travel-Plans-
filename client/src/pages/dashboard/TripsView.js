@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Typography,
   Box,
   Button,
   Grid,
   Paper,
+  Alert,
   Card,
   CardContent,
   CardActionArea,
@@ -19,6 +21,7 @@ import {
   CircularProgress,
   Chip,
   MenuItem,
+  Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
@@ -26,12 +29,52 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
 import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
-import api from "../../services/api";
+
+const TRIP_DRAFT_KEY = "travel-plans:trip-draft";
+
+const EMPTY_TRIP_FORM = {
+  destination: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  budget: "",
+  status: "planned",
+};
 
 const STATUS_COLORS = {
   planned: "primary",
   ongoing: "warning",
   completed: "success",
+};
+
+const isTripFormPopulated = (data) =>
+  Object.values(data || {}).some((value) => String(value ?? "").trim().length > 0);
+
+const readTripDraft = () => {
+  try {
+    const raw = localStorage.getItem(TRIP_DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.formData) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const saveTripDraft = (formData) => {
+  localStorage.setItem(
+    TRIP_DRAFT_KEY,
+    JSON.stringify({
+      version: 1,
+      savedAt: new Date().toISOString(),
+      formData,
+    }),
+  );
+};
+
+const clearTripDraft = () => {
+  localStorage.removeItem(TRIP_DRAFT_KEY);
 };
 
 const TripsView = () => {
@@ -40,14 +83,9 @@ const TripsView = () => {
   const { trips, loading } = useSelector((state) => state.trips);
 
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    destination: "",
-    startDate: "",
-    endDate: "",
-    description: "",
-    budget: "",
-    status: "planned",
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_TRIP_FORM });
+  const [draftMeta, setDraftMeta] = useState(null);
+  const [draftTouched, setDraftTouched] = useState(false);
 
   const [filter, setFilter] = useState("all");
   const [options, setOptions] = useState([]);
@@ -56,6 +94,28 @@ const TripsView = () => {
   useEffect(() => {
     dispatch(getTrips());
   }, [dispatch]);
+
+  useEffect(() => {
+    const savedDraft = readTripDraft();
+    if (savedDraft) {
+      setDraftMeta({
+        savedAt: savedDraft.savedAt,
+        destination: savedDraft.formData?.destination || "",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open || !draftTouched || !isTripFormPopulated(formData)) {
+      return;
+    }
+
+    saveTripDraft(formData);
+    setDraftMeta({
+      savedAt: new Date().toISOString(),
+      destination: formData.destination || "",
+    });
+  }, [formData, draftTouched, open]);
 
   const fetchDestinations = async (query) => {
     if (!query) {
@@ -73,25 +133,51 @@ const TripsView = () => {
     }
   };
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
+    setDraftTouched(true);
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = (e) => {
+  const handleRestoreDraft = () => {
+    const savedDraft = readTripDraft();
+    if (!savedDraft?.formData) {
+      toast.info("No saved trip draft found.");
+      return;
+    }
+
+    setFormData({ ...EMPTY_TRIP_FORM, ...savedDraft.formData });
+    setDraftTouched(true);
+    toast.info("Trip draft restored.");
+  };
+
+  const handleDiscardDraft = () => {
+    clearTripDraft();
+    setDraftMeta(null);
+    setDraftTouched(false);
+    setFormData({ ...EMPTY_TRIP_FORM });
+    toast.info("Trip draft discarded.");
+  };
+
+  const resetForm = () => {
+    setFormData({ ...EMPTY_TRIP_FORM });
+    setDraftTouched(false);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
-    dispatch(
+
+    const createdTrip = await dispatch(
       addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
     );
-    setOpen(false);
-    setFormData({
-      destination: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-      budget: "",
-      status: "planned",
-    });
+
+    if (createdTrip) {
+      clearTripDraft();
+      setDraftMeta(null);
+      setOpen(false);
+      resetForm();
+    }
   };
 
   const filteredTrips = trips
@@ -149,6 +235,25 @@ const TripsView = () => {
       >
         <DialogTitle sx={{ fontWeight: 700 }}>Plan a New Trip</DialogTitle>
         <DialogContent>
+          {draftMeta && (
+            <Alert
+              severity="info"
+              sx={{ mt: 1, mb: 2 }}
+              action={
+                <Stack direction="row" spacing={1}>
+                  <Button color="inherit" size="small" onClick={handleRestoreDraft}>
+                    Restore
+                  </Button>
+                  <Button color="inherit" size="small" onClick={handleDiscardDraft}>
+                    Discard
+                  </Button>
+                </Stack>
+              }
+            >
+              Saved draft found{draftMeta.destination ? ` for ${draftMeta.destination}` : ""}
+              {draftMeta.savedAt ? ` • saved ${new Date(draftMeta.savedAt).toLocaleString()}` : ""}
+            </Alert>
+          )}
           <Box
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2.5 }}
           >
