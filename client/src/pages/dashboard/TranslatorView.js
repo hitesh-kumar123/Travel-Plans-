@@ -17,22 +17,27 @@ import {
 import TranslateIcon from "@mui/icons-material/Translate";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import WarningIcon from "@mui/icons-material/Warning";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { translateText } from "../../redux/actions/translatorActions";
 
 const LANGUAGES = [
   { code: "auto", name: "Auto Detect" },
-  { code: "en", name: "English 🇬🇧" },
-  { code: "hi", name: "Hindi 🇮🇳" },
-  { code: "es", name: "Spanish 🇪🇸" },
-  { code: "fr", name: "French 🇫🇷" },
-  { code: "de", name: "German 🇩🇪" },
-  { code: "it", name: "Italian 🇮🇹" },
-  { code: "ja", name: "Japanese 🇯🇵" },
-  { code: "ko", name: "Korean 🇰🇷" },
-  { code: "zh", name: "Chinese 🇨🇳" },
-  { code: "ar", name: "Arabic 🇸🇦" },
-  { code: "pt", name: "Portuguese 🇵🇹" },
-  { code: "ru", name: "Russian 🇷🇺" },
+  { code: "en", name: "English (EN)" },
+  { code: "hi", name: "Hindi (HI)" },
+  { code: "es", name: "Spanish (ES)" },
+  { code: "fr", name: "French (FR)" },
+  { code: "de", name: "German (DE)" },
+  { code: "it", name: "Italian (IT)" },
+  { code: "ja", name: "Japanese (JA)" },
+  { code: "ko", name: "Korean (KO)" },
+  { code: "zh", name: "Chinese (ZH)" },
+  { code: "ar", name: "Arabic (AR)" },
+  { code: "pt", name: "Portuguese (PT)" },
+  { code: "ru", name: "Russian (RU)" },
 ];
 
 const TARGET_LANGS = LANGUAGES.filter((l) => l.code !== "auto");
@@ -112,8 +117,11 @@ const TranslatorView = () => {
           fontWeight={700}
           mb={1.5}
           color="text.secondary"
+          display="flex"
+          alignItems="center"
+          gap={1}
         >
-          🗣️ Common Travel Phrases
+          <TranslateIcon sx={{ fontSize: "1.1rem" }} /> Common Travel Phrases
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
           {COMMON_PHRASES.map((p) => (
@@ -327,31 +335,31 @@ const TranslatorView = () => {
           bgcolor: "grey.50",
         }}
       >
-        <Typography variant="subtitle1" fontWeight={700} mb={1.5}>
-          ✈️ Language Tips for Travelers
+        <Typography variant="subtitle1" fontWeight={700} mb={1.5} display="flex" alignItems="center" gap={1}>
+          <FlightTakeoffIcon color="primary" sx={{ fontSize: "1.3rem" }} /> Language Tips for Travelers
         </Typography>
         <Grid container spacing={2}>
           {[
             {
               tip: "Always learn: Hello, Thank you, Sorry, and Help",
-              icon: "💡",
+              icon: <LightbulbIcon color="warning" sx={{ fontSize: 22 }} />,
             },
             {
               tip: "Carry a translated card for dietary restrictions",
-              icon: "🍽️",
+              icon: <RestaurantIcon color="success" sx={{ fontSize: 22 }} />,
             },
             {
               tip: "Save emergency translations offline before travel",
-              icon: "🚨",
+              icon: <WarningIcon color="error" sx={{ fontSize: 22 }} />,
             },
             {
               tip: "Download Google Translate's offline language pack",
-              icon: "📱",
+              icon: <SmartphoneIcon color="info" sx={{ fontSize: 22 }} />,
             },
           ].map((t, i) => (
             <Grid item xs={12} sm={6} key={i}>
               <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
-                <Typography sx={{ fontSize: 22 }}>{t.icon}</Typography>
+                <Box sx={{ display: "flex", pt: 0.25 }}>{t.icon}</Box>
                 <Typography variant="body2" color="text.secondary">
                   {t.tip}
                 </Typography>
