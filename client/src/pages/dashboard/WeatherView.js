@@ -92,6 +92,7 @@ const WeatherView = () => {
         >
           <TextField
             fullWidth
+            autoFocus
             placeholder="Enter city name (e.g. Goa, Mumbai, London)"
             variant="outlined"
             value={location}

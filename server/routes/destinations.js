@@ -29,6 +29,7 @@ router.get("/search", async (req, res) => {
     }).limit(10);
     res.json(data);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });

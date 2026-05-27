@@ -16,6 +16,7 @@ module.exports = function (req, res, next) {
     req.user = decoded.user;
     next();
   } catch (err) {
+    console.error("Auth middleware token verify error:", err);
     res.status(401).json({ msg: "Token is not valid" });
   }
 };

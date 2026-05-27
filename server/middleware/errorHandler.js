@@ -1,6 +1,7 @@
 // Global error handler middleware
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
+  void next; // keep `next` parameter for Express but mark as used for linters
 
   // Mongoose validation error
   if (err.name === "ValidationError") {

@@ -25,6 +25,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
+import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 import useTripDraft from "../../components/useTripDraft";
@@ -166,15 +167,13 @@ const TripsView = () => {
             {trips?.length || 0} trips so far
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
+        <PrimaryButton
           startIcon={<AddIcon />}
           onClick={handleOpen}
           sx={{ borderRadius: 3, px: 3 }}
         >
           New Trip
-        </Button>
+        </PrimaryButton>
       </Box>
 
       {/* Filter Chips */}
@@ -299,14 +298,9 @@ const TripsView = () => {
           <Button onClick={handleClose} color="inherit">
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            color="primary"
-            sx={{ px: 3 }}
-          >
+          <PrimaryButton onClick={handleSubmit} sx={{ px: 3 }}>
             Create Trip
-          </Button>
+          </PrimaryButton>
         </DialogActions>
       </Dialog>
 
@@ -484,14 +478,13 @@ const TripsView = () => {
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 {filter === "all" ? "No trips yet!" : `No ${filter} trips`}
               </Typography>
-              <Button
-                variant="contained"
+              <PrimaryButton
                 startIcon={<AddIcon />}
                 onClick={handleOpen}
                 sx={{ mt: 1 }}
               >
                 Plan Your First Trip
-              </Button>
+              </PrimaryButton>
             </Paper>
           </Grid>
         )}

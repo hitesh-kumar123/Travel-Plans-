@@ -23,6 +23,10 @@
   overflow-x: hidden;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* ═══ NAV ═══ */
 .wander-nav {
   display: flex;
@@ -32,9 +36,24 @@
   background: rgba(253, 250, 245, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 0.5px solid rgba(26, 74, 107, 0.12);
-  position: sticky;
+  position: fixed;
+  width: 100%;
+  left: 0;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
+  transition:
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.wander-nav-scrolled {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  background: rgba(253, 250, 245, 0.98);
+}
+
+#wander-dest-section,
+#wander-features {
+  scroll-margin-top: 100px;
 }
 
 .wander-logo {
@@ -538,7 +557,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
 }
 
 .wander-feat-card:hover {
