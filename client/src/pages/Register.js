@@ -19,6 +19,7 @@ import {
   StepLabel,
   FormControlLabel,
   Checkbox,
+  CircularProgress, // Added for loading spinner
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -47,6 +48,7 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false); // Keeps track of API registration request
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -174,7 +176,7 @@ const Register = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (activeStep === steps.length - 1) {
       const payload = {
@@ -185,13 +187,23 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       };
-      dispatch(register(payload, navigate));
+
+      setLoading(true); // Start loading spinner on final submit
+      try {
+        await dispatch(register(payload, navigate));
+      } catch (error) {
+        console.error(error);
+      } // Keep loading true if registration succeeds and redirects, otherwise hide in finally if needed
+      // If you want it to stop loading on registration failure, uncomment the line below:
+      // finally { setLoading(false); }
     } else {
       handleNext();
     }
   };
 
   const isNextDisabled = () => {
+    if (loading) return true; // Disables button during API request
+
     if (activeStep === 0) {
       return (
         !formData.firstName ||
@@ -493,13 +505,18 @@ const Register = () => {
               borderColor: "divider",
             }}
           >
-            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+            <prope
+              Stepper
+              activeStep={activeStep}
+              alternativeLabel
+              sx={{ mb: 4 }}
+            >
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
-            </Stepper>
+            </prope>
 
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
@@ -508,6 +525,7 @@ const Register = () => {
                 {activeStep > 0 && (
                   <Button
                     onClick={handleBack}
+                    disabled={loading}
                     startIcon={<ArrowBackIcon />}
                     variant="outlined"
                     sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
@@ -520,14 +538,20 @@ const Register = () => {
                   disabled={isNextDisabled()}
                   sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
                   endIcon={
-                    activeStep === steps.length - 1 ? (
+                    loading ? null : activeStep === steps.length - 1 ? (
                       <HowToRegIcon />
                     ) : (
                       <ArrowForwardIcon />
                     )
                   }
                 >
-                  {activeStep === steps.length - 1 ? "Create Account" : "Next"}
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : activeStep === steps.length - 1 ? (
+                    "Create Account"
+                  ) : (
+                    "Next"
+                  )}
                 </PrimaryButton>
               </Box>
 

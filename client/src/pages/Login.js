@@ -15,6 +15,7 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  CircularProgress, // Added for loading spinner
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -34,6 +35,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false); // Keeps track of API requests
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -146,6 +148,7 @@ const Login = () => {
 
   const isSignInDisabled = () => {
     return (
+      loading || // Disables button while form is submitting
       !formData.email ||
       formData.email.trim() === "" ||
       !!errors.email ||
@@ -155,10 +158,17 @@ const Login = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      dispatch(login(formData, navigate));
+      setLoading(true); // Start loading spinner
+      try {
+        await dispatch(login(formData, navigate));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false); // Stop loading spinner whether request passes or fails
+      }
     }
   };
 
@@ -353,9 +363,13 @@ const Login = () => {
                 size="large"
                 disabled={isSignInDisabled()}
                 sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }}
-                endIcon={<LoginIcon />}
+                endIcon={loading ? null : <LoginIcon />}
               >
-                Sign In
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Sign In"
+                )}
               </PrimaryButton>
 
               <Divider sx={{ my: 3 }}>
