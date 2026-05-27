@@ -5,7 +5,6 @@ import { login } from "../redux/actions/authActions";
 import {
   Box,
   TextField,
-  Button,
   Typography,
   Paper,
   Link,
@@ -22,6 +21,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
+import PrimaryButton from "../components/PrimaryButton";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -99,7 +99,6 @@ const Login = () => {
     });
 
     if (name === "email") {
-      // Real-time strict RFC 5322 email pre-validation for login inputs
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
@@ -145,7 +144,6 @@ const Login = () => {
     return isValid;
   };
 
-  // Dynamically disable Sign In button when email or password fields are empty or invalid
   const isSignInDisabled = () => {
     return (
       !formData.email ||
@@ -160,7 +158,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      dispatch(login(formData));
+      dispatch(login(formData, navigate));
     }
   };
 
@@ -172,7 +170,6 @@ const Login = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {/* Left side with image - shown only on desktop */}
       {!isMobile && (
         <Box
           sx={{
@@ -181,7 +178,10 @@ const Login = () => {
               "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            position: "relative",
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            alignSelf: "flex-start",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
@@ -198,13 +198,7 @@ const Login = () => {
               backdropFilter: "blur(2px)",
             }}
           />
-          <Box
-            sx={{
-              position: "relative",
-              p: 6,
-              color: "white",
-            }}
-          >
+          <Box sx={{ position: "relative", p: 6, color: "white" }}>
             <Typography
               variant="h3"
               component="h1"
@@ -246,7 +240,6 @@ const Login = () => {
         </Box>
       )}
 
-      {/* Right side with login form */}
       <Box
         sx={{
           flex: 1,
@@ -257,12 +250,7 @@ const Login = () => {
           p: 4,
         }}
       >
-        <Box
-          sx={{
-            maxWidth: 480,
-            width: "100%",
-          }}
-        >
+        <Box sx={{ maxWidth: 480, width: "100%" }}>
           <Box sx={{ textAlign: "center", mb: 5 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Welcome Back
@@ -310,22 +298,24 @@ const Login = () => {
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={toggleShowPassword}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <VisibilityOffIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={toggleShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={{ mb: 1 }}
               />
@@ -357,22 +347,16 @@ const Login = () => {
                 </Link>
               </Box>
 
-              <Button
+              <PrimaryButton
                 type="submit"
                 fullWidth
-                variant="contained"
                 size="large"
                 disabled={isSignInDisabled()}
-                sx={{
-                  py: 1.5,
-                  mb: 3,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                }}
+                sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }}
                 endIcon={<LoginIcon />}
               >
                 Sign In
-              </Button>
+              </PrimaryButton>
 
               <Divider sx={{ my: 3 }}>
                 <Typography variant="body2" color="text.secondary">

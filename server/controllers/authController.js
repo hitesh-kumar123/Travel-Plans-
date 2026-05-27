@@ -7,6 +7,17 @@ const {
   getPasswordResetTemplate,
 } = require("../utils/emailTemplates");
 
+const buildEmailFailureMessage = (action) =>
+  `We could not send the verification email for ${action}. Please try again in a moment.`;
+
+const logEmailFailure = (action, emailErr) => {
+  console.error(`[authController] ${action} email send failed`, {
+    message: emailErr.message,
+    cause: emailErr.cause?.message,
+    stack: emailErr.stack,
+  });
+};
+
 // Register a new user
 exports.register = async (req, res, next) => {
   try {
@@ -74,14 +85,11 @@ exports.register = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error("Failed to send registration email:", emailErr);
-      if (process.env.SMTP_HOST) {
-        // Rollback user creation to prevent orphaned unverified accounts in production
-        await User.findByIdAndDelete(user._id);
-        return res.status(500).json({
-          msg: "Failed to send verification email. Registration rolled back. Please try again later.",
-        });
-      }
+      logEmailFailure("registration", emailErr);
+      await User.deleteOne({ _id: user._id });
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("registration"),
+      });
     }
 
     // Dev mode log
@@ -194,21 +202,10 @@ exports.login = async (req, res, next) => {
             ),
           });
         } catch (emailErr) {
-          console.error(
-            "Failed to send verification email on login:",
-            emailErr,
-          );
-          if (process.env.SMTP_HOST) {
-            // Rollback
-            user.otp = oldOtp;
-            user.otpExpire = oldOtpExpire;
-            user.otpLastResent = oldOtpLastResent;
-            user.otpResendAttempts = oldOtpResendAttempts;
-            await user.save();
-            return res.status(500).json({
-              msg: "Failed to send verification email. Please try again later.",
-            });
-          }
+          logEmailFailure("login OTP resend", emailErr);
+          return res.status(500).json({
+            msg: buildEmailFailureMessage("login OTP resend"),
+          });
         }
 
         if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -312,7 +309,7 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(404).json({ msg: "There is no user with that email" });
+      return res.status(400).json({ msg: "There is no user with that email" });
     }
 
     // Get reset token
@@ -571,18 +568,10 @@ exports.resendOtp = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error("Failed to send new verification email:", emailErr);
-      if (process.env.SMTP_HOST) {
-        // Rollback state in production
-        user.otp = oldOtp;
-        user.otpExpire = oldOtpExpire;
-        user.otpResendAttempts = oldOtpResendAttempts;
-        user.otpLastResent = oldOtpLastResent;
-        await user.save();
-        return res.status(500).json({
-          msg: "Failed to send verification email. Please try again later.",
-        });
-      }
+      logEmailFailure("OTP resend", emailErr);
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("OTP resend"),
+      });
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -766,22 +755,10 @@ exports.requestEmailChange = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error(
-        "Failed to send email change verification email:",
-        emailErr,
-      );
-      if (process.env.SMTP_HOST) {
-        // Rollback
-        currentUser.otp = oldOtp;
-        currentUser.otpExpire = oldOtpExpire;
-        currentUser.otpResendAttempts = oldOtpResendAttempts;
-        currentUser.otpLastResent = oldOtpLastResent;
-        currentUser.tempEmail = oldTempEmail;
-        await currentUser.save();
-        return res.status(500).json({
-          msg: "Failed to send verification email to your new address. Please try again later.",
-        });
-      }
+      logEmailFailure("email change OTP", emailErr);
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("email change request"),
+      });
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {

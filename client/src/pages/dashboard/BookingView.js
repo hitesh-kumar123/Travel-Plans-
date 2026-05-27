@@ -24,6 +24,7 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import PoolIcon from "@mui/icons-material/Pool";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
+import PrimaryButton from "../../components/PrimaryButton";
 import {
   searchFlights,
   searchHotels,
@@ -187,17 +188,16 @@ const BookingView = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={2.4}>
-                  <Button
+                  <PrimaryButton
                     type="submit"
                     fullWidth
-                    variant="contained"
                     size="large"
                     startIcon={<SearchIcon />}
                     disabled={loading}
                     sx={{ height: 56, borderRadius: 3, fontWeight: 700 }}
                   >
                     {loading ? <CircularProgress size={20} /> : "Search"}
-                  </Button>
+                  </PrimaryButton>
                 </Grid>
               </Grid>
             </Box>
@@ -281,17 +281,16 @@ const BookingView = () => {
                   </TextField>
                 </Grid>
                 <Grid item xs={12} md={2.4}>
-                  <Button
+                  <PrimaryButton
                     type="submit"
                     fullWidth
-                    variant="contained"
                     size="large"
                     startIcon={<SearchIcon />}
                     disabled={loading}
                     sx={{ height: 56, borderRadius: 3, fontWeight: 700 }}
                   >
                     {loading ? <CircularProgress size={20} /> : "Search"}
-                  </Button>
+                  </PrimaryButton>
                 </Grid>
               </Grid>
             </Box>

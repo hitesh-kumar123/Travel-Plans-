@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -360,6 +360,7 @@ const Home = () => {
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     api
@@ -369,6 +370,16 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleAddTrip = (dest) => {
@@ -414,7 +425,7 @@ const Home = () => {
   return (
     <div className="wander-page">
       {/* ═══ NAVBAR ═══ */}
-      <nav className="wander-nav">
+      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
         <Link to="/" className="wander-logo">
           Pack<span>Go</span>
         </Link>
@@ -923,9 +934,16 @@ const Home = () => {
           </div>
 
           <div className="wander-footer-socials">
-            <a href="/">FB</a>
-            <a href="/">IG</a>
-            <a href="/">TW</a>
+            {/* Social media icons */}
+            <a href="/" aria-label="Facebook">
+              <FaFacebook />
+            </a>
+            <a href="/" aria-label="Instagram">
+              <FaInstagram />
+            </a>
+            <a href="/" aria-label="Twitter">
+              <FaTwitter />
+            </a>
           </div>
         </div>
       </footer>
