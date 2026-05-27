@@ -12,6 +12,7 @@ import {
 import PlaceIcon from "@mui/icons-material/Place";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const SharedTripView = () => {
   const { token } = useParams();
@@ -41,6 +42,7 @@ const SharedTripView = () => {
         <CircularProgress />
       </Box>
     );
+
   if (error)
     return (
       <Box sx={{ textAlign: "center", mt: 8 }}>
@@ -61,13 +63,55 @@ const SharedTripView = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", p: { xs: 2, md: 4 } }}>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ mb: 1, display: "block" }}
+      <Paper
+        elevation={0}
+        sx={{
+          mb: 2,
+          p: { xs: 1.5, sm: 2 },
+          borderRadius: 3,
+          border: "1px solid",
+          borderColor: "info.light",
+          bgcolor: "rgba(2, 136, 209, 0.08)",
+        }}
       >
-        👁️ Shared Trip (Read-only)
-      </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: { xs: "flex-start", sm: "center" },
+            gap: 1.25,
+          }}
+        >
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(2, 136, 209, 0.14)",
+              color: "info.main",
+              flexShrink: 0,
+            }}
+          >
+            <VisibilityIcon fontSize="small" />
+          </Box>
+          <Box>
+            <Typography
+              variant="subtitle2"
+              fontWeight={700}
+              color="info.dark"
+              sx={{ lineHeight: 1.2 }}
+            >
+              Shared Trip Preview
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              You are viewing a read-only version of this trip.
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+
       <Box
         sx={{
           position: "relative",
@@ -130,7 +174,7 @@ const SharedTripView = () => {
           },
           {
             label: "Budget",
-            value: `₹${(trip.budget || 0).toLocaleString()}`,
+            value: `\u20B9${(trip.budget || 0).toLocaleString()}`,
             icon: <WalletIcon color="success" />,
           },
         ].map(({ label, value, icon }) => (
