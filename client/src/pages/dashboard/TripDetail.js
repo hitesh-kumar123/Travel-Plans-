@@ -670,11 +670,13 @@ const TripDetail = () => {
       {/* Delete Confirm Dialog */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
         <DialogTitle>Delete Trip?</DialogTitle>
-        <DialogContentText sx={{ px: 3 }}>
-          This will permanently delete your trip to{" "}
-          <strong>{currentTrip.destination}</strong> and all associated
-          expenses.
-        </DialogContentText>
+        <DialogContent>
+          <DialogContentText sx={{ px: 3 }}>
+            This will permanently delete your trip to{" "}
+            <strong>{currentTrip.destination}</strong> and all associated
+            expenses.
+          </DialogContentText>
+        </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
           <Button onClick={handleDeleteTrip} variant="contained" color="error">
