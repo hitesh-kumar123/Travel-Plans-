@@ -1,4 +1,4 @@
-import api from "../../services/api";
+import api, { formatApiError } from "../../services/api";
 import { toast } from "react-toastify";
 import {
   GET_TRIPS,
@@ -10,6 +10,19 @@ import {
   SET_LOADING,
 } from "../types/tripTypes";
 
+const reportTripError = (operation, err, fallbackMessage) => {
+  const apiError = formatApiError(err, fallbackMessage);
+  console.error(`[trip:${operation}]`, {
+    operation,
+    message: apiError.message,
+    requestId: apiError.requestId,
+    status: apiError.status,
+    method: apiError.method,
+    url: apiError.url,
+  });
+  return apiError.message;
+};
+
 // Get all user trips
 export const getTrips = () => async (dispatch) => {
   dispatch({ type: SET_LOADING });
@@ -20,9 +33,10 @@ export const getTrips = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    const msg = reportTripError("getTrips", err, "Error fetching trips");
     dispatch({
       type: TRIP_ERROR,
-      payload: err.response?.data?.msg || "Error fetching trips",
+      payload: msg,
     });
   }
 };
@@ -37,11 +51,12 @@ export const getTrip = (id) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    const msg = reportTripError("getTrip", err, "Error fetching trip");
     dispatch({
       type: TRIP_ERROR,
-      payload: err.response?.data?.msg || "Error fetching trip",
+      payload: msg,
     });
-    toast.error("Failed to load trip details");
+    toast.error(msg);
   }
 };
 
@@ -54,13 +69,15 @@ export const addTrip = (formData) => async (dispatch) => {
       payload: res.data,
     });
     toast.success(`Trip to ${formData.destination} created! ✈️`);
+    return res.data;
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error adding trip";
+    const msg = reportTripError("addTrip", err, "Error adding trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
     });
     toast.error(msg);
+    return null;
   }
 };
 
@@ -74,7 +91,7 @@ export const updateTrip = (id, formData) => async (dispatch) => {
     });
     toast.success("Trip updated successfully! ✏️");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error updating trip";
+    const msg = reportTripError("updateTrip", err, "Error updating trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
@@ -93,7 +110,7 @@ export const deleteTrip = (id) => async (dispatch) => {
     });
     toast.success("Trip deleted 🗑️");
   } catch (err) {
-    const msg = err.response?.data?.msg || "Error deleting trip";
+    const msg = reportTripError("deleteTrip", err, "Error deleting trip");
     dispatch({
       type: TRIP_ERROR,
       payload: msg,
@@ -116,7 +133,8 @@ export const shareTrip = (id) => async () => {
     toast.success("Shareable link generated! 🔗");
     return res.data.shareToken;
   } catch (err) {
-    toast.error("Failed to generate share link");
+    const msg = reportTripError("shareTrip", err, "Failed to generate share link");
+    toast.error(msg);
     return null;
   }
 };

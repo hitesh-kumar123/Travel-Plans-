@@ -30,24 +30,28 @@ export default function expenseReducer(state = initialState, action) {
       return {
         ...state,
         expenses: action.payload,
+        error: null,
         loading: false,
       };
     case "GET_ALL_USER_EXPENSES":
       return {
         ...state,
         allExpenses: action.payload,
+        error: null,
         loading: false,
       };
     case GET_EXPENSE:
       return {
         ...state,
         currentExpense: action.payload,
+        error: null,
         loading: false,
       };
     case ADD_EXPENSE:
       return {
         ...state,
         expenses: [action.payload, ...state.expenses],
+        error: null,
         loading: false,
       };
     case UPDATE_EXPENSE:
@@ -56,6 +60,7 @@ export default function expenseReducer(state = initialState, action) {
         expenses: state.expenses.map((expense) =>
           expense._id === action.payload._id ? action.payload : expense,
         ),
+        error: null,
         loading: false,
       };
     case DELETE_EXPENSE:
@@ -64,12 +69,14 @@ export default function expenseReducer(state = initialState, action) {
         expenses: state.expenses.filter(
           (expense) => expense._id !== action.payload,
         ),
+        error: null,
         loading: false,
       };
     case GET_EXPENSE_SUMMARY:
       return {
         ...state,
         expenseSummary: action.payload,
+        error: null,
         loading: false,
       };
     case EXPENSE_ERROR:
@@ -85,6 +92,7 @@ export default function expenseReducer(state = initialState, action) {
         allExpenses: [],
         currentExpense: null,
         expenseSummary: null,
+        error: null,
         loading: false,
       };
     default:

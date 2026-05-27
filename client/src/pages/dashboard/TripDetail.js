@@ -8,6 +8,7 @@ import {
   Button,
   Grid,
   Paper,
+  Alert,
   Chip,
   Divider,
   CircularProgress,
@@ -70,10 +71,11 @@ const TripDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { currentTrip, loading } = useSelector((state) => state.trips);
+  const { currentTrip, loading, error: tripError } = useSelector((state) => state.trips);
   const { expenses, loading: expLoading } = useSelector(
     (state) => state.expenses,
   );
+  const expenseError = useSelector((state) => state.expenses.error);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [expenseOpen, setExpenseOpen] = useState(false);
@@ -174,7 +176,26 @@ const TripDetail = () => {
     );
   }
 
-  if (!currentTrip) return null;
+  if (!currentTrip) {
+    if (tripError || expenseError) {
+      return (
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            component={Link}
+            to="/dashboard/trips"
+            color="inherit"
+            sx={{ mb: 2 }}
+          >
+            Back to Trips
+          </Button>
+          <Alert severity="error">{tripError || expenseError}</Alert>
+        </Box>
+      );
+    }
+
+    return null;
+  }
 
   const daysCount =
     currentTrip.startDate && currentTrip.endDate
@@ -234,6 +255,12 @@ const TripDetail = () => {
           </Tooltip>
         </Box>
       </Box>
+
+      {(tripError || expenseError) && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {tripError || expenseError}
+        </Alert>
+      )}
 
       {/* Hero Image */}
       <Box
