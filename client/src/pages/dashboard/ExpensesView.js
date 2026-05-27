@@ -26,6 +26,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
+import EmptyState from "../../components/EmptyState";
 import WalletIcon from "@mui/icons-material/Wallet";
 import {
   PieChart,
@@ -426,12 +427,14 @@ const ExpensesView = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell
-                        colSpan={5}
-                        align="center"
-                        sx={{ py: 4, color: "text.secondary" }}
-                      >
-                        No expenses recorded yet.
+                      <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                        <EmptyState
+                          icon={<WalletIcon sx={{ fontSize: 70 }} />}
+                          title="No expenses recorded yet"
+                          description="Start tracking your travel expenses to manage your budget better."
+                          buttonText="Add Expense"
+                          onClick={() => setOpen(true)}
+                        />
                       </TableCell>
                     </TableRow>
                   )}

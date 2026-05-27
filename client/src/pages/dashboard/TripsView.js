@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import EmptyState from "../../components/EmptyState";
+import ExploreOffIcon from "@mui/icons-material/ExploreOff";
+
 import {
   Typography,
   Box,
@@ -21,7 +24,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
@@ -382,31 +384,13 @@ const TripsView = () => {
           })
         ) : (
           <Grid item xs={12}>
-            <Paper
-              sx={{
-                p: 6,
-                textAlign: "center",
-                borderRadius: 4,
-                border: "2px dashed",
-                borderColor: "divider",
-              }}
-              elevation={0}
-            >
-              <FlightTakeoffIcon
-                sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
-              />
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                {filter === "all" ? "No trips yet!" : `No ${filter} trips`}
-              </Typography>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setOpen(true)}
-                sx={{ mt: 1 }}
-              >
-                Plan Your First Trip
-              </Button>
-            </Paper>
+            <EmptyState
+              icon={<ExploreOffIcon sx={{ fontSize: 70 }} />}
+              title={filter === "all" ? "No trips yet!" : `No ${filter} trips`}
+              description="Looks like you haven't planned any trips yet. Start your first adventure now."
+              buttonText="Plan Your First Trip"
+              onClick={() => setOpen(true)}
+            />
           </Grid>
         )}
       </Grid>
