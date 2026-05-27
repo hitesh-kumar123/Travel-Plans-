@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Typography,
   Box,
@@ -19,6 +20,7 @@ import {
   CircularProgress,
   Chip,
   MenuItem,
+  Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
@@ -28,10 +30,76 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 
+const EMPTY_TRIP_FORM = {
+  destination: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  budget: "",
+  status: "planned",
+};
+
 const STATUS_COLORS = {
   planned: "primary",
   ongoing: "warning",
   completed: "success",
+};
+
+const sanitizeTripForExport = (trip) => ({
+  destination: trip.destination || "",
+  startDate: trip.startDate || "",
+  endDate: trip.endDate || "",
+  description: trip.description || "",
+  budget: Number(trip.budget) || 0,
+  status: trip.status || "planned",
+  activities: Array.isArray(trip.activities) ? trip.activities : [],
+  accommodation: trip.accommodation || null,
+  transportation: trip.transportation || null,
+  images: Array.isArray(trip.images) ? trip.images : [],
+});
+
+const toIsoStringOrEmpty = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+};
+
+const normalizeImportedTrips = (payload) => {
+  const records = Array.isArray(payload) ? payload : payload?.trips;
+
+  if (!Array.isArray(records) || records.length === 0) {
+    throw new Error("Import file must contain at least one trip.");
+  }
+
+  return records.map((trip, index) => {
+    if (!trip || typeof trip !== "object") {
+      throw new Error(`Trip #${index + 1} is invalid.`);
+    }
+
+    const destination = String(trip.destination || "").trim();
+  const startDate = toIsoStringOrEmpty(trip.startDate);
+  const endDate = toIsoStringOrEmpty(trip.endDate);
+
+    if (!destination || !startDate || !endDate) {
+      throw new Error(
+        `Trip #${index + 1} is missing destination, start date, or end date.`,
+      );
+    }
+
+    return {
+      destination,
+      startDate,
+      endDate,
+      description: String(trip.description || ""),
+      budget: Number(trip.budget) || 0,
+      status: ["planned", "ongoing", "completed"].includes(trip.status)
+        ? trip.status
+        : "planned",
+      activities: Array.isArray(trip.activities) ? trip.activities : [],
+      accommodation: trip.accommodation || undefined,
+      transportation: trip.transportation || undefined,
+    };
+  });
 };
 
 const TripsView = () => {
@@ -40,18 +108,13 @@ const TripsView = () => {
   const { trips, loading } = useSelector((state) => state.trips);
 
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    destination: "",
-    startDate: "",
-    endDate: "",
-    description: "",
-    budget: "",
-    status: "planned",
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_TRIP_FORM });
+  const [importing, setImporting] = useState(false);
 
   const [filter, setFilter] = useState("all");
   const [options, setOptions] = useState([]);
   const [loadingOpts, setLoadingOpts] = useState(false);
+  const importInputRef = useRef(null);
 
   useEffect(() => {
     dispatch(getTrips());
@@ -80,6 +143,7 @@ const TripsView = () => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
+
     dispatch(
       addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
     );
@@ -94,6 +158,72 @@ const TripsView = () => {
     });
   };
 
+  const handleExportTrips = () => {
+    if (!trips || trips.length === 0) {
+      toast.info("Nothing to export yet.");
+      return;
+    }
+
+    const exportPayload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      trips: trips.map(sanitizeTripForExport),
+    };
+
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+      type: "application/json",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `travel-plans-export-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+    toast.success("Trips exported as JSON.");
+  };
+
+  const handleImportClick = () => {
+    importInputRef.current?.click();
+  };
+
+  const handleImportTrips = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      toast.error("Please upload a JSON file.");
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const fileText = await file.text();
+      const parsed = JSON.parse(fileText);
+      const tripsToImport = normalizeImportedTrips(parsed);
+
+      let importedCount = 0;
+      for (const trip of tripsToImport) {
+        await api.post("/trips", trip);
+        importedCount += 1;
+      }
+
+      dispatch(getTrips());
+      toast.success(`Imported ${importedCount} trip${importedCount === 1 ? "" : "s"}.`);
+    } catch (err) {
+      toast.error(err.message || "Failed to import trips.");
+      console.error("[trip:importTrips]", {
+        message: err.message,
+        fileName: file?.name,
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const filteredTrips = trips
     ? filter === "all"
       ? trips
@@ -102,6 +232,13 @@ const TripsView = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      <input
+        ref={importInputRef}
+        type="file"
+        accept="application/json,.json"
+        onChange={handleImportTrips}
+        style={{ display: "none" }}
+      />
       <Box
         sx={{
           display: "flex",
@@ -118,13 +255,21 @@ const TripsView = () => {
             {trips?.length || 0} trips so far
           </Typography>
         </Box>
-        <PrimaryButton
-          startIcon={<AddIcon />}
-          onClick={() => setOpen(true)}
-          sx={{ borderRadius: 3, px: 3 }}
-        >
-          New Trip
-        </PrimaryButton>
+        <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="flex-end">
+          <Button variant="outlined" onClick={handleExportTrips} sx={{ borderRadius: 3 }}>
+            Export JSON
+          </Button>
+          <Button variant="outlined" onClick={handleImportClick} disabled={importing} sx={{ borderRadius: 3 }}>
+            {importing ? "Importing..." : "Import JSON"}
+          </Button>
+          <PrimaryButton
+            startIcon={<AddIcon />}
+            onClick={() => setOpen(true)}
+            sx={{ borderRadius: 3, px: 3 }}
+          >
+            New Trip
+          </PrimaryButton>
+        </Stack>
       </Box>
 
       {/* Filter Chips */}
