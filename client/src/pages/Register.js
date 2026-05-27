@@ -193,9 +193,7 @@ const Register = () => {
         await dispatch(register(payload, navigate));
       } catch (error) {
         console.error(error);
-      } // Keep loading true if registration succeeds and redirects, otherwise hide in finally if needed
-      // If you want it to stop loading on registration failure, uncomment the line below:
-      // finally { setLoading(false); }
+      }
     } else {
       handleNext();
     }
@@ -505,18 +503,13 @@ const Register = () => {
               borderColor: "divider",
             }}
           >
-            <prope
-              Stepper
-              activeStep={activeStep}
-              alternativeLabel
-              sx={{ mb: 4 }}
-            >
+            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
-            </prope>
+            </Stepper>
 
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
