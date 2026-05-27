@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Typography,
   Box,
   Button,
   Grid,
   Paper,
+  Alert,
   Card,
   CardContent,
   CardActionArea,
@@ -19,6 +21,7 @@ import {
   CircularProgress,
   Chip,
   MenuItem,
+  Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
@@ -28,34 +31,151 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 
+const TRIP_DRAFT_KEY = "travel-plans:trip-draft";
+
+const EMPTY_TRIP_FORM = {
+  destination: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  budget: "",
+  status: "planned",
+};
+
 const STATUS_COLORS = {
   planned: "primary",
   ongoing: "warning",
   completed: "success",
 };
 
+const isTripFormPopulated = (data) =>
+  Object.values(data || {}).some((value) => String(value ?? "").trim().length > 0);
+
+const readTripDraft = () => {
+  try {
+    const raw = localStorage.getItem(TRIP_DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.formData) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const saveTripDraft = (formData) => {
+  localStorage.setItem(
+    TRIP_DRAFT_KEY,
+    JSON.stringify({
+      version: 1,
+      savedAt: new Date().toISOString(),
+      formData,
+    }),
+  );
+};
+
+const clearTripDraft = () => {
+  localStorage.removeItem(TRIP_DRAFT_KEY);
+};
+
+const sanitizeTripForExport = (trip) => ({
+  destination: trip.destination || "",
+  startDate: trip.startDate || "",
+  endDate: trip.endDate || "",
+  description: trip.description || "",
+  budget: Number(trip.budget) || 0,
+  status: trip.status || "planned",
+  activities: Array.isArray(trip.activities) ? trip.activities : [],
+  accommodation: trip.accommodation || null,
+  transportation: trip.transportation || null,
+  images: Array.isArray(trip.images) ? trip.images : [],
+});
+
+const toIsoStringOrEmpty = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+};
+
+const normalizeImportedTrips = (payload) => {
+  const records = Array.isArray(payload) ? payload : payload?.trips;
+
+  if (!Array.isArray(records) || records.length === 0) {
+    throw new Error("Import file must contain at least one trip.");
+  }
+
+  return records.map((trip, index) => {
+    if (!trip || typeof trip !== "object") {
+      throw new Error(`Trip #${index + 1} is invalid.`);
+    }
+
+    const destination = String(trip.destination || "").trim();
+  const startDate = toIsoStringOrEmpty(trip.startDate);
+  const endDate = toIsoStringOrEmpty(trip.endDate);
+
+    if (!destination || !startDate || !endDate) {
+      throw new Error(
+        `Trip #${index + 1} is missing destination, start date, or end date.`,
+      );
+    }
+
+    return {
+      destination,
+      startDate,
+      endDate,
+      description: String(trip.description || ""),
+      budget: Number(trip.budget) || 0,
+      status: ["planned", "ongoing", "completed"].includes(trip.status)
+        ? trip.status
+        : "planned",
+      activities: Array.isArray(trip.activities) ? trip.activities : [],
+      accommodation: trip.accommodation || undefined,
+      transportation: trip.transportation || undefined,
+    };
+  });
+};
+
 const TripsView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trips, loading } = useSelector((state) => state.trips);
+  const { trips, loading, error } = useSelector((state) => state.trips);
 
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    destination: "",
-    startDate: "",
-    endDate: "",
-    description: "",
-    budget: "",
-    status: "planned",
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_TRIP_FORM });
+  const [draftMeta, setDraftMeta] = useState(null);
+  const [draftTouched, setDraftTouched] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const [filter, setFilter] = useState("all");
   const [options, setOptions] = useState([]);
   const [loadingOpts, setLoadingOpts] = useState(false);
+  const importInputRef = useRef(null);
 
   useEffect(() => {
     dispatch(getTrips());
   }, [dispatch]);
+
+  useEffect(() => {
+    const savedDraft = readTripDraft();
+    if (savedDraft) {
+      setDraftMeta({
+        savedAt: savedDraft.savedAt,
+        destination: savedDraft.formData?.destination || "",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open || !draftTouched || !isTripFormPopulated(formData)) {
+      return;
+    }
+
+    saveTripDraft(formData);
+    setDraftMeta({
+      savedAt: new Date().toISOString(),
+      destination: formData.destination || "",
+    });
+  }, [formData, draftTouched, open]);
 
   const fetchDestinations = async (query) => {
     if (!query) {
@@ -73,25 +193,117 @@ const TripsView = () => {
     }
   };
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
+    setDraftTouched(true);
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = (e) => {
+  const handleRestoreDraft = () => {
+    const savedDraft = readTripDraft();
+    if (!savedDraft?.formData) {
+      toast.info("No saved trip draft found.");
+      return;
+    }
+
+    setFormData({ ...EMPTY_TRIP_FORM, ...savedDraft.formData });
+    setDraftTouched(true);
+    toast.info("Trip draft restored.");
+  };
+
+  const handleDiscardDraft = () => {
+    clearTripDraft();
+    setDraftMeta(null);
+    setDraftTouched(false);
+    setFormData({ ...EMPTY_TRIP_FORM });
+    toast.info("Trip draft discarded.");
+  };
+
+  const resetForm = () => {
+    setFormData({ ...EMPTY_TRIP_FORM });
+    setDraftTouched(false);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
-    dispatch(
+
+    const createdTrip = await dispatch(
       addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
     );
-    setOpen(false);
-    setFormData({
-      destination: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-      budget: "",
-      status: "planned",
+
+    if (createdTrip) {
+      clearTripDraft();
+      setDraftMeta(null);
+      setOpen(false);
+      resetForm();
+    }
+  };
+
+  const handleExportTrips = () => {
+    if (!trips || trips.length === 0) {
+      toast.info("Nothing to export yet.");
+      return;
+    }
+
+    const exportPayload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      trips: trips.map(sanitizeTripForExport),
+    };
+
+    const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
+      type: "application/json",
     });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `travel-plans-export-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+    toast.success("Trips exported as JSON.");
+  };
+
+  const handleImportClick = () => {
+    importInputRef.current?.click();
+  };
+
+  const handleImportTrips = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      toast.error("Please upload a JSON file.");
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const fileText = await file.text();
+      const parsed = JSON.parse(fileText);
+      const tripsToImport = normalizeImportedTrips(parsed);
+
+      let importedCount = 0;
+      for (const trip of tripsToImport) {
+        await api.post("/trips", trip);
+        importedCount += 1;
+      }
+
+      dispatch(getTrips());
+      toast.success(`Imported ${importedCount} trip${importedCount === 1 ? "" : "s"}.`);
+    } catch (err) {
+      toast.error(err.message || "Failed to import trips.");
+      console.error("[trip:importTrips]", {
+        message: err.message,
+        fileName: file?.name,
+      });
+    } finally {
+      setImporting(false);
+    }
   };
 
   const filteredTrips = trips
@@ -102,6 +314,13 @@ const TripsView = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      <input
+        ref={importInputRef}
+        type="file"
+        accept="application/json,.json"
+        onChange={handleImportTrips}
+        style={{ display: "none" }}
+      />
       <Box
         sx={{
           display: "flex",
@@ -118,14 +337,28 @@ const TripsView = () => {
             {trips?.length || 0} trips so far
           </Typography>
         </Box>
-        <PrimaryButton
-          startIcon={<AddIcon />}
-          onClick={() => setOpen(true)}
-          sx={{ borderRadius: 3, px: 3 }}
-        >
-          New Trip
-        </PrimaryButton>
+        <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="flex-end">
+          <Button variant="outlined" onClick={handleExportTrips} sx={{ borderRadius: 3 }}>
+            Export JSON
+          </Button>
+          <Button variant="outlined" onClick={handleImportClick} disabled={importing} sx={{ borderRadius: 3 }}>
+            {importing ? "Importing..." : "Import JSON"}
+          </Button>
+          <PrimaryButton
+            startIcon={<AddIcon />}
+            onClick={() => setOpen(true)}
+            sx={{ borderRadius: 3, px: 3 }}
+          >
+            New Trip
+          </PrimaryButton>
+        </Stack>
       </Box>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
       {/* Filter Chips */}
       <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
@@ -149,6 +382,25 @@ const TripsView = () => {
       >
         <DialogTitle sx={{ fontWeight: 700 }}>Plan a New Trip</DialogTitle>
         <DialogContent>
+          {draftMeta && (
+            <Alert
+              severity="info"
+              sx={{ mt: 1, mb: 2 }}
+              action={
+                <Stack direction="row" spacing={1}>
+                  <Button color="inherit" size="small" onClick={handleRestoreDraft}>
+                    Restore
+                  </Button>
+                  <Button color="inherit" size="small" onClick={handleDiscardDraft}>
+                    Discard
+                  </Button>
+                </Stack>
+              }
+            >
+              Saved draft found{draftMeta.destination ? ` for ${draftMeta.destination}` : ""}
+              {draftMeta.savedAt ? ` • saved ${new Date(draftMeta.savedAt).toLocaleString()}` : ""}
+            </Alert>
+          )}
           <Box
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2.5 }}
           >

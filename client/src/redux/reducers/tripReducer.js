@@ -27,18 +27,21 @@ export default function tripReducer(state = initialState, action) {
       return {
         ...state,
         trips: action.payload,
+        error: null,
         loading: false,
       };
     case GET_TRIP:
       return {
         ...state,
         currentTrip: action.payload,
+        error: null,
         loading: false,
       };
     case ADD_TRIP:
       return {
         ...state,
         trips: [action.payload, ...state.trips],
+        error: null,
         loading: false,
       };
     case UPDATE_TRIP:
@@ -48,12 +51,14 @@ export default function tripReducer(state = initialState, action) {
           trip._id === action.payload._id ? action.payload : trip,
         ),
         currentTrip: action.payload,
+        error: null,
         loading: false,
       };
     case DELETE_TRIP:
       return {
         ...state,
         trips: state.trips.filter((trip) => trip._id !== action.payload),
+        error: null,
         loading: false,
       };
     case TRIP_ERROR:
@@ -67,6 +72,7 @@ export default function tripReducer(state = initialState, action) {
         ...state,
         trips: [],
         currentTrip: null,
+        error: null,
         loading: false,
       };
     default:
