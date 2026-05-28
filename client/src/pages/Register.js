@@ -19,10 +19,14 @@ import {
   StepLabel,
   FormControlLabel,
   Checkbox,
+  LinearProgress,
+  Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/TaskAlt";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -46,7 +50,32 @@ const Register = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+
+  // Password strength calculator
+  const getPasswordStrength = (pwd) => {
+    if (!pwd) return { score: 0, label: "", color: "grey.300" };
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[\W_]/.test(pwd)) score++;
+    if (score <= 1) return { score: 20, label: "Weak", color: "error.main" };
+    if (score === 2) return { score: 40, label: "Fair", color: "warning.main" };
+    if (score === 3) return { score: 60, label: "Good", color: "info.main" };
+    if (score === 4) return { score: 80, label: "Strong", color: "success.light" };
+    return { score: 100, label: "Very Strong", color: "success.main" };
+  };
+
+  const passwordRules = [
+    { label: "At least 8 characters", test: (p) => p.length >= 8 },
+    { label: "One uppercase letter (A–Z)", test: (p) => /[A-Z]/.test(p) },
+    { label: "One lowercase letter (a–z)", test: (p) => /[a-z]/.test(p) },
+    { label: "One number (0–9)", test: (p) => /\d/.test(p) },
+    { label: "One special character (!@#…)", test: (p) => /[\W_]/.test(p) },
+  ];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -164,6 +193,10 @@ const Register = () => {
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleNext = () => {
@@ -302,20 +335,105 @@ const Register = () => {
                   ),
                 },
               }}
-              sx={{ mb: 2 }}
+              sx={{ mb: 1 }}
             />
+
+            {/* Password Strength Meter */}
+            {formData.password && (() => {
+              const strength = getPasswordStrength(formData.password);
+              return (
+                <Box sx={{ mb: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Password strength
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: strength.color, fontWeight: 600 }}>
+                      {strength.label}
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={strength.score}
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      bgcolor: "grey.200",
+                      "& .MuiLinearProgress-bar": {
+                        bgcolor: strength.color,
+                        borderRadius: 3,
+                        transition: "width 0.4s ease",
+                      },
+                    }}
+                  />
+                </Box>
+              );
+            })()}
+
+            {/* Password Requirements Checklist */}
+            {formData.password && (
+              <Box
+                sx={{
+                  mb: 2,
+                  p: 1.5,
+                  borderRadius: 2,
+                  bgcolor: "action.hover",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 0.5,
+                }}
+              >
+                {passwordRules.map((rule) => {
+                  const passed = rule.test(formData.password);
+                  return (
+                    <Box key={rule.label} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                      {passed ? (
+                        <CheckIcon sx={{ fontSize: 14, color: "success.main" }} />
+                      ) : (
+                        <CloseIcon sx={{ fontSize: 14, color: "error.main" }} />
+                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{ color: passed ? "success.main" : "text.secondary" }}
+                      >
+                        {rule.label}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+            )}
+
             <TextField
               required
               fullWidth
               name="confirmPassword"
               label="Confirm Password"
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={handleChange}
               error={!!passwordError}
               helperText={passwordError}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle confirm password visibility"
+                        onClick={toggleShowConfirmPassword}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
               sx={{ mb: 2 }}
             />
             <FormControlLabel

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/authActions";
+import { CLEAR_ERROR } from "../redux/types/authTypes";
 import {
   Box,
   TextField,
@@ -15,6 +16,8 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  Alert,
+  Collapse,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -34,10 +37,22 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const MAX_ATTEMPTS = 5;
+  const pendingAttemptRef = useRef(false); // true while a login dispatch is in-flight
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, error: authError } = useSelector((state) => state.auth);
+
+  // Increment failed counter only for attempts WE dispatched (not stale state on mount)
+  useEffect(() => {
+    if (!pendingAttemptRef.current) return;
+    if (authError) {
+      pendingAttemptRef.current = false;
+      setFailedAttempts((prev) => Math.min(prev + 1, MAX_ATTEMPTS));
+    }
+  }, [authError]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -98,6 +113,7 @@ const Login = () => {
       [name]: value,
     });
 
+
     if (name === "email") {
       if (
         value &&
@@ -146,6 +162,7 @@ const Login = () => {
 
   const isSignInDisabled = () => {
     return (
+      failedAttempts >= MAX_ATTEMPTS ||
       !formData.email ||
       formData.email.trim() === "" ||
       !!errors.email ||
@@ -158,6 +175,10 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      // Clear any stale error first so authError always transitions null → error,
+      // making the useEffect reliably fire even on repeated identical failures.
+      dispatch({ type: CLEAR_ERROR });
+      pendingAttemptRef.current = true;
       dispatch(login(formData, navigate));
     }
   };
@@ -270,6 +291,17 @@ const Login = () => {
             }}
           >
             <form onSubmit={handleSubmit}>
+              {/* Failed attempts warning */}
+              <Collapse in={failedAttempts >= 2}>
+                <Alert
+                  severity={failedAttempts >= MAX_ATTEMPTS - 1 ? "error" : "warning"}
+                  sx={{ mb: 2, borderRadius: 2 }}
+                >
+                  {failedAttempts >= MAX_ATTEMPTS
+                    ? "Too many failed attempts. Please reset your password or try again later."
+                    : `Incorrect credentials. ${MAX_ATTEMPTS - failedAttempts} attempt${MAX_ATTEMPTS - failedAttempts === 1 ? "" : "s"} remaining before your account may be locked.`}
+                </Alert>
+              </Collapse>
               <TextField
                 margin="normal"
                 required
