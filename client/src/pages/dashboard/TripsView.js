@@ -55,7 +55,6 @@ const sanitizeTripForExport = (trip) => ({
   activities: Array.isArray(trip.activities) ? trip.activities : [],
   accommodation: trip.accommodation || null,
   transportation: trip.transportation || null,
-  images: Array.isArray(trip.images) ? trip.images : [],
 });
 
 const toIsoStringOrEmpty = (value) => {
@@ -77,8 +76,8 @@ const normalizeImportedTrips = (payload) => {
     }
 
     const destination = String(trip.destination || "").trim();
-  const startDate = toIsoStringOrEmpty(trip.startDate);
-  const endDate = toIsoStringOrEmpty(trip.endDate);
+    const startDate = toIsoStringOrEmpty(trip.startDate);
+    const endDate = toIsoStringOrEmpty(trip.endDate);
 
     if (!destination || !startDate || !endDate) {
       throw new Error(
@@ -200,6 +199,8 @@ const TripsView = () => {
     }
 
     setImporting(true);
+    const createdTripIds = [];
+
     try {
       const fileText = await file.text();
       const parsed = JSON.parse(fileText);
@@ -207,13 +208,27 @@ const TripsView = () => {
 
       let importedCount = 0;
       for (const trip of tripsToImport) {
-        await api.post("/trips", trip);
+        const response = await api.post("/trips", trip);
+        if (response.data?._id) {
+          createdTripIds.push(response.data._id);
+        }
         importedCount += 1;
       }
 
       dispatch(getTrips());
       toast.success(`Imported ${importedCount} trip${importedCount === 1 ? "" : "s"}.`);
     } catch (err) {
+      for (const tripId of createdTripIds.reverse()) {
+        try {
+          await api.delete(`/trips/${tripId}`);
+        } catch (rollbackErr) {
+          console.error("[trip:importTrips:rollback]", {
+            message: rollbackErr.message,
+            tripId,
+          });
+        }
+      }
+
       toast.error(err.message || "Failed to import trips.");
       console.error("[trip:importTrips]", {
         message: err.message,
