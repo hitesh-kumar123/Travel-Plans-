@@ -342,7 +342,7 @@ const Register = () => {
                   and{" "}
                   <Link
                     component={RouterLink}
-                    to="/privacy"
+                    to="/privacy-policy"
                     variant="body2"
                     sx={{ fontWeight: 600 }}
                   >

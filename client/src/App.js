@@ -21,6 +21,12 @@ import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+const PrivacyPolicy = ()=> (
+  <div style={{padding: "50px", textAlign: "center", color: "#fff"}}>
+    <h1>Privacy Policy</h1>
+    <p>Privacy Policy content goes here.</p>
+  </div>
+);
 
 function App() {
   useEffect(() => {
@@ -50,6 +56,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
