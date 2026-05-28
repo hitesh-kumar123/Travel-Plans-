@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -44,6 +44,37 @@ import {
 import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
 
+// ─── Currency Config ────────────────────────────────────────────────────────
+const CURRENCIES = [
+  { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  { code: "USD", symbol: "$", name: "US Dollar" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "GBP", symbol: "£", name: "British Pound" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
+  { code: "SGD", symbol: "S$", name: "Singapore Dollar" },
+  { code: "THB", symbol: "฿", name: "Thai Baht" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+];
+
+// rates is keyed from INR base: { USD: 0.012, EUR: 0.011, ... }
+// To convert amount FROM currency A TO currency B:
+//   step 1: amount / rates[A]  → gives INR value
+//   step 2: INR value * rates[B] → gives B value
+const convertAmount = (amount, fromCode, toCode, rates) => {
+  if (fromCode === toCode || !rates || Object.keys(rates).length === 0)
+    return amount;
+  const fromRate = fromCode === "INR" ? 1 : rates[fromCode];
+  const toRate = toCode === "INR" ? 1 : rates[toCode];
+  if (!fromRate || !toRate) return amount;
+  return (amount / fromRate) * toRate;
+};
+
+const getCurrencySymbol = (code) =>
+  CURRENCIES.find((c) => c.code === code)?.symbol || code;
+
+// ─── Expense Categories ──────────────────────────────────────────────────────
 const EXPENSE_CATEGORIES = [
   "Accommodation",
   "Transportation",
@@ -52,6 +83,7 @@ const EXPENSE_CATEGORIES = [
   "Shopping",
   "Other",
 ];
+
 const CHART_COLORS = [
   "#1976D2",
   "#00BCD4",
@@ -70,6 +102,7 @@ const CATEGORY_COLORS = {
   Other: "#F44336",
 };
 
+// ─── Component ───────────────────────────────────────────────────────────────
 const ExpensesView = () => {
   const dispatch = useDispatch();
   const { expenses, expenseSummary, loading } = useSelector(
@@ -80,6 +113,13 @@ const ExpensesView = () => {
   const [activeTripId, setActiveTripId] = useState("");
   const [open, setOpen] = useState(false);
   const [amountError, setAmountError] = useState("");
+
+  // display currency + live exchange rates
+  const [displayCurrency, setDisplayCurrency] = useState("INR");
+  const [exchangeRates, setExchangeRates] = useState({});
+  const [ratesLoading, setRatesLoading] = useState(false);
+  const [ratesError, setRatesError] = useState(false);
+
   const [form, setForm] = useState({
     amount: "",
     category: "Food",
@@ -87,6 +127,22 @@ const ExpensesView = () => {
     date: new Date().toISOString().split("T")[0],
     currency: "INR",
   });
+
+  // ── Fetch live rates (base = INR) once on mount ──────────────────────────
+  useEffect(() => {
+    setRatesLoading(true);
+    fetch("https://open.er-api.com/v6/latest/INR")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.rates) {
+          setExchangeRates(data.rates);
+        } else {
+          setRatesError(true);
+        }
+      })
+      .catch(() => setRatesError(true))
+      .finally(() => setRatesLoading(false));
+  }, []);
 
   useEffect(() => {
     dispatch(getTrips());
@@ -105,17 +161,40 @@ const ExpensesView = () => {
     }
   }, [dispatch, activeTripId]);
 
-  const totalSpent = expenses
-    ? expenses.reduce((acc, e) => acc + e.amount, 0)
-    : 0;
-  const activeTrip = trips?.find((t) => t._id === activeTripId);
-  const budget = activeTrip?.budget || 0;
-  const remaining = budget > 0 ? budget - totalSpent : null;
+  // ── Derived values ────────────────────────────────────────────────────────
+  const symbol = getCurrencySymbol(displayCurrency);
 
+  // Total spent: convert each expense from its own currency to displayCurrency
+  const totalSpent = expenses
+    ? expenses.reduce((acc, e) => {
+        const converted = convertAmount(
+          e.amount,
+          e.currency || "INR",
+          displayCurrency,
+          exchangeRates,
+        );
+        return acc + converted;
+      }, 0)
+    : 0;
+
+  const activeTrip = trips?.find((t) => t._id === activeTripId);
+
+  // Budget is stored in INR (no currency field yet), convert to display currency
+  const budgetRaw = activeTrip?.budget || 0;
+  const budget = convertAmount(budgetRaw, "INR", displayCurrency, exchangeRates);
+  const remaining = budgetRaw > 0 ? budget - totalSpent : null;
+
+  // Chart data: convert each category total to display currency
   const chartData = expenseSummary
-    ? expenseSummary.map((s) => ({ name: s._id, value: s.totalAmount }))
+    ? expenseSummary.map((s) => ({
+        name: s._id,
+        value: parseFloat(
+          convertAmount(s.totalAmount, "INR", displayCurrency, exchangeRates).toFixed(2),
+        ),
+      }))
     : [];
 
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleAmountChange = (e) => {
     const value = e.target.value;
     setForm({ ...form, amount: value });
@@ -133,20 +212,13 @@ const ExpensesView = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
-
     if (!form.amount || isNaN(parsed) || parsed <= 0) {
       setAmountError("Please enter a valid amount greater than zero.");
       return;
     }
     if (!activeTripId) return;
 
-    dispatch(
-      addExpense({
-        ...form,
-        trip: activeTripId,
-        amount: parsed,
-      }),
-    );
+    dispatch(addExpense({ ...form, trip: activeTripId, amount: parsed }));
     setOpen(false);
     setForm({
       amount: "",
@@ -178,24 +250,38 @@ const ExpensesView = () => {
 
   const handleExportCSV = () => {
     if (!expenses || expenses.length === 0) return;
-    const headers = ["Date", "Category", "Description", "Amount", "Currency"];
+    const headers = [
+      "Date",
+      "Category",
+      "Description",
+      `Amount (${displayCurrency})`,
+      "Original Amount",
+      "Original Currency",
+    ];
     const rows = expenses.map((e) => [
       new Date(e.date).toLocaleDateString(),
       e.category,
       e.description || "",
+      convertAmount(
+        e.amount,
+        e.currency || "INR",
+        displayCurrency,
+        exchangeRates,
+      ).toFixed(2),
       e.amount,
-      e.currency,
+      e.currency || "INR",
     ]);
     const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `expenses_${activeTrip?.destination || "trip"}.csv`;
+    a.download = `expenses_${activeTrip?.destination || "trip"}_${displayCurrency}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
@@ -249,25 +335,58 @@ const ExpensesView = () => {
             borderColor: "divider",
           }}
         >
-          <TextField
-            select
-            fullWidth
-            label="Select Trip"
-            value={activeTripId}
-            onChange={(e) => setActiveTripId(e.target.value)}
-            sx={{ maxWidth: 400 }}
-          >
-            {trips.map((t) => (
-              <MenuItem key={t._id} value={t._id}>
-                {t.destination} —{" "}
-                {new Date(t.startDate).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", alignItems: "center" }}>
+            <TextField
+              select
+              label="Select Trip"
+              value={activeTripId}
+              onChange={(e) => setActiveTripId(e.target.value)}
+              sx={{ minWidth: 280 }}
+            >
+              {trips.map((t) => (
+                <MenuItem key={t._id} value={t._id}>
+                  {t.destination} —{" "}
+                  {new Date(t.startDate).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {/* ── Display Currency Selector ── */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                Display in:
+              </Typography>
+              <TextField
+                select
+                size="small"
+                value={displayCurrency}
+                onChange={(e) => setDisplayCurrency(e.target.value)}
+                sx={{ minWidth: 160 }}
+              >
+                {CURRENCIES.map((c) => (
+                  <MenuItem key={c.code} value={c.code}>
+                    {c.symbol} {c.code} — {c.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {ratesLoading && (
+                <Tooltip title="Fetching live rates…">
+                  <CircularProgress size={16} />
+                </Tooltip>
+              )}
+              {ratesError && (
+                <Tooltip title="Live rates unavailable. Amounts shown in original currency.">
+                  <Typography variant="caption" color="error">
+                    ⚠ rates offline
+                  </Typography>
+                </Tooltip>
+              )}
+            </Box>
+          </Box>
         </Paper>
       )}
 
@@ -288,17 +407,21 @@ const ExpensesView = () => {
               Total Spent
             </Typography>
             <Typography variant="h5" fontWeight={700}>
-              ₹{totalSpent.toLocaleString()}
+              {symbol}{totalSpent.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.7 }}>
+              in {displayCurrency}
             </Typography>
           </Paper>
         </Grid>
+
         <Grid item xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
               p: 3,
               borderRadius: 3,
-              bgcolor: budget > 0 ? "success.light" : "grey.100",
+              bgcolor: budgetRaw > 0 ? "success.light" : "grey.100",
             }}
           >
             <WalletIcon sx={{ mb: 1, color: "success.main" }} />
@@ -306,10 +429,18 @@ const ExpensesView = () => {
               Budget
             </Typography>
             <Typography variant="h5" fontWeight={700} color="success.main">
-              {budget > 0 ? `₹${budget.toLocaleString()}` : "—"}
+              {budgetRaw > 0
+                ? `${symbol}${budget.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
+            {budgetRaw > 0 && (
+              <Typography variant="caption" color="text.secondary">
+                in {displayCurrency}
+              </Typography>
+            )}
           </Paper>
         </Grid>
+
         <Grid item xs={12} sm={4}>
           <Paper
             elevation={0}
@@ -326,9 +457,7 @@ const ExpensesView = () => {
               sx={{
                 mb: 1,
                 color:
-                  remaining !== null && remaining < 0
-                    ? "error.main"
-                    : "info.main",
+                  remaining !== null && remaining < 0 ? "error.main" : "info.main",
               }}
             />
             <Typography variant="body2" color="text.secondary">
@@ -341,8 +470,15 @@ const ExpensesView = () => {
                 remaining !== null && remaining < 0 ? "error.main" : "info.main"
               }
             >
-              {remaining !== null ? `₹${remaining.toLocaleString()}` : "—"}
+              {remaining !== null
+                ? `${symbol}${remaining.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
+            {remaining !== null && (
+              <Typography variant="caption" color="text.secondary">
+                in {displayCurrency}
+              </Typography>
+            )}
           </Paper>
         </Grid>
       </Grid>
@@ -352,11 +488,7 @@ const ExpensesView = () => {
         <Grid item xs={12} md={7}>
           <Paper
             elevation={0}
-            sx={{
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-            }}
+            sx={{ borderRadius: 3, border: "1px solid", borderColor: "divider" }}
           >
             <Box sx={{ p: 2.5 }}>
               <Typography variant="subtitle1" fontWeight={700}>
@@ -384,42 +516,75 @@ const ExpensesView = () => {
                       </TableCell>
                     </TableRow>
                   ) : expenses && expenses.length > 0 ? (
-                    expenses.map((expense) => (
-                      <TableRow key={expense._id} hover>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          {new Date(expense.date).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={expense.category}
-                            size="small"
-                            sx={{
-                              bgcolor: CATEGORY_COLORS[expense.category] + "22",
-                              color: CATEGORY_COLORS[expense.category],
-                              fontWeight: 600,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ color: "text.secondary" }}>
-                          {expense.description || "—"}
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 700 }}>
-                          ₹{expense.amount.toLocaleString()}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleDelete(expense._id)}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    expenses.map((expense) => {
+                      const expCurrency = expense.currency || "INR";
+                      const expSymbol = getCurrencySymbol(expCurrency);
+                      const converted = convertAmount(
+                        expense.amount,
+                        expCurrency,
+                        displayCurrency,
+                        exchangeRates,
+                      );
+                      const showOriginal = expCurrency !== displayCurrency;
+
+                      return (
+                        <TableRow key={expense._id} hover>
+                          <TableCell sx={{ whiteSpace: "nowrap" }}>
+                            {new Date(expense.date).toLocaleDateString(
+                              "en-IN",
+                              { day: "2-digit", month: "short" },
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={expense.category}
+                              size="small"
+                              sx={{
+                                bgcolor:
+                                  CATEGORY_COLORS[expense.category] + "22",
+                                color: CATEGORY_COLORS[expense.category],
+                                fontWeight: 600,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ color: "text.secondary" }}>
+                            {expense.description || "—"}
+                          </TableCell>
+                          <TableCell align="right">
+                            <Box>
+                              <Typography
+                                variant="body2"
+                                fontWeight={700}
+                              >
+                                {symbol}
+                                {converted.toLocaleString(undefined, {
+                                  maximumFractionDigits: 2,
+                                })}
+                              </Typography>
+                              {/* Show original if different from display currency */}
+                              {showOriginal && (
+                                <Typography
+                                  variant="caption"
+                                  color="text.disabled"
+                                >
+                                  {expSymbol}
+                                  {expense.amount.toLocaleString()} {expCurrency}
+                                </Typography>
+                              )}
+                            </Box>
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleDelete(expense._id)}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                   ) : (
                     <TableRow>
                       <TableCell
@@ -472,7 +637,10 @@ const ExpensesView = () => {
                     ))}
                   </Pie>
                   <ReTooltip
-                    formatter={(value) => [`₹${value.toLocaleString()}`, ""]}
+                    formatter={(value) => [
+                      `${symbol}${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+                      "",
+                    ]}
                   />
                   <Legend />
                 </PieChart>
@@ -489,9 +657,7 @@ const ExpensesView = () => {
                 }}
               >
                 <WalletIcon sx={{ fontSize: 48, color: "text.disabled" }} />
-                <Typography color="text.secondary">
-                  No data to display
-                </Typography>
+                <Typography color="text.secondary">No data to display</Typography>
               </Box>
             )}
           </Paper>
@@ -509,7 +675,7 @@ const ExpensesView = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="Amount (₹) *"
+                  label={`Amount (${getCurrencySymbol(form.currency)}) *`}
                   type="number"
                   value={form.amount}
                   onChange={handleAmountChange}
@@ -528,14 +694,15 @@ const ExpensesView = () => {
                     setForm({ ...form, currency: e.target.value })
                   }
                 >
-                  {["INR", "USD", "EUR", "GBP"].map((c) => (
-                    <MenuItem key={c} value={c}>
-                      {c}
+                  {CURRENCIES.map((c) => (
+                    <MenuItem key={c.code} value={c.code}>
+                      {c.symbol} {c.code} — {c.name}
                     </MenuItem>
                   ))}
                 </TextField>
               </Grid>
             </Grid>
+
             <TextField
               fullWidth
               select
@@ -549,6 +716,7 @@ const ExpensesView = () => {
                 </MenuItem>
               ))}
             </TextField>
+
             <TextField
               fullWidth
               label="Description / Note"
@@ -557,6 +725,7 @@ const ExpensesView = () => {
                 setForm({ ...form, description: e.target.value })
               }
             />
+
             <TextField
               fullWidth
               type="date"
