@@ -1,0 +1,331 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Teal canvas ── */
+.contact-container {
+  min-height: 100vh;
+  background: #0e4d6e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  position: relative;
+  overflow: hidden;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Arc decorations matching screenshot */
+.contact-container::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  right: -200px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+.contact-container::after {
+  content: "";
+  position: fixed;
+  top: -120px;
+  right: -120px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* ── Split card ── */
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  overflow: hidden;
+  animation: fadeUp 0.7s ease both;
+  backdrop-filter: blur(8px);
+}
+
+/* ── Left info panel ── */
+.contact-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 52px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Inner arc accent on panel */
+.contact-panel::before {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 149, 74, 0.15);
+  pointer-events: none;
+}
+
+.panel-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 20px;
+}
+
+.panel-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.panel-title span {
+  color: #e8954a;
+}
+
+.panel-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.panel-divider {
+  width: 40px;
+  height: 2px;
+  background: #e8954a;
+  opacity: 0.7;
+  margin: 32px 0;
+}
+
+.panel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.87rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+}
+
+.panel-info-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Right form panel ── */
+.contact-form-panel {
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e8954a;
+  margin-bottom: 10px;
+}
+
+.form-heading {
+  font-family: "Playfair Display", serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.input-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.contact-input,
+.contact-textarea {
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+  outline: none;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.contact-input::placeholder,
+.contact-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.contact-input:focus,
+.contact-textarea:focus {
+  border-color: #e8954a;
+  box-shadow: 0 0 0 3px rgba(232, 149, 74, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.contact-input.has-error,
+.contact-textarea.has-error {
+  border-color: #e05a5a;
+  box-shadow: 0 0 0 3px rgba(224, 90, 90, 0.12);
+}
+
+.contact-textarea {
+  resize: none;
+  line-height: 1.6;
+}
+
+.error-text {
+  color: #f08080;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.contact-btn {
+  background: #e8954a;
+  color: #ffffff;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.contact-btn:hover {
+  background: #d4803a;
+  transform: translateY(-2px);
+}
+
+.contact-btn:active {
+  transform: translateY(0);
+}
+
+.contact-btn .btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.contact-btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Success banner ── */
+.success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(100, 200, 140, 0.1);
+  border: 1px solid rgba(100, 200, 140, 0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #80d8a0;
+  font-weight: 400;
+  margin-bottom: 20px;
+  animation: fadeUp 0.4s ease both;
+}
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 720px) {
+  .contact-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-panel {
+    padding: 40px 28px;
+  }
+
+  .panel-title {
+    font-size: 1.9rem;
+  }
+
+  .contact-form-panel {
+    padding: 36px 28px;
+  }
+
+  .form-heading {
+    font-size: 1.4rem;
+  }
+}

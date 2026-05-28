@@ -22,6 +22,8 @@ import SharedTripView from "./pages/dashboard/SharedTripView";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 function App() {
   useEffect(() => {
@@ -47,6 +49,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/trip/share/:token" element={<SharedTripView />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
