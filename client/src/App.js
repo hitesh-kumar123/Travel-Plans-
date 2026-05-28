@@ -8,6 +8,9 @@ import theme from "./theme";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 // Import components
 import Home from "./pages/Home";
@@ -50,6 +53,18 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
+              <Route path="/about" element={<About />} />
+              <Route
+                path="/help-center"
+                element={
+                  <div style={{ padding: "40px" }}>Help Center Page</div>
+                }
+              />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route
+                path="/terms-and-conditions"
+                element={<TermsAndConditions />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
