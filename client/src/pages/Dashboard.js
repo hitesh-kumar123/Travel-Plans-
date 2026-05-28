@@ -37,6 +37,7 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
+import ShieldIcon from "@mui/icons-material/Shield";
 
 import { logout } from "../redux/actions/authActions";
 
@@ -50,6 +51,7 @@ import BookingView from "./dashboard/BookingView";
 import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
+import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
 
 const drawerWidth = 280;
 
@@ -118,6 +120,7 @@ const Dashboard = () => {
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
     { text: "Packing", path: "packing", icon: <LuggageIcon /> },
+    { text: "Safety & Culture", path: "culture-safety", icon: <ShieldIcon /> },
   ];
 
   const isActive = (path) => {
@@ -243,11 +246,11 @@ const Dashboard = () => {
                 </ListItemIcon>
 
                 <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
+                  primary={
+                    <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                      {item.text}
+                    </Typography>
+                  }
                 />
               </ListItemButton>
             </Tooltip>
@@ -270,8 +273,11 @@ const Dashboard = () => {
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{ fontWeight: 600, fontSize: "0.9rem" }}
+              primary={
+                <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                  Logout
+                </Typography>
+              }
             />
           </ListItemButton>
         </ListItem>
@@ -481,6 +487,7 @@ const Dashboard = () => {
             <Route path="bookings" element={<BookingView />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="packing" element={<PackingView />} />
+            <Route path="culture-safety" element={<CultureSafetyAlerts />} />
           </Routes>
         </Box>
       </Box>

@@ -409,7 +409,7 @@ const ProfileView = () => {
 
       <Grid container spacing={3}>
         {/* Left: Avatar + Stats */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Paper
             elevation={0}
             sx={{
@@ -486,8 +486,8 @@ const ProfileView = () => {
 
             <Divider sx={{ mb: 3 }} />
 
-            <Grid container spacing={2} textAlign="center">
-              <Grid item xs={4}>
+            <Grid container spacing={2} sx={{ textAlign: "center" }}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="primary.main">
                   {totalTrips}
                 </Typography>
@@ -495,7 +495,7 @@ const ProfileView = () => {
                   Total Trips
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="success.main">
                   {completedTrips}
                 </Typography>
@@ -503,7 +503,7 @@ const ProfileView = () => {
                   Completed
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="info.main">
                   {plannedTrips}
                 </Typography>
@@ -523,7 +523,7 @@ const ProfileView = () => {
         </Grid>
 
         {/* Right: Edit Forms */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           {/* Profile Info */}
           <Paper
             elevation={0}
@@ -590,7 +590,7 @@ const ProfileView = () => {
 
             <Box component="form" onSubmit={handleProfileSave}>
               <Grid container spacing={2.5}>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Full Name"
@@ -601,7 +601,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Email Address"
@@ -613,7 +613,7 @@ const ProfileView = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -663,7 +663,7 @@ const ProfileView = () => {
 
             <Box component="form" onSubmit={handlePasswordChange}>
               <Grid container spacing={2.5}>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Current Password"
@@ -675,7 +675,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="New Password"
@@ -687,7 +687,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Confirm New Password"
@@ -699,7 +699,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <Button
                     type="submit"
                     variant="outlined"

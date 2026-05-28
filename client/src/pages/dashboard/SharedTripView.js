@@ -22,9 +22,12 @@ const SharedTripView = () => {
   useEffect(() => {
     const fetchSharedTrip = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL || "http://localhost:5000"}/api/trips/share/${token}`,
-        );
+        const apiBase =
+          process.env.REACT_APP_API_URL ||
+          (process.env.NODE_ENV === "production"
+            ? ""
+            : "http://localhost:5000");
+        const res = await axios.get(`${apiBase}/api/trips/share/${token}`);
         setTrip(res.data);
       } catch {
         setError("This shared trip link is invalid or has been disabled.");
@@ -134,7 +137,7 @@ const SharedTripView = () => {
             icon: <WalletIcon color="success" />,
           },
         ].map(({ label, value, icon }) => (
-          <Grid item xs={6} sm={4} key={label}>
+          <Grid xs={6} sm={4} key={label}>
             <Paper
               elevation={0}
               sx={{

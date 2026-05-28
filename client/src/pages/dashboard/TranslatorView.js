@@ -129,9 +129,8 @@ const TranslatorView = () => {
         </Box>
       </Paper>
 
-      {/* Translation Box */}
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} md={5}>
+      <Grid container spacing={2} sx={{ alignItems: "center" }}>
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
@@ -184,7 +183,7 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Swap Button */}
-        <Grid item xs={12} md={2} sx={{ textAlign: "center" }}>
+        <Grid xs={12} md={2} sx={{ textAlign: "center" }}>
           <Tooltip title="Swap languages">
             <span>
               <IconButton
@@ -210,7 +209,7 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Right Panel */}
-        <Grid item xs={12} md={5}>
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
@@ -349,7 +348,7 @@ const TranslatorView = () => {
               icon: "📱",
             },
           ].map((t, i) => (
-            <Grid item xs={12} sm={6} key={i}>
+            <Grid xs={12} sm={6} key={i}>
               <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
                 <Typography sx={{ fontSize: 22 }}>{t.icon}</Typography>
                 <Typography variant="body2" color="text.secondary">

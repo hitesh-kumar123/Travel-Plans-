@@ -10,9 +10,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/cloud/atlas)
 [![Material UI](https://img.shields.io/badge/MUI-v6-007FFF?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](CONTRIBUTING.md)
-[![GSSoC](https://img.shields.io/badge/GSSoC-2026-orange?style=for-the-badge)](https://gssoc.girlscript.tech/)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/DebasmitaBose0/Travel-Plans-/ci.yml?branch=main&style=for-the-badge&label=Build%20Check)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
+[![Security Scan](https://img.shields.io/badge/Security-Audit--Audit-brightgreen?style=for-the-badge&logo=github-actions)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 
 <br />
 
@@ -21,7 +20,7 @@
 
 <br />
 
-[🚀 Live Demo](#-live-demo) · [📖 Docs](#-api-endpoints) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
+[🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
 </div>
 
@@ -261,6 +260,19 @@ cd travel-planner
 ```
 
 ### 2. Install Dependencies
+
+> ⚠️ **Important:**  
+> This repository uses separate frontend (`client`) and backend (`server`) environments.
+>
+> Running commands like:
+>
+> ```bash
+> npm run dev
+> ```
+>
+> from the root directory will result in a missing script error.
+>
+> Please install dependencies and run scripts separately inside the `client` and `server` directories.
 
 ```bash
 # Install backend dependencies
@@ -577,6 +589,8 @@ We are incredibly grateful to our mentors for their valuable support and code re
 **Hitesh Kumar**
 
 [![GitHub](https://img.shields.io/badge/GitHub-hitesh--kumar123-181717?style=for-the-badge&logo=github)](https://github.com/hitesh-kumar123/Travel-Plans-)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Hitesh--Kumar-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/hitesh-kumar-dev/)
 
 ---
 

@@ -264,8 +264,8 @@ const PackingView = () => {
             <Typography variant="subtitle2" color="text.secondary" mb={1.5}>
               Add a new item
             </Typography>
-            <Grid container spacing={1.5} alignItems="center">
-              <Grid item xs={12} sm={5}>
+            <Grid container spacing={1.5} sx={{ alignItems: "center" }}>
+              <Grid xs={12} sm={5}>
                 <TextField
                   fullWidth
                   size="small"
@@ -276,7 +276,7 @@ const PackingView = () => {
                   placeholder="e.g. Passport"
                 />
               </Grid>
-              <Grid item xs={8} sm={4}>
+              <Grid xs={8} sm={4}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Category</InputLabel>
                   <Select
@@ -292,7 +292,7 @@ const PackingView = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4} sm={3}>
+              <Grid xs={4} sm={3}>
                 <Button
                   fullWidth
                   variant="contained"
@@ -361,7 +361,7 @@ const PackingView = () => {
           )}
 
           {filteredItems.length === 0 && total > 0 && (
-            <Typography color="text.secondary" textAlign="center" py={3}>
+            <Typography color="text.secondary" align="center" py={3}>
               No items in this category.
             </Typography>
           )}

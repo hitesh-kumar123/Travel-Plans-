@@ -390,7 +390,7 @@ function clean(val) {
 
 // Process all records
 const cleanedData = rawData
-  .map((d, i) => {
+  .map((d) => {
     const name = clean(d.name);
     if (!name) return null; // Skip completely unnamed records
 

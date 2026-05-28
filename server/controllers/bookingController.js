@@ -1,15 +1,9 @@
-const axios = require("axios");
+// axios removed — not used in current mock implementation
 
 // Search for flights
 exports.searchFlights = async (req, res) => {
   try {
-    const {
-      origin,
-      destination,
-      departureDate,
-      returnDate,
-      adults = 1,
-    } = req.body;
+    const { origin, destination, departureDate } = req.body;
 
     if (!origin || !destination || !departureDate) {
       return res.status(400).json({
@@ -68,7 +62,7 @@ exports.searchFlights = async (req, res) => {
 // Search for hotels
 exports.searchHotels = async (req, res) => {
   try {
-    const { location, checkIn, checkOut, guests = 2, rooms = 1 } = req.body;
+    const { location, checkIn, checkOut } = req.body;
 
     if (!location || !checkIn || !checkOut) {
       return res.status(400).json({
