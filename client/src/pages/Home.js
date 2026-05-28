@@ -289,7 +289,12 @@ const WeatherTooltip = ({ destName, bestTime }) => {
     if (c.includes("rain") || c.includes("drizzle")) return "🌧️";
     if (c.includes("snow")) return "❄️";
     if (c.includes("thunder") || c.includes("storm")) return "⛈️";
-    if (c.includes("mist") || c.includes("fog") || c.includes("haze") || c.includes("offline"))
+    if (
+      c.includes("mist") ||
+      c.includes("fog") ||
+      c.includes("haze") ||
+      c.includes("offline")
+    )
       return "🌫️";
     if (c.includes("wind")) return "💨";
     return "🌤️";
@@ -300,13 +305,16 @@ const WeatherTooltip = ({ destName, bestTime }) => {
     setFetched(true);
     try {
       const res = await api.get(
-        `/weather/current/${encodeURIComponent(destName)}`
+        `/weather/current/${encodeURIComponent(destName)}`,
       );
       const d = res.data;
       setWeather({
         temp: d.temperature ?? d.temp ?? d.main?.temp ?? "30",
         condition:
-          d.condition ?? d.description ?? d.weather?.[0]?.description ?? "Clear Sky",
+          d.condition ??
+          d.description ??
+          d.weather?.[0]?.description ??
+          "Clear Sky",
         humidity: d.humidity ?? d.main?.humidity ?? 45,
       });
     } catch {
@@ -334,7 +342,11 @@ const WeatherTooltip = ({ destName, bestTime }) => {
         mockHumidity = 36;
       }
 
-      setWeather({ temp: mockTemp, condition: mockCondition, humidity: mockHumidity });
+      setWeather({
+        temp: mockTemp,
+        condition: mockCondition,
+        humidity: mockHumidity,
+      });
     }
   };
 
@@ -349,7 +361,8 @@ const WeatherTooltip = ({ destName, bestTime }) => {
   };
 
   /* Normalizing incorrect mock entries from backend arrays */
-  const displayBestTime = bestTime && bestTime !== "Morning" ? bestTime : "October to March";
+  const displayBestTime =
+    bestTime && bestTime !== "Morning" ? bestTime : "October to March";
 
   return (
     <div
@@ -377,7 +390,9 @@ const WeatherTooltip = ({ destName, bestTime }) => {
           ) : (
             <>
               <div className="wt-row">
-                <span className="wt-big-icon">{getWeatherIcon(weather.condition)}</span>
+                <span className="wt-big-icon">
+                  {getWeatherIcon(weather.condition)}
+                </span>
                 <div>
                   <div className="wt-temp">
                     {weather.temp !== "—" ? `${weather.temp}°C` : "30°C"}
@@ -387,7 +402,9 @@ const WeatherTooltip = ({ destName, bestTime }) => {
               </div>
 
               {weather.humidity && (
-                <div className="wt-humidity">💧 Humidity: {weather.humidity}%</div>
+                <div className="wt-humidity">
+                  💧 Humidity: {weather.humidity}%
+                </div>
               )}
 
               <div className="wt-best-time">
@@ -521,7 +538,7 @@ const Home = () => {
         startDate: checkIn || today.toISOString().split("T")[0],
         endDate: next.toISOString().split("T")[0],
         description: `Trip to ${dest.city || dest.name}`,
-      })
+      }),
     );
     navigate("/dashboard/trips");
   };
@@ -539,7 +556,7 @@ const Home = () => {
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase())
+          (d.category || "").toLowerCase().includes(where.toLowerCase()),
       )
     : destinations;
 
@@ -788,10 +805,10 @@ const Home = () => {
               {loading
                 ? "Loading destinations…"
                 : where.trim()
-                ? `${filteredDestinations.length} destination${
-                    filteredDestinations.length !== 1 ? "s" : ""
-                  } found`
-                : "Destinations that steal hearts"}
+                  ? `${filteredDestinations.length} destination${
+                      filteredDestinations.length !== 1 ? "s" : ""
+                    } found`
+                  : "Destinations that steal hearts"}
             </div>
           </div>
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
@@ -846,8 +863,8 @@ const Home = () => {
                     {editorialDests[0].entrance_fee_inr === 0
                       ? "Free Entry"
                       : editorialDests[0].entrance_fee_inr
-                      ? `₹${editorialDests[0].entrance_fee_inr}`
-                      : "Explore"}
+                        ? `₹${editorialDests[0].entrance_fee_inr}`
+                        : "Explore"}
                   </div>
                 </div>
               </div>
@@ -924,7 +941,7 @@ const Home = () => {
                   <div className="wander-dest-overlay" />
 
                   <WeatherTooltip
-                    destName={dest ? (dest.city || dest.name) : item.fallbackName}
+                    destName={dest ? dest.city || dest.name : item.fallbackName}
                     bestTime={dest?.best_time_to_visit}
                   />
 
@@ -936,7 +953,7 @@ const Home = () => {
                       {dest
                         ? [dest.city, dest.state].filter(Boolean).join(", ")
                         : item.fallbackLoc}
-                      
+
                       {/* ── SMALL CARDS ENTRANCE FEE LINK ── */}
                       {dest && (
                         <>
@@ -944,8 +961,8 @@ const Home = () => {
                           {dest.entrance_fee_inr === 0
                             ? "Free Entry"
                             : dest.entrance_fee_inr
-                            ? `₹${dest.entrance_fee_inr}`
-                            : "Explore"}
+                              ? `₹${dest.entrance_fee_inr}`
+                              : "Explore"}
                         </>
                       )}
                     </div>
