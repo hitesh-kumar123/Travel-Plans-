@@ -1,19 +1,14 @@
-import React from 'react';
-import { 
-  IconButton, 
-  Tooltip, 
-  Box
-} from '@mui/material';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
+import React from "react";
+import { IconButton, Tooltip, Box } from "@mui/material";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
 
 const Login = () => {
   return (
     <form>
-      <Box sx={{ maxWidth: 400, mx: 'auto', mt: 4, p: 2 }}>
+      <Box sx={{ maxWidth: 400, mx: "auto", mt: 4, p: 2 }}>
         <div id="google-signin-btn" />
         <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          
           <Tooltip title="Facebook login is currently unavailable" arrow>
             <span>
               <IconButton
@@ -53,7 +48,6 @@ const Login = () => {
               </IconButton>
             </span>
           </Tooltip>
-
         </Box>
       </Box>
     </form>
