@@ -379,7 +379,6 @@ const Login = () => {
                   <Tooltip title="Facebook login is currently unavailable" arrow>
                     <span>
                       <IconButton
-                        disabled
                         sx={{
                           border: "1px solid",
                           borderColor: "divider",
@@ -388,9 +387,10 @@ const Login = () => {
                           color: "#4267B2",
                           opacity: 0.5,
                           cursor: "not-allowed",
-                          pointerEvents: "auto",
+                          pointerEvents: "auto", // This forces the browser to notice your finger/mouse
                         }}
-                      > 
+                        onClick={(e) => e.preventDefault()} // This makes sure clicking does absolutely nothing
+                      >
                         <FacebookIcon />
                       </IconButton>
                     </span>
@@ -399,7 +399,6 @@ const Login = () => {
                   <Tooltip title="Twitter login is currently unavailable" arrow>
                     <span>
                       <IconButton
-                        disabled
                         sx={{
                           border: "1px solid",
                           borderColor: "divider",
@@ -408,13 +407,14 @@ const Login = () => {
                           color: "#1DA1F2",
                           opacity: 0.5,
                           cursor: "not-allowed",
-                          pointerEvents: "auto",
+                          pointerEvents: "auto", // This forces the browser to notice your finger/mouse
                         }}
+                        onClick={(e) => e.preventDefault()} // This makes sure clicking does absolutely nothing
                       >
-                         <TwitterIcon />
+                        <TwitterIcon />
                       </IconButton>
-                   </span>
-                 </Tooltip>
+                    </span>
+                  </Tooltip>
                 </Box>
               </Box>
             </form>
