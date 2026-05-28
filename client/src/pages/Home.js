@@ -914,9 +914,9 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
+              <Link to="/about">About</Link>
               <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <Link to="/contact">Contact</Link>
             </div>
 
             <div className="wander-footer-col">
