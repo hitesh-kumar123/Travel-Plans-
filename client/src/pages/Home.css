@@ -1190,3 +1190,16 @@ html {
 .wander-dest-card-img {
   position: relative;
 }
+/* ── CRITICAL FIX FOR OVERFLOW CLIPPING (ADD TO BOTTOM) ── */
+
+/* Jab card par hover ho, toh tooltip ko bahar nikalne ki ijazat dein */
+.wander-dest-card:hover,
+.wander-dest-card:hover .wander-dest-card-img {
+  overflow: visible !important;
+}
+
+/* Tooltip ke andar ka text bilkul saaf aur readable dikhe */
+.wt-popover {
+  color: #1a2d3e !important;
+  text-shadow: none !important;
+}
