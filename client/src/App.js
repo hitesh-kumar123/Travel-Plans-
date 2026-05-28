@@ -21,8 +21,8 @@ import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
-const PrivacyPolicy = ()=> (
-  <div style={{padding: "50px", textAlign: "center", color: "#fff"}}>
+const PrivacyPolicy = () => (
+  <div style={{ padding: "50px", textAlign: "center", color: "#fff" }}>
     <h1>Privacy Policy</h1>
     <p>Privacy Policy content goes here.</p>
   </div>
