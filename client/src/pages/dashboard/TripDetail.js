@@ -290,10 +290,10 @@ const TripDetail = () => {
 
       <Grid container spacing={3}>
         {/* Left Column */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           {/* Trip Info Cards */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -322,7 +322,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -351,7 +351,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -376,7 +376,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -548,7 +548,7 @@ const TripDetail = () => {
         </Grid>
 
         {/* Right Column: Expenses */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Paper
             elevation={0}
             sx={{
@@ -699,7 +699,7 @@ const TripDetail = () => {
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   label="Amount (₹)"
@@ -711,7 +711,7 @@ const TripDetail = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -756,7 +756,7 @@ const TripDetail = () => {
               fullWidth
               type="date"
               label="Date"
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               value={expenseForm.date}
               onChange={(e) =>
                 setExpenseForm({ ...expenseForm, date: e.target.value })
@@ -794,24 +794,24 @@ const TripDetail = () => {
               }
             />
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   type="date"
                   label="Start Date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={editForm.startDate || ""}
                   onChange={(e) =>
                     setEditForm({ ...editForm, startDate: e.target.value })
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   type="date"
                   label="End Date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={editForm.endDate || ""}
                   onChange={(e) =>
                     setEditForm({ ...editForm, endDate: e.target.value })
@@ -820,7 +820,7 @@ const TripDetail = () => {
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   label="Budget (₹)"
@@ -831,7 +831,7 @@ const TripDetail = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -883,7 +883,7 @@ const TripDetail = () => {
           <TextField
             fullWidth
             value={shareLink}
-            InputProps={{ readOnly: true }}
+            slotProps={{ input: { readOnly: true } }}
             onClick={(e) => e.target.select()}
           />
         </DialogContent>

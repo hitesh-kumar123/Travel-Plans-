@@ -258,6 +258,12 @@ const ExpensesView = () => {
       "Original Amount",
       "Original Currency",
     ];
+    console.log("Export clicked, expenses:", expenses);
+    if (!expenses || expenses.length === 0) {
+      alert("No expenses to export!");
+      return;
+    }
+    const headers = ["Date", "Category", "Description", "Amount", "Currency"];
     const rows = expenses.map((e) => [
       new Date(e.date).toLocaleDateString(),
       e.category,
@@ -277,7 +283,10 @@ const ExpensesView = () => {
     const a = document.createElement("a");
     a.href = url;
     a.download = `expenses_${activeTrip?.destination || "trip"}_${displayCurrency}.csv`;
+    a.download = `expenses_${activeTrip?.destination || "trip"}.csv`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -307,6 +316,7 @@ const ExpensesView = () => {
               variant="outlined"
               startIcon={<DownloadIcon />}
               onClick={handleExportCSV}
+              disabled={!activeTripId || !expenses || expenses.length === 0} // ← ADD THIS
               sx={{ borderRadius: 3 }}
             >
               Export
@@ -392,7 +402,7 @@ const ExpensesView = () => {
 
       {/* Stats Cards */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -416,6 +426,7 @@ const ExpensesView = () => {
         </Grid>
 
         <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -442,6 +453,7 @@ const ExpensesView = () => {
         </Grid>
 
         <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -485,7 +497,7 @@ const ExpensesView = () => {
 
       <Grid container spacing={3}>
         {/* Expense Table */}
-        <Grid item xs={12} md={7}>
+        <Grid xs={12} md={7}>
           <Paper
             elevation={0}
             sx={{ borderRadius: 3, border: "1px solid", borderColor: "divider" }}
@@ -603,7 +615,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Pie Chart */}
-        <Grid item xs={12} md={5}>
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
@@ -619,13 +631,13 @@ const ExpensesView = () => {
             </Typography>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
+                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
                   <Pie
                     data={chartData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={100}
+                    outerRadius={85}
                     paddingAngle={4}
                     dataKey="value"
                   >
@@ -672,7 +684,7 @@ const ExpensesView = () => {
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2.5 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   label={`Amount (${getCurrencySymbol(form.currency)}) *`}
@@ -681,10 +693,10 @@ const ExpensesView = () => {
                   onChange={handleAmountChange}
                   error={Boolean(amountError)}
                   helperText={amountError}
-                  inputProps={{ min: 0.01, step: 0.01 }}
+                  slotProps={{ htmlInput: { min: 0.01, step: 0.01 } }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -730,7 +742,7 @@ const ExpensesView = () => {
               fullWidth
               type="date"
               label="Date"
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
