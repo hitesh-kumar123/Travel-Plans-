@@ -49,10 +49,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-      if (
-        origin.includes("localhost") ||
-        origin.includes("vercel.app")
-      ) {
+      if (origin.includes("localhost") || origin.includes("vercel.app")) {
         return callback(null, true);
       }
       callback(new Error("Not allowed by CORS"));
