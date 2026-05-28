@@ -59,11 +59,12 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement.
-All complaints will be reviewed and investigated promptly and fairly.
+reported to the community leaders responsible for enforcement at **community-support@packgo.org**.
+All complaints will be reviewed and investigated promptly and fairly within 48 hours.
 
 All community leaders are obligated to respect the privacy and security of the
 reporter of any incident.
+
 
 ## Attribution
 
