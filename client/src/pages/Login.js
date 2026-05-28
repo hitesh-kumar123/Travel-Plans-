@@ -10,7 +10,7 @@ import {
   Link,
   InputAdornment,
   IconButton,
-  ToolTip,
+  Tooltip,
   useTheme,
   useMediaQuery,
   Divider,
