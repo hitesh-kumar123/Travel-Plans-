@@ -1,0 +1,290 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Teal canvas matching PackGo brand ── */
+.about-container {
+  min-height: 100vh;
+  background: #0e4d6e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Subtle arc decoration — top-right, matching screenshot */
+.about-container::before {
+  content: "";
+  position: fixed;
+  top: -180px;
+  right: -180px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+.about-container::after {
+  content: "";
+  position: fixed;
+  top: -100px;
+  right: -100px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* ── Hero ── */
+.about-hero {
+  text-align: center;
+  margin-bottom: 72px;
+  animation: fadeUp 0.7s ease both;
+}
+
+.about-eyebrow {
+  display: inline-block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 6px 18px;
+  margin-bottom: 24px;
+}
+
+.about-title {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.about-title span {
+  color: #e8954a;
+}
+
+.about-tagline {
+  margin-top: 20px;
+  font-size: 1.08rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+.about-divider {
+  width: 50px;
+  height: 2px;
+  background: #e8954a;
+  margin: 28px auto 0;
+  opacity: 0.8;
+}
+
+/* ── Meta row (like the screenshot's "Effective · read time · sections") ── */
+.about-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+}
+
+.about-meta-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+/* ── Cards grid ── */
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin-bottom: 52px;
+}
+
+.about-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+  animation: fadeUp 0.7s ease both;
+  backdrop-filter: blur(4px);
+}
+
+.about-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.about-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.about-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+  transform: translateY(-5px);
+}
+
+.about-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e8954a, rgba(232, 149, 74, 0.3));
+}
+
+.card-icon {
+  font-size: 1.9rem;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.card-heading {
+  font-family: "Playfair Display", serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* ── Mission statement ── */
+.about-statement {
+  max-width: 660px;
+  text-align: center;
+  animation: fadeUp 0.7s ease 0.3s both;
+}
+
+.about-statement p {
+  font-size: 1.08rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+.about-statement strong {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ── Stats ── */
+.about-stats {
+  display: flex;
+  gap: 56px;
+  justify-content: center;
+  margin-top: 52px;
+  padding-top: 44px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeUp 0.7s ease 0.4s both;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: "Playfair Display", serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 6px;
+}
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .about-stats {
+    gap: 36px;
+  }
+
+  .about-card {
+    padding: 28px 22px;
+  }
+
+  .about-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-stats {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .about-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .about-meta-dot {
+    display: none;
+  }
+}
