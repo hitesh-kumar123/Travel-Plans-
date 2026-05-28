@@ -60,11 +60,10 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleGoogleCallback = (response) => {
+  const handleGoogleCallback = () => {
     // Google Sign-In disabled in this commit since googleLogin action
     // is not present in authActions.js in the current repo.
     // Keep this handler to avoid runtime errors.
-    console.log("Google callback received", response);
   };
 
   useEffect(() => {
@@ -472,6 +471,8 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 4,
+          overflow: "auto",
+          maxHeight: "100vh",
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>

@@ -15,6 +15,7 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  Alert,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -37,7 +38,7 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, error } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -47,11 +48,10 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleGoogleCallback = (response) => {
+  const handleGoogleCallback = () => {
     // Google Sign-In disabled in this commit since googleLogin action
     // is not present in authActions.js in the current repo.
     // Keep this handler to avoid runtime errors.
-    console.log("Google callback received", response);
   };
 
   useEffect(() => {
@@ -269,6 +269,11 @@ const Login = () => {
               borderColor: "divider",
             }}
           >
+            {error && (
+              <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                {error}
+              </Alert>
+            )}
             <form onSubmit={handleSubmit}>
               <TextField
                 margin="normal"

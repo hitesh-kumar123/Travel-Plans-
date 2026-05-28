@@ -914,16 +914,16 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <a href="#about">About</a>
+              <a href="#careers">Careers</a>
+              <a href="#contact">Contact</a>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <a href="#help">Help Center</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/terms">Terms & Conditions</a>
             </div>
           </div>
         </div>
@@ -935,13 +935,13 @@ const Home = () => {
 
           <div className="wander-footer-socials">
             {/* Social media icons */}
-            <a href="/" aria-label="Facebook">
+            <a href="#facebook" aria-label="Facebook">
               <FaFacebook />
             </a>
-            <a href="/" aria-label="Instagram">
+            <a href="#instagram" aria-label="Instagram">
               <FaInstagram />
             </a>
-            <a href="/" aria-label="Twitter">
+            <a href="#twitter" aria-label="Twitter">
               <FaTwitter />
             </a>
           </div>

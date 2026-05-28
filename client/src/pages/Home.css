@@ -749,49 +749,6 @@ html {
 /* ═══ FOOTER ═══ */
 .wander-footer {
   background: var(--dark);
-  color: rgba(253, 250, 245, 0.5);
-  padding: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.wander-footer-logo {
-  font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
-  color: var(--white);
-  text-decoration: none;
-}
-
-.wander-footer-logo span {
-  color: var(--coral);
-}
-
-.wander-footer-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.wander-footer-links a {
-  color: rgba(253, 250, 245, 0.4);
-  font-size: 0.82rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.wander-footer-links a:hover {
-  color: rgba(253, 250, 245, 0.8);
-}
-
-.wander-footer-copy {
-  font-size: 0.78rem;
-}
-
-/* ═══ FOOTER ═══ */
-.wander-footer {
-  background: var(--dark);
   color: rgba(253, 250, 245, 0.7);
   padding: 4rem 3rem 2rem;
   display: flex;
@@ -986,9 +943,7 @@ html {
   }
 
   .wander-footer {
-    padding: 2rem 1.5rem;
-    flex-direction: column;
-    text-align: center;
+    padding: 3rem 1.5rem 2rem;
   }
 
   .wander-cta-actions {

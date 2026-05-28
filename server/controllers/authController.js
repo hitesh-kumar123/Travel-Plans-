@@ -130,7 +130,7 @@ exports.login = async (req, res, next) => {
     // Check if user exists
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res.status(400).json({ msg: "No account found with this email address" });
     }
 
     // Check password
