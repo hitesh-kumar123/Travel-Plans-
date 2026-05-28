@@ -61,6 +61,7 @@ const NotFound = () => {
           </Typography>
 
           <SentimentDissatisfiedIcon
+            aria-hidden="true"
             sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
           />
 
@@ -90,6 +91,8 @@ const NotFound = () => {
           </Typography>
 
           <Box
+            role="navigation"
+            aria-label="Not Found actions"
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -103,6 +106,7 @@ const NotFound = () => {
               variant="contained"
               size="large"
               startIcon={<HomeIcon />}
+              aria-label="Back to home page"
               sx={{
                 borderRadius: 2,
                 px: 4,
@@ -117,6 +121,7 @@ const NotFound = () => {
               to="/contact"
               variant="outlined"
               size="large"
+              aria-label="Contact customer support"
               sx={{
                 borderRadius: 2,
                 px: 4,
