@@ -10,6 +10,7 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  ToolTip,
   useTheme,
   useMediaQuery,
   Divider,
@@ -375,32 +376,45 @@ const Login = () => {
               >
                 <div id="google-signin-btn" />
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <IconButton
-                    disabled
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      p: 1.5,
-                      color: "#4267B2",
-                      opacity: 0.5,
-                    }}
-                  >
-                    <FacebookIcon />
-                  </IconButton>
-                  <IconButton
-                    disabled
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      p: 1.5,
-                      color: "#1DA1F2",
-                      opacity: 0.5,
-                    }}
-                  >
-                    <TwitterIcon />
-                  </IconButton>
+                  <Tooltip title="Facebook login is currently unavailable" arrow>
+                    <span>
+                      <IconButton
+                        disabled
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 1.5,
+                          color: "#4267B2",
+                          opacity: 0.5,
+                          cursor: "not-allowed",
+                          pointerEvents: "auto",
+                        }}
+                      > 
+                        <FacebookIcon />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+
+                  <Tooltip title="Twitter login is currently unavailable" arrow>
+                    <span>
+                      <IconButton
+                        disabled
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 1.5,
+                          color: "#1DA1F2",
+                          opacity: 0.5,
+                          cursor: "not-allowed",
+                          pointerEvents: "auto",
+                        }}
+                      >
+                         <TwitterIcon />
+                      </IconButton>
+                   </span>
+                 </Tooltip>
                 </Box>
               </Box>
             </form>
