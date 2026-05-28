@@ -749,49 +749,6 @@ html {
 /* ═══ FOOTER ═══ */
 .wander-footer {
   background: var(--dark);
-  color: rgba(253, 250, 245, 0.5);
-  padding: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.wander-footer-logo {
-  font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
-  color: var(--white);
-  text-decoration: none;
-}
-
-.wander-footer-logo span {
-  color: var(--coral);
-}
-
-.wander-footer-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.wander-footer-links a {
-  color: rgba(253, 250, 245, 0.4);
-  font-size: 0.82rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.wander-footer-links a:hover {
-  color: rgba(253, 250, 245, 0.8);
-}
-
-.wander-footer-copy {
-  font-size: 0.78rem;
-}
-
-/* ═══ FOOTER ═══ */
-.wander-footer {
-  background: var(--dark);
   color: rgba(253, 250, 245, 0.7);
   padding: 4rem 3rem 2rem;
   display: flex;
@@ -899,26 +856,6 @@ html {
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 900px) {
-  .wander-footer {
-    padding: 3rem 1.5rem 2rem;
-  }
-
-  .wander-footer-top {
-    flex-direction: column;
-  }
-
-  .wander-footer-links-wrapper {
-    gap: 2rem;
-  }
-
-  .wander-footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* ═══ RESPONSIVE ═══ */
-@media (max-width: 900px) {
   .wander-hero {
     grid-template-columns: 1fr;
     padding: 3rem 1.5rem;
@@ -986,7 +923,20 @@ html {
   }
 
   .wander-footer {
-    padding: 2rem 1.5rem;
+    padding: 3rem 1.5rem 2rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .wander-footer-top {
+    flex-direction: column;
+  }
+
+  .wander-footer-links-wrapper {
+    gap: 2rem;
+  }
+
+  .wander-footer-bottom {
     flex-direction: column;
     text-align: center;
   }
@@ -995,6 +945,7 @@ html {
     flex-direction: column;
     width: 100%;
   }
+
   .wander-btn-primary,
   .wander-btn-ghost {
     width: 100%;
@@ -1002,31 +953,23 @@ html {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HOME.CSS  —  ADDITIONS FOR ISSUE: Weather Tooltip + Typography
-   Paste these blocks at the BOTTOM of your existing Home.css file
-   ═══════════════════════════════════════════════════════════════ */
-
 /* ── Google Fonts: Playfair Display (serif) ─────────────────── */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap");
 
 /* ── TYPOGRAPHY UPGRADE ──────────────────────────────────────── */
 
-/* Serif heading for section titles */
 .wander-serif-title {
   font-family: "Playfair Display", Georgia, serif !important;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
-/* Serif font for destination card names */
 .wander-dest-serif {
   font-family: "Playfair Display", Georgia, serif !important;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
 
-/* Keep card description / country line in clean sans-serif */
 .wander-dest-country {
   font-family: "DM Sans", sans-serif;
   font-size: 0.78rem;
@@ -1035,15 +978,13 @@ html {
 
 /* ── WEATHER TOOLTIP COMPONENT ───────────────────────────────── */
 
-/* Wrapper — must be positioned so popover can anchor to it */
 .wt-wrapper {
   position: absolute;
   top: 10px;
-  right: 10px; /* sits in the top-right corner of each card */
+  right: 10px;
   z-index: 20;
 }
 
-/* The emoji trigger button */
 .wt-trigger {
   width: 34px;
   height: 34px;
@@ -1068,7 +1009,6 @@ html {
   transform: scale(1.08);
 }
 
-/* Popover card */
 .wt-popover {
   position: absolute;
   top: calc(100% + 10px);
@@ -1082,10 +1022,11 @@ html {
   padding: 13px 15px;
   font-family: "DM Sans", sans-serif;
   animation: wt-fade-in 0.18s ease;
-  pointer-events: none; /* tooltip is read-only */
+  pointer-events: none;
+  color: #1a2d3e;
+  text-shadow: none;
 }
 
-/* Small upward arrow */
 .wt-popover-arrow {
   position: absolute;
   top: -6px;
@@ -1098,19 +1039,18 @@ html {
   box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Fade-in animation */
 @keyframes wt-fade-in {
   from {
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* Temp + condition row */
 .wt-row {
   display: flex;
   align-items: center;
@@ -1137,14 +1077,12 @@ html {
   margin-top: 1px;
 }
 
-/* Humidity line */
 .wt-humidity {
   font-size: 0.73rem;
   color: #6b7c93;
   margin-bottom: 8px;
 }
 
-/* Best time to visit */
 .wt-best-time {
   display: flex;
   justify-content: space-between;
@@ -1169,7 +1107,6 @@ html {
   text-align: right;
 }
 
-/* Loading state inside popover */
 .wt-loading {
   display: flex;
   align-items: center;
@@ -1195,21 +1132,11 @@ html {
   }
 }
 
-/* ── Ensure wander-dest-card-img is position:relative ──────── */
-/* (It should already be, but just in case) */
 .wander-dest-card-img {
   position: relative;
 }
-/* ── CRITICAL FIX FOR OVERFLOW CLIPPING (ADD TO BOTTOM) ── */
 
-/* Jab card par hover ho, toh tooltip ko bahar nikalne ki ijazat dein */
 .wander-dest-card:hover,
 .wander-dest-card:hover .wander-dest-card-img {
   overflow: visible !important;
-}
-
-/* Tooltip ke andar ka text bilkul saaf aur readable dikhe */
-.wt-popover {
-  color: #1a2d3e !important;
-  text-shadow: none !important;
 }
