@@ -9,7 +9,7 @@ const STATUS_CONFIG = {
   completed: { color: "default", variant: "outlined" },
 };
 
-export default function TripCountdownBadge({ startDate, endDate, sx = {} }) {
+export default function TripCountdownBadge({ startDate, endDate, size = "small", sx = {}, ...props }) {
   const { type, label } = getTripCountdown(startDate, endDate);
   const { color, variant } = STATUS_CONFIG[type];
 
@@ -18,8 +18,10 @@ export default function TripCountdownBadge({ startDate, endDate, sx = {} }) {
       label={label}
       color={color}
       variant={variant}
-      size="small"
-      sx={{ fontWeight: 600, fontSize: "0.72rem", ...sx }}
+      size={size}
+      aria-label={`Trip status: ${label}`}
+      sx={{ fontWeight: 600, fontSize: size === "small" ? "0.72rem" : "0.875rem", ...sx }}
+      {...props}
     />
   );
 }
