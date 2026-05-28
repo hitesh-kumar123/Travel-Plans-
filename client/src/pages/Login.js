@@ -1,12 +1,7 @@
 import React from 'react';
 import { 
-  Link, 
-  InputAdornment, 
   IconButton, 
   Tooltip, 
-  useTheme, 
-  useMediaQuery, 
-  Divider,
   Box
 } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
