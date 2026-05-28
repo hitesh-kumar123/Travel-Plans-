@@ -1,7 +1,11 @@
 import axios from "axios";
 
-// Standard professional approach: Strictly using environment variable
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+// Use the client environment variable when available.
+// In production, a missing REACT_APP_API_URL will keep requests relative,
+// so deployed frontend does not attempt to call localhost.
+const API_BASE =
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production" ? "" : "http://localhost:5000/api");
 
 // Create an axios instance with defaults
 const api = axios.create({

@@ -7,6 +7,17 @@ const {
   getPasswordResetTemplate,
 } = require("../utils/emailTemplates");
 
+const buildEmailFailureMessage = (action) =>
+  `We could not send the verification email for ${action}. Please try again in a moment.`;
+
+const logEmailFailure = (action, emailErr) => {
+  console.error(`[authController] ${action} email send failed`, {
+    message: emailErr.message,
+    cause: emailErr.cause?.message,
+    stack: emailErr.stack,
+  });
+};
+
 // Register a new user
 exports.register = async (req, res, next) => {
   try {
@@ -74,7 +85,11 @@ exports.register = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error("Failed to send registration email:", emailErr);
+      logEmailFailure("registration", emailErr);
+      await User.deleteOne({ _id: user._id });
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("registration"),
+      });
     }
 
     // Dev mode log
@@ -182,10 +197,10 @@ exports.login = async (req, res, next) => {
             ),
           });
         } catch (emailErr) {
-          console.error(
-            "Failed to send verification email on login:",
-            emailErr,
-          );
+          logEmailFailure("login OTP resend", emailErr);
+          return res.status(500).json({
+            msg: buildEmailFailureMessage("login OTP resend"),
+          });
         }
 
         if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -289,7 +304,7 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(404).json({ msg: "There is no user with that email" });
+      return res.status(400).json({ msg: "There is no user with that email" });
     }
 
     // Get reset token
@@ -543,7 +558,10 @@ exports.resendOtp = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error("Failed to send new verification email:", emailErr);
+      logEmailFailure("OTP resend", emailErr);
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("OTP resend"),
+      });
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
@@ -721,10 +739,10 @@ exports.requestEmailChange = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error(
-        "Failed to send email change verification email:",
-        emailErr,
-      );
+      logEmailFailure("email change OTP", emailErr);
+      return res.status(500).json({
+        msg: buildEmailFailureMessage("email change request"),
+      });
     }
 
     if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {

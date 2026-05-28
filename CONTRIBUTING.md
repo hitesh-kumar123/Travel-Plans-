@@ -25,6 +25,50 @@ git merge upstream/main
 git push origin main
 ```
 
+## Local Environment Setup
+
+After cloning your fork, set up your environment variables:
+
+### Server Setup
+
+```bash
+cd server
+cp .env.example .env
+```
+
+Open `server/.env` and fill in your values. Most fields are self-explanatory — the only one that needs a special setup is the **Email (OTP)** configuration.
+
+### 📧 Setting Up Gmail App Password (for OTP emails)
+
+> **Note:** The production server uses its own email credentials. For local development, **you must use your own Gmail App Password**. Do not share or commit your credentials.
+
+**Steps:**
+
+1. Go to your Google Account → [https://myaccount.google.com](https://myaccount.google.com)
+2. Navigate to **Security → How you sign in to Google → 2-Step Verification** and enable it
+3. After enabling, go to **Security → App passwords**
+4. Select app: **Mail** → device: **Other** → type `TravelPlanner`
+5. Google will show a **16-character password** — copy it
+6. Paste it in your `server/.env`:
+
+```env
+EMAIL_USER=your-gmail-address@gmail.com
+EMAIL_PASS=xxxx xxxx xxxx xxxx
+```
+
+📖 Official Guide: https://support.google.com/accounts/answer/185833
+
+### Client Setup
+
+```bash
+cd client
+cp .env.example .env
+```
+
+The default `REACT_APP_API_URL=http://localhost:5000/api` works for local development. No changes needed.
+
+---
+
 ## Pull Request Requirements
 
 When creating a Pull Request, please ensure you:
