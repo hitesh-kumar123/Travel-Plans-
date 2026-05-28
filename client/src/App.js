@@ -11,6 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import About from "./pages/About";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
+import HelpCenter from "./pages/HelpCenter";
 
 // Import components
 import Home from "./pages/Home";
@@ -54,12 +57,9 @@ function App() {
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="/about" element={<About />} />
-              <Route
-                path="/help-center"
-                element={
-                  <div style={{ padding: "40px" }}>Help Center Page</div>
-                }
-              />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route
                 path="/terms-and-conditions"

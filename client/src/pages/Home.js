@@ -6,95 +6,104 @@ import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 /* ── SVG SCENES ─────────────────────────────────────────────── */
-const SceneIceland = () => (
-  <svg
-    viewBox="0 0 460 360"
-    xmlns="http://www.w3.org/2000/svg"
-    className="wander-scene-svg"
-  >
-    <rect width="460" height="360" fill="#1A3A5C" />
-    <circle cx="60" cy="30" r="1.2" fill="white" opacity="0.7" />
-    <circle cx="120" cy="55" r="0.8" fill="white" opacity="0.5" />
-    <circle cx="200" cy="20" r="1" fill="white" opacity="0.6" />
-    <circle cx="300" cy="40" r="1.3" fill="white" opacity="0.8" />
-    <circle cx="380" cy="25" r="0.9" fill="white" opacity="0.5" />
-    <circle cx="420" cy="60" r="1.1" fill="white" opacity="0.7" />
-    <circle cx="160" cy="70" r="0.7" fill="white" opacity="0.4" />
-    <circle cx="390" cy="55" r="22" fill="#FFF5D6" opacity="0.9" />
-    <circle cx="400" cy="48" r="17" fill="#1A3A5C" />
-    <path
-      d="M0,120 Q115,80 230,110 Q345,140 460,100"
-      stroke="#2ECC87"
-      strokeWidth="3"
-      fill="none"
-      opacity="0.4"
-    />
-    <path
-      d="M0,140 Q115,100 230,130 Q345,160 460,120"
-      stroke="#2ECC87"
-      strokeWidth="2"
-      fill="none"
-      opacity="0.25"
-    />
-    <path
-      d="M0,105 Q115,65 230,95 Q345,125 460,85"
-      stroke="#7B5EA7"
-      strokeWidth="2.5"
-      fill="none"
-      opacity="0.3"
-    />
-    <path
-      d="M0,280 L60,190 L120,230 L180,170 L240,220 L310,155 L370,210 L420,175 L460,200 L460,360 L0,360Z"
-      fill="#0D2438"
-    />
-    <path
-      d="M0,360 L0,290 L40,250 L90,280 L150,235 L200,260 L260,220 L320,255 L380,230 L420,250 L460,235 L460,360Z"
-      fill="#081828"
-    />
-    <path d="M150,235 L165,252 L135,252Z" fill="rgba(255,255,255,0.6)" />
-    <path d="M260,220 L278,240 L242,240Z" fill="rgba(255,255,255,0.6)" />
-    <path d="M380,230 L394,246 L366,246Z" fill="rgba(255,255,255,0.5)" />
-    <ellipse cx="230" cy="330" rx="140" ry="22" fill="#1A3A5C" opacity="0.7" />
-    <path
-      d="M110,320 Q180,310 230,318 Q280,310 350,320"
-      stroke="rgba(139,175,196,0.4)"
-      strokeWidth="1.5"
-      fill="none"
-    />
-    <g fill="#0A1F30">
-      <polygon points="30,310 42,275 54,310" />
-      <polygon points="26,310 42,268 58,310" />
-      <polygon points="60,315 72,285 84,315" />
-      <polygon points="390,305 402,270 414,305" />
-      <polygon points="386,305 402,262 418,305" />
-      <polygon points="415,312 428,280 441,312" />
-    </g>
-    <path
-      d="M0,340 Q115,325 230,335 Q345,345 460,330 L460,360 L0,360Z"
-      fill="#06121E"
-    />
-    <rect
-      x="15"
-      y="15"
-      width="140"
-      height="28"
-      rx="14"
-      fill="rgba(255,255,255,0.1)"
-      stroke="rgba(255,255,255,0.15)"
-      strokeWidth="0.5"
-    />
-    <text
-      x="27"
-      y="33"
-      fontFamily="DM Sans,sans-serif"
-      fontSize="11"
-      fill="rgba(255,255,255,0.85)"
-      fontWeight="500"
+function SceneIceland() {
+  return (
+    <svg
+      viewBox="0 0 460 360"
+      xmlns="http://www.w3.org/2000/svg"
+      className="wander-scene-svg"
     >
-      Iceland Northern Lights
-    </text>
-  </svg>
-);
+      <rect width="460" height="360" fill="#1A3A5C" />
+      <circle cx="60" cy="30" r="1.2" fill="white" opacity="0.7" />
+      <circle cx="120" cy="55" r="0.8" fill="white" opacity="0.5" />
+      <circle cx="200" cy="20" r="1" fill="white" opacity="0.6" />
+      <circle cx="300" cy="40" r="1.3" fill="white" opacity="0.8" />
+      <circle cx="380" cy="25" r="0.9" fill="white" opacity="0.5" />
+      <circle cx="420" cy="60" r="1.1" fill="white" opacity="0.7" />
+      <circle cx="160" cy="70" r="0.7" fill="white" opacity="0.4" />
+      <circle cx="390" cy="55" r="22" fill="#FFF5D6" opacity="0.9" />
+      <circle cx="400" cy="48" r="17" fill="#1A3A5C" />
+      <path
+        d="M0,120 Q115,80 230,110 Q345,140 460,100"
+        stroke="#2ECC87"
+        strokeWidth="3"
+        fill="none"
+        opacity="0.4"
+      />
+      <path
+        d="M0,140 Q115,100 230,130 Q345,160 460,120"
+        stroke="#2ECC87"
+        strokeWidth="2"
+        fill="none"
+        opacity="0.25"
+      />
+      <path
+        d="M0,105 Q115,65 230,95 Q345,125 460,85"
+        stroke="#7B5EA7"
+        strokeWidth="2.5"
+        fill="none"
+        opacity="0.3"
+      />
+      <path
+        d="M0,280 L60,190 L120,230 L180,170 L240,220 L310,155 L370,210 L420,175 L460,200 L460,360 L0,360Z"
+        fill="#0D2438"
+      />
+      <path
+        d="M0,360 L0,290 L40,250 L90,280 L150,235 L200,260 L260,220 L320,255 L380,230 L420,250 L460,235 L460,360Z"
+        fill="#081828"
+      />
+      <path d="M150,235 L165,252 L135,252Z" fill="rgba(255,255,255,0.6)" />
+      <path d="M260,220 L278,240 L242,240Z" fill="rgba(255,255,255,0.6)" />
+      <path d="M380,230 L394,246 L366,246Z" fill="rgba(255,255,255,0.5)" />
+      <ellipse
+        cx="230"
+        cy="330"
+        rx="140"
+        ry="22"
+        fill="#1A3A5C"
+        opacity="0.7"
+      />
+      <path
+        d="M110,320 Q180,310 230,318 Q280,310 350,320"
+        stroke="rgba(139,175,196,0.4)"
+        strokeWidth="1.5"
+        fill="none"
+      />
+      <g fill="#0A1F30">
+        <polygon points="30,310 42,275 54,310" />
+        <polygon points="26,310 42,268 58,310" />
+        <polygon points="60,315 72,285 84,315" />
+        <polygon points="390,305 402,270 414,305" />
+        <polygon points="386,305 402,262 418,305" />
+        <polygon points="415,312 428,280 441,312" />
+      </g>
+      <path
+        d="M0,340 Q115,325 230,335 Q345,345 460,330 L460,360 L0,360Z"
+        fill="#06121E"
+      />
+      <rect
+        x="15"
+        y="15"
+        width="140"
+        height="28"
+        rx="14"
+        fill="rgba(255,255,255,0.1)"
+        stroke="rgba(255,255,255,0.15)"
+        strokeWidth="0.5"
+      />
+      <text
+        x="27"
+        y="33"
+        fontFamily="DM Sans,sans-serif"
+        fontSize="11"
+        fill="rgba(255,255,255,0.85)"
+        fontWeight="500"
+      >
+        Iceland Northern Lights
+      </text>
+    </svg>
+  );
+}
 
 const SceneSantorini = () => (
   <svg
@@ -914,9 +923,9 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <Link to="/about">About</Link>
+              <Link to="/careers">Careers</Link>
+              <Link to="/contact">Contact</Link>
             </div>
 
             <div className="wander-footer-col">
