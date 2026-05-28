@@ -440,14 +440,14 @@ const Home = () => {
           <li>
             <a href="#wander-features">Features</a>
           </li>
-          {isAuthenticated && (
+          {!isAuthenticated && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
             </li>
           )}
         </ul>
 
-        {isAuthenticated ? (
+        {!isAuthenticated ? (
           <Link to="/dashboard">
             <button className="wander-nav-cta">My Dashboard</button>
           </Link>
@@ -523,7 +523,7 @@ const Home = () => {
           >
             Features
           </a>
-          {isAuthenticated ? (
+          {!isAuthenticated ? (
             <Link
               to="/dashboard"
               style={{
