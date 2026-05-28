@@ -22,7 +22,6 @@ import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 import TermsOfService from "./pages/TermsOfService";
-import Contact from "./pages/Contact";
 import About from "./pages/About";
 
 // ← new wrapper to use hooks inside Router
@@ -39,7 +38,6 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/contact" element={<Contact />} />
       <Route path="/about" element={<About />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
