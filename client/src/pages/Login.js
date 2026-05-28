@@ -43,7 +43,9 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, error: authError } = useSelector((state) => state.auth);
+  const { isAuthenticated, error: authError } = useSelector(
+    (state) => state.auth,
+  );
 
   // Increment failed counter only for attempts WE dispatched (not stale state on mount)
   useEffect(() => {
@@ -112,7 +114,6 @@ const Login = () => {
       ...formData,
       [name]: value,
     });
-
 
     if (name === "email") {
       if (
@@ -294,7 +295,9 @@ const Login = () => {
               {/* Failed attempts warning */}
               <Collapse in={failedAttempts >= 2}>
                 <Alert
-                  severity={failedAttempts >= MAX_ATTEMPTS - 1 ? "error" : "warning"}
+                  severity={
+                    failedAttempts >= MAX_ATTEMPTS - 1 ? "error" : "warning"
+                  }
                   sx={{ mb: 2, borderRadius: 2 }}
                 >
                   {failedAttempts >= MAX_ATTEMPTS

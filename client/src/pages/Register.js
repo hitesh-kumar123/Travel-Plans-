@@ -65,7 +65,8 @@ const Register = () => {
     if (score <= 1) return { score: 20, label: "Weak", color: "error.main" };
     if (score === 2) return { score: 40, label: "Fair", color: "warning.main" };
     if (score === 3) return { score: 60, label: "Good", color: "info.main" };
-    if (score === 4) return { score: 80, label: "Strong", color: "success.light" };
+    if (score === 4)
+      return { score: 80, label: "Strong", color: "success.light" };
     return { score: 100, label: "Very Strong", color: "success.main" };
   };
 
@@ -339,35 +340,46 @@ const Register = () => {
             />
 
             {/* Password Strength Meter */}
-            {formData.password && (() => {
-              const strength = getPasswordStrength(formData.password);
-              return (
-                <Box sx={{ mb: 1 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      Password strength
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: strength.color, fontWeight: 600 }}>
-                      {strength.label}
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={strength.score}
-                    sx={{
-                      height: 6,
-                      borderRadius: 3,
-                      bgcolor: "grey.200",
-                      "& .MuiLinearProgress-bar": {
-                        bgcolor: strength.color,
+            {formData.password &&
+              (() => {
+                const strength = getPasswordStrength(formData.password);
+                return (
+                  <Box sx={{ mb: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        mb: 0.5,
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        Password strength
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: strength.color, fontWeight: 600 }}
+                      >
+                        {strength.label}
+                      </Typography>
+                    </Box>
+                    <LinearProgress
+                      variant="determinate"
+                      value={strength.score}
+                      sx={{
+                        height: 6,
                         borderRadius: 3,
-                        transition: "width 0.4s ease",
-                      },
-                    }}
-                  />
-                </Box>
-              );
-            })()}
+                        bgcolor: "grey.200",
+                        "& .MuiLinearProgress-bar": {
+                          bgcolor: strength.color,
+                          borderRadius: 3,
+                          transition: "width 0.4s ease",
+                        },
+                      }}
+                    />
+                  </Box>
+                );
+              })()}
 
             {/* Password Requirements Checklist */}
             {formData.password && (
@@ -385,15 +397,22 @@ const Register = () => {
                 {passwordRules.map((rule) => {
                   const passed = rule.test(formData.password);
                   return (
-                    <Box key={rule.label} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <Box
+                      key={rule.label}
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
                       {passed ? (
-                        <CheckIcon sx={{ fontSize: 14, color: "success.main" }} />
+                        <CheckIcon
+                          sx={{ fontSize: 14, color: "success.main" }}
+                        />
                       ) : (
                         <CloseIcon sx={{ fontSize: 14, color: "error.main" }} />
                       )}
                       <Typography
                         variant="caption"
-                        sx={{ color: passed ? "success.main" : "text.secondary" }}
+                        sx={{
+                          color: passed ? "success.main" : "text.secondary",
+                        }}
                       >
                         {rule.label}
                       </Typography>
