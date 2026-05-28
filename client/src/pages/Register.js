@@ -61,14 +61,10 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
     console.log("Google callback received", response);
   };
 
   useEffect(() => {
-    // Only initialize Google Sign-In if activeStep is 0 (Personal Information / first step)
     if (activeStep !== 0) return;
 
     const initializeGoogleSignIn = () => {
@@ -475,6 +471,27 @@ const Register = () => {
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
+          {/* ✅ Back to Home Button - ADDED */}
+          <Box sx={{ mb: 2 }}>
+            <Link
+              component={RouterLink}
+              to="/"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                textDecoration: "none",
+                color: "text.secondary",
+                fontWeight: 600,
+                width: "fit-content",
+                "&:hover": { color: "primary.main" },
+              }}
+            >
+              <ArrowBackIcon fontSize="small" />
+              Back to Home
+            </Link>
+          </Box>
+
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account

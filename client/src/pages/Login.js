@@ -21,6 +21,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
+import ArrowBackIcon from "@mui/icons-material/West";
 import PrimaryButton from "../components/PrimaryButton";
 
 const Login = () => {
@@ -251,6 +252,27 @@ const Login = () => {
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
+          {/* ✅ Back to Home Button - ADDED */}
+          <Box sx={{ mb: 2 }}>
+            <Link
+              component={RouterLink}
+              to="/"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                textDecoration: "none",
+                color: "text.secondary",
+                fontWeight: 600,
+                width: "fit-content",
+                "&:hover": { color: "primary.main" },
+              }}
+            >
+              <ArrowBackIcon fontSize="small" />
+              Back to Home
+            </Link>
+          </Box>
+
           <Box sx={{ textAlign: "center", mb: 5 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Welcome Back
