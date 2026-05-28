@@ -383,7 +383,7 @@ const Home = () => {
   }, []);
 
   const handleAddTrip = (dest) => {
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/login");
       return;
     }
@@ -447,7 +447,7 @@ const Home = () => {
           )}
         </ul>
 
-        {!isAuthenticated ? (
+        {isAuthenticated ? (
           <Link to="/dashboard">
             <button className="wander-nav-cta">My Dashboard</button>
           </Link>
@@ -495,7 +495,7 @@ const Home = () => {
           style={{
             background: "var(--white)",
             borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-            padding: "1rem 1.5rem",
+            padding: "1.5rem 1.5rem 1rem 1.5rem",
             display: "flex",
             flexDirection: "column",
             gap: "1rem",
@@ -518,12 +518,14 @@ const Home = () => {
               color: "var(--ocean)",
               textDecoration: "none",
               fontWeight: 500,
+              marginBottom: "12px",
+
             }}
             onClick={() => setMobileOpen(false)}
           >
             Features
           </a>
-          {!isAuthenticated ? (
+          {isAuthenticated ? (
             <Link
               to="/dashboard"
               style={{
@@ -561,7 +563,7 @@ const Home = () => {
       )}
 
       {/* ═══ HERO ═══ */}
-      <section className="wander-hero">
+      <section className="wander-hero" style={{ paddingTop: 100 }}>
         <div className="wander-hero-content">
           <div className="wander-hero-badge">
             <div className="wander-dot" />
@@ -622,9 +624,11 @@ const Home = () => {
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
 
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", width: "100%" }}>
               <input
                 className="wander-sf-val"
+                width="100%"
+                boxSizing="border-box"
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
@@ -634,13 +638,13 @@ const Home = () => {
               <span
                 style={{
                   position: "absolute",
-                  right: "10px",
+                  right: "14px",
                   top: "50%",
                   transform: "translateY(-50%)",
                   pointerEvents: "none",
                 }}
               >
-                📅
+              📅
               </span>
             </div>
           </div>
