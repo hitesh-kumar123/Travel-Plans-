@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -272,6 +273,116 @@ const SceneSahara = () => (
 );
 /* ─────────────────────────────────────────────────────────────── */
 
+/* ══════════════════════════════════════════════════════════════ */
+/*  WEATHER TOOLTIP COMPONENT  (NEW)                              */
+/* ══════════════════════════════════════════════════════════════ */
+const WeatherTooltip = ({ destName, bestTime }) => {
+  const [visible, setVisible] = useState(false);
+  const [weather, setWeather] = useState(null);
+  const [fetched, setFetched] = useState(false);
+  const timerRef = useRef(null);
+
+  /* Weather condition → emoji icon */
+  const getWeatherIcon = (condition = "") => {
+    const c = condition.toLowerCase();
+    if (c.includes("clear") || c.includes("sunny")) return "☀️";
+    if (c.includes("cloud")) return "⛅";
+    if (c.includes("rain") || c.includes("drizzle")) return "🌧️";
+    if (c.includes("snow")) return "❄️";
+    if (c.includes("thunder") || c.includes("storm")) return "⛈️";
+    if (c.includes("mist") || c.includes("fog") || c.includes("haze"))
+      return "🌫️";
+    if (c.includes("wind")) return "💨";
+    return "🌤️";
+  };
+
+  const fetchWeather = async () => {
+    if (fetched) return;
+    setFetched(true);
+    try {
+      /* Use the project's existing weather API endpoint */
+      const res = await api.get(
+        `/weather/current/${encodeURIComponent(destName)}`
+      );
+      const d = res.data;
+      setWeather({
+        temp: d.temperature ?? d.temp ?? d.main?.temp ?? "—",
+        condition:
+          d.condition ?? d.description ?? d.weather?.[0]?.description ?? "—",
+        humidity: d.humidity ?? d.main?.humidity ?? null,
+      });
+    } catch {
+      /* Fallback: show a friendly placeholder if API fails */
+      setWeather({ temp: "—", condition: "Unavailable", humidity: null });
+    }
+  };
+
+  const handleMouseEnter = () => {
+    clearTimeout(timerRef.current);
+    fetchWeather();
+    setVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setTimeout(() => setVisible(false), 180);
+  };
+
+  return (
+    <div
+      className="wt-wrapper"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Weather icon button */}
+      <button
+        className="wt-trigger"
+        aria-label={`Weather info for ${destName}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {weather ? getWeatherIcon(weather.condition) : "🌤️"}
+      </button>
+
+      {/* Popover */}
+      {visible && (
+        <div className="wt-popover" role="tooltip">
+          <div className="wt-popover-arrow" />
+
+          {!weather ? (
+            <div className="wt-loading">
+              <span className="wt-spinner" />
+              Fetching weather…
+            </div>
+          ) : (
+            <>
+              <div className="wt-row">
+                <span className="wt-big-icon">{getWeatherIcon(weather.condition)}</span>
+                <div>
+                  <div className="wt-temp">
+                    {weather.temp !== "—" ? `${weather.temp}°C` : "N/A"}
+                  </div>
+                  <div className="wt-condition">{weather.condition}</div>
+                </div>
+              </div>
+
+              {weather.humidity && (
+                <div className="wt-humidity">💧 Humidity: {weather.humidity}%</div>
+              )}
+
+              {bestTime && (
+                <div className="wt-best-time">
+                  <span className="wt-best-label">🗓 Best Time</span>
+                  <span className="wt-best-val">{bestTime}</span>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+/* ─────────────────────────────────────────────────────────────── */
+
 const FEATURES = [
   {
     icon: (
@@ -331,7 +442,6 @@ const STATS = [
   { big: "180+", desc: "Countries covered" },
 ];
 
-/* ── SVG Search Icon ── */
 const SearchIcon = () => (
   <svg
     width="16"
@@ -376,9 +486,7 @@ const Home = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -396,7 +504,7 @@ const Home = () => {
         startDate: checkIn || today.toISOString().split("T")[0],
         endDate: next.toISOString().split("T")[0],
         description: `Trip to ${dest.city || dest.name}`,
-      }),
+      })
     );
     navigate("/dashboard/trips");
   };
@@ -408,18 +516,16 @@ const Home = () => {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
     ? destinations.filter(
         (d) =>
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase()),
+          (d.category || "").toLowerCase().includes(where.toLowerCase())
       )
     : destinations;
 
-  /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
 
   return (
@@ -589,7 +695,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Hero Visual */}
         <div className="wander-hero-visual">
           <div className="wander-hero-card-main">
             <SceneIceland />
@@ -621,7 +726,6 @@ const Home = () => {
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
-
             <div style={{ position: "relative" }}>
               <input
                 className="wander-sf-val"
@@ -630,7 +734,6 @@ const Home = () => {
                 onChange={(e) => setCheckIn(e.target.value)}
                 style={{ paddingRight: "35px" }}
               />
-
               <span
                 style={{
                   position: "absolute",
@@ -664,12 +767,15 @@ const Home = () => {
         <div className="wander-section-header">
           <div>
             <div className="wander-section-label">Top Picks</div>
-            <div className="wander-section-title">
+            {/* ── TYPOGRAPHY UPGRADE: Playfair Display serif heading ── */}
+            <div className="wander-section-title wander-serif-title">
               {loading
                 ? "Loading destinations…"
                 : where.trim()
-                  ? `${filteredDestinations.length} destination${filteredDestinations.length !== 1 ? "s" : ""} found`
-                  : "Destinations that steal hearts"}
+                ? `${filteredDestinations.length} destination${
+                    filteredDestinations.length !== 1 ? "s" : ""
+                  } found`
+                : "Destinations that steal hearts"}
             </div>
           </div>
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
@@ -679,7 +785,7 @@ const Home = () => {
 
         {/* Editorial 4-card grid */}
         <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
+          {/* TALL card */}
           {editorialDests[0] ? (
             <div
               className="wander-dest-card tall"
@@ -706,8 +812,16 @@ const Home = () => {
                 )}
                 <div className="wander-dest-overlay" />
                 <div className="wander-dest-tag">Trending</div>
+
+                {/* ── WEATHER TOOLTIP on card ── */}
+                <WeatherTooltip
+                  destName={editorialDests[0].city || editorialDests[0].name}
+                  bestTime={editorialDests[0].best_time_to_visit}
+                />
+
                 <div className="wander-dest-info">
-                  <div className="wander-dest-name">
+                  {/* Serif font for destination name */}
+                  <div className="wander-dest-name wander-dest-serif">
                     {editorialDests[0].name || "Santorini"}
                   </div>
                   <div className="wander-dest-country">
@@ -718,8 +832,8 @@ const Home = () => {
                     {editorialDests[0].entrance_fee_inr === 0
                       ? "Free Entry"
                       : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
+                      ? `₹${editorialDests[0].entrance_fee_inr}`
+                      : "Explore"}
                   </div>
                 </div>
               </div>
@@ -734,7 +848,9 @@ const Home = () => {
                 <div className="wander-dest-overlay" />
                 <div className="wander-dest-tag">Trending</div>
                 <div className="wander-dest-info">
-                  <div className="wander-dest-name">Santorini</div>
+                  <div className="wander-dest-name wander-dest-serif">
+                    Santorini
+                  </div>
                   <div className="wander-dest-country">
                     Greece • From ₹1,20,000
                   </div>
@@ -792,8 +908,18 @@ const Home = () => {
                     item.svgScene
                   )}
                   <div className="wander-dest-overlay" />
+
+                  {/* ── WEATHER TOOLTIP on small cards ── */}
+                  {dest && (
+                    <WeatherTooltip
+                      destName={dest.city || dest.name}
+                      bestTime={dest.best_time_to_visit}
+                    />
+                  )}
+
                   <div className="wander-dest-info">
-                    <div className="wander-dest-name">
+                    {/* Serif font for destination name */}
+                    <div className="wander-dest-name wander-dest-serif">
                       {dest?.name || item.fallbackName}
                     </div>
                     <div className="wander-dest-country">
@@ -818,7 +944,10 @@ const Home = () => {
           <div className="wander-section-label" style={{ textAlign: "center" }}>
             Why PackGo
           </div>
-          <div className="wander-section-title" style={{ textAlign: "center" }}>
+          <div
+            className="wander-section-title wander-serif-title"
+            style={{ textAlign: "center" }}
+          >
             Travel smarter,
             <br />
             not harder
@@ -897,7 +1026,6 @@ const Home = () => {
             <Link to="/" className="wander-footer-logo">
               Pack<span>Go</span>
             </Link>
-
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
@@ -911,14 +1039,12 @@ const Home = () => {
               <a href="#wander-features">Experiences</a>
               <a href="#wander-features">Features</a>
             </div>
-
             <div className="wander-footer-col">
               <h4>Company</h4>
               <a href="/">About</a>
               <a href="/">Careers</a>
               <a href="/">Contact</a>
             </div>
-
             <div className="wander-footer-col">
               <h4>Support</h4>
               <a href="/">Help Center</a>
@@ -932,9 +1058,7 @@ const Home = () => {
           <div className="wander-footer-copy">
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
-
           <div className="wander-footer-socials">
-            {/* Social media icons */}
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>

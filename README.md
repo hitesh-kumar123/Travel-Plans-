@@ -80,6 +80,12 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ## ✨ Features
 
+### 🏝️ Wander Destinations Section
+* Dynamic weather tooltip on each destination card showing current climate
+* "Best Time to Visit" recommendation powered by destination database
+* Hover popover with temperature, humidity, and seasonal travel tips
+* Professional font pairing — Playfair Display serif for headings, DM Sans for details
+
 ### 🗺️ Trip Management
 
 - Create, edit, and delete trips with **destination autocomplete**

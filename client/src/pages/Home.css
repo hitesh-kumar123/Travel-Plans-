@@ -1001,3 +1001,192 @@ html {
     text-align: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME.CSS  —  ADDITIONS FOR ISSUE: Weather Tooltip + Typography
+   Paste these blocks at the BOTTOM of your existing Home.css file
+   ═══════════════════════════════════════════════════════════════ */
+ 
+/* ── Google Fonts: Playfair Display (serif) ─────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap');
+ 
+ 
+/* ── TYPOGRAPHY UPGRADE ──────────────────────────────────────── */
+ 
+/* Serif heading for section titles */
+.wander-serif-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+ 
+/* Serif font for destination card names */
+.wander-dest-serif {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+ 
+/* Keep card description / country line in clean sans-serif */
+.wander-dest-country {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+ 
+ 
+/* ── WEATHER TOOLTIP COMPONENT ───────────────────────────────── */
+ 
+/* Wrapper — must be positioned so popover can anchor to it */
+.wt-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;          /* sits in the top-right corner of each card */
+  z-index: 20;
+}
+ 
+/* The emoji trigger button */
+.wt-trigger {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  line-height: 1;
+}
+ 
+.wt-trigger:hover {
+  background: rgba(0, 0, 0, 0.55);
+  transform: scale(1.08);
+}
+ 
+/* Popover card */
+.wt-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 200px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 13px 15px;
+  font-family: 'DM Sans', sans-serif;
+  animation: wt-fade-in 0.18s ease;
+  pointer-events: none;   /* tooltip is read-only */
+}
+ 
+/* Small upward arrow */
+.wt-popover-arrow {
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.06);
+}
+ 
+/* Fade-in animation */
+@keyframes wt-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+/* Temp + condition row */
+.wt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+ 
+.wt-big-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+ 
+.wt-temp {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a2d3e;
+  line-height: 1.1;
+}
+ 
+.wt-condition {
+  font-size: 0.75rem;
+  color: #6b7c93;
+  text-transform: capitalize;
+  margin-top: 1px;
+}
+ 
+/* Humidity line */
+.wt-humidity {
+  font-size: 0.73rem;
+  color: #6b7c93;
+  margin-bottom: 8px;
+}
+ 
+/* Best time to visit */
+.wt-best-time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0f7ff;
+  border-radius: 8px;
+  padding: 6px 9px;
+  margin-top: 4px;
+}
+ 
+.wt-best-label {
+  font-size: 0.7rem;
+  color: #1a4a6b;
+  font-weight: 600;
+  white-space: nowrap;
+}
+ 
+.wt-best-val {
+  font-size: 0.7rem;
+  color: #2268a8;
+  font-weight: 600;
+  text-align: right;
+}
+ 
+/* Loading state inside popover */
+.wt-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #6b7c93;
+  padding: 4px 0;
+}
+ 
+.wt-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #d0dce8;
+  border-top-color: #2268a8;
+  border-radius: 50%;
+  animation: wt-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+ 
+@keyframes wt-spin {
+  to { transform: rotate(360deg); }
+}
+ 
+/* ── Ensure wander-dest-card-img is position:relative ──────── */
+/* (It should already be, but just in case) */
+.wander-dest-card-img {
+  position: relative;
+}
