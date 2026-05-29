@@ -246,11 +246,11 @@ const Dashboard = () => {
                 </ListItemIcon>
 
                 <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
+                  primary={
+                    <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                      {item.text}
+                    </Typography>
+                  }
                 />
               </ListItemButton>
             </Tooltip>
@@ -273,8 +273,11 @@ const Dashboard = () => {
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{ fontWeight: 600, fontSize: "0.9rem" }}
+              primary={
+                <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                  Logout
+                </Typography>
+              }
             />
           </ListItemButton>
         </ListItem>

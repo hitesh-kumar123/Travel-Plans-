@@ -110,8 +110,8 @@ const BookingView = () => {
           {/* Flight Search */}
           {tab === 0 && (
             <Box component="form" onSubmit={handleFlightSearch}>
-              <Grid container spacing={2} alignItems="flex-end">
-                <Grid item xs={12} sm={6} md={2.4}>
+              <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
+                <Grid xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="From (City/Airport)"
@@ -123,7 +123,7 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
+                <Grid xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="To (City/Airport)"
@@ -138,14 +138,16 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={6} md={2.4}>
+                <Grid xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
                     label="Departure"
                     variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { placeholder: "" },
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -163,14 +165,16 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={6} md={2.4}>
+                <Grid xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
                     label="Return (optional)"
                     variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { placeholder: "" },
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -187,7 +191,7 @@ const BookingView = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} md={2.4}>
+                <Grid xs={12} md={2.4}>
                   <PrimaryButton
                     type="submit"
                     fullWidth
@@ -206,8 +210,8 @@ const BookingView = () => {
           {/* Hotel Search */}
           {tab === 1 && (
             <Box component="form" onSubmit={handleHotelSearch}>
-              <Grid container spacing={2} alignItems="flex-end">
-                <Grid item xs={12} sm={6} md={2.4}>
+              <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
+                <Grid xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="Destination / City"
@@ -219,14 +223,16 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={6} md={2.4}>
+                <Grid xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
                     label="Check-in"
                     variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { placeholder: "" },
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -241,14 +247,16 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={6} md={2.4}>
+                <Grid xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
                     label="Check-out"
                     variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { placeholder: "" },
+                    }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -263,7 +271,7 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={6} md={2.4}>
+                <Grid xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     select
@@ -280,7 +288,7 @@ const BookingView = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={2.4}>
+                <Grid xs={12} md={2.4}>
                   <PrimaryButton
                     type="submit"
                     fullWidth
@@ -318,8 +326,8 @@ const BookingView = () => {
                   transition: "box-shadow 0.2s",
                 }}
               >
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item xs={12} sm={2}>
+                <Grid container sx={{ alignItems: "center" }} spacing={2}>
+                  <Grid xs={12} sm={2}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <FlightIcon color="primary" />
                       <Box>
@@ -332,7 +340,7 @@ const BookingView = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={5}>
+                  <Grid xs={12} sm={5}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Box sx={{ textAlign: "center" }}>
                         <Typography variant="h6" fontWeight={700}>
@@ -380,7 +388,7 @@ const BookingView = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={3} sx={{ textAlign: "center" }}>
+                  <Grid xs={12} sm={3} sx={{ textAlign: "center" }}>
                     <Typography
                       variant="h5"
                       fontWeight={800}
@@ -392,7 +400,7 @@ const BookingView = () => {
                       per person
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={2}>
+                  <Grid xs={12} sm={2}>
                     <Button
                       fullWidth
                       variant="outlined"
@@ -417,7 +425,7 @@ const BookingView = () => {
           </Typography>
           <Grid container spacing={3}>
             {hotels.map((hotel) => (
-              <Grid item xs={12} md={6} lg={4} key={hotel.id}>
+              <Grid xs={12} md={6} lg={4} key={hotel.id}>
                 <Card
                   elevation={0}
                   sx={{

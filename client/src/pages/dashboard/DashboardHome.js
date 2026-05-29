@@ -175,7 +175,7 @@ const DashboardHome = () => {
             bg: "linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)",
           },
         ].map((stat, i) => (
-          <Grid item xs={6} md={3} key={i}>
+          <Grid xs={6} md={3} key={i}>
             <Paper
               elevation={0}
               sx={{
@@ -213,7 +213,7 @@ const DashboardHome = () => {
 
       <Grid container spacing={3}>
         {/* Quick Actions */}
-        <Grid item xs={12} md={5}>
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
@@ -229,7 +229,7 @@ const DashboardHome = () => {
             </Typography>
             <Grid container spacing={1.5}>
               {quickActions.map((action, i) => (
-                <Grid item xs={6} key={i}>
+                <Grid xs={6} key={i}>
                   <Paper
                     elevation={0}
                     component={Link}
@@ -278,7 +278,7 @@ const DashboardHome = () => {
         </Grid>
 
         {/* Trip Chart */}
-        <Grid item xs={12} md={7}>
+        <Grid xs={12} md={7}>
           <Paper
             elevation={0}
             sx={{
@@ -395,7 +395,7 @@ const DashboardHome = () => {
               ? upcomingTrips
               : tripsArr.slice(0, 3)
             ).map((trip) => (
-              <Grid item xs={12} md={6} lg={4} key={trip._id}>
+              <Grid xs={12} md={6} lg={4} key={trip._id}>
                 <Card
                   elevation={0}
                   sx={{

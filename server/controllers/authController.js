@@ -3,20 +3,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const {
-  getOtpEmailTemplate,
   getPasswordResetTemplate,
+  getOtpEmailTemplate,
 } = require("../utils/emailTemplates");
-
-const buildEmailFailureMessage = (action) =>
-  `We could not send the verification email for ${action}. Please try again in a moment.`;
-
-const logEmailFailure = (action, emailErr) => {
-  console.error(`[authController] ${action} email send failed`, {
-    message: emailErr.message,
-    cause: emailErr.cause?.message,
-    stack: emailErr.stack,
-  });
-};
 
 // Register a new user
 exports.register = async (req, res, next) => {
@@ -54,57 +43,19 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpire = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
-    // Create new user with normalized single-spaced name and OTP verification fields
+    // Create new user with normalized single-spaced name
     user = new User({
       name: name.trim().replace(/\s+/g, " "),
       email,
       password,
-      isVerified: false,
-      otp,
-      otpExpire,
-      otpResendAttempts: 1, // Count the initial registration OTP send as attempt #1
-      otpLastResent: new Date(),
     });
 
     await user.save();
 
-    // Send email with OTP code
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: "Verify Your Email - PackGo",
-        message: `Welcome to PackGo! Your 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-        html: getOtpEmailTemplate(
-          user.name,
-          otp,
-          "Welcome to PackGo! Your one time verification code is:",
-        ),
-      });
-    } catch (emailErr) {
-      logEmailFailure("registration", emailErr);
-      await User.deleteOne({ _id: user._id });
-      return res.status(500).json({
-        msg: buildEmailFailureMessage("registration"),
-      });
-    }
-
-    // Dev mode log
-    if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
-      console.log("\n=======================================================");
-      console.log("🚀 DEV MODE: EMAIL VERIFICATION OTP GENERATED");
-      console.log(`Email: ${user.email}`);
-      console.log(`OTP Code: ${otp}`);
-      console.log("=======================================================\n");
-    }
-
     res.status(201).json({
       success: true,
       email: user.email,
-      msg: "Account created! A 6-digit verification code has been sent to your email.",
+      msg: "Account created successfully. Please login.",
     });
   } catch (err) {
     next(err);

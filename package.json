@@ -15,6 +15,7 @@
     "prettier": "^3.8.3"
   },
   "scripts": {
+    "start": "node server/server.js",
     "prepare": "husky"
   },
   "lint-staged": {

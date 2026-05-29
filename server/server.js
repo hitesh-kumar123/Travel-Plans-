@@ -13,6 +13,9 @@ dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
 // Initialize express app
 const app = express();
+// When running behind a proxy (like Render), trust the proxy so express
+// and express-rate-limit can use the X-Forwarded-* headers correctly.
+app.set("trust proxy", 1);
 
 // Security Middleware
 app.use(helmet());
@@ -27,23 +30,32 @@ app.use("/api/auth", limiter);
 
 // Core Middleware
 const allowedOrigins = ["http://localhost:3000"];
+
+const frontendUrls = [];
 if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
+  frontendUrls.push(
+    ...process.env.FRONTEND_URL.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean),
+  );
 }
+if (process.env.FRONTEND_URLS) {
+  frontendUrls.push(
+    ...process.env.FRONTEND_URLS.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean),
+  );
+}
+allowedOrigins.push(...frontendUrls);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        process.env.NODE_ENV !== "production"
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      if (origin.includes("localhost") || origin.includes("vercel.app")) {
+        return callback(null, true);
       }
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   }),

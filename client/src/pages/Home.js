@@ -366,7 +366,13 @@ const Home = () => {
     api
       .get("/destinations")
       .then((r) => {
-        setDestinations(r.data);
+        setDestinations(
+          Array.isArray(r.data)
+            ? r.data
+            : Array.isArray(r.data?.destinations)
+              ? r.data.destinations
+              : [],
+        );
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -410,14 +416,16 @@ const Home = () => {
 
   /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
-    ? destinations.filter(
+    ? (Array.isArray(destinations) ? destinations : []).filter(
         (d) =>
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.category || "").toLowerCase().includes(where.toLowerCase()),
       )
-    : destinations;
+    : Array.isArray(destinations)
+      ? destinations
+      : [];
 
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
