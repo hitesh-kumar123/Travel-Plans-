@@ -14,37 +14,39 @@ Authorization: Bearer <your_jwt_token>
 
 ## 1. Authentication Endpoints (`/api/auth`)
 
+Controller split (structural only, no route changes):
+- `authController`: `register`, `login`
+- `otpController`: `verifyOtp`, `resendOtp`, `getOtpStatus`, `requestEmailChange`, `verifyEmailChange`, `getEmailChangeStatus`
+- `profileController`: `getProfile`, `updateProfile`, `changePassword`, `forgotPassword`, `resetPassword`
+
 ### Register User
 * **Endpoint**: `POST /api/auth/register`
-* **Description**: Registers a new user.
+* **Description**: Registers a new user and sends an OTP verification code to email.
 * **Request Body**:
   ```json
   {
-    "username": "traveler123",
+    "name": "Traveler Name",
     "email": "traveler@example.com",
-    "password": "StrongPassword123"
+    "password": "StrongPassword123!"
   }
   ```
 * **Response (201 Created)**:
   ```json
   {
-    "token": "eyJhbGciOiJIUzI1NiIsIn...",
-    "user": {
-      "id": "60d0fe4f5311236168a109ca",
-      "username": "traveler123",
-      "email": "traveler@example.com"
-    }
+    "success": true,
+    "email": "traveler@example.com",
+    "msg": "Account created! A 6-digit verification code has been sent to your email."
   }
   ```
 
 ### Login User
 * **Endpoint**: `POST /api/auth/login`
-* **Description**: Logs in an existing user.
+* **Description**: Logs in a verified user and returns JWT.
 * **Request Body**:
   ```json
   {
     "email": "traveler@example.com",
-    "password": "StrongPassword123"
+    "password": "StrongPassword123!"
   }
   ```
 * **Response (200 OK)**:
@@ -53,11 +55,24 @@ Authorization: Bearer <your_jwt_token>
     "token": "eyJhbGciOiJIUzI1NiIsIn...",
     "user": {
       "id": "60d0fe4f5311236168a109ca",
-      "username": "traveler123",
+      "name": "Traveler Name",
       "email": "traveler@example.com"
     }
   }
   ```
+
+### Additional Auth Routes
+* `GET /api/auth/profile` (private)
+* `PUT /api/auth/profile` (private)
+* `PUT /api/auth/change-password` (private)
+* `POST /api/auth/forgot-password` (public)
+* `PUT /api/auth/reset-password/:token` (public)
+* `POST /api/auth/verify-otp` (public)
+* `POST /api/auth/resend-otp` (public)
+* `POST /api/auth/otp-status` (public)
+* `POST /api/auth/request-email-change` (private)
+* `POST /api/auth/verify-email-change` (private)
+* `GET /api/auth/email-change-status` (private)
 
 ---
 

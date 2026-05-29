@@ -209,7 +209,9 @@ travel-planner/
 │
 ├── server/                          # 🟢 Express Backend
 │   ├── controllers/
-│   │   ├── authController.js        # Register, login, profile
+│   │   ├── authController.js        # Register, login
+│   │   ├── otpController.js         # OTP + email change flows
+│   │   ├── profileController.js     # Profile + password flows
 │   │   ├── tripController.js        # Trip CRUD
 │   │   ├── expenseController.js     # Expense CRUD + aggregation
 │   │   ├── weatherController.js     # OpenWeatherMap integration
@@ -220,6 +222,9 @@ travel-planner/
 │   │   ├── Trip.js                  # Trip schema with nested objects
 │   │   ├── Expense.js               # Expense schema linked to trips
 │   │   └── Destination.js           # Destination catalogue schema
+│   ├── utils/
+│   │   ├── otpHelpers.js            # Shared OTP/email helper functions
+│   │   └── sendEmail.js             # Email sender utility
 │   ├── routes/                      # Express route declarations
 │   ├── middleware/
 │   │   ├── auth.js                  # JWT verification middleware
@@ -369,7 +374,6 @@ Base URL: `http://localhost:5000/api`
 | `POST` | `/auth/otp-status`           | Query active registration/login countdown state  |  ❌  |
 | `POST` | `/auth/request-email-change` | Initiate profile email update                    |  ✅  |
 | `POST` | `/auth/verify-email-change`  | Confirm and execute pending profile email change |  ✅  |
-| `POST` | `/auth/discard-email-change` | Cancel and discard pending profile email change  |  ✅  |
 | `GET`  | `/auth/email-change-status`  | Query active profile email change status details |  ✅  |
 
 ### 🗺️ Trips

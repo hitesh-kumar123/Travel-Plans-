@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
+const otpController = require("../controllers/otpController");
+const profileController = require("../controllers/profileController");
 const auth = require("../middleware/auth");
 
 // @route   POST api/auth/register
@@ -16,56 +18,56 @@ router.post("/login", authController.login);
 // @route   GET api/auth/profile
 // @desc    Get user profile
 // @access  Private
-router.get("/profile", auth, authController.getProfile);
+router.get("/profile", auth, profileController.getProfile);
 
 // @route   PUT api/auth/profile
 // @desc    Update user profile
 // @access  Private
-router.put("/profile", auth, authController.updateProfile);
+router.put("/profile", auth, profileController.updateProfile);
 
 // @route   PUT api/auth/change-password
 // @desc    Change password
 // @access  Private
-router.put("/change-password", auth, authController.changePassword);
+router.put("/change-password", auth, profileController.changePassword);
 
 // @route   POST api/auth/request-email-change
 // @desc    Request email change OTP
 // @access  Private
-router.post("/request-email-change", auth, authController.requestEmailChange);
+router.post("/request-email-change", auth, otpController.requestEmailChange);
 
 // @route   POST api/auth/verify-email-change
 // @desc    Verify email change OTP
 // @access  Private
-router.post("/verify-email-change", auth, authController.verifyEmailChange);
+router.post("/verify-email-change", auth, otpController.verifyEmailChange);
 
 // @route   GET api/auth/email-change-status
 // @desc    Get real-time OTP status for active email change
 // @access  Private
-router.get("/email-change-status", auth, authController.getEmailChangeStatus);
+router.get("/email-change-status", auth, otpController.getEmailChangeStatus);
 
 // @route   POST api/auth/forgot-password
 // @desc    Forgot password (send email)
 // @access  Public
-router.post("/forgot-password", authController.forgotPassword);
+router.post("/forgot-password", profileController.forgotPassword);
 
 // @route   PUT api/auth/reset-password/:token
 // @desc    Reset password
 // @access  Public
-router.put("/reset-password/:token", authController.resetPassword);
+router.put("/reset-password/:token", profileController.resetPassword);
 
 // @route   POST api/auth/verify-otp
 // @desc    Verify email with OTP
 // @access  Public
-router.post("/verify-otp", authController.verifyOtp);
+router.post("/verify-otp", otpController.verifyOtp);
 
 // @route   POST api/auth/resend-otp
 // @desc    Resend email verification OTP
 // @access  Public
-router.post("/resend-otp", authController.resendOtp);
+router.post("/resend-otp", otpController.resendOtp);
 
 // @route   POST api/auth/otp-status
 // @desc    Get remaining OTP expiration and cooldown times
 // @access  Public
-router.post("/otp-status", authController.getOtpStatus);
+router.post("/otp-status", otpController.getOtpStatus);
 
 module.exports = router;
