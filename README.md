@@ -369,9 +369,6 @@ Base URL: `http://localhost:5000/api`
 | `GET`  | `/auth/profile`              | Get current user profile                         |  ✅  |
 | `PUT`  | `/auth/profile`              | Update user profile                              |  ✅  |
 | `PUT`  | `/auth/change-password`      | Change password                                  |  ✅  |
-| `POST` | `/auth/verify-otp`           | Verify registration/login 6-digit OTP code       |  ❌  |
-| `POST` | `/auth/resend-otp`           | Request a new registration/login OTP code        |  ❌  |
-| `POST` | `/auth/otp-status`           | Query active registration/login countdown state  |  ❌  |
 | `POST` | `/auth/request-email-change` | Initiate profile email update                    |  ✅  |
 | `POST` | `/auth/verify-email-change`  | Confirm and execute pending profile email change |  ✅  |
 | `GET`  | `/auth/email-change-status`  | Query active profile email change status details |  ✅  |

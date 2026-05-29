@@ -20,8 +20,6 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import SaveIcon from "@mui/icons-material/Save";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import WarningIcon from "@mui/icons-material/Warning";
 import EmailIcon from "@mui/icons-material/Email";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
@@ -436,53 +434,9 @@ const ProfileView = () => {
             <Typography variant="h6" fontWeight={700}>
               {user?.name || "Traveler"}
             </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              mb={user?.isVerified ? 1 : 2}
-            >
+            <Typography variant="body2" color="text.secondary" mb={2}>
               {user?.email}
             </Typography>
-
-            {user?.isVerified ? (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  bgcolor: "rgba(72, 187, 120, 0.1)",
-                  color: "#2f855a",
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 2,
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  mb: 3,
-                }}
-              >
-                <CheckCircleIcon sx={{ fontSize: 14 }} />
-                Email Verified
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  bgcolor: "rgba(237, 137, 54, 0.1)",
-                  color: "#c05621",
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 2,
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  mb: 3,
-                }}
-              >
-                <WarningIcon sx={{ fontSize: 14 }} />
-                Unverified Account
-              </Box>
-            )}
 
             <Divider sx={{ mb: 3 }} />
 
