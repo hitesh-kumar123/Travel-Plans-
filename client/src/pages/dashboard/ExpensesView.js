@@ -531,6 +531,10 @@ const ExpensesView = () => {
               type="date"
               label="Date"
               InputLabelProps={{ shrink: true }}
+              inputProps={{
+                min: activeTrip?.startDate?.split("T")[0],
+                max: activeTrip?.endDate?.split("T")[0],
+              }}
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />

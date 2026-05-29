@@ -38,7 +38,10 @@ const TripsView = () => {
   const navigate = useNavigate();
   const { trips, loading } = useSelector((state) => state.trips);
 
+  const today = new Date().toISOString().split("T")[0];
+
   const [open, setOpen] = useState(false);
+  const [dateError, setDateError] = useState("");
   const [formData, setFormData] = useState({
     destination: "",
     startDate: "",
@@ -72,8 +75,28 @@ const TripsView = () => {
     }
   };
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "startDate") {
+      if (value < today) {
+        setDateError("Start date cannot be in the past");
+      } else if (formData.endDate && value > formData.endDate) {
+        setDateError("Start date cannot be after end date");
+      } else {
+        setDateError("");
+      }
+    }
+
+    if (name === "endDate") {
+      if (formData.startDate && value < formData.startDate) {
+        setDateError("End date cannot be before start date");
+      } else {
+        setDateError("");
+      }
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -144,7 +167,10 @@ const TripsView = () => {
       {/* NEW TRIP MODAL */}
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setDateError("");
+        }}
         maxWidth="sm"
         fullWidth
       >
@@ -198,8 +224,11 @@ const TripsView = () => {
                   label="Start Date *"
                   type="date"
                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ min: today }}
                   value={formData.startDate}
                   onChange={handleChange}
+                  error={!!dateError}
+                  helperText={dateError}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -209,6 +238,7 @@ const TripsView = () => {
                   label="End Date *"
                   type="date"
                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ min: formData.startDate || today }}
                   value={formData.endDate}
                   onChange={handleChange}
                 />
@@ -260,6 +290,7 @@ const TripsView = () => {
             variant="contained"
             color="primary"
             sx={{ px: 3 }}
+            disabled={!!dateError || !formData.startDate || !formData.endDate}
           >
             Create Trip
           </Button>
