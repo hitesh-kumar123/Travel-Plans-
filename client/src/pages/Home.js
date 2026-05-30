@@ -941,9 +941,15 @@ const Home = () => {
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
           <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook"><FaFacebook /></a>
-            <a href="/" aria-label="Instagram"><FaInstagram /></a>
-            <a href="/" aria-label="Twitter"><FaTwitter /></a>
+            <a href="/" aria-label="Facebook">
+              <FaFacebook />
+            </a>
+            <a href="/" aria-label="Instagram">
+              <FaInstagram />
+            </a>
+            <a href="/" aria-label="Twitter">
+              <FaTwitter />
+            </a>
           </div>
         </div>
       </footer>

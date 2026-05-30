@@ -44,7 +44,8 @@ function App() {
                 }
               />
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} /> {/* <-- ADD THIS ROUTE */}
+              <Route path="/about" element={<About />} />{" "}
+              {/* <-- ADD THIS ROUTE */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/trip/share/:token" element={<SharedTripView />} />
