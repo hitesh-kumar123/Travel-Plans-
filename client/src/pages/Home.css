@@ -144,8 +144,9 @@ html {
 }
 
 .wander-hero-badge {
+  text-align: left;
   display: inline-flex;
-  align-items: center;
+  align-items: left;
   gap: 0.5rem;
   background: rgba(232, 115, 90, 0.15);
   border: 0.5px solid rgba(232, 115, 90, 0.4);
@@ -995,6 +996,7 @@ html {
     flex-direction: column;
     width: 100%;
   }
+
   .wander-btn-primary,
   .wander-btn-ghost {
     width: 100%;
@@ -1008,7 +1010,8 @@ html {
 .wander-page .wander-search-bar {
   display: flex !important;
   flex-direction: row !important;
-  grid-template-columns: none !important; /* Disables the broken grid grid structure */
+  grid-template-columns: none !important;
+  /* Disables the broken grid grid structure */
   align-items: center !important;
   justify-content: space-between !important;
   padding: 0 !important;
@@ -1090,12 +1093,15 @@ html {
   .wander-page .wander-search-bar {
     flex-wrap: wrap !important;
   }
+
   .wander-page .wander-sf {
     flex: 1 1 calc(50% - 1px) !important;
   }
+
   .wander-page .wander-sf:nth-child(2) {
     border-right: none !important;
   }
+
   .wander-page .wander-search-btn {
     flex: 1 1 100% !important;
     height: 56px !important;
@@ -1106,6 +1112,7 @@ html {
   .wander-page .wander-search-bar {
     flex-direction: column !important;
   }
+
   .wander-page .wander-sf {
     flex: 1 1 100% !important;
     width: 100% !important;
@@ -1113,6 +1120,7 @@ html {
     border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
     padding: 1.2rem 1.5rem !important;
   }
+
   .wander-page .wander-search-btn {
     height: 52px !important;
   }

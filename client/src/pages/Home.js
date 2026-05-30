@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -359,8 +360,6 @@ const Home = () => {
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     api
@@ -376,16 +375,6 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleAddTrip = (dest) => {
@@ -432,141 +421,7 @@ const Home = () => {
 
   return (
     <div className="wander-page">
-      {/* ═══ NAVBAR ═══ */}
-      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
-        <Link to="/" className="wander-logo">
-          Pack<span>Go</span>
-        </Link>
-
-        <ul className="wander-nav-links">
-          <li>
-            <a href="#wander-dest-section">Destinations</a>
-          </li>
-          <li>
-            <a href="#wander-features">Experiences</a>
-          </li>
-          <li>
-            <a href="#wander-features">Features</a>
-          </li>
-          {isAuthenticated && (
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          )}
-        </ul>
-
-        {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
-          </Link>
-        ) : (
-          <Link to="/register">
-            <button className="wander-nav-cta">Book Now</button>
-          </Link>
-        )}
-
-        <button
-          className="wander-mobile-menu"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
-        </button>
-      </nav>
-
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div
-          style={{
-            background: "var(--white)",
-            borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-            padding: "1rem 1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          <a
-            href="#wander-dest-section"
-            style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Destinations
-          </a>
-          <a
-            href="#wander-features"
-            style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Features
-          </a>
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
-              style={{
-                color: "var(--coral)",
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Dashboard →
-            </Link>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                style={{ color: "var(--ocean)", textDecoration: "none" }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
-                style={{
-                  color: "var(--coral)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Sign Up Free →
-              </Link>
-            </>
-          )}
-        </div>
-      )}
+      <Navbar />
 
       {/* ═══ HERO ═══ */}
       <section className="wander-hero">
@@ -899,62 +754,7 @@ const Home = () => {
       </div>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="wander-footer">
-        <div className="wander-footer-top">
-          <div className="wander-footer-brand">
-            <Link to="/" className="wander-footer-logo">
-              Pack<span>Go</span>
-            </Link>
-
-            <p>
-              Discover breathtaking destinations, curated travel experiences,
-              and unforgettable journeys with PackGo Travel.
-            </p>
-          </div>
-
-          <div className="wander-footer-links-wrapper">
-            <div className="wander-footer-col">
-              <h4>Explore</h4>
-              <a href="#wander-dest-section">Destinations</a>
-              <a href="#wander-features">Experiences</a>
-              <a href="#wander-features">Features</a>
-            </div>
-
-            <div className="wander-footer-col">
-              <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
-            </div>
-
-            <div className="wander-footer-col">
-              <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
-            </div>
-          </div>
-        </div>
-
-        <div className="wander-footer-bottom">
-          <div className="wander-footer-copy">
-            © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
-          </div>
-
-          <div className="wander-footer-socials">
-            {/* Social media icons */}
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
-            </a>
-            <a href="/" aria-label="Instagram">
-              <FaInstagram />
-            </a>
-            <a href="/" aria-label="Twitter">
-              <FaTwitter />
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
