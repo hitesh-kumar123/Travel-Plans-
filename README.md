@@ -168,7 +168,7 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 ## 📁 Project Structure
 
 ```
-travel-planner/
+Travel-Plans-/
 ├── assets/                          # README screenshots
 │   ├── landing_page.png
 │   ├── dashboard.png
@@ -256,7 +256,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/hitesh-kumar123/Travel-Plans-.git
-cd travel-planner
+cd Travel-Plans-
 ```
 
 ### 2. Install Dependencies
@@ -296,7 +296,7 @@ Open `server/.env` and update:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/travel-planner
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/Travel-Plans-
 JWT_SECRET=your_super_secret_jwt_key_here
 WEATHER_API_KEY=your_openweathermap_api_key
 ```
