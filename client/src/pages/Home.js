@@ -654,52 +654,47 @@ const Home = () => {
             </div>
           </div>
           <div className="wander-sf">
-  <div className="wander-sf-label">Travellers</div>
+            <div className="wander-sf-label">Travellers</div>
 
-  <div className="traveller-row">
-    <span>Adults</span>
+            <div className="traveller-row">
+              <span>Adults</span>
 
-    <button
-      type="button"
-      onClick={() => setAdults(Math.max(1, adults - 1))}
-    >
-      -
-    </button>
+              <button
+                type="button"
+                onClick={() => setAdults(Math.max(1, adults - 1))}
+              >
+                -
+              </button>
 
-    <span>{adults}</span>
+              <span>{adults}</span>
 
-    <button
-      type="button"
-      onClick={() => setAdults(adults + 1)}
-    >
-      +
-    </button>
-  </div>
+              <button type="button" onClick={() => setAdults(adults + 1)}>
+                +
+              </button>
+            </div>
 
-  <div className="traveller-row">
-    <span>Children</span>
+            <div className="traveller-row">
+              <span>Children</span>
 
-    <button
-      type="button"
-      onClick={() => setChildren(Math.max(0, children - 1))}
-    >
-      -
-    </button>
+              <button
+                type="button"
+                onClick={() => setChildren(Math.max(0, children - 1))}
+              >
+                -
+              </button>
 
-    <span>{children}</span>
+              <span>{children}</span>
 
-    <button
-      type="button"
-      onClick={() => setChildren(children + 1)}
-    >
-      +
-    </button>
-  </div>
+              <button type="button" onClick={() => setChildren(children + 1)}>
+                +
+              </button>
+            </div>
 
-  <div className="traveller-summary">
-    {adults} Adult{adults !== 1 ? "s" : ""}, {children} Child{children !== 1 ? "ren" : ""}
-  </div>
-</div>
+            <div className="traveller-summary">
+              {adults} Adult{adults !== 1 ? "s" : ""}, {children} Child
+              {children !== 1 ? "ren" : ""}
+            </div>
+          </div>
           <button type="submit" className="wander-search-btn">
             <SearchIcon /> Search
           </button>
