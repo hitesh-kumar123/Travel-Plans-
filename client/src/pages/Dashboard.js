@@ -66,7 +66,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
-  const [notifications, setNotifications] = useState([]);
+  const notifications = [];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
