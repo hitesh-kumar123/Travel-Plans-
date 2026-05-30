@@ -27,3 +27,5 @@ coverage/
 temp/
 tmp/
 ".env.bak.*" 
+*.zip
+

@@ -930,8 +930,8 @@ const Home = () => {
             <div className="wander-footer-col">
               <h4>Support</h4>
               <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <Link to="/privacy-policy">Privacy Policy</Link>
+              <Link to="/terms-and-conditions">Terms &amp; Conditions</Link>
             </div>
           </div>
         </div>
