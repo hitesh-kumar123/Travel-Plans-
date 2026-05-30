@@ -1026,7 +1026,8 @@ html {
   flex-direction: column !important;
   justify-content: center !important;
   padding: 1rem 1.75rem !important;
-  height: 84px !important;
+  min-height: 150px !important;
+  height: auto !important;
   border-right: 1px solid rgba(26, 74, 107, 0.12) !important;
   border-bottom: none !important;
 }
@@ -1116,4 +1117,26 @@ html {
   .wander-page .wander-search-btn {
     height: 52px !important;
   }
+}
+
+.traveller-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.traveller-row button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.traveller-summary {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--ocean);
+  font-weight: 500;
 }

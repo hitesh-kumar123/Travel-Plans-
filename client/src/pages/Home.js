@@ -358,7 +358,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
-  const [travellers, setTravellers] = useState("");
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -653,14 +654,52 @@ const Home = () => {
             </div>
           </div>
           <div className="wander-sf">
-            <div className="wander-sf-label">Travellers</div>
-            <input
-              className="wander-sf-val"
-              placeholder="2 Adults, 1 Child"
-              value={travellers}
-              onChange={(e) => setTravellers(e.target.value)}
-            />
-          </div>
+  <div className="wander-sf-label">Travellers</div>
+
+  <div className="traveller-row">
+    <span>Adults</span>
+
+    <button
+      type="button"
+      onClick={() => setAdults(Math.max(1, adults - 1))}
+    >
+      -
+    </button>
+
+    <span>{adults}</span>
+
+    <button
+      type="button"
+      onClick={() => setAdults(adults + 1)}
+    >
+      +
+    </button>
+  </div>
+
+  <div className="traveller-row">
+    <span>Children</span>
+
+    <button
+      type="button"
+      onClick={() => setChildren(Math.max(0, children - 1))}
+    >
+      -
+    </button>
+
+    <span>{children}</span>
+
+    <button
+      type="button"
+      onClick={() => setChildren(children + 1)}
+    >
+      +
+    </button>
+  </div>
+
+  <div className="traveller-summary">
+    {adults} Adult{adults !== 1 ? "s" : ""}, {children} Child{children !== 1 ? "ren" : ""}
+  </div>
+</div>
           <button type="submit" className="wander-search-btn">
             <SearchIcon /> Search
           </button>
