@@ -281,10 +281,23 @@ const TripsView = () => {
                   )
                 : 0;
             return (
-              <Grid xs={12} md={6} lg={4} key={trip._id}>
+              <Grid
+                xs={12}
+                md={6}
+                lg={4}
+                key={trip._id}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
                 <Card
                   elevation={0}
                   sx={{
+                    width: { xs: "100%", sm: 220, md: 240, lg: 260 },
+                    maxWidth: 260,
+                    minWidth: 0,
+                    flex: "0 0 auto",
+                    aspectRatio: "1 / 1",
+                    display: "flex",
+                    flexDirection: "column",
                     borderRadius: 4,
                     border: "1px solid",
                     borderColor: "divider",
@@ -295,8 +308,21 @@ const TripsView = () => {
                 >
                   <CardActionArea
                     onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                    }}
                   >
-                    <Box sx={{ position: "relative", pt: "55%" }}>
+                    <Box
+                      sx={{
+                        position: "relative",
+                        height: "50%",
+                        flexShrink: 0,
+                      }}
+                    >
                       <Box
                         component="img"
                         src={
@@ -306,12 +332,10 @@ const TripsView = () => {
                         }
                         alt={trip.destination}
                         sx={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
                           width: "100%",
                           height: "100%",
                           objectFit: "cover",
+                          display: "block",
                         }}
                       />
                       <Box sx={{ position: "absolute", top: 12, right: 12 }}>
@@ -326,8 +350,22 @@ const TripsView = () => {
                         />
                       </Box>
                     </Box>
-                    <CardContent sx={{ pb: "12px !important" }}>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        overflow: "hidden",
+                        pb: "12px !important",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        gutterBottom
+                        noWrap
+                      >
                         {trip.destination}
                       </Typography>
                       <Box
@@ -339,7 +377,11 @@ const TripsView = () => {
                         }}
                       >
                         <DateRangeIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          noWrap
+                        >
                           {new Date(trip.startDate).toLocaleDateString(
                             "en-IN",
                             { day: "2-digit", month: "short" },
@@ -366,6 +408,7 @@ const TripsView = () => {
                             variant="body2"
                             color="success.main"
                             fontWeight={600}
+                            noWrap
                           >
                             Budget: ₹{trip.budget.toLocaleString()}
                           </Typography>
