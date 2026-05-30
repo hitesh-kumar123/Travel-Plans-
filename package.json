@@ -10,13 +10,16 @@
     "react-icons": "^5.6.0"
   },
   "devDependencies": {
+    "concurrently": "^10.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
     "prettier": "^3.8.3"
   },
   "scripts": {
     "start": "node server/server.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm start\" \"npm run client\""
   },
   "lint-staged": {
     "**/*.{js,jsx,json,css,md}": [
