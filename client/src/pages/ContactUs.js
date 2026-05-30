@@ -73,7 +73,6 @@ const ContactUs = () => {
         style={{ minHeight: "65vh", padding: "8rem 3rem 4rem 4rem" }}
       >
         <div className="wander-hero-content" style={{ maxWidth: "650px" }}>
-
           <h1 style={{ textAlign: "left" }}>
             We'd love to hear from <em>you</em>
           </h1>

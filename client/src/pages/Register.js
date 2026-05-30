@@ -396,7 +396,9 @@ const Register = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: { xs: "auto", md: "100vh" },
+        maxHeight: { xs: "none", md: "100vh" },
+        overflow: { xs: "visible", md: "hidden" },
         display: "flex",
         backgroundColor: theme.palette.background.default,
       }}
@@ -477,13 +479,28 @@ const Register = () => {
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          height: { xs: "auto", md: "100vh" },
+          maxHeight: { xs: "none", md: "100vh" },
+          overflow: { xs: "visible", md: "hidden" },
+          justifyContent: "space-between",
           alignItems: "center",
-          p: 4,
+          p: { xs: 2, md: 4 },
         }}
       >
-        <Box sx={{ maxWidth: 480, width: "100%" }}>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Box
+          sx={{
+            maxWidth: 480,
+            width: "100%",
+            my: "auto",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+            maxHeight: { xs: "none", md: "calc(100vh - 120px)" },
+          }}
+        >
+          <Box
+            sx={{ textAlign: "center", mb: { xs: 2, md: 3 }, flexShrink: 0 }}
+          >
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
             </Typography>
@@ -495,13 +512,21 @@ const Register = () => {
           <Paper
             elevation={isMobile ? 1 : 0}
             sx={{
-              p: 4,
+              p: { xs: 2, md: 4 },
               borderRadius: 4,
               border: !isMobile ? "1px solid" : "none",
               borderColor: "divider",
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+              maxHeight: "100%",
             }}
           >
-            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+            <Stepper
+              activeStep={activeStep}
+              alternativeLabel
+              sx={{ mb: { xs: 2, md: 3 }, flexShrink: 0 }}
+            >
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -509,10 +534,64 @@ const Register = () => {
               ))}
             </Stepper>
 
-            <form onSubmit={handleSubmit}>
-              <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+                minHeight: 0,
+              }}
+            >
+              <Box
+                sx={{
+                  flex: 1,
+                  minHeight: 0,
+                  overflowY: { xs: "visible", md: "auto" },
+                  mb: 3,
+                  pr: { xs: 0, md: 0.5 },
+                }}
+              >
+                {getStepContent(activeStep)}
 
-              <Box sx={{ display: "flex", gap: 2 }}>
+                {activeStep === 0 && (
+                  <>
+                    <Divider sx={{ my: 3 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        OR
+                      </Typography>
+                    </Divider>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <div id="google-signin-btn" />
+                      <Button
+                        variant="outlined"
+                        startIcon={<FacebookIcon />}
+                        disabled
+                        sx={{
+                          borderRadius: 2,
+                          py: 1,
+                          width: isMobile ? 280 : 360,
+                          color: "#4267B2",
+                          borderColor: "#4267B2",
+                          opacity: 0.5,
+                        }}
+                      >
+                        Facebook
+                      </Button>
+                    </Box>
+                  </>
+                )}
+              </Box>
+
+              <Box sx={{ display: "flex", gap: 2, flexShrink: 0 }}>
                 {activeStep > 0 && (
                   <Button
                     onClick={handleBack}
@@ -538,46 +617,10 @@ const Register = () => {
                   {activeStep === steps.length - 1 ? "Create Account" : "Next"}
                 </PrimaryButton>
               </Box>
-
-              {activeStep === 0 && (
-                <>
-                  <Divider sx={{ my: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      OR
-                    </Typography>
-                  </Divider>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <div id="google-signin-btn" />
-                    <Button
-                      variant="outlined"
-                      startIcon={<FacebookIcon />}
-                      disabled
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        width: isMobile ? 280 : 360,
-                        color: "#4267B2",
-                        borderColor: "#4267B2",
-                        opacity: 0.5,
-                      }}
-                    >
-                      Facebook
-                    </Button>
-                  </Box>
-                </>
-              )}
             </form>
           </Paper>
 
-          <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Box sx={{ mt: 3, textAlign: "center", flexShrink: 0 }}>
             <Typography variant="body2">
               Already have an account?{" "}
               <Link
@@ -592,7 +635,7 @@ const Register = () => {
           </Box>
         </Box>
 
-        <Box sx={{ mt: "auto", textAlign: "center", pt: 4 }}>
+        <Box sx={{ mt: "auto", textAlign: "center", pt: 2, flexShrink: 0 }}>
           <Typography variant="body2" color="text.secondary">
             © {new Date().getFullYear()} PackGo. All rights reserved.
           </Typography>
