@@ -1,5 +1,4 @@
 const translate = require("google-translate-api-x");
-const supportedLanguages = SUPPORTED_LANGUAGES.map(lang => lang.code);
 const supportedLanguages = [
   { code: "auto", name: "Auto Detect" },
   { code: "en", name: "English" },
@@ -30,6 +29,8 @@ const supportedLanguages = [
   { code: "sv", name: "Swedish" },
   { code: "uk", name: "Ukrainian" },
 ];
+
+const supportedLanguages = SUPPORTED_LANGUAGES.map(lang => lang.code);
 // @desc    Translate text
 // @route   POST /api/translator/translate
 // @access  Public
@@ -37,8 +38,7 @@ exports.translateText = async (req, res) => {
   try {
     const { text, sourceLanguage, targetLanguage } = req.body;
 
-    const supportedLanguages = ["auto","en","hi","es","fr","de","it","ja","ko","zh-CN","ar",
-      "pt","ru","bn","ta","te","mr","gu","kn","ml","pa","th","vi","tr","nl","pl","sv","uk"];
+    supportedLanguages.includes(targetLanguage)
       
     const sanitizedText = typeof text === "string" ? text.trim() : "";
     if (!sanitizedText || !targetLanguage) {
