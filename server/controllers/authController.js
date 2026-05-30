@@ -12,10 +12,15 @@ const buildAuthPayload = (user) => ({ user: { id: user.id } });
 
 const signAuthToken = (payload) =>
   new Promise((resolve, reject) => {
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "5d" }, (err, token) => {
-      if (err) return reject(err);
-      resolve(token);
-    });
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "5d" },
+      (err, token) => {
+        if (err) return reject(err);
+        resolve(token);
+      },
+    );
   });
 
 // Register a new user
@@ -152,7 +157,10 @@ exports.googleAuth = async (req, res, next) => {
     const googleId = googlePayload.sub;
     const name =
       (googlePayload.name || "").trim() ||
-      email.split("@")[0].replace(/[^A-Za-z\s]/g, " ").trim() ||
+      email
+        .split("@")[0]
+        .replace(/[^A-Za-z\s]/g, " ")
+        .trim() ||
       "Google User";
 
     let user = await User.findOne({ email });
