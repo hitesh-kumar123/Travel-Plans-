@@ -1,3 +1,4 @@
+// src/pages/Home.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -898,14 +899,13 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ═══ FOOTER ═══ */}
+      {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
             <Link to="/" className="wander-footer-logo">
               Pack<span>Go</span>
             </Link>
-
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
@@ -922,16 +922,16 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+              <Link to="/about">About</Link>
+              <Link to="/careers">Careers</Link>
+              <Link to="/contact">Contact</Link>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <Link to="/help">Help Center</Link>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms & Conditions</Link>
             </div>
           </div>
         </div>
@@ -940,18 +940,10 @@ const Home = () => {
           <div className="wander-footer-copy">
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
-
           <div className="wander-footer-socials">
-            {/* Social media icons */}
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
-            </a>
-            <a href="/" aria-label="Instagram">
-              <FaInstagram />
-            </a>
-            <a href="/" aria-label="Twitter">
-              <FaTwitter />
-            </a>
+            <a href="/" aria-label="Facebook"><FaFacebook /></a>
+            <a href="/" aria-label="Instagram"><FaInstagram /></a>
+            <a href="/" aria-label="Twitter"><FaTwitter /></a>
           </div>
         </div>
       </footer>

@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -20,6 +21,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+import About from "./pages/About"; // <-- ADD THIS IMPORT
 
 function App() {
   useEffect(() => {
@@ -42,6 +44,7 @@ function App() {
                 }
               />
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} /> {/* <-- ADD THIS ROUTE */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/trip/share/:token" element={<SharedTripView />} />
