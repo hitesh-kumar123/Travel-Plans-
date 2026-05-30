@@ -24,8 +24,8 @@ const SECTIONS = [
         <p>
           These Terms constitute a legally binding agreement between you
           ("User", "you", or "your") and <strong>PackGo Travel Co.</strong>{" "}
-          ("Company", "we", "our", or "us"). If you do not agree to these
-          Terms, you must immediately discontinue use of the Service.
+          ("Company", "we", "our", or "us"). If you do not agree to these Terms,
+          you must immediately discontinue use of the Service.
         </p>
         <p>
           You must be at least 18 years of age to use our Service. By using
@@ -96,9 +96,7 @@ const SECTIONS = [
           <li>
             Accessing destination information, reviews, and travel guidance.
           </li>
-          <li>
-            Communicating with our support team regarding your bookings.
-          </li>
+          <li>Communicating with our support team regarding your bookings.</li>
         </ul>
         <h3 className="legal-sub-heading">Prohibited Use</h3>
         <p>You expressly agree not to:</p>
@@ -166,8 +164,8 @@ const SECTIONS = [
             guides are proprietary to PackGo.
           </li>
           <li>
-            Our platform's source code, databases, and architecture are protected
-            as trade secrets and by copyright law.
+            Our platform's source code, databases, and architecture are
+            protected as trade secrets and by copyright law.
           </li>
         </ul>
         <h3 className="legal-sub-heading">Your Content</h3>
@@ -263,9 +261,9 @@ const SECTIONS = [
         <p>
           Travel involves inherent risks. PackGo provides information and
           facilitates bookings as a platform service. We strongly recommend that
-          you obtain comprehensive travel insurance for all trips planned through
-          our platform. PackGo does not act as a travel insurer, tour operator,
-          or carrier.
+          you obtain comprehensive travel insurance for all trips planned
+          through our platform. PackGo does not act as a travel insurer, tour
+          operator, or carrier.
         </p>
         <p>
           Prices, availability, and itinerary information displayed on the
@@ -328,12 +326,10 @@ const SECTIONS = [
           time at our sole discretion. When we make changes, we will:
         </p>
         <ul className="legal-list">
+          <li>Update the "Last Updated" date at the top of this page.</li>
           <li>
-            Update the "Last Updated" date at the top of this page.
-          </li>
-          <li>
-            Notify registered users via email for material changes at least
-            14 days before the changes take effect.
+            Notify registered users via email for material changes at least 14
+            days before the changes take effect.
           </li>
           <li>
             Display a prominent banner on the platform announcing the upcoming
@@ -374,8 +370,8 @@ const SECTIONS = [
           <div className="legal-contact-row">
             <span className="legal-contact-label">📍 Address</span>
             <span>
-              PackGo Travel Co., 14th Floor, Cyberhub Tower, Gurugram,
-              Haryana 122002, India
+              PackGo Travel Co., 14th Floor, Cyberhub Tower, Gurugram, Haryana
+              122002, India
             </span>
           </div>
           <div className="legal-contact-row">
@@ -435,11 +431,7 @@ const TermsAndConditions = () => {
             <div className="legal-toc-title">Contents</div>
             <nav>
               {SECTIONS.map((sec) => (
-                <a
-                  key={sec.id}
-                  href={`#${sec.id}`}
-                  className="legal-toc-link"
-                >
+                <a key={sec.id} href={`#${sec.id}`} className="legal-toc-link">
                   {sec.title}
                 </a>
               ))}

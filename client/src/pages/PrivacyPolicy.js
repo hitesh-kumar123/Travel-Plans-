@@ -14,10 +14,10 @@ const SECTIONS = [
       <>
         <p>
           Welcome to <strong>PackGo Travel</strong> ("we", "our", or "us"). We
-          are committed to protecting your personal information and your right to
-          privacy. This Privacy Policy explains how we collect, use, disclose,
-          and safeguard your information when you visit our website and use our
-          travel planning services.
+          are committed to protecting your personal information and your right
+          to privacy. This Privacy Policy explains how we collect, use,
+          disclose, and safeguard your information when you visit our website
+          and use our travel planning services.
         </p>
         <p>
           Please read this policy carefully. If you disagree with its terms,
@@ -62,7 +62,9 @@ const SECTIONS = [
             photos you upload to our platform.
           </li>
         </ul>
-        <h3 className="legal-sub-heading">Information Collected Automatically</h3>
+        <h3 className="legal-sub-heading">
+          Information Collected Automatically
+        </h3>
         <ul className="legal-list">
           <li>
             <strong>Usage Data:</strong> Pages viewed, features used, search
@@ -77,8 +79,8 @@ const SECTIONS = [
             from your IP address.
           </li>
           <li>
-            <strong>Log Data:</strong> Server logs, access times, referring URLs,
-            and error reports.
+            <strong>Log Data:</strong> Server logs, access times, referring
+            URLs, and error reports.
           </li>
         </ul>
       </>
@@ -114,11 +116,13 @@ const SECTIONS = [
           </li>
           <li>
             <strong>Analytics &amp; Improvement:</strong> To analyse usage
-            trends, monitor performance, identify bugs, and improve our platform.
+            trends, monitor performance, identify bugs, and improve our
+            platform.
           </li>
           <li>
-            <strong>Security &amp; Fraud Prevention:</strong> To detect, prevent,
-            and address fraudulent activity, abuse, and security incidents.
+            <strong>Security &amp; Fraud Prevention:</strong> To detect,
+            prevent, and address fraudulent activity, abuse, and security
+            incidents.
           </li>
           <li>
             <strong>Legal Compliance:</strong> To fulfil legal obligations,
@@ -134,8 +138,8 @@ const SECTIONS = [
     content: (
       <>
         <p>
-          We implement industry-standard technical and organisational measures to
-          protect your personal data against unauthorised access, alteration,
+          We implement industry-standard technical and organisational measures
+          to protect your personal data against unauthorised access, alteration,
           disclosure, or destruction. These measures include:
         </p>
         <ul className="legal-list">
@@ -149,19 +153,20 @@ const SECTIONS = [
             ensure only authorised personnel can access personal data.
           </li>
           <li>
-            <strong>Secure Storage:</strong> Data is stored on secure,
-            ISO 27001-certified cloud infrastructure with regular security audits.
+            <strong>Secure Storage:</strong> Data is stored on secure, ISO
+            27001-certified cloud infrastructure with regular security audits.
           </li>
           <li>
-            <strong>Password Hashing:</strong> Passwords are hashed using
-            bcrypt and are never stored in plain text.
+            <strong>Password Hashing:</strong> Passwords are hashed using bcrypt
+            and are never stored in plain text.
           </li>
         </ul>
         <p>
           We retain your personal data only as long as necessary to fulfil the
           purposes outlined in this policy, or as required by applicable law.
           Account data is retained for the lifetime of your account plus a
-          90-day grace period. You may request deletion of your data at any time.
+          90-day grace period. You may request deletion of your data at any
+          time.
         </p>
         <p>
           While we strive to protect your personal information, no method of
@@ -210,7 +215,8 @@ const SECTIONS = [
         <p>
           We are not responsible for the privacy practices of third-party
           websites or services linked from our platform. We encourage you to
-          review their privacy policies before providing any personal information.
+          review their privacy policies before providing any personal
+          information.
         </p>
       </>
     ),
@@ -331,8 +337,8 @@ const SECTIONS = [
           <div className="legal-contact-row">
             <span className="legal-contact-label">📍 Address</span>
             <span>
-              PackGo Travel Co., 14th Floor, Cyberhub Tower, Gurugram,
-              Haryana 122002, India
+              PackGo Travel Co., 14th Floor, Cyberhub Tower, Gurugram, Haryana
+              122002, India
             </span>
           </div>
           <div className="legal-contact-row">
@@ -419,11 +425,7 @@ const PrivacyPolicy = () => {
             <div className="legal-toc-title">Contents</div>
             <nav>
               {SECTIONS.map((sec) => (
-                <a
-                  key={sec.id}
-                  href={`#${sec.id}`}
-                  className="legal-toc-link"
-                >
+                <a key={sec.id} href={`#${sec.id}`} className="legal-toc-link">
                   {sec.title}
                 </a>
               ))}
