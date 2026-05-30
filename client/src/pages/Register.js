@@ -483,18 +483,18 @@ const Register = () => {
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
-        <Box sx={{ mb: 2 }}>
-        <IconButton
-        onClick={() => navigate(-1)}
-        sx={{
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: 2,
-            }}
-          >
-        ←
-        </IconButton>
-        </Box>
+          <Box sx={{ mb: 2 }}>
+            <IconButton
+              onClick={() => navigate(-1)}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 2,
+              }}
+            >
+              ←
+            </IconButton>
+          </Box>
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
