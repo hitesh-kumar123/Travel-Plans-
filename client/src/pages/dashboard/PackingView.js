@@ -5,9 +5,12 @@ import {
   addPackingItem,
   togglePackingItem,
   deletePackingItem,
+  deletePackingItem,
   applyTemplate,
   clearPackingList,
+  updatePackingItemWeight,
 } from "../../redux/actions/packingActions";
+import BaggageCalculator from "../../components/BaggageCalculator";
 import {
   Box,
   Typography,
@@ -122,6 +125,10 @@ const PackingView = () => {
     setConfirmClear(false);
   };
 
+  const handleWeightChange = (itemId, weight) => {
+    dispatch(updatePackingItemWeight(selectedTripId, itemId, weight));
+  };
+
   const items = list?.items || [];
   const total = items.length;
   const packed = items.filter((i) => i.packed).length;
@@ -229,6 +236,8 @@ const PackingView = () => {
               />
             </Box>
           )}
+
+          <BaggageCalculator items={items} />
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -373,6 +382,7 @@ const PackingView = () => {
               item={item}
               onToggle={() => handleToggle(item._id)}
               onDelete={() => handleDelete(item._id)}
+              onWeightChange={(weight) => handleWeightChange(item._id, weight)}
             />
           ))}
 
@@ -391,6 +401,7 @@ const PackingView = () => {
               item={item}
               onToggle={() => handleToggle(item._id)}
               onDelete={() => handleDelete(item._id)}
+              onWeightChange={(weight) => handleWeightChange(item._id, weight)}
             />
           ))}
         </>
@@ -417,51 +428,81 @@ const PackingView = () => {
 };
 
 // ─── Sub-component: single item row ────────────────────────────────────────
-const ItemRow = ({ item, onToggle, onDelete }) => (
-  <Box
-    display="flex"
-    alignItems="center"
-    sx={{
-      py: 0.75,
-      px: 1,
-      mb: 0.5,
-      borderRadius: 2,
-      backgroundColor: item.packed ? "action.hover" : "background.paper",
-      border: "1px solid",
-      borderColor: "divider",
-      transition: "background-color 0.2s",
-    }}
-  >
-    <Checkbox
-      checked={item.packed}
-      onChange={onToggle}
-      size="small"
-      color="success"
-    />
-    <Typography
-      variant="body2"
+const ItemRow = ({ item, onToggle, onDelete, onWeightChange }) => {
+  const [localWeight, setLocalWeight] = useState(item.weight || "");
+
+  useEffect(() => {
+    setLocalWeight(item.weight || "");
+  }, [item.weight]);
+
+  const handleWeightBlur = () => {
+    const newWeight = Number(localWeight) || 0;
+    const oldWeight = Number(item.weight) || 0;
+    if (newWeight !== oldWeight) {
+      onWeightChange(newWeight);
+    }
+  };
+
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
       sx={{
-        flexGrow: 1,
-        ml: 0.5,
-        textDecoration: item.packed ? "line-through" : "none",
-        color: item.packed ? "text.disabled" : "text.primary",
+        py: 0.75,
+        px: 1,
+        mb: 0.5,
+        borderRadius: 2,
+        backgroundColor: item.packed ? "action.hover" : "background.paper",
+        border: "1px solid",
+        borderColor: "divider",
+        transition: "background-color 0.2s",
       }}
     >
-      {item.name}
-    </Typography>
-    <Chip
-      label={item.category}
-      size="small"
-      color={CATEGORY_COLORS[item.category] || "default"}
-      variant="outlined"
-      sx={{ mr: 1, fontSize: "0.7rem" }}
-    />
-    <Tooltip title="Remove item">
-      <IconButton size="small" onClick={onDelete}>
-        <DeleteOutlineIcon fontSize="small" />
-      </IconButton>
-    </Tooltip>
-  </Box>
-);
+      <Checkbox
+        checked={item.packed}
+        onChange={onToggle}
+        size="small"
+        color="success"
+      />
+      <Typography
+        variant="body2"
+        sx={{
+          flexGrow: 1,
+          ml: 0.5,
+          textDecoration: item.packed ? "line-through" : "none",
+          color: item.packed ? "text.disabled" : "text.primary",
+        }}
+      >
+        {item.name}
+      </Typography>
+
+      <TextField
+        size="small"
+        placeholder="kg"
+        value={localWeight}
+        onChange={(e) => setLocalWeight(e.target.value)}
+        onBlur={handleWeightBlur}
+        sx={{
+          width: 60,
+          mr: 1,
+          "& .MuiInputBase-input": { p: "4px 8px", fontSize: "0.8rem" },
+        }}
+      />
+
+      <Chip
+        label={item.category}
+        size="small"
+        color={CATEGORY_COLORS[item.category] || "default"}
+        variant="outlined"
+        sx={{ mr: 1, fontSize: "0.7rem" }}
+      />
+      <Tooltip title="Remove item">
+        <IconButton size="small" onClick={onDelete}>
+          <DeleteOutlineIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+};
 
 export default PackingView;

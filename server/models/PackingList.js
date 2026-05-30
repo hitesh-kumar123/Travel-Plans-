@@ -16,6 +16,7 @@ const packingItemSchema = new mongoose.Schema(
       default: "Other",
     },
     packed: { type: Boolean, default: false },
+    weight: { type: Number, default: 0 },
   },
   { _id: true },
 );

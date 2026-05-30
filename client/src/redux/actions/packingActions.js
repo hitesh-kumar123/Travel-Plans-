@@ -90,3 +90,22 @@ export const clearPackingList = (tripId) => async (dispatch) => {
     });
   }
 };
+
+// Update item weight
+export const updatePackingItemWeight =
+  (tripId, itemId, weight) => async (dispatch) => {
+    try {
+      const { data } = await api.patch(
+        `/packing/${tripId}/items/${itemId}/weight`,
+        {
+          weight,
+        },
+      );
+      dispatch({ type: PACKING_UPDATE_SUCCESS, payload: data });
+    } catch (err) {
+      dispatch({
+        type: PACKING_UPDATE_FAIL,
+        payload: err.response?.data?.message || err.message,
+      });
+    }
+  };

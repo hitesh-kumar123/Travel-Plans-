@@ -148,3 +148,25 @@ exports.clearAll = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// PATCH /api/packing/:tripId/items/:itemId/weight
+exports.updateItemWeight = async (req, res) => {
+  try {
+    const { weight } = req.body;
+    const list = await PackingList.findOne({
+      trip: req.params.tripId,
+      user: req.user.id,
+    });
+    if (!list)
+      return res.status(404).json({ message: "Packing list not found" });
+
+    const item = list.items.id(req.params.itemId);
+    if (!item) return res.status(404).json({ message: "Item not found" });
+
+    item.weight = Number(weight) || 0;
+    await list.save();
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
