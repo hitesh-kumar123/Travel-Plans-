@@ -22,9 +22,25 @@ const UserSchema = new mongoose.Schema({
       "Please enter a valid email",
     ],
   },
+  authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  avatar: {
+    type: String,
+    default: null,
+  },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: function () {
+      return this.authProvider !== "google";
+    },
     // Strong password complexity: min 8 chars, >=1 uppercase, >=1 lowercase, >=1 number, >=1 special char
     minlength: [8, "Password must be atleast 8 characters"],
     match: [
@@ -85,6 +101,7 @@ UserSchema.pre("save", async function (next) {
 
 // Method to compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/actions/authActions";
+import { googleLogin, register } from "../redux/actions/authActions";
 import {
   Box,
   TextField,
@@ -60,23 +60,30 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
-    console.log("Google callback received", response);
-  };
+  const handleGoogleCallback = useCallback(
+    (response) => {
+      const idToken = response?.credential;
+      if (!idToken) {
+        return;
+      }
+      dispatch(googleLogin(idToken, navigate));
+    },
+    [dispatch, navigate],
+  );
 
   useEffect(() => {
     // Only initialize Google Sign-In if activeStep is 0 (Personal Information / first step)
     if (activeStep !== 0) return;
 
+    const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      return;
+    }
+
     const initializeGoogleSignIn = () => {
-      if (window.google) {
+      if (window.google?.accounts?.id) {
         window.google.accounts.id.initialize({
-          client_id:
-            process.env.REACT_APP_GOOGLE_CLIENT_ID ||
-            "643113382684-q82ot662op6kq7fnc1brg3ivclq3pmvk.apps.googleusercontent.com",
+          client_id: clientId,
           callback: handleGoogleCallback,
         });
 
@@ -92,21 +99,24 @@ const Register = () => {
       }
     };
 
-    initializeGoogleSignIn();
-
-    const script = document.querySelector(
+    let script = document.querySelector(
       'script[src="https://accounts.google.com/gsi/client"]',
     );
-    if (script) {
-      script.addEventListener("load", initializeGoogleSignIn);
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
     }
 
+    script.addEventListener("load", initializeGoogleSignIn);
+    initializeGoogleSignIn();
+
     return () => {
-      if (script) {
-        script.removeEventListener("load", initializeGoogleSignIn);
-      }
+      script.removeEventListener("load", initializeGoogleSignIn);
     };
-  }, [activeStep, isMobile, dispatch]);
+  }, [activeStep, isMobile, handleGoogleCallback]);
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];
 
@@ -555,6 +565,11 @@ const Register = () => {
                       gap: 2,
                     }}
                   >
+                    {!process.env.REACT_APP_GOOGLE_CLIENT_ID && (
+                      <Typography variant="caption" color="error">
+                        Google Sign-Up is not configured for this environment.
+                      </Typography>
+                    )}
                     <div id="google-signin-btn" />
                     <Button
                       variant="outlined"

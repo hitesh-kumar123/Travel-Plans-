@@ -57,6 +57,33 @@ export const login = (userData, navigate) => async (dispatch) => {
   }
 };
 
+// Google Sign-In / Sign-Up
+export const googleLogin = (idToken, navigate) => async (dispatch) => {
+  try {
+    const res = await api.post("/auth/google", { idToken });
+
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    dispatch(loadUser());
+
+    toast.success("Signed in with Google successfully! ✨");
+    if (navigate) {
+      navigate("/dashboard");
+    }
+  } catch (error) {
+    const msg = error.response?.data?.msg || "Google sign-in failed";
+    dispatch({
+      type: LOGIN_FAIL,
+      payload: msg,
+    });
+    toast.error(msg);
+  }
+};
+
 // Register User
 export const register = (userData, navigate) => async (dispatch) => {
   try {

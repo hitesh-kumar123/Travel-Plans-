@@ -17,17 +17,18 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.8.4",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.2",
     "express-validator": "^7.3.2",
+    "google-auth-library": "^10.6.2",
     "google-translate-api-x": "^10.7.2",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.24.0",
-    "nodemailer": "^8.0.7"
+    "nodemailer": "^8.0.9"
   },
   "devDependencies": {
     "eslint": "^10.3.0",

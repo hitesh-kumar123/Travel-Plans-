@@ -299,10 +299,26 @@ PORT=5000
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/travel-planner
 JWT_SECRET=your_super_secret_jwt_key_here
 WEATHER_API_KEY=your_openweathermap_api_key
+GOOGLE_CLIENT_ID=your_google_web_client_id.apps.googleusercontent.com
+```
+
+Create `client/.env` and add:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_GOOGLE_CLIENT_ID=your_google_web_client_id.apps.googleusercontent.com
 ```
 
 > **💡 Tip:** The translator uses `google-translate-api-x` — **no API key required!**  
 > Get your free weather key at [openweathermap.org/api](https://openweathermap.org/api).
+
+#### Google Sign-In / Sign-Up (Short Setup)
+
+1. Create an OAuth **Web Client** in Google Cloud Console.
+2. Add `http://localhost:3000` to **Authorized JavaScript origins** for local development.
+3. Leave **Authorized redirect URIs** empty for this app’s current Google Sign-In button flow.
+4. Paste the same Web Client ID into `server/.env` (`GOOGLE_CLIENT_ID`) and `client/.env` (`REACT_APP_GOOGLE_CLIENT_ID`).
+5. If you deploy later, add your live frontend URL to **Authorized JavaScript origins** too.
 
 ### 4. Seed the Database _(Optional but Recommended)_
 
@@ -340,7 +356,9 @@ Then open your browser at **[http://localhost:3000](http://localhost:3000)** �
 | `PORT`            |    ✅    | Port for the Express server (default: `5000`)                      |
 | `MONGO_URI`       |    ✅    | MongoDB connection string (local or Atlas)                         |
 | `JWT_SECRET`      |    ✅    | Secret key for signing JWT tokens (use a long random string)       |
+| `GOOGLE_CLIENT_ID` |    ✅*   | Google OAuth Web Client ID used by backend token verification       |
 | `WEATHER_API_KEY` |    ✅    | Your free OpenWeatherMap API key                                   |
+| `REACT_APP_GOOGLE_CLIENT_ID` |    ✅*   | Google OAuth Web Client ID used by frontend Google button           |
 | `SMTP_HOST`       |    ❌    | SMTP server host for sending emails (ethereal fallback if omitted) |
 | `SMTP_PORT`       |    ❌    | SMTP server port (default: `587`)                                  |
 | `SMTP_SECURE`     |    ❌    | Use SSL/TLS (`true` or `false`, default: `false`)                  |
@@ -361,6 +379,7 @@ Base URL: `http://localhost:5000/api`
 | ------ | ---------------------------- | ------------------------------------------------ | :--: |
 | `POST` | `/auth/register`             | Register a new user                              |  ❌  |
 | `POST` | `/auth/login`                | Login and receive JWT token                      |  ❌  |
+| `POST` | `/auth/google`               | Login/Sign-up using Google ID token              |  ❌  |
 | `GET`  | `/auth/profile`              | Get current user profile                         |  ✅  |
 | `PUT`  | `/auth/profile`              | Update user profile                              |  ✅  |
 | `PUT`  | `/auth/change-password`      | Change password                                  |  ✅  |

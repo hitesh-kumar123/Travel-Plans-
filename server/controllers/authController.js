@@ -1,11 +1,22 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
 const sendEmail = require("../utils/sendEmail");
 const {
   getPasswordResetTemplate,
   getOtpEmailTemplate,
 } = require("../utils/emailTemplates");
+
+const buildAuthPayload = (user) => ({ user: { id: user.id } });
+
+const signAuthToken = (payload) =>
+  new Promise((resolve, reject) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "5d" }, (err, token) => {
+      if (err) return reject(err);
+      resolve(token);
+    });
+  });
 
 // Register a new user
 exports.register = async (req, res, next) => {
@@ -84,27 +95,116 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
+    if (!user.password) {
+      return res.status(400).json({
+        msg: "This account uses Google Sign-In. Please continue with Google.",
+      });
+    }
+
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    // Create JWT token
-    const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const payload = buildAuthPayload(user);
+    const token = await signAuthToken(payload);
+    res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (err) {
+    next(err);
+  }
+};
+
+// Google Sign-In / Sign-Up
+exports.googleAuth = async (req, res, next) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ msg: "Google token is required" });
+    }
+
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res
+        .status(500)
+        .json({ msg: "Google auth is not configured on the server" });
+    }
+
+    const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const googlePayload = ticket.getPayload();
+    if (!googlePayload?.email || !googlePayload?.sub) {
+      return res.status(400).json({ msg: "Invalid Google token payload" });
+    }
+
+    if (!googlePayload.email_verified) {
+      return res.status(400).json({ msg: "Google email is not verified" });
+    }
+
+    const email = googlePayload.email.toLowerCase();
+    const googleId = googlePayload.sub;
+    const name =
+      (googlePayload.name || "").trim() ||
+      email.split("@")[0].replace(/[^A-Za-z\s]/g, " ").trim() ||
+      "Google User";
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({
+        name,
+        email,
+        authProvider: "google",
+        googleId,
+        avatar: googlePayload.picture || null,
+      });
+      await user.save();
+    } else {
+      let shouldSave = false;
+
+      if (!user.googleId) {
+        user.googleId = googleId;
+        shouldSave = true;
+      }
+
+      if (!user.avatar && googlePayload.picture) {
+        user.avatar = googlePayload.picture;
+        shouldSave = true;
+      }
+
+      if (!user.authProvider) {
+        user.authProvider = user.password ? "local" : "google";
+        shouldSave = true;
+      }
+
+      if (shouldSave) {
+        await user.save();
+      }
+    }
+
+    const payload = buildAuthPayload(user);
+    const token = await signAuthToken(payload);
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar || null,
+      },
+    });
+  } catch (err) {
+    if (err.message?.toLowerCase().includes("token")) {
+      return res.status(401).json({ msg: "Invalid or expired Google token" });
+    }
     next(err);
   }
 };
@@ -240,20 +340,13 @@ exports.resetPassword = async (req, res, next) => {
     await user.save();
 
     // Create JWT token and log user in automatically (optional)
-    const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          msg: "Password reset successful",
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const payload = buildAuthPayload(user);
+    const token = await signAuthToken(payload);
+    res.json({
+      msg: "Password reset successful",
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (err) {
     next(err);
   }

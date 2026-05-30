@@ -13,6 +13,11 @@ router.post("/register", authController.register);
 // @access  Public
 router.post("/login", authController.login);
 
+// @route   POST api/auth/google
+// @desc    Authenticate or register user with Google ID token
+// @access  Public
+router.post("/google", authController.googleAuth);
+
 // @route   GET api/auth/profile
 // @desc    Get user profile
 // @access  Private
