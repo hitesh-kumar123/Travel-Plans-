@@ -492,7 +492,7 @@ const Register = () => {
         borderRadius: 2,
             }}
           >
-        <ArrowBackIcon />
+        ←
         </IconButton>
         </Box>
           <Box sx={{ textAlign: "center", mb: 4 }}>
