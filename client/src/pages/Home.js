@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeUp, fadeIn, staggerContainer } from "../utils/animations";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
@@ -570,53 +572,80 @@ const Home = () => {
 
       {/* ═══ HERO ═══ */}
       <section className="wander-hero">
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
+        <motion.div
+          className="wander-hero-content"
+          variants={staggerContainer(0.2)}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={fadeUp(0.6, 20)} className="wander-hero-badge">
             <div className="wander-dot" />
             &nbsp;2,400+ destinations worldwide
-          </div>
-          <h1>
+          </motion.div>
+          <motion.h1 variants={fadeUp(0.6, 20)}>
             Travel is the only thing you buy that makes you <em>richer</em>
-          </h1>
-          <p>
+          </motion.h1>
+          <motion.p variants={fadeUp(0.6, 20)}>
             Curated journeys to the world's most extraordinary places.
             Handpicked experiences, flawless planning, memories that last
             forever.
-          </p>
-          <div className="wander-hero-actions">
+          </motion.p>
+          <motion.div
+            variants={fadeUp(0.6, 20)}
+            className="wander-hero-actions"
+          >
             <a href="#wander-dest-section">
-              <button className="wander-btn-primary">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="wander-btn-primary"
+              >
                 Explore Destinations
-              </button>
+              </motion.button>
             </a>
             <Link to={isAuthenticated ? "/dashboard" : "/register"}>
-              <button className="wander-btn-ghost">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="wander-btn-ghost"
+              >
                 {isAuthenticated ? "Dashboard →" : "Start Free"}
-              </button>
+              </motion.button>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Hero Visual */}
-        <div className="wander-hero-visual">
+        <motion.div
+          className="wander-hero-visual"
+          variants={fadeUp(0.8, 40)}
+          initial="hidden"
+          animate="show"
+        >
           <div className="wander-hero-card-main">
             <SceneIceland />
           </div>
-          <div className="wander-price-tag">
+          <motion.div className="wander-price-tag" variants={fadeIn(0.8, 0.4)}>
             <div className="wander-price-label">FROM / PERSON</div>
             <div className="wander-price-val">
               ₹89,000 <span>/ 7 nights</span>
             </div>
-          </div>
-          <div className="wander-stat-tag">
+          </motion.div>
+          <motion.div className="wander-stat-tag" variants={fadeIn(0.8, 0.6)}>
             <div className="wander-stat-num">4.9★</div>
             <div className="wander-stat-txt">1,240 reviews</div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ═══ SEARCH BAR ═══ */}
-      <div className="wander-search-section">
+      <motion.div
+        className="wander-search-section"
+        variants={fadeUp(0.6, 30)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <form className="wander-search-bar" onSubmit={handleSearch}>
           <div className="wander-sf">
             <div className="wander-sf-label">Where to</div>
@@ -661,15 +690,26 @@ const Home = () => {
               onChange={(e) => setTravellers(e.target.value)}
             />
           </div>
-          <button type="submit" className="wander-search-btn">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className="wander-search-btn"
+          >
             <SearchIcon /> Search
-          </button>
+          </motion.button>
         </form>
-      </div>
+      </motion.div>
 
       {/* ═══ DESTINATIONS ═══ */}
       <section className="wander-section" id="wander-dest-section">
-        <div className="wander-section-header">
+        <motion.div
+          className="wander-section-header"
+          variants={fadeIn(0.6)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <div>
             <div className="wander-section-label">Top Picks</div>
             <div className="wander-section-title">
@@ -681,15 +721,29 @@ const Home = () => {
             </div>
           </div>
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
-            <button className="wander-see-all">View all destinations →</button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="wander-see-all"
+            >
+              View all destinations →
+            </motion.button>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Editorial 4-card grid */}
-        <div className="wander-dest-grid">
+        <motion.div
+          className="wander-dest-grid"
+          variants={staggerContainer(0.15)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           {/* TALL card — always Santorini SVG (or first DB item) */}
           {editorialDests[0] ? (
-            <div
+            <motion.div
+              variants={fadeUp(0.6, 30)}
+              whileHover={{ y: -5 }}
               className="wander-dest-card tall"
               onClick={() => handleAddTrip(editorialDests[0])}
             >
@@ -731,9 +785,11 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ) : (
-            <div
+            <motion.div
+              variants={fadeUp(0.6, 30)}
+              whileHover={{ y: -5 }}
               className="wander-dest-card tall"
               style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
             >
@@ -748,7 +804,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Small cards */}
@@ -774,8 +830,10 @@ const Home = () => {
           ].map((item, idx) => {
             const dest = editorialDests[idx + 1];
             return (
-              <div
+              <motion.div
                 key={idx}
+                variants={fadeUp(0.6, 30)}
+                whileHover={{ y: -5 }}
                 className="wander-dest-card"
                 style={{ background: item.bg }}
                 onClick={() => dest && handleAddTrip(dest)}
@@ -812,15 +870,19 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ FEATURES ═══ */}
       <section className="wander-features-section" id="wander-features">
-        <div
+        <motion.div
+          variants={fadeIn(0.6)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
           style={{ textAlign: "center", maxWidth: 500, margin: "0 auto 1rem" }}
         >
           <div className="wander-section-label" style={{ textAlign: "center" }}>
@@ -831,16 +893,26 @@ const Home = () => {
             <br />
             not harder
           </div>
-        </div>
-        <div className="wander-feat-grid">
+        </motion.div>
+        <motion.div
+          className="wander-feat-grid"
+          variants={staggerContainer(0.2)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           {FEATURES.map((f, i) => (
-            <div key={i} className="wander-feat-card">
+            <motion.div
+              key={i}
+              variants={fadeUp(0.6, 30)}
+              className="wander-feat-card"
+            >
               <div className="wander-feat-icon">{f.icon}</div>
               <div className="wander-feat-title">{f.title}</div>
               <div className="wander-feat-desc">{f.desc}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ TESTIMONIAL ═══ */}
@@ -875,7 +947,13 @@ const Home = () => {
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
+      <motion.div
+        className="wander-cta-section"
+        variants={fadeUp(0.7, 40)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="wander-cta-text">
           <h2>
             Your next adventure
@@ -886,17 +964,27 @@ const Home = () => {
         </div>
         <div className="wander-cta-actions">
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
-            <button className="wander-btn-primary">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="wander-btn-primary"
+            >
               {isAuthenticated ? "Plan My Trip" : "Create Free Account"}
-            </button>
+            </motion.button>
           </Link>
           {!isAuthenticated && (
             <Link to="/login">
-              <button className="wander-btn-ghost">Log In</button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="wander-btn-ghost"
+              >
+                Log In
+              </motion.button>
             </Link>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">

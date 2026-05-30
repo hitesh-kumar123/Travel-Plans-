@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -132,7 +134,13 @@ const DashboardHome = () => {
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       {/* Greeting */}
-      <Box sx={{ mb: 4 }}>
+      <Box
+        component={motion.div}
+        variants={fadeUp(0.6, 20)}
+        initial="hidden"
+        animate="show"
+        sx={{ mb: 4 }}
+      >
         <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>
           Welcome back, {userName}! 👋
         </Typography>
@@ -144,7 +152,15 @@ const DashboardHome = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+      <Grid
+        container
+        spacing={2.5}
+        sx={{ mb: 4 }}
+        component={motion.div}
+        variants={staggerContainer(0.15)}
+        initial="hidden"
+        animate="show"
+      >
         {[
           {
             label: "Total Trips",
@@ -175,7 +191,13 @@ const DashboardHome = () => {
             bg: "linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)",
           },
         ].map((stat, i) => (
-          <Grid xs={6} md={3} key={i}>
+          <Grid
+            xs={6}
+            md={3}
+            key={i}
+            component={motion.div}
+            variants={fadeUp(0.5, 30)}
+          >
             <Paper
               elevation={0}
               sx={{
@@ -227,9 +249,24 @@ const DashboardHome = () => {
             <Typography variant="h6" fontWeight={700} mb={2}>
               Quick Actions
             </Typography>
-            <Grid container spacing={1.5}>
+            <Grid
+              container
+              spacing={1.5}
+              component={motion.div}
+              variants={staggerContainer(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+            >
               {quickActions.map((action, i) => (
-                <Grid xs={6} key={i}>
+                <Grid
+                  xs={6}
+                  key={i}
+                  component={motion.div}
+                  variants={fadeUp(0.5, 25)}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
                   <Paper
                     elevation={0}
                     component={Link}
@@ -241,10 +278,9 @@ const DashboardHome = () => {
                       display: "block",
                       border: "1px solid",
                       borderColor: "divider",
-                      transition: "all 0.2s",
+                      transition: "box-shadow 0.2s",
                       "&:hover": {
                         boxShadow: 4,
-                        transform: "translateY(-2px)",
                       },
                     }}
                   >
@@ -390,12 +426,27 @@ const DashboardHome = () => {
             </PrimaryButton>
           </Paper>
         ) : (
-          <Grid container spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            component={motion.div}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainer(0.15)}
+          >
             {(upcomingTrips.length > 0
               ? upcomingTrips
               : tripsArr.slice(0, 3)
             ).map((trip) => (
-              <Grid xs={12} md={6} lg={4} key={trip._id}>
+              <Grid
+                xs={12}
+                md={6}
+                lg={4}
+                key={trip._id}
+                component={motion.div}
+                variants={fadeUp(0.5, 20)}
+              >
                 <Card
                   elevation={0}
                   sx={{

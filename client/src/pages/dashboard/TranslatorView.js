@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -88,16 +90,26 @@ const TranslatorView = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" fontWeight={700} mb={0.5}>
-        Live Translator
-      </Typography>
-      <Typography variant="body2" color="text.secondary" mb={3}>
-        Translate text instantly for your travels
-      </Typography>
+    <Box
+      sx={{ p: 3 }}
+      component={motion.div}
+      variants={staggerContainer(0.15)}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={fadeUp(0.6, 20)}>
+        <Typography variant="h4" fontWeight={700} mb={0.5}>
+          Live Translator
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mb={3}>
+          Translate text instantly for your travels
+        </Typography>
+      </motion.div>
 
       {/* Common Phrases */}
       <Paper
+        component={motion.div}
+        variants={fadeUp(0.6, 20)}
         elevation={0}
         sx={{
           p: 2.5,
@@ -130,7 +142,7 @@ const TranslatorView = () => {
       </Paper>
 
       <Grid container spacing={2} sx={{ alignItems: "center" }}>
-        <Grid xs={12} md={5}>
+        <Grid xs={12} md={5} component={motion.div} variants={fadeUp(0.6, 20)}>
           <Paper
             elevation={0}
             sx={{
@@ -183,7 +195,13 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Swap Button */}
-        <Grid xs={12} md={2} sx={{ textAlign: "center" }}>
+        <Grid
+          xs={12}
+          md={2}
+          sx={{ textAlign: "center" }}
+          component={motion.div}
+          variants={fadeUp(0.6, 20)}
+        >
           <Tooltip title="Swap languages">
             <span>
               <IconButton
@@ -209,7 +227,7 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Right Panel */}
-        <Grid xs={12} md={5}>
+        <Grid xs={12} md={5} component={motion.div} variants={fadeUp(0.6, 20)}>
           <Paper
             elevation={0}
             sx={{
@@ -308,14 +326,18 @@ const TranslatorView = () => {
       </Grid>
 
       {error && (
-        <Alert severity="warning" sx={{ mt: 3, borderRadius: 3 }}>
-          Translation service may be temporarily unavailable. Please try again
-          shortly.
-        </Alert>
+        <motion.div variants={fadeUp(0.6, 20)}>
+          <Alert severity="warning" sx={{ mt: 3, borderRadius: 3 }}>
+            Translation service may be temporarily unavailable. Please try again
+            shortly.
+          </Alert>
+        </motion.div>
       )}
 
       {/* Travel Language Tips */}
       <Paper
+        component={motion.div}
+        variants={fadeUp(0.6, 20)}
         elevation={0}
         sx={{
           p: 3,

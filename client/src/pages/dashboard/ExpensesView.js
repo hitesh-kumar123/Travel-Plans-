@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -279,9 +281,19 @@ const ExpensesView = () => {
       )}
 
       {/* Stats Cards */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid xs={12} sm={4}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ mb: 3 }}
+        component={motion.div}
+        initial="hidden"
+        animate="show"
+        variants={staggerContainer(0.15)}
+      >
+        <Grid xs={12} sm={4} component={motion.div} variants={fadeUp(0.5, 25)}>
           <Paper
+            component={motion.div}
+            whileHover={{ scale: 1.02 }}
             elevation={0}
             sx={{
               p: 3,
@@ -299,8 +311,10 @@ const ExpensesView = () => {
             </Typography>
           </Paper>
         </Grid>
-        <Grid xs={12} sm={4}>
+        <Grid xs={12} sm={4} component={motion.div} variants={fadeUp(0.5, 25)}>
           <Paper
+            component={motion.div}
+            whileHover={{ scale: 1.02 }}
             elevation={0}
             sx={{
               p: 3,
@@ -317,8 +331,10 @@ const ExpensesView = () => {
             </Typography>
           </Paper>
         </Grid>
-        <Grid xs={12} sm={4}>
+        <Grid xs={12} sm={4} component={motion.div} variants={fadeUp(0.5, 25)}>
           <Paper
+            component={motion.div}
+            whileHover={{ scale: 1.02 }}
             elevation={0}
             sx={{
               p: 3,
@@ -356,7 +372,14 @@ const ExpensesView = () => {
 
       <Grid container spacing={3}>
         {/* Expense Table */}
-        <Grid xs={12} md={7}>
+        <Grid
+          xs={12}
+          md={7}
+          component={motion.div}
+          variants={fadeUp(0.5, 25)}
+          initial="hidden"
+          animate="show"
+        >
           <Paper
             elevation={0}
             sx={{
@@ -445,7 +468,14 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Pie Chart */}
-        <Grid xs={12} md={5}>
+        <Grid
+          xs={12}
+          md={5}
+          component={motion.div}
+          variants={fadeUp(0.5, 25)}
+          initial="hidden"
+          animate="show"
+        >
           <Paper
             elevation={0}
             sx={{

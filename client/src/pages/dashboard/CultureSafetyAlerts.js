@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 
 const mockAlerts = [
   {
@@ -157,9 +159,14 @@ export default function CultureSafetyAlerts() {
   };
 
   return (
-    <div style={styles.container}>
+    <motion.div
+      style={styles.container}
+      variants={staggerContainer(0.1)}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
-      <div style={styles.header}>
+      <motion.div style={styles.header} variants={fadeUp(0.6, 20)}>
         <div>
           <h1 style={styles.headerTitle}>🛡️ Safety & Culture Hub</h1>
           <p style={styles.headerSub}>
@@ -170,10 +177,10 @@ export default function CultureSafetyAlerts() {
           <span style={styles.liveDot} />
           LIVE
         </div>
-      </div>
+      </motion.div>
 
       {/* SOS Button */}
-      <div style={styles.sosWrapper}>
+      <motion.div style={styles.sosWrapper} variants={fadeUp(0.6, 20)}>
         {sosActive ? (
           <div style={styles.sosActiveBox}>
             <div style={styles.sosPulse} />
@@ -229,10 +236,10 @@ export default function CultureSafetyAlerts() {
             </a>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Tabs */}
-      <div style={styles.tabs}>
+      <motion.div style={styles.tabs} variants={fadeUp(0.6, 20)}>
         {["alerts", "culture"].map((tab) => (
           <button
             key={tab}
@@ -248,7 +255,7 @@ export default function CultureSafetyAlerts() {
             )}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Alerts Tab */}
       {activeTab === "alerts" && (
@@ -270,12 +277,18 @@ export default function CultureSafetyAlerts() {
           </div>
 
           {/* Alert cards */}
-          <div style={styles.alertList}>
+          <motion.div
+            style={styles.alertList}
+            variants={staggerContainer(0.15)}
+            initial="hidden"
+            animate="show"
+          >
             {filteredAlerts.map((alert) => {
               const cfg = severityConfig[alert.severity];
               return (
-                <div
+                <motion.div
                   key={alert.id}
+                  variants={fadeUp(0.5, 20)}
                   style={{
                     ...styles.alertCard,
                     background: cfg.bg,
@@ -304,75 +317,102 @@ export default function CultureSafetyAlerts() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       )}
 
       {/* Culture Tips Tab */}
       {activeTab === "culture" && (
-        <div style={styles.cultureGrid}>
+        <motion.div
+          style={styles.cultureGrid}
+          variants={staggerContainer(0.15)}
+          initial="hidden"
+          animate="show"
+        >
           {cultureTips.map((tip) => (
-            <div key={tip.id} style={styles.cultureCard}>
+            <motion.div
+              key={tip.id}
+              style={styles.cultureCard}
+              variants={fadeUp(0.5, 20)}
+            >
               <div style={styles.cultureIcon}>{tip.icon}</div>
               <span style={styles.cultureCat}>{tip.category}</span>
               <h3 style={styles.cultureTitle}>{tip.title}</h3>
               <p style={styles.cultureTip}>{tip.tip}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Alert Popup */}
-      {showPopup && selectedAlert && (
-        <div style={styles.overlay} onClick={() => setShowPopup(false)}>
-          <div style={styles.popup} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.popupHeader}>
-              <span style={styles.popupEmoji}>{selectedAlert.icon}</span>
-              <h2 style={styles.popupTitle}>{selectedAlert.title}</h2>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowPopup(false)}
-              >
-                ✕
-              </button>
-            </div>
-            <div
-              style={{
-                ...styles.popupSeverity,
-                background: severityConfig[selectedAlert.severity].badge,
-              }}
+      <AnimatePresence>
+        {showPopup && selectedAlert && (
+          <motion.div
+            style={styles.overlay}
+            onClick={() => setShowPopup(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              style={styles.popup}
+              onClick={(e) => e.stopPropagation()}
+              variants={fadeUp(0.4, 30)}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
             >
-              {severityConfig[selectedAlert.severity].text} SEVERITY
-            </div>
-            <p style={styles.popupDesc}>{selectedAlert.description}</p>
-            <div style={styles.popupMeta}>
-              <div style={styles.popupMetaItem}>
-                <span style={styles.popupMetaLabel}>📍 Location</span>
-                <span style={styles.popupMetaValue}>
-                  {selectedAlert.location}
-                </span>
+              <div style={styles.popupHeader}>
+                <span style={styles.popupEmoji}>{selectedAlert.icon}</span>
+                <h2 style={styles.popupTitle}>{selectedAlert.title}</h2>
+                <button
+                  style={styles.closeBtn}
+                  onClick={() => setShowPopup(false)}
+                >
+                  ✕
+                </button>
               </div>
-              <div style={styles.popupMetaItem}>
-                <span style={styles.popupMetaLabel}>🕐 Reported</span>
-                <span style={styles.popupMetaValue}>{selectedAlert.time}</span>
-              </div>
-            </div>
-            <div style={styles.popupActions}>
-              <button style={styles.popupBtn}>📤 Share Alert</button>
-              <button
-                style={styles.popupBtnOutline}
-                onClick={() => setShowPopup(false)}
+              <div
+                style={{
+                  ...styles.popupSeverity,
+                  background: severityConfig[selectedAlert.severity].badge,
+                }}
               >
-                Got it
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+                {severityConfig[selectedAlert.severity].text} SEVERITY
+              </div>
+              <p style={styles.popupDesc}>{selectedAlert.description}</p>
+              <div style={styles.popupMeta}>
+                <div style={styles.popupMetaItem}>
+                  <span style={styles.popupMetaLabel}>📍 Location</span>
+                  <span style={styles.popupMetaValue}>
+                    {selectedAlert.location}
+                  </span>
+                </div>
+                <div style={styles.popupMetaItem}>
+                  <span style={styles.popupMetaLabel}>🕐 Reported</span>
+                  <span style={styles.popupMetaValue}>
+                    {selectedAlert.time}
+                  </span>
+                </div>
+              </div>
+              <div style={styles.popupActions}>
+                <button style={styles.popupBtn}>📤 Share Alert</button>
+                <button
+                  style={styles.popupBtnOutline}
+                  onClick={() => setShowPopup(false)}
+                >
+                  Got it
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 

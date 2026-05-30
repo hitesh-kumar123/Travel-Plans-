@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -103,6 +105,10 @@ const TripsView = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Box
+        component={motion.div}
+        variants={fadeUp(0.5, 25)}
+        initial="hidden"
+        animate="show"
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -128,7 +134,13 @@ const TripsView = () => {
       </Box>
 
       {/* Filter Chips */}
-      <Box sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}>
+      <Box
+        component={motion.div}
+        variants={fadeUp(0.5, 25)}
+        initial="hidden"
+        animate="show"
+        sx={{ display: "flex", gap: 1, mb: 3, flexWrap: "wrap" }}
+      >
         {["all", "planned", "ongoing", "completed"].map((f) => (
           <Chip
             key={f}
@@ -264,7 +276,14 @@ const TripsView = () => {
       </Dialog>
 
       {/* Trips Grid */}
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        component={motion.div}
+        initial="hidden"
+        animate="show"
+        variants={staggerContainer(0.15)}
+      >
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <Grid xs={12} md={6} lg={4} key={i}>
@@ -281,16 +300,25 @@ const TripsView = () => {
                   )
                 : 0;
             return (
-              <Grid xs={12} md={6} lg={4} key={trip._id}>
+              <Grid
+                xs={12}
+                md={6}
+                lg={4}
+                key={trip._id}
+                component={motion.div}
+                variants={fadeUp(0.5, 25)}
+              >
                 <Card
+                  component={motion.div}
+                  whileHover={{ scale: 1.02 }}
                   elevation={0}
                   sx={{
                     borderRadius: 4,
                     border: "1px solid",
                     borderColor: "divider",
                     overflow: "hidden",
-                    transition: "transform 0.25s, box-shadow 0.25s",
-                    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
+                    transition: "box-shadow 0.25s",
+                    "&:hover": { boxShadow: 6 },
                   }}
                 >
                   <CardActionArea
@@ -378,7 +406,13 @@ const TripsView = () => {
             );
           })
         ) : (
-          <Grid xs={12}>
+          <Grid
+            xs={12}
+            component={motion.div}
+            variants={fadeUp(0.5, 25)}
+            initial="hidden"
+            animate="show"
+          >
             <Paper
               sx={{
                 p: 6,

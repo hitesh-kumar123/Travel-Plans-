@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -212,7 +214,15 @@ const WeatherView = () => {
 
       {/* Current Weather */}
       {currentWeather && (
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid
+          container
+          spacing={3}
+          sx={{ mb: 4 }}
+          component={motion.div}
+          variants={fadeUp(0.5, 25)}
+          initial="hidden"
+          animate="show"
+        >
           <Grid xs={12} md={6}>
             <Paper
               elevation={0}
@@ -345,13 +355,29 @@ const WeatherView = () => {
           <Typography variant="h6" fontWeight={700} mb={2}>
             5-Day Forecast — {forecast?.location}
           </Typography>
-          <Grid container spacing={2}>
+          <Grid
+            container
+            spacing={2}
+            component={motion.div}
+            initial="hidden"
+            animate="show"
+            variants={staggerContainer(0.15)}
+          >
             {forecastList
               .filter((_, idx) => idx % 8 === 0)
               .slice(0, 5)
               .map((day, idx) => (
-                <Grid xs={6} sm={4} md={2.4} key={idx}>
+                <Grid
+                  xs={6}
+                  sm={4}
+                  md={2.4}
+                  key={idx}
+                  component={motion.div}
+                  variants={fadeUp(0.5, 20)}
+                >
                   <Paper
+                    component={motion.div}
+                    whileHover={{ scale: 1.02 }}
                     elevation={0}
                     sx={{
                       p: 2.5,
@@ -359,9 +385,8 @@ const WeatherView = () => {
                       textAlign: "center",
                       border: "1px solid",
                       borderColor: "divider",
-                      transition: "transform 0.2s",
+                      transition: "box-shadow 0.2s",
                       "&:hover": {
-                        transform: "translateY(-3px)",
                         boxShadow: 3,
                       },
                     }}

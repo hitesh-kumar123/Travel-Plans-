@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 import {
   Box,
   Drawer,
@@ -130,7 +131,13 @@ const Dashboard = () => {
   };
 
   const drawer = (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box
+      component={motion.div}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
       {/* Logo */}
       <Box
         sx={{

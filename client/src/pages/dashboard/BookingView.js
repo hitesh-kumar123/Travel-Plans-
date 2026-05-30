@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "../../utils/animations";
 import {
   Typography,
   Box,
@@ -78,6 +80,10 @@ const BookingView = () => {
       </Typography>
 
       <Paper
+        component={motion.div}
+        variants={fadeUp(0.6, 25)}
+        initial="hidden"
+        animate="show"
         elevation={0}
         sx={{
           borderRadius: 3,
@@ -312,10 +318,20 @@ const BookingView = () => {
           <Typography variant="h6" fontWeight={700} mb={2}>
             {flights.length} Flights Found
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+            component={motion.div}
+            variants={staggerContainer(0.15)}
+            initial="hidden"
+            animate="show"
+          >
             {flights.map((flight) => (
               <Paper
                 key={flight.id}
+                component={motion.div}
+                variants={fadeUp(0.5, 25)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 elevation={0}
                 sx={{
                   p: 3,
@@ -434,10 +450,27 @@ const BookingView = () => {
           <Typography variant="h6" fontWeight={700} mb={2}>
             {hotels.length} Hotels Found
           </Typography>
-          <Grid container spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            component={motion.div}
+            variants={staggerContainer(0.15)}
+            initial="hidden"
+            animate="show"
+          >
             {hotels.map((hotel) => (
-              <Grid xs={12} md={6} lg={4} key={hotel.id}>
+              <Grid
+                xs={12}
+                md={6}
+                lg={4}
+                key={hotel.id}
+                component={motion.div}
+                variants={fadeUp(0.5, 25)}
+              >
                 <Card
+                  component={motion.div}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   elevation={0}
                   sx={{
                     borderRadius: 3,
@@ -543,6 +576,10 @@ const BookingView = () => {
       {/* Empty State */}
       {tab === 0 && (!flights || flights.length === 0) && !loading && (
         <Paper
+          component={motion.div}
+          variants={fadeUp(0.5, 25)}
+          initial="hidden"
+          animate="show"
           elevation={0}
           sx={{
             p: 6,
@@ -560,6 +597,10 @@ const BookingView = () => {
       )}
       {tab === 1 && (!hotels || hotels.length === 0) && !loading && (
         <Paper
+          component={motion.div}
+          variants={fadeUp(0.5, 25)}
+          initial="hidden"
+          animate="show"
           elevation={0}
           sx={{
             p: 6,

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion";
+import { fadeIn } from "../../utils/animations";
 import {
   fetchPackingList,
   addPackingItem,
@@ -238,7 +240,14 @@ const PackingView = () => {
 
           {/* Quick-start templates (shown only on empty list) */}
           {total === 0 && (
-            <Paper variant="outlined" sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+            <Paper
+              component={motion.div}
+              variants={fadeIn(0.5)}
+              initial="hidden"
+              animate="show"
+              variant="outlined"
+              sx={{ p: 2, mb: 3, borderRadius: 2 }}
+            >
               <Typography variant="subtitle2" color="text.secondary" mb={1}>
                 Quick-start with a template:
               </Typography>
@@ -260,7 +269,14 @@ const PackingView = () => {
           )}
 
           {/* Add item form */}
-          <Paper variant="outlined" sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+          <Paper
+            component={motion.div}
+            variants={fadeIn(0.5)}
+            initial="hidden"
+            animate="show"
+            variant="outlined"
+            sx={{ p: 2, mb: 3, borderRadius: 2 }}
+          >
             <Typography variant="subtitle2" color="text.secondary" mb={1.5}>
               Add a new item
             </Typography>
@@ -310,6 +326,10 @@ const PackingView = () => {
           {/* Template chips (shown when list already has items) */}
           {total > 0 && (
             <Box
+              component={motion.div}
+              variants={fadeIn(0.5)}
+              initial="hidden"
+              animate="show"
               display="flex"
               alignItems="center"
               gap={1}
@@ -335,7 +355,16 @@ const PackingView = () => {
 
           {/* Category filter chips */}
           {total > 0 && (
-            <Box display="flex" gap={1} flexWrap="wrap" mb={2}>
+            <Box
+              component={motion.div}
+              variants={fadeIn(0.5)}
+              initial="hidden"
+              animate="show"
+              display="flex"
+              gap={1}
+              flexWrap="wrap"
+              mb={2}
+            >
               {["All", ...CATEGORIES].map((cat) => (
                 <Chip
                   key={cat}
@@ -367,14 +396,21 @@ const PackingView = () => {
           )}
 
           {/* Unpacked items */}
-          {unpacked.map((item) => (
-            <ItemRow
-              key={item._id}
-              item={item}
-              onToggle={() => handleToggle(item._id)}
-              onDelete={() => handleDelete(item._id)}
-            />
-          ))}
+          <Box
+            component={motion.div}
+            variants={fadeIn(0.5)}
+            initial="hidden"
+            animate="show"
+          >
+            {unpacked.map((item) => (
+              <ItemRow
+                key={item._id}
+                item={item}
+                onToggle={() => handleToggle(item._id)}
+                onDelete={() => handleDelete(item._id)}
+              />
+            ))}
+          </Box>
 
           {/* Divider between packed / unpacked */}
           {packedItems.length > 0 && unpacked.length > 0 && (
@@ -385,14 +421,21 @@ const PackingView = () => {
             </Divider>
           )}
 
-          {packedItems.map((item) => (
-            <ItemRow
-              key={item._id}
-              item={item}
-              onToggle={() => handleToggle(item._id)}
-              onDelete={() => handleDelete(item._id)}
-            />
-          ))}
+          <Box
+            component={motion.div}
+            variants={fadeIn(0.5)}
+            initial="hidden"
+            animate="show"
+          >
+            {packedItems.map((item) => (
+              <ItemRow
+                key={item._id}
+                item={item}
+                onToggle={() => handleToggle(item._id)}
+                onDelete={() => handleDelete(item._id)}
+              />
+            ))}
+          </Box>
         </>
       )}
 
