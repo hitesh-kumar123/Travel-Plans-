@@ -118,11 +118,18 @@ exports.searchHotels = async (req, res) => {
       amenities,
     } = req.body;
 
-    if (!location || !checkIn || !checkOut) {
+    // Only location is required — dates are optional
+    if (!location) {
       return res.status(400).json({
-        msg: "Please provide location, check-in, and check-out dates",
+        msg: "Please provide a location to search hotels",
       });
     }
+
+    // Use today and tomorrow as default dates if not provided
+    const today = new Date().toISOString().split("T")[0];
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const searchCheckIn = checkIn || today;
+    const searchCheckOut = checkOut || tomorrow;
 
     const mockHotels = [
       {
@@ -134,7 +141,9 @@ exports.searchHotels = async (req, res) => {
         price: 199.99,
         currency: "USD",
         amenities: ["WiFi", "Pool", "Gym", "Restaurant"],
-        images: ["hotel1_img1.jpg", "hotel1_img2.jpg"],
+        images: ["hotel1_img1.jpg"],
+        // Direct Booking.com URL for this specific hotel in the searched location
+        bookingUrl: `https://www.booking.com/search.html?ss=Grand+Plaza+Hotel+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
       },
       {
         id: "ht-2",
@@ -145,7 +154,9 @@ exports.searchHotels = async (req, res) => {
         price: 149.99,
         currency: "USD",
         amenities: ["WiFi", "Breakfast", "Parking"],
-        images: ["hotel2_img1.jpg", "hotel2_img2.jpg"],
+        images: ["hotel2_img1.jpg"],
+        // Direct Booking.com URL for this specific hotel in the searched location
+        bookingUrl: `https://www.booking.com/search.html?ss=Comfort+Inn+%26+Suites+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
       },
       {
         id: "ht-3",
@@ -156,7 +167,9 @@ exports.searchHotels = async (req, res) => {
         price: 299.99,
         currency: "USD",
         amenities: ["WiFi", "Pool", "Spa", "Restaurant", "Bar", "Gym"],
-        images: ["hotel3_img1.jpg", "hotel3_img2.jpg"],
+        images: ["hotel3_img1.jpg"],
+        // Direct Booking.com URL for this specific hotel in the searched location
+        bookingUrl: `https://www.booking.com/search.html?ss=Luxury+Resort+%26+Spa+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
       },
       {
         id: "ht-4",
@@ -168,6 +181,8 @@ exports.searchHotels = async (req, res) => {
         currency: "USD",
         amenities: ["WiFi", "Parking"],
         images: ["hotel4_img1.jpg"],
+        // Direct Booking.com URL for this specific hotel in the searched location
+        bookingUrl: `https://www.booking.com/search.html?ss=Budget+Stay+Inn+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
       },
       {
         id: "ht-5",
@@ -179,6 +194,8 @@ exports.searchHotels = async (req, res) => {
         currency: "USD",
         amenities: ["WiFi", "Restaurant", "Gym"],
         images: ["hotel5_img1.jpg"],
+        // Direct Booking.com URL for this specific hotel in the searched location
+        bookingUrl: `https://www.booking.com/search.html?ss=City+Center+Hotel+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
       },
     ];
 

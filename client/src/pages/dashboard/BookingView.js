@@ -28,6 +28,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   searchFlights,
   searchHotels,
@@ -108,7 +109,18 @@ const BookingView = () => {
 
   const handleHotelSearch = (e) => {
     e.preventDefault();
-    dispatch(searchHotels({ ...hotelForm, ...hotelFilters }));
+    // Dates are optional — use today/tomorrow as defaults if not provided
+    dispatch(
+      searchHotels({
+        ...hotelForm,
+        ...hotelFilters,
+        checkIn:
+          hotelForm.checkIn || new Date().toISOString().split("T")[0],
+        checkOut:
+          hotelForm.checkOut ||
+          new Date(Date.now() + 86400000).toISOString().split("T")[0],
+      }),
+    );
   };
 
   const handleAmenityToggle = (amenity) => {
@@ -131,6 +143,17 @@ const BookingView = () => {
       minRating: 0,
       amenities: [],
     });
+  };
+
+  // Handle Book Now — open Booking.com directly for this hotel
+  const handleBookNow = (hotel) => {
+    const url =
+      hotel.bookingUrl ||
+      `https://www.booking.com/search.html?ss=${encodeURIComponent(
+        hotel.name,
+      )}+${encodeURIComponent(hotel.location)}`;
+    // Open Booking.com in new tab with hotel and location pre-filled
+    window.open(url, "_blank");
   };
 
   return (
@@ -178,8 +201,8 @@ const BookingView = () => {
           {/* ───── FLIGHT SEARCH ───── */}
           {tab === 0 && (
             <Box component="form" onSubmit={handleFlightSearch}>
-              <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
-                <Grid xs={12} sm={6} md={2.4}>
+              <Grid container spacing={2} alignItems="flex-end">
+                <Grid item xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="From (City/Airport)"
@@ -191,7 +214,7 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid xs={12} sm={6} md={2.4}>
+                <Grid item xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="To (City/Airport)"
@@ -206,7 +229,7 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid xs={6} md={2.4}>
+                <Grid item xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
@@ -231,7 +254,7 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid xs={6} md={2.4}>
+                <Grid item xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
@@ -257,10 +280,7 @@ const BookingView = () => {
                 </Grid>
                 <Grid item xs={12} md={2.4}>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Badge
-                      badgeContent={activeFlightFilterCount}
-                      color="primary"
-                    >
+                    <Badge badgeContent={activeFlightFilterCount} color="primary">
                       <Button
                         variant={showFilters ? "contained" : "outlined"}
                         size="large"
@@ -288,12 +308,7 @@ const BookingView = () => {
               {/* Flight Filters Panel */}
               <Collapse in={showFilters}>
                 <Box
-                  sx={{
-                    mt: 3,
-                    p: 2.5,
-                    bgcolor: "action.hover",
-                    borderRadius: 2,
-                  }}
+                  sx={{ mt: 3, p: 2.5, bgcolor: "action.hover", borderRadius: 2 }}
                 >
                   <Box
                     sx={{
@@ -362,8 +377,8 @@ const BookingView = () => {
           {/* ───── HOTEL SEARCH ───── */}
           {tab === 1 && (
             <Box component="form" onSubmit={handleHotelSearch}>
-              <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
-                <Grid xs={12} sm={6} md={2.4}>
+              <Grid container spacing={2} alignItems="flex-end">
+                <Grid item xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
                     label="Destination / City"
@@ -375,11 +390,11 @@ const BookingView = () => {
                     required
                   />
                 </Grid>
-                <Grid xs={6} md={2.4}>
+                <Grid item xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
-                    label="Check-in"
+                    label="Check-in (optional)"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
@@ -394,14 +409,13 @@ const BookingView = () => {
                     onChange={(e) =>
                       setHotelForm({ ...hotelForm, checkIn: e.target.value })
                     }
-                    required
                   />
                 </Grid>
-                <Grid xs={6} md={2.4}>
+                <Grid item xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     type="date"
-                    label="Check-out"
+                    label="Check-out (optional)"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
@@ -416,10 +430,9 @@ const BookingView = () => {
                     onChange={(e) =>
                       setHotelForm({ ...hotelForm, checkOut: e.target.value })
                     }
-                    required
                   />
                 </Grid>
-                <Grid xs={6} md={2.4}>
+                <Grid item xs={6} md={2.4}>
                   <TextField
                     fullWidth
                     select
@@ -438,10 +451,7 @@ const BookingView = () => {
                 </Grid>
                 <Grid item xs={12} md={2.4}>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Badge
-                      badgeContent={activeHotelFilterCount}
-                      color="primary"
-                    >
+                    <Badge badgeContent={activeHotelFilterCount} color="primary">
                       <Button
                         variant={showFilters ? "contained" : "outlined"}
                         size="large"
@@ -627,8 +637,8 @@ const BookingView = () => {
                   transition: "box-shadow 0.2s",
                 }}
               >
-                <Grid container sx={{ alignItems: "center" }} spacing={2}>
-                  <Grid xs={12} sm={2}>
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item xs={12} sm={2}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <FlightIcon color="primary" />
                       <Box>
@@ -641,7 +651,7 @@ const BookingView = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid xs={12} sm={5}>
+                  <Grid item xs={12} sm={5}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Box sx={{ textAlign: "center" }}>
                         <Typography variant="h6" fontWeight={700}>
@@ -707,6 +717,11 @@ const BookingView = () => {
                       variant="outlined"
                       color="primary"
                       sx={{ borderRadius: 3 }}
+                      onClick={() => {
+                        // Open Google Flights with origin, destination and date pre-filled
+                        const url = `https://www.google.com/travel/flights?q=flights+from+${encodeURIComponent(flight.origin)}+to+${encodeURIComponent(flight.destination)}+on+${flight.departureDate}`;
+                        window.open(url, "_blank");
+                      }}
                     >
                       Select
                     </Button>
@@ -748,7 +763,7 @@ const BookingView = () => {
           </Typography>
           <Grid container spacing={3}>
             {hotels.map((hotel) => (
-              <Grid xs={12} md={6} lg={4} key={hotel.id}>
+              <Grid item xs={12} md={6} lg={4} key={hotel.id}>
                 <Card
                   elevation={0}
                   sx={{
@@ -778,7 +793,7 @@ const BookingView = () => {
                       {hotel.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mb={1}>
-                      {hotel.address}
+                      📍 {hotel.address}, {hotel.location}
                     </Typography>
                     <Box
                       sx={{
@@ -836,10 +851,13 @@ const BookingView = () => {
                           per night
                         </Typography>
                       </Box>
+                      {/* Book Now opens Booking.com directly for this hotel */}
                       <Button
                         variant="contained"
                         size="small"
+                        endIcon={<OpenInNewIcon />}
                         sx={{ borderRadius: 3 }}
+                        onClick={() => handleBookNow(hotel)}
                       >
                         Book Now
                       </Button>
@@ -874,28 +892,25 @@ const BookingView = () => {
         </Paper>
       )}
 
-      {/* Empty State */}
-      {tab === 0 &&
-        (!flights || flights.length === 0) &&
-        !loading &&
-        !flights && (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 6,
-              textAlign: "center",
-              borderRadius: 3,
-              border: "2px dashed",
-              borderColor: "divider",
-            }}
-          >
-            <FlightIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
-            <Typography variant="h6" color="text.secondary">
-              Search for available flights above
-            </Typography>
-          </Paper>
-        )}
-      {tab === 1 && (!hotels || hotels.length === 0) && !loading && !hotels && (
+      {/* Empty States */}
+      {tab === 0 && !flights && !loading && (
+        <Paper
+          elevation={0}
+          sx={{
+            p: 6,
+            textAlign: "center",
+            borderRadius: 3,
+            border: "2px dashed",
+            borderColor: "divider",
+          }}
+        >
+          <FlightIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
+          <Typography variant="h6" color="text.secondary">
+            Search for available flights above
+          </Typography>
+        </Paper>
+      )}
+      {tab === 1 && !hotels && !loading && (
         <Paper
           elevation={0}
           sx={{
@@ -908,7 +923,10 @@ const BookingView = () => {
         >
           <HotelIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
-            Search for available hotels above
+            Enter a city name and click Search to find hotels
+          </Typography>
+          <Typography variant="body2" color="text.disabled" mt={1}>
+            Check-in and check-out dates are optional
           </Typography>
         </Paper>
       )}
