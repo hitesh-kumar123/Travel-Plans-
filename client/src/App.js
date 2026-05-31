@@ -18,6 +18,7 @@ import SharedTripView from "./pages/dashboard/SharedTripView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
@@ -48,6 +49,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
