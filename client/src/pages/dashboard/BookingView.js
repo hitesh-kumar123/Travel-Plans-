@@ -528,6 +528,11 @@ const BookingView = () => {
                         variant="contained"
                         size="small"
                         sx={{ borderRadius: 3 }}
+                        onClick={() => {
+                          const location = hotel.location || hotelForm.locatioin;
+                           const url = `https://www.google.com/travel/hotels?q=${encodeURIComponent(hotel.name + ' ' + location)}`;
+    window.open(url, "_blank");
+                        }}
                       >
                         Book Now
                       </Button>
