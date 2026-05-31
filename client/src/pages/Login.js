@@ -15,6 +15,7 @@ import {
   Divider,
   FormControlLabel,
   Checkbox,
+  Alert,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -34,18 +35,30 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, error } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (isAuthenticated) {
+      setFailedAttempts(0);
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      setFailedAttempts((prev) => prev + 1);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    dispatch({ type: "CLEAR_ERROR" });
+  }, []);
 
   const handleGoogleCallback = (response) => {
     // Google Sign-In disabled in this commit since googleLogin action
@@ -158,6 +171,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      dispatch({ type: "CLEAR_ERROR" });
       dispatch(login(formData, navigate));
     }
   };
@@ -269,6 +283,12 @@ const Login = () => {
               borderColor: "divider",
             }}
           >
+            {failedAttempts >= 3 && (
+              <Alert severity="warning" sx={{ mb: 3 }}>
+                Too many failed attempts. Please double-check your credentials
+                or reset your password.
+              </Alert>
+            )}
             <form onSubmit={handleSubmit}>
               <TextField
                 margin="normal"
@@ -303,7 +323,9 @@ const Login = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
                           onClick={toggleShowPassword}
                           edge="end"
                         >

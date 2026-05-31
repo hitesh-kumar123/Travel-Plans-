@@ -19,6 +19,7 @@ import {
   StepLabel,
   FormControlLabel,
   Checkbox,
+  LinearProgress,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -46,6 +47,7 @@ const Register = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   const navigate = useNavigate();
@@ -107,6 +109,53 @@ const Register = () => {
       }
     };
   }, [activeStep, isMobile, dispatch]);
+
+  const getPasswordStrength = (pwd) => {
+    if (!pwd) {
+      return {
+        score: 0,
+        label: "",
+        color: "error",
+        progress: 0,
+        checks: {
+          length: false,
+          hasUpper: false,
+          hasLower: false,
+          hasNumber: false,
+          hasSpecial: false,
+        },
+      };
+    }
+    const checks = {
+      length: pwd.length >= 8,
+      hasUpper: /[A-Z]/.test(pwd),
+      hasLower: /[a-z]/.test(pwd),
+      hasNumber: /\d/.test(pwd),
+      hasSpecial: /[\W_]/.test(pwd),
+    };
+    const score = Object.values(checks).filter(Boolean).length;
+    if (score <= 1) {
+      return { score: 1, label: "Weak", color: "error", progress: 25, checks };
+    } else if (score === 2 || score === 3) {
+      return {
+        score: 2,
+        label: "Fair",
+        color: "warning",
+        progress: 50,
+        checks,
+      };
+    } else if (score === 4) {
+      return { score: 3, label: "Strong", color: "info", progress: 75, checks };
+    } else {
+      return {
+        score: 4,
+        label: "Very Strong",
+        color: "success",
+        progress: 100,
+        checks,
+      };
+    }
+  };
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];
 
@@ -288,7 +337,9 @@ const Register = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        aria-label="toggle password visibility"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
                         onClick={toggleShowPassword}
                         edge="end"
                       >
@@ -304,18 +355,139 @@ const Register = () => {
               }}
               sx={{ mb: 2 }}
             />
+            {formData.password && (
+              <Box sx={{ mb: 2, mt: -1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Password Strength:
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    aria-live="polite"
+                    sx={{
+                      fontWeight: 600,
+                      color: `${getPasswordStrength(formData.password).color}.main`,
+                    }}
+                  >
+                    {getPasswordStrength(formData.password).label}
+                  </Typography>
+                  <span
+                    style={{
+                      position: "absolute",
+                      width: "1px",
+                      height: "1px",
+                      padding: "0",
+                      margin: "-1px",
+                      overflow: "hidden",
+                      clip: "rect(0, 0, 0, 0)",
+                      border: "0",
+                    }}
+                  >
+                    {`Password strength: ${getPasswordStrength(formData.password).label}`}
+                  </span>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={getPasswordStrength(formData.password).progress}
+                  color={getPasswordStrength(formData.password).color}
+                  role="progressbar"
+                  aria-valuenow={
+                    getPasswordStrength(formData.password).progress
+                  }
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label="Password strength"
+                  sx={{ height: 6, borderRadius: 3, mb: 1.5 }}
+                />
+                <Box
+                  role="status"
+                  aria-live="polite"
+                  sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                >
+                  {[
+                    { key: "length", text: "Minimum 8 characters" },
+                    { key: "hasUpper", text: "At least one uppercase letter" },
+                    { key: "hasLower", text: "At least one lowercase letter" },
+                    { key: "hasNumber", text: "At least one number" },
+                    {
+                      key: "hasSpecial",
+                      text: "At least one special character",
+                    },
+                  ].map((rule) => {
+                    const isMet = getPasswordStrength(formData.password).checks[
+                      rule.key
+                    ];
+                    return (
+                      <Box
+                        key={rule.key}
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: isMet ? "success.main" : "error.main",
+                            fontWeight: 700,
+                            lineHeight: 1,
+                          }}
+                        >
+                          {isMet ? "✓" : "✗"}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color={isMet ? "text.primary" : "text.secondary"}
+                        >
+                          {rule.text}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Box>
+            )}
             <TextField
               required
               fullWidth
               name="confirmPassword"
               label="Confirm Password"
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={handleChange}
               error={!!passwordError}
               helperText={passwordError}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
               sx={{ mb: 2 }}
             />
             <FormControlLabel
