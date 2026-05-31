@@ -156,6 +156,9 @@ html {
   font-weight: 500;
   letter-spacing: 0.5px;
   margin-bottom: 1.5rem;
+  position :absolute;
+  left: 5;
+  top: 15;
 }
 
 .wander-dot {
