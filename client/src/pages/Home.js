@@ -442,7 +442,7 @@ const Home = () => {
             <a href="#wander-dest-section">Destinations</a>
           </li>
           <li>
-            <a href="#wander-features">Experiences</a>
+            <a href="#wander-testimonials">Experiences</a>
           </li>
           <li>
             <a href="#wander-features">Features</a>
@@ -518,6 +518,17 @@ const Home = () => {
             onClick={() => setMobileOpen(false)}
           >
             Destinations
+          </a>
+          <a
+            href="#wander-testimonials"
+            style={{
+              color: "var(--ocean)",
+              textDecoration: "none",
+              fontWeight: 500,
+            }}
+            onClick={() => setMobileOpen(false)}
+          >
+            Experiences
           </a>
           <a
             href="#wander-features"
@@ -858,7 +869,7 @@ const Home = () => {
       </section>
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
+      <section className="wander-testi-section" id="wander-testimonials">
         <div>
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
@@ -930,7 +941,7 @@ const Home = () => {
             <div className="wander-footer-col">
               <h4>Explore</h4>
               <a href="#wander-dest-section">Destinations</a>
-              <a href="#wander-features">Experiences</a>
+              <a href="#wander-testimonials">Experiences</a>
               <a href="#wander-features">Features</a>
             </div>
 
