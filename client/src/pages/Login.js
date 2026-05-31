@@ -58,8 +58,7 @@ const Login = () => {
 
   useEffect(() => {
     dispatch({ type: "CLEAR_ERROR" });
-  }, []);
-
+  }, [dispatch]);
   const handleGoogleCallback = (response) => {
     // Google Sign-In disabled in this commit since googleLogin action
     // is not present in authActions.js in the current repo.
