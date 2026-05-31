@@ -44,6 +44,7 @@
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
+- [🙌 Thanks to Contributors](#-thanks-to-contributors)
 
 ---
 
@@ -596,7 +597,26 @@ We are incredibly grateful to our mentors for their valuable support and code re
 
 </div>
 
-/**
+---
+
+## 🙌 Thanks to Contributors
+
+We sincerely thank all contributors who have helped improve PackGo
+
+Your efforts make this project better for everyone. ❤️
+
+<div align="center">
+
+<a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors" />
+</a>
+
+</div>
+
+---
+
+
+
 ## ✨ README Improvement Notes
 
 ### 📌 Formatting Enhancements Needed
