@@ -22,6 +22,7 @@ import {
   IconButton,
   CircularProgress,
   Tooltip,
+  LinearProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -111,6 +112,23 @@ const ExpensesView = () => {
   const activeTrip = trips?.find((t) => t._id === activeTripId);
   const budget = activeTrip?.budget || 0;
   const remaining = budget > 0 ? budget - totalSpent : null;
+
+  const budgetUsage =
+  budget > 0 ? Math.min((totalSpent / budget) * 100, 100) : 0;
+
+  const alertLevel =
+    budgetUsage >= 100
+      ? "error"
+      : budgetUsage >= 90
+        ? "warning"
+        : budgetUsage >= 70
+          ? "info"
+          : "success";
+
+  const predictedExpense =
+    expenses && expenses.length > 0
+      ? Math.round(totalSpent * 1.2)
+      : 0;
 
   const chartData = expenseSummary
     ? expenseSummary.map((s) => ({ name: s._id, value: s.totalAmount }))
@@ -353,7 +371,113 @@ const ExpensesView = () => {
           </Paper>
         </Grid>
       </Grid>
+      <Grid xs={12} sm={4}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              bgcolor: `${alertLevel}.light`,
+            }}
+          >
+            <Typography variant="body2">
+              Budget Utilization
+            </Typography>
 
+            <Typography
+              variant="h5"
+              fontWeight={700}
+            >
+              {budgetUsage.toFixed(0)}%
+            </Typography>
+          </Paper>
+        </Grid>
+
+        {budget > 0 && (
+          <Paper
+            sx={{
+              p: 2,
+              mb: 3,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor:
+                budgetUsage >= 100
+                  ? "error.main"
+                  : budgetUsage >= 90
+                    ? "warning.main"
+                    : "divider",
+            }}
+          >
+            <Typography fontWeight={700}>
+              Budget Alert
+            </Typography>
+
+            <Typography>
+              {budgetUsage >= 100
+                ? "⚠️ Budget exceeded."
+                : budgetUsage >= 90
+                  ? "⚠️ You have used over 90% of your budget."
+                  : budgetUsage >= 70
+                    ? "ℹ️ You have used over 70% of your budget."
+                    : "✅ Budget is healthy."}
+            </Typography>
+          </Paper>
+        )}
+
+        {budget > 0 && (
+          <Paper
+            sx={{
+              p: 2,
+              mb: 3,
+              borderRadius: 3,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{ mb: 1 }}
+            >
+              Budget Usage Progress
+            </Typography>
+
+            <LinearProgress
+              variant="determinate"
+              value={Math.min(budgetUsage, 100)}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+              }}
+            />
+
+            <Typography
+              variant="caption"
+              sx={{ mt: 1, display: "block" }}
+            >
+              {budgetUsage.toFixed(1)}% used
+            </Typography>
+          </Paper>
+        )}
+
+        <Grid xs={12} sm={4}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            bgcolor: "warning.light",
+          }}
+        >
+          <Typography variant="body2">
+            Predicted Spending
+          </Typography>
+
+          <Typography
+            variant="h5"
+            fontWeight={700}
+          >
+            ₹{predictedExpense.toLocaleString()}
+          </Typography>
+        </Paper>
+      </Grid>
       <Grid container spacing={3}>
         {/* Expense Table */}
         <Grid xs={12} md={7}>
@@ -459,6 +583,14 @@ const ExpensesView = () => {
             <Typography variant="subtitle1" fontWeight={700} mb={2}>
               Spending Breakdown
             </Typography>
+            <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mb: 2 }}
+              >
+                Predicted Final Spending: ₹
+                {predictedExpense.toLocaleString()}
+              </Typography>
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
@@ -483,6 +615,31 @@ const ExpensesView = () => {
                   />
                   <Legend />
                 </PieChart>
+
+                <Box sx={{ mt: 2 }}>
+                {expenseSummary?.map((item) => (
+                  <Box
+                    key={item._id}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 1,
+                    }}
+                  >
+                    <Typography variant="body2">
+                      {item._id}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      fontWeight={700}
+                    >
+                      ₹{item.totalAmount.toLocaleString()}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+
               </ResponsiveContainer>
             ) : (
               <Box
