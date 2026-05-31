@@ -498,7 +498,7 @@ const Home = () => {
       </nav>
 
       {/* Mobile dropdown */}
-      {mobileOpen && (
+      {/*{mobileOpen && (
         <div
           style={{
             background: "var(--white)",
@@ -508,7 +508,9 @@ const Home = () => {
             flexDirection: "column",
             gap: "1rem",
           }}
-        >
+        >*/}
+      {mobileOpen && (
+        <div className="wander-mobile-dropdown">
           <a
             href="#wander-dest-section"
             style={{
@@ -572,8 +574,8 @@ const Home = () => {
       <section className="wander-hero">
         <div className="wander-hero-content">
           <div className="wander-hero-badge">
-            <div className="wander-dot" />
-            &nbsp;2,400+ destinations worldwide
+            <div className="wander-dot"></div>
+            <span>2,400+ destinations worldwide</span>
           </div>
           <h1>
             Travel is the only thing you buy that makes you <em>richer</em>
