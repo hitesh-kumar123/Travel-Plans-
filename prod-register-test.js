@@ -1,13 +1,16 @@
 const fetch = global.fetch || require("node-fetch");
 (async () => {
   try {
+    const startTime = Date.now();
+    const timestamp = Date.now();
+    const testName =`Prod Test ${timestamp}`;
     const res = await fetch(
       "https://travel-plans.onrender.com/api/auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "Prod Test",
+          name: testName,
           email: `prodtest${Date.now()}@example.com`,
           password: "Passw0rd!",
         }),
