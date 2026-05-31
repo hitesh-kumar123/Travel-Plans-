@@ -1,4 +1,4 @@
-const KEY = 'recently_viewed_destinations';
+const KEY = "recently_viewed_destinations";
 const MAX_ITEMS = 5;
 
 export function getRecentlyViewed() {
@@ -18,7 +18,7 @@ export function addRecentlyViewed(destination) {
     if (list.length > MAX_ITEMS) list = list.slice(0, MAX_ITEMS);
     localStorage.setItem(KEY, JSON.stringify(list));
   } catch (err) {
-    console.error('Failed to save recently viewed:', err);
+    console.error("Failed to save recently viewed:", err);
   }
 }
 
