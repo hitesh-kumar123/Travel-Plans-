@@ -1,0 +1,1 @@
+Initiated automated fix sequence for #300 - Bug: Facebook signup button appears in UI but is non-functional.
