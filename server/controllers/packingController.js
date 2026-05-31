@@ -71,9 +71,7 @@ exports.addItem = async (req, res) => {
 
     if (list) {
       const duplicate = list.items.find(
-        (item) =>
-          item.name.trim().toLowerCase() ===
-          name.trim().toLowerCase()
+        (item) => item.name.trim().toLowerCase() === name.trim().toLowerCase(),
       );
 
       if (duplicate) {
@@ -94,7 +92,7 @@ exports.addItem = async (req, res) => {
           },
         },
       },
-      { new: true, upsert: true }
+      { new: true, upsert: true },
     );
 
     res.json(updatedList);
@@ -162,13 +160,11 @@ exports.applyTemplate = async (req, res) => {
     }
 
     const existingNames = new Set(
-      list.items.map((item) => item.name.trim().toLowerCase())
+      list.items.map((item) => item.name.trim().toLowerCase()),
     );
 
     const templateItems = items
-      .filter(
-        (item) => !existingNames.has(item.name.trim().toLowerCase())
-      )
+      .filter((item) => !existingNames.has(item.name.trim().toLowerCase()))
       .map((item) => ({
         ...item,
         packed: false,
