@@ -20,6 +20,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
+import Terms from "./pages/Terms";
 
 function App() {
   useEffect(() => {
@@ -49,6 +50,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/terms" element={<Terms />} />
             </Routes>
           </div>
         </Router>

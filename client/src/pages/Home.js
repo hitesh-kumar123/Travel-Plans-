@@ -5,6 +5,7 @@ import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -931,7 +932,7 @@ const Home = () => {
               <h4>Support</h4>
               <a href="/">Help Center</a>
               <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <a href="/terms">Terms & Conditions</a>
             </div>
           </div>
         </div>
