@@ -29,32 +29,56 @@ const limiter = rateLimit({
 app.use("/api/auth", limiter);
 
 // Core Middleware
-const allowedOrigins = ["http://localhost:3000"];
+const DEFAULT_LOCAL_ORIGINS = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+
+const normalizeOrigin = (value) => {
+  try {
+    const parsed = new URL(value.trim());
+    return parsed.origin;
+  } catch {
+    return null;
+  }
+};
+
+const parseOrigins = (value) =>
+  value
+    .split(",")
+    .map((url) => normalizeOrigin(url))
+    .filter(Boolean);
+
+const allowedOrigins = new Set();
 
 const frontendUrls = [];
 if (process.env.FRONTEND_URL) {
-  frontendUrls.push(
-    ...process.env.FRONTEND_URL.split(",")
-      .map((url) => url.trim())
-      .filter(Boolean),
-  );
+  frontendUrls.push(...parseOrigins(process.env.FRONTEND_URL));
 }
 if (process.env.FRONTEND_URLS) {
-  frontendUrls.push(
-    ...process.env.FRONTEND_URLS.split(",")
-      .map((url) => url.trim())
-      .filter(Boolean),
-  );
+  frontendUrls.push(...parseOrigins(process.env.FRONTEND_URLS));
 }
-allowedOrigins.push(...frontendUrls);
+
+for (const origin of frontendUrls) {
+  allowedOrigins.add(origin);
+}
+
+if (process.env.NODE_ENV !== "production") {
+  for (const localOrigin of DEFAULT_LOCAL_ORIGINS) {
+    allowedOrigins.add(localOrigin);
+  }
+}
 
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-      if (origin.includes("localhost") || origin.includes("vercel.app")) {
+
+      const normalizedOrigin = normalizeOrigin(origin);
+      if (normalizedOrigin && allowedOrigins.has(normalizedOrigin)) {
         return callback(null, true);
       }
+
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
