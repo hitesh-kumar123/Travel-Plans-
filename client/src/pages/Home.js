@@ -362,6 +362,13 @@ const Home = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const handleKeyDown = (e, dest) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleAddTrip(dest);
+    }
+  };
+
   useEffect(() => {
     api
       .get("/destinations")
@@ -432,8 +439,9 @@ const Home = () => {
 
   return (
     <div className="wander-page">
-      {/* ═══ NAVBAR ═══ */}
-      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
+      <header>
+        {/* ═══ NAVBAR ═══ */}
+        <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
         <Link to="/" className="wander-logo">
           Pack<span>Go</span>
         </Link>
@@ -567,9 +575,11 @@ const Home = () => {
           )}
         </div>
       )}
+      </header>
 
-      {/* ═══ HERO ═══ */}
-      <section className="wander-hero">
+      <main>
+        {/* ═══ HERO ═══ */}
+        <section className="wander-hero">
         <div className="wander-hero-content">
           <div className="wander-hero-badge">
             <div className="wander-dot" />
@@ -616,11 +626,12 @@ const Home = () => {
       </section>
 
       {/* ═══ SEARCH BAR ═══ */}
-      <div className="wander-search-section">
+      <section className="wander-search-section" aria-label="Trip Search">
         <form className="wander-search-bar" onSubmit={handleSearch}>
           <div className="wander-sf">
-            <div className="wander-sf-label">Where to</div>
+            <label htmlFor="wander-input-where" className="wander-sf-label">Where to</label>
             <input
+              id="wander-input-where"
               className="wander-sf-val"
               placeholder="Bali, Indonesia"
               value={where}
@@ -628,10 +639,11 @@ const Home = () => {
             />
           </div>
           <div className="wander-sf">
-            <div className="wander-sf-label">Check In</div>
+            <label htmlFor="wander-input-date" className="wander-sf-label">Check In</label>
 
             <div style={{ position: "relative" }}>
               <input
+                id="wander-input-date"
                 className="wander-sf-val"
                 type="date"
                 value={checkIn}
@@ -653,8 +665,9 @@ const Home = () => {
             </div>
           </div>
           <div className="wander-sf">
-            <div className="wander-sf-label">Travellers</div>
+            <label htmlFor="wander-input-travellers" className="wander-sf-label">Travellers</label>
             <input
+              id="wander-input-travellers"
               className="wander-sf-val"
               placeholder="2 Adults, 1 Child"
               value={travellers}
@@ -665,20 +678,20 @@ const Home = () => {
             <SearchIcon /> Search
           </button>
         </form>
-      </div>
+      </section>
 
       {/* ═══ DESTINATIONS ═══ */}
       <section className="wander-section" id="wander-dest-section">
         <div className="wander-section-header">
           <div>
             <div className="wander-section-label">Top Picks</div>
-            <div className="wander-section-title">
+            <h2 className="wander-section-title">
               {loading
                 ? "Loading destinations…"
                 : where.trim()
                   ? `${filteredDestinations.length} destination${filteredDestinations.length !== 1 ? "s" : ""} found`
                   : "Destinations that steal hearts"}
-            </div>
+            </h2>
           </div>
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
             <button className="wander-see-all">View all destinations →</button>
@@ -692,6 +705,10 @@ const Home = () => {
             <div
               className="wander-dest-card tall"
               onClick={() => handleAddTrip(editorialDests[0])}
+              onKeyDown={(e) => handleKeyDown(e, editorialDests[0])}
+              tabIndex={0}
+              role="button"
+              aria-label={`View and book trip to ${editorialDests[0].name || "Santorini"}`}
             >
               <div className="wander-dest-card-img">
                 {editorialDests[0].images?.[0] ? (
@@ -779,6 +796,10 @@ const Home = () => {
                 className="wander-dest-card"
                 style={{ background: item.bg }}
                 onClick={() => dest && handleAddTrip(dest)}
+                onKeyDown={(e) => dest && handleKeyDown(e, dest)}
+                tabIndex={dest ? 0 : -1}
+                role="button"
+                aria-label={`View and book trip to ${dest ? dest.name : item.fallbackName}`}
               >
                 <div className="wander-dest-card-img">
                   {dest?.images?.[0] ? (
@@ -826,17 +847,17 @@ const Home = () => {
           <div className="wander-section-label" style={{ textAlign: "center" }}>
             Why PackGo
           </div>
-          <div className="wander-section-title" style={{ textAlign: "center" }}>
+          <h2 className="wander-section-title" style={{ textAlign: "center" }}>
             Travel smarter,
             <br />
             not harder
-          </div>
+          </h2>
         </div>
         <div className="wander-feat-grid">
           {FEATURES.map((f, i) => (
             <div key={i} className="wander-feat-card">
               <div className="wander-feat-icon">{f.icon}</div>
-              <div className="wander-feat-title">{f.title}</div>
+              <h3 className="wander-feat-title">{f.title}</h3>
               <div className="wander-feat-desc">{f.desc}</div>
             </div>
           ))}
@@ -847,9 +868,9 @@ const Home = () => {
       <section className="wander-testi-section">
         <div>
           <div className="wander-testi-label">Traveller Stories</div>
-          <div className="wander-testi-heading">
+          <h2 className="wander-testi-heading">
             Journeys that changed everything
-          </div>
+          </h2>
           <div className="wander-stars">★★★★★</div>
           <p className="wander-testi-quote">
             "PackGo turned our anniversary trip into something we'll tell
@@ -875,7 +896,7 @@ const Home = () => {
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
+      <section className="wander-cta-section" aria-label="Call to Action">
         <div className="wander-cta-text">
           <h2>
             Your next adventure
@@ -896,7 +917,8 @@ const Home = () => {
             </Link>
           )}
         </div>
-      </div>
+      </section>
+      </main>
 
       {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
