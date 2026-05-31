@@ -1103,6 +1103,7 @@ html {
   text-decoration: none;
 }
 
+/* FIX: merged duplicate transform into single declaration */
 .wander-footer-socials a:hover {
   background: var(--coral);
   color: white;
@@ -1576,6 +1577,7 @@ html {
   }
 }
 
+/* FIX: single consolidated @media (max-width: 900px) block */
 @media (max-width: 900px) {
   .wander-hero {
     grid-template-columns: 1fr;
@@ -1656,6 +1658,7 @@ html {
     padding: 2.5rem;
   }
 
+  /* FIX: consolidated footer responsive rules — no duplicates */
   .wander-footer {
     padding: 3rem 1.5rem 2rem;
     align-items: center;
@@ -1701,7 +1704,9 @@ html {
   .wander-footer-bottom {
     flex-direction: column;
     text-align: center;
+    align-items: center;
     justify-content: center;
+    gap: 1.5rem;
   }
 
   .wander-cta-actions {
