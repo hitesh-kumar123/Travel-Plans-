@@ -23,7 +23,6 @@ import { loadUser } from "./redux/actions/authActions";
 
 function App() {
   useEffect(() => {
-
     store.dispatch(loadUser());
   }, []);
   const [mode, setMode] = useState("light");
@@ -35,7 +34,6 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-
           <div className={`App ${mode === "dark" ? "dark-mode" : ""}`}>
             <button
               onClick={() => setMode(mode === "light" ? "dark" : "light")}

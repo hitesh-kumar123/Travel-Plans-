@@ -135,9 +135,11 @@ html {
   right: -5%;
   width: 60%;
   height: 140%;
-  background: radial-gradient(ellipse,
-      rgba(232, 115, 90, 0.12) 0%,
-      transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(232, 115, 90, 0.12) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 
@@ -166,7 +168,6 @@ html {
 }
 
 @keyframes wander-pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -488,9 +489,11 @@ html {
 .wander-dest-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-      transparent 40%,
-      rgba(10, 25, 40, 0.85) 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(10, 25, 40, 0.85) 100%
+  );
 }
 
 .wander-dest-info {
@@ -714,9 +717,11 @@ html {
   top: -50%;
   width: 50%;
   height: 200%;
-  background: radial-gradient(ellipse,
-      rgba(232, 115, 90, 0.2) 0%,
-      transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(232, 115, 90, 0.2) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 
