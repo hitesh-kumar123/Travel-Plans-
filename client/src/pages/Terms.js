@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   Globe,
   Shield,
   FileText,
   User,
-  Lock,
   Scale,
   Zap,
   RefreshCw,
   Mail,
   ChevronDown,
-  Plane,
 } from "lucide-react";
 
 const sections = [
