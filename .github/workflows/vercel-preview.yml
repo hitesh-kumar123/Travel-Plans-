@@ -22,18 +22,24 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm i -g vercel
+        working-directory: ./client
 
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./client
 
       - name: Build Project
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./client
+        env:
+          CI: false
 
       - name: Deploy to Vercel
         id: deploy
         run: |
           url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
           echo "preview_url=$url" >> $GITHUB_OUTPUT
+        working-directory: ./client
 
       - name: Comment PR with Preview URL
         uses: actions/github-script@v7

@@ -15,6 +15,7 @@
     "prettier": "^3.8.3"
   },
   "scripts": {
+    "build": "npm --prefix client run build",
     "start": "node server/server.js",
     "prepare": "husky"
   },

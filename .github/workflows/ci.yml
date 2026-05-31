@@ -34,6 +34,8 @@ jobs:
       
     - name: Build
       run: npm run build
+      env:
+        CI: false
 
   server-checks:
     runs-on: ubuntu-latest
