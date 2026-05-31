@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Typography, Container, Button, TextField, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Container,
+  Button,
+  TextField,
+  useTheme,
+} from "@mui/material";
 
 const Contact = () => {
   const theme = useTheme();
@@ -41,7 +48,8 @@ const Contact = () => {
             color="text.secondary"
             sx={{ mb: 4, maxWidth: 600, mx: "auto" }}
           >
-            Have any questions or need help? Please fill out the form below and our support team will get back to you as soon as possible.
+            Have any questions or need help? Please fill out the form below and
+            our support team will get back to you as soon as possible.
           </Typography>
 
           <Box
