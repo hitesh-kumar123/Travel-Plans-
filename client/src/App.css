@@ -28,13 +28,16 @@ a:hover {
 .fade-enter {
   opacity: 0;
 }
+
 .fade-enter-active {
   opacity: 1;
   transition: opacity 300ms;
 }
+
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms;
@@ -175,7 +178,45 @@ a:hover {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+/* autocomplete search bar */
+.autocomplete {
+  text-align: center;
+}
+
+.search-input {
+  width: 500px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.results-container {
+  width: 500px;
+  margin: auto;
+  border: 1px solid #2d3748;
+  padding: 5px;
+  background-color: white;
+  color: black;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.result {
+  display: block;
+  padding: 5px;
+  border: 1px solid #2d3748;
+  margin: 5px;
+}
+
+.result:hover {
+  background-color: #dbdada;
+  cursor: pointer;
 }

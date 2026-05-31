@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -330,7 +330,79 @@ const STATS = [
   { big: "14yr", desc: "Of travel expertise" },
   { big: "180+", desc: "Countries covered" },
 ];
-
+/* ── Popular destinations shown when API has no data or on focus ── */
+const POPULAR_DESTINATIONS = [
+  {
+    _id: "pop-1",
+    name: "Bali",
+    city: "Ubud",
+    state: "Indonesia",
+    category: "Beach",
+  },
+  {
+    _id: "pop-2",
+    name: "Goa",
+    city: "Panaji",
+    state: "India",
+    category: "Beach",
+  },
+  {
+    _id: "pop-3",
+    name: "Dubai",
+    city: "Dubai",
+    state: "UAE",
+    category: "City",
+  },
+  {
+    _id: "pop-4",
+    name: "Paris",
+    city: "Paris",
+    state: "France",
+    category: "City",
+  },
+  {
+    _id: "pop-5",
+    name: "Santorini",
+    city: "Fira",
+    state: "Greece",
+    category: "Island",
+  },
+  {
+    _id: "pop-6",
+    name: "Maldives",
+    city: "Malé",
+    state: "Maldives",
+    category: "Beach",
+  },
+  {
+    _id: "pop-7",
+    name: "Tokyo",
+    city: "Tokyo",
+    state: "Japan",
+    category: "City",
+  },
+  {
+    _id: "pop-8",
+    name: "Rajasthan",
+    city: "Jaipur",
+    state: "India",
+    category: "Heritage",
+  },
+  {
+    _id: "pop-9",
+    name: "Angkor Wat",
+    city: "Siem Reap",
+    state: "Cambodia",
+    category: "Heritage",
+  },
+  {
+    _id: "pop-10",
+    name: "Sahara",
+    city: "Merzouga",
+    state: "Morocco",
+    category: "Adventure",
+  },
+];
 /* ── SVG Search Icon ── */
 const SearchIcon = () => (
   <svg
@@ -361,7 +433,16 @@ const Home = () => {
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  /* ── CountriesNow autocomplete state ── */
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const [apiSuggestions, setApiSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  /* Stores the item the user picked from the dropdown */
+  const [selectedDestination, setSelectedDestination] = useState(null);
+  /* Cache the full countries+cities dataset after first fetch */
+  const countriesDataRef = useRef(null);
+  const dataFetchedRef = useRef(false);
   useEffect(() => {
     api
       .get("/destinations")
@@ -370,6 +451,22 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }, []);
+
+  /* ── Fetch & cache countries+cities on mount ── */
+  useEffect(() => {
+    if (dataFetchedRef.current) return;
+    dataFetchedRef.current = true;
+    setSuggestionsLoading(true);
+    fetch("https://countriesnow.space/api/v0.1/countries")
+      .then((r) => r.json())
+      .then((json) => {
+        if (!json.error && Array.isArray(json.data)) {
+          countriesDataRef.current = json.data;
+        }
+        setSuggestionsLoading(false);
+      })
+      .catch(() => setSuggestionsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -407,21 +504,165 @@ const Home = () => {
       .getElementById("wander-dest-section")
       ?.scrollIntoView({ behavior: "smooth" });
   };
-
-  /* Filter destinations based on "Where to" search input */
+  /* ── Pool to search against for the DESTINATIONS GRID below ── */
+  const destinationPool =
+    destinations.length > 0 ? destinations : POPULAR_DESTINATIONS;
   const filteredDestinations = where.trim()
-    ? destinations.filter(
+    ? destinationPool.filter(
         (d) =>
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.category || "").toLowerCase().includes(where.toLowerCase()),
       )
-    : destinations;
+    : destinationPool;
+  /* ──────────────────────────────────────────────────────────────
+     CountriesNow — filter cached data locally on every keystroke
+     API: https://countriesnow.space/api/v0.1/countries
+  ────────────────────────────────────────────────────────────── */
+  const getCountriesNowSuggestions = useCallback((query) => {
+    const q = query.trim().toLowerCase();
+    if (!q || !countriesDataRef.current) return [];
 
-  /* First 4 destinations for the editorial grid; fallback if DB has fewer */
-  const editorialDests = filteredDestinations.slice(0, 4);
+    const results = [];
+    const seen = new Set();
 
+    /* Helper: score a match (start-of-string beats mid-string) */
+    const score = (str) => {
+      const s = str.toLowerCase();
+      if (s.startsWith(q)) return 0;
+      if (s.includes(q)) return 1;
+      return -1;
+    };
+
+    for (const entry of countriesDataRef.current) {
+      const countryScore = score(entry.country);
+
+      /* Country-level match */
+      if (countryScore >= 0 && !seen.has(entry.country)) {
+        seen.add(entry.country);
+        results.push({
+          id: `country-${entry.country}`,
+          name: entry.country,
+          subtitle: `${entry.cities.length} cities`,
+          icon: "🌍",
+          typeLabel: "Country",
+          _score: countryScore,
+        });
+      }
+
+      /* City-level matches within this country */
+      if (Array.isArray(entry.cities)) {
+        for (const city of entry.cities) {
+          const cityScore = score(city);
+          const key = `${city}|${entry.country}`;
+          if (cityScore >= 0 && !seen.has(key)) {
+            seen.add(key);
+            results.push({
+              id: key,
+              name: city,
+              subtitle: entry.country,
+              icon: "🏙️",
+              typeLabel: "City",
+              _score: cityScore,
+            });
+          }
+          /* Stop early if we already have plenty of candidates */
+          if (results.length >= 120) break;
+        }
+      }
+      if (results.length >= 120) break;
+    }
+
+    /* Sort: start matches first, then alphabetical within each tier */
+    results.sort((a, b) =>
+      a._score !== b._score
+        ? a._score - b._score
+        : a.name.localeCompare(b.name),
+    );
+
+    return results.slice(0, 8);
+  }, []);
+
+  /* Instant local filter — no debounce needed */
+  const handleWhereChange = (e) => {
+    const val = e.target.value;
+    setWhere(val);
+    setShowSuggestions(true);
+    setActiveSuggestionIndex(-1);
+    /* Clear the selected card whenever user edits the field */
+    setSelectedDestination(null);
+    if (!val.trim()) {
+      setApiSuggestions([]);
+      return;
+    }
+    const hits = getCountriesNowSuggestions(val);
+    setApiSuggestions(hits);
+  };
+
+  /* Combined suggestion list: CountriesNow results first, fallback to local/popular pool */
+  const suggestionList = (() => {
+    if (apiSuggestions.length > 0) return apiSuggestions;
+    if (where.trim()) {
+      /* Text typed but no API hits yet — show local fallback */
+      return filteredDestinations.slice(0, 6).map((d) => ({
+        id: d._id,
+        name: d.name,
+        subtitle:
+          [d.city, d.state].filter(Boolean).join(", ") ||
+          d.category ||
+          "Destination",
+        icon: "📍",
+        typeLabel: d.category || "",
+      }));
+    }
+    /* Empty input — show popular picks */
+    return POPULAR_DESTINATIONS.slice(0, 6).map((d) => ({
+      id: d._id,
+      name: d.name,
+      subtitle:
+        [d.city, d.state].filter(Boolean).join(", ") || d.category || "",
+      icon: "⭐",
+      typeLabel: d.category || "Popular",
+    }));
+  })();
+  const handleSuggestionKeyDown = (e) => {
+    if (!showSuggestions || !suggestionList.length) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveSuggestionIndex((prev) =>
+        prev < suggestionList.length - 1 ? prev + 1 : prev,
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveSuggestionIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    } else if (e.key === "Enter") {
+      if (
+        activeSuggestionIndex >= 0 &&
+        activeSuggestionIndex < suggestionList.length
+      ) {
+        e.preventDefault();
+        handleSelectSuggestion(suggestionList[activeSuggestionIndex]);
+      }
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false);
+      setActiveSuggestionIndex(-1);
+    }
+  };
+  /* Click / keyboard-select a suggestion → fill the input + show card */
+  const handleSelectSuggestion = (item) => {
+    /* Show "City, Country" in the input for city results */
+    const display =
+      item.typeLabel === "City" && item.subtitle
+        ? `${item.name}, ${item.subtitle}`
+        : item.name;
+    setWhere(display);
+    setSelectedDestination(item);
+    setShowSuggestions(false);
+    setActiveSuggestionIndex(-1);
+    setApiSuggestions([]);
+  };
+  /* editorialDests removed — grid is now fully driven by filteredDestinations */
   return (
     <div className="wander-page">
       {/* ═══ NAVBAR ═══ */}
@@ -612,16 +853,133 @@ const Home = () => {
         <form className="wander-search-bar" onSubmit={handleSearch}>
           <div className="wander-sf">
             <div className="wander-sf-label">Where to</div>
-            <input
-              className="wander-sf-val"
-              placeholder="Bali, Indonesia"
-              value={where}
-              onChange={(e) => setWhere(e.target.value)}
-            />
+            <div className="wander-sf-input-wrap">
+              <input
+                className="wander-sf-val"
+                placeholder="Bali, Indonesia"
+                value={where}
+                onChange={handleWhereChange}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                onKeyDown={handleSuggestionKeyDown}
+                autoComplete="off"
+                id="where-to-input"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                aria-expanded={showSuggestions && where.trim().length > 0}
+                aria-controls="where-to-suggestions"
+              />
+              {where && (
+                <button
+                  type="button"
+                  className="wander-sf-clear"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setWhere("");
+                    setApiSuggestions([]);
+                    setShowSuggestions(false);
+                    setActiveSuggestionIndex(-1);
+                  }}
+                  aria-label="Clear destination"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            {showSuggestions && (
+              <div
+                id="where-to-suggestions"
+                className="wander-suggestions-dropdown"
+                role="listbox"
+                aria-label="Destination suggestions"
+              >
+                {/* Header */}
+                <div className="wander-suggestions-header">
+                  <span className="wander-suggestions-header-icon">
+                    {suggestionsLoading ? (
+                      <span className="wander-suggestions-spinner" />
+                    ) : where.trim() ? (
+                      "🔍"
+                    ) : (
+                      "⭐"
+                    )}
+                  </span>
+                  {suggestionsLoading && !where.trim()
+                    ? "Loading destination data…"
+                    : !where.trim()
+                      ? "Popular destinations"
+                      : suggestionList.length > 0
+                        ? `${suggestionList.length} result${suggestionList.length !== 1 ? "s" : ""} for "${where}"`
+                        : `No results for "${where}"`}
+                </div>
+                {suggestionList.length > 0 &&
+                  suggestionList.map((item, index) => {
+                    const displayText = item.name || "";
+                    const matchIndex = displayText
+                      .toLowerCase()
+                      .indexOf(where.toLowerCase());
+                    return (
+                      <div
+                        key={item.id || index}
+                        className={`wander-suggestion-item ${index === activeSuggestionIndex ? "active" : ""}`}
+                        role="option"
+                        aria-selected={index === activeSuggestionIndex}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleSelectSuggestion(item);
+                        }}
+                      >
+                        <span className="wander-suggestion-icon">
+                          {item.icon}
+                        </span>
+                        <div className="wander-suggestion-text">
+                          <span className="wander-suggestion-name">
+                            {matchIndex >= 0 ? (
+                              <>
+                                {displayText.substring(0, matchIndex)}
+                                <strong>
+                                  {displayText.substring(
+                                    matchIndex,
+                                    matchIndex + where.length,
+                                  )}
+                                </strong>
+                                {displayText.substring(
+                                  matchIndex + where.length,
+                                )}
+                              </>
+                            ) : (
+                              displayText
+                            )}
+                          </span>
+                          <span className="wander-suggestion-country">
+                            {item.subtitle}
+                          </span>
+                        </div>
+                        {item.typeLabel && (
+                          <span className="wander-suggestion-badge">
+                            {item.typeLabel}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                {!suggestionsLoading &&
+                  suggestionList.length === 0 &&
+                  where.trim() && (
+                    <div className="wander-suggestions-empty">
+                      <span style={{ fontSize: "1.5rem" }}>🌏</span>
+                      <span>No destinations found</span>
+                      <span className="wander-suggestions-empty-hint">
+                        Try a country ("India") or city ("Paris", "Bali")
+                      </span>
+                    </div>
+                  )}
+              </div>
+            )}
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
-
             <div style={{ position: "relative" }}>
               <input
                 className="wander-sf-val"
@@ -630,7 +988,6 @@ const Home = () => {
                 onChange={(e) => setCheckIn(e.target.value)}
                 style={{ paddingRight: "35px" }}
               />
-
               <span
                 style={{
                   position: "absolute",
@@ -659,6 +1016,123 @@ const Home = () => {
         </form>
       </div>
 
+      {/* ═══ SELECTED DESTINATION CARD ═══ */}
+      {selectedDestination && (
+        <div className="wander-selected-card-section">
+          <div className="wander-selected-card">
+            {/* Dismiss */}
+            <button
+              className="wander-selected-card-dismiss"
+              onClick={() => {
+                setSelectedDestination(null);
+                setWhere("");
+                setApiSuggestions([]);
+              }}
+              aria-label="Clear selection"
+            >
+              ×
+            </button>
+
+            {/* Left: icon + info */}
+            <div className="wander-selected-card-left">
+              <div className="wander-selected-card-icon">
+                {selectedDestination.icon}
+              </div>
+              <div className="wander-selected-card-info">
+                <div className="wander-selected-card-eyebrow">
+                  {selectedDestination.typeLabel === "City"
+                    ? "City · " + (selectedDestination.subtitle || "")
+                    : selectedDestination.typeLabel === "Country"
+                      ? "Country"
+                      : selectedDestination.typeLabel || "Destination"}
+                </div>
+                <h2 className="wander-selected-card-name">
+                  {selectedDestination.name}
+                </h2>
+                {selectedDestination.subtitle &&
+                  selectedDestination.typeLabel !== "Country" && (
+                    <div className="wander-selected-card-location">
+                      📍 {selectedDestination.subtitle}
+                    </div>
+                  )}
+
+                {/* Quick facts */}
+                <div className="wander-selected-card-facts">
+                  <span className="wander-selected-card-fact">
+                    {selectedDestination.typeLabel === "Country"
+                      ? `🏙️ ${selectedDestination.subtitle}`
+                      : `🌍 ${selectedDestination.subtitle || "International"}`}
+                  </span>
+                  <span className="wander-selected-card-fact-sep">·</span>
+                  <span className="wander-selected-card-fact">
+                    ✈️ Flights available
+                  </span>
+                  <span className="wander-selected-card-fact-sep">·</span>
+                  <span className="wander-selected-card-fact">
+                    🗓️ Year-round travel
+                  </span>
+                </div>
+
+                {/* CTAs */}
+                <div className="wander-selected-card-actions">
+                  <button
+                    className="wander-selected-card-cta-primary"
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        const today = new Date();
+                        const next = new Date();
+                        next.setDate(today.getDate() + 7);
+                        dispatch(
+                          addTrip({
+                            destination: selectedDestination.name,
+                            startDate:
+                              checkIn || today.toISOString().split("T")[0],
+                            endDate: next.toISOString().split("T")[0],
+                            description: `Trip to ${selectedDestination.name}${selectedDestination.subtitle ? ", " + selectedDestination.subtitle : ""}`,
+                          }),
+                        );
+                        navigate("/dashboard/trips");
+                      } else {
+                        navigate("/login");
+                      }
+                    }}
+                  >
+                    ✈️ Plan a Trip
+                  </button>
+                  <a
+                    href="#wander-dest-section"
+                    className="wander-selected-card-cta-secondary"
+                  >
+                    Explore destinations →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: decorative destination preview */}
+            <div className="wander-selected-card-right">
+              <div className="wander-selected-card-preview">
+                <div className="wander-selected-card-preview-bg" />
+                <div className="wander-selected-card-preview-content">
+                  <div className="wander-selected-card-preview-name">
+                    {selectedDestination.name}
+                  </div>
+                  <div className="wander-selected-card-preview-sub">
+                    {selectedDestination.typeLabel === "Country"
+                      ? `${selectedDestination.subtitle}`
+                      : selectedDestination.subtitle}
+                  </div>
+                </div>
+                {/* Decorative blobs */}
+                <div className="wander-selected-card-blob wander-selected-card-blob-1" />
+                <div className="wander-selected-card-blob wander-selected-card-blob-2" />
+                <div className="wander-selected-card-blob wander-selected-card-blob-3" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ═══ DESTINATIONS ═══ */}
       <section className="wander-section" id="wander-dest-section">
         <div className="wander-section-header">
@@ -676,107 +1150,103 @@ const Home = () => {
             <button className="wander-see-all">View all destinations →</button>
           </Link>
         </div>
-
-        {/* Editorial 4-card grid */}
-        <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
-          {editorialDests[0] ? (
-            <div
-              className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
-            >
-              <div className="wander-dest-card-img">
-                {editorialDests[0].images?.[0] ? (
-                  <img
-                    src={editorialDests[0].images[0]}
-                    alt={editorialDests[0].name}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <SceneSantorini />
-                )}
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">
-                    {editorialDests[0].name || "Santorini"}
-                  </div>
-                  <div className="wander-dest-country">
-                    {[editorialDests[0].city, editorialDests[0].state]
-                      .filter(Boolean)
-                      .join(", ") || "Greece"}{" "}
-                    •{" "}
-                    {editorialDests[0].entrance_fee_inr === 0
-                      ? "Free Entry"
-                      : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
+        {/* ── When user has typed/selected: show ONLY matched cards ── */}
+        {where.trim() ? (
+          filteredDestinations.length > 0 ? (
+            <div className="wander-dest-grid-search">
+              {filteredDestinations.map((dest, idx) => (
+                <div
+                  key={dest._id || idx}
+                  className="wander-dest-card wander-dest-card-search"
+                  onClick={() => handleAddTrip(dest)}
+                >
+                  <div className="wander-dest-card-img">
+                    {dest.images?.[0] ? (
+                      <img
+                        src={dest.images[0]}
+                        alt={dest.name}
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div
+                        className="wander-dest-card-color-bg"
+                        style={{
+                          background: `hsl(${(idx * 47 + 200) % 360},40%,22%)`,
+                          position: "absolute",
+                          inset: 0,
+                        }}
+                      />
+                    )}
+                    <div className="wander-dest-overlay" />
+                    {dest.category && (
+                      <div className="wander-dest-tag">{dest.category}</div>
+                    )}
+                    <div className="wander-dest-info">
+                      <div className="wander-dest-name">{dest.name}</div>
+                      <div className="wander-dest-country">
+                        {[dest.city, dest.state].filter(Boolean).join(", ") ||
+                          "Destination"}
+                        {dest.entrance_fee_inr != null && (
+                          <>
+                            {" "}
+                            •{" "}
+                            {dest.entrance_fee_inr === 0
+                              ? "Free Entry"
+                              : `₹${dest.entrance_fee_inr}`}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           ) : (
-            <div
-              className="wander-dest-card tall"
-              style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
-            >
-              <div className="wander-dest-card-img">
-                <SceneSantorini />
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">Santorini</div>
-                  <div className="wander-dest-country">
-                    Greece • From ₹1,20,000
-                  </div>
-                </div>
+            /* Zero results */
+            <div className="wander-no-results">
+              <div className="wander-no-results-icon">🌍</div>
+              <div className="wander-no-results-title">
+                No destinations found for "{where}"
               </div>
+              <div className="wander-no-results-hint">
+                Try searching for Bali, Paris, Goa or Dubai
+              </div>
+              <button
+                className="wander-btn-primary"
+                style={{
+                  marginTop: "1.5rem",
+                  fontSize: "0.85rem",
+                  padding: "0.7rem 1.8rem",
+                }}
+                onClick={() => setWhere("")}
+              >
+                Clear Search
+              </button>
             </div>
-          )}
-
-          {/* Small cards */}
-          {[
-            {
-              svgScene: <SceneAngkor />,
-              fallbackName: "Angkor Wat",
-              fallbackLoc: "Cambodia • From ₹65,000",
-              bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
-            },
-            {
-              svgScene: <SceneBali />,
-              fallbackName: "Ubud, Bali",
-              fallbackLoc: "Indonesia • From ₹55,000",
-              bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
-            },
-            {
-              svgScene: <SceneSahara />,
-              fallbackName: "Sahara Desert",
-              fallbackLoc: "Morocco • From ₹95,000",
-              bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
-            },
-          ].map((item, idx) => {
-            const dest = editorialDests[idx + 1];
-            return (
+          )
+        ) : (
+          /* ── Default editorial 4-card grid (no active search) ── */
+          <div className="wander-dest-grid">
+            {/* TALL card */}
+            {destinations[0] ? (
               <div
-                key={idx}
-                className="wander-dest-card"
-                style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
+                className="wander-dest-card tall"
+                onClick={() => handleAddTrip(destinations[0])}
               >
                 <div className="wander-dest-card-img">
-                  {dest?.images?.[0] ? (
+                  {destinations[0].images?.[0] ? (
                     <img
-                      src={dest.images[0]}
-                      alt={dest.name}
+                      src={destinations[0].images[0]}
+                      alt={destinations[0].name}
                       style={{
                         position: "absolute",
                         inset: 0,
@@ -789,27 +1259,116 @@ const Home = () => {
                       }}
                     />
                   ) : (
-                    item.svgScene
+                    <SceneSantorini />
                   )}
                   <div className="wander-dest-overlay" />
+                  <div className="wander-dest-tag">Trending</div>
                   <div className="wander-dest-info">
                     <div className="wander-dest-name">
-                      {dest?.name || item.fallbackName}
+                      {destinations[0].name || "Santorini"}
                     </div>
                     <div className="wander-dest-country">
-                      {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
-                        : item.fallbackLoc}
+                      {[destinations[0].city, destinations[0].state]
+                        .filter(Boolean)
+                        .join(", ") || "Greece"}{" "}
+                      •{" "}
+                      {destinations[0].entrance_fee_inr === 0
+                        ? "Free Entry"
+                        : destinations[0].entrance_fee_inr
+                          ? `₹${destinations[0].entrance_fee_inr}`
+                          : "Explore"}
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            ) : (
+              <div
+                className="wander-dest-card tall"
+                style={{
+                  background: "linear-gradient(135deg,#2D5986,#0F3A5C)",
+                }}
+              >
+                <div className="wander-dest-card-img">
+                  <SceneSantorini />
+                  <div className="wander-dest-overlay" />
+                  <div className="wander-dest-tag">Trending</div>
+                  <div className="wander-dest-info">
+                    <div className="wander-dest-name">Santorini</div>
+                    <div className="wander-dest-country">
+                      Greece • From ₹1,20,000
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Small cards */}
+            {[
+              {
+                svgScene: <SceneAngkor />,
+                fallbackName: "Angkor Wat",
+                fallbackLoc: "Cambodia • From ₹65,000",
+                bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
+              },
+              {
+                svgScene: <SceneBali />,
+                fallbackName: "Ubud, Bali",
+                fallbackLoc: "Indonesia • From ₹55,000",
+                bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
+              },
+              {
+                svgScene: <SceneSahara />,
+                fallbackName: "Sahara Desert",
+                fallbackLoc: "Morocco • From ₹95,000",
+                bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
+              },
+            ].map((item, idx) => {
+              const dest = destinations[idx + 1];
+              return (
+                <div
+                  key={idx}
+                  className="wander-dest-card"
+                  style={{ background: item.bg }}
+                  onClick={() => dest && handleAddTrip(dest)}
+                >
+                  <div className="wander-dest-card-img">
+                    {dest?.images?.[0] ? (
+                      <img
+                        src={dest.images[0]}
+                        alt={dest.name}
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      item.svgScene
+                    )}
+                    <div className="wander-dest-overlay" />
+                    <div className="wander-dest-info">
+                      <div className="wander-dest-name">
+                        {dest?.name || item.fallbackName}
+                      </div>
+                      <div className="wander-dest-country">
+                        {dest
+                          ? [dest.city, dest.state]
+                              .filter(Boolean)
+                              .join(", ") || item.fallbackLoc
+                          : item.fallbackLoc}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
-
       {/* ═══ FEATURES ═══ */}
       <section className="wander-features-section" id="wander-features">
         <div
