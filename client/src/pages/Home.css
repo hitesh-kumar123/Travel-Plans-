@@ -118,7 +118,7 @@ html {
 /* ═══ HERO ═══ */
 .wander-hero {
   min-height: 88vh;
-  background: linear-gradient(145deg, #0f2d40 0%, #1a4a6b 50%, #1e5a80 100%);
+  background: var(--bg-color);
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -135,11 +135,9 @@ html {
   right: -5%;
   width: 60%;
   height: 140%;
-  background: radial-gradient(
-    ellipse,
-    rgba(232, 115, 90, 0.12) 0%,
-    transparent 65%
-  );
+  background: radial-gradient(ellipse,
+      rgba(232, 115, 90, 0.12) 0%,
+      transparent 65%);
   pointer-events: none;
 }
 
@@ -168,6 +166,7 @@ html {
 }
 
 @keyframes wander-pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -489,11 +488,9 @@ html {
 .wander-dest-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 40%,
-    rgba(10, 25, 40, 0.85) 100%
-  );
+  background: linear-gradient(180deg,
+      transparent 40%,
+      rgba(10, 25, 40, 0.85) 100%);
 }
 
 .wander-dest-info {
@@ -717,11 +714,9 @@ html {
   top: -50%;
   width: 50%;
   height: 200%;
-  background: radial-gradient(
-    ellipse,
-    rgba(232, 115, 90, 0.2) 0%,
-    transparent 65%
-  );
+  background: radial-gradient(ellipse,
+      rgba(232, 115, 90, 0.2) 0%,
+      transparent 65%);
   pointer-events: none;
 }
 
@@ -1003,6 +998,7 @@ html {
     flex-direction: column;
     width: 100%;
   }
+
   .wander-btn-primary,
   .wander-btn-ghost {
     width: 100%;
@@ -1016,7 +1012,8 @@ html {
 .wander-page .wander-search-bar {
   display: flex !important;
   flex-direction: row !important;
-  grid-template-columns: none !important; /* Disables the broken grid grid structure */
+  grid-template-columns: none !important;
+  /* Disables the broken grid grid structure */
   align-items: center !important;
   justify-content: space-between !important;
   padding: 0 !important;
@@ -1098,12 +1095,15 @@ html {
   .wander-page .wander-search-bar {
     flex-wrap: wrap !important;
   }
+
   .wander-page .wander-sf {
     flex: 1 1 calc(50% - 1px) !important;
   }
+
   .wander-page .wander-sf:nth-child(2) {
     border-right: none !important;
   }
+
   .wander-page .wander-search-btn {
     flex: 1 1 100% !important;
     height: 56px !important;
@@ -1114,6 +1114,7 @@ html {
   .wander-page .wander-search-bar {
     flex-direction: column !important;
   }
+
   .wander-page .wander-sf {
     flex: 1 1 100% !important;
     width: 100% !important;
@@ -1121,6 +1122,7 @@ html {
     border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
     padding: 1.2rem 1.5rem !important;
   }
+
   .wander-page .wander-search-btn {
     height: 52px !important;
   }

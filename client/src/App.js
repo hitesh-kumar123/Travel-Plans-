@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import getTheme from "./theme";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,15 +23,37 @@ import { loadUser } from "./redux/actions/authActions";
 
 function App() {
   useEffect(() => {
+
     store.dispatch(loadUser());
   }, []);
+  const [mode, setMode] = useState("light");
+
+  const theme = useMemo(() => getTheme(mode), [mode]);
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-          <div className="App">
+
+          <div className={`App ${mode === "dark" ? "dark-mode" : ""}`}>
+            <button
+              onClick={() => setMode(mode === "light" ? "dark" : "light")}
+              style={{
+                position: "fixed",
+                top: "20px",
+                right: "200px",
+                zIndex: 9999,
+                padding: "10px 15px",
+                borderRadius: "10px",
+                border: "none",
+                cursor: "pointer",
+                background: mode === "dark" ? "#222" : "#fff",
+                color: mode === "dark" ? "#fff" : "#000",
+              }}
+            >
+              {mode === "light" ? "Dark Mode" : "Light Mode"}
+            </button>
             <Routes>
               <Route
                 path="/dashboard/*"

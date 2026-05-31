@@ -3,64 +3,116 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+/* ================= ROOT VARIABLES ================= */
+
+:root {
+  --bg-color: #f5f7fa;
+  --text-color: #2d3748;
+  --card-bg: #ffffff;
+  --primary-color: #3b82f6;
+  --primary-hover: #757de8;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c5c5c5;
+}
+
+/* ================= DARK MODE ================= */
+
+.dark-mode {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --card-bg: #1e1e1e;
+  --primary-color: #90caf9;
+  --primary-hover: #bbdefb;
+  --shadow-color: rgba(255, 255, 255, 0.08);
+  --scrollbar-track: #1f1f1f;
+  --scrollbar-thumb: #555;
+}
+
+/* ================= BODY ================= */
 
 body {
   margin: 0;
   padding: 0;
   font-family: "Poppins", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f7fa;
-  color: #2d3748;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
+
+/* ================= APP ================= */
+
+.App {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  text-align: center;
+}
+
+/* ================= LINKS ================= */
 
 a {
   text-decoration: none;
-  color: #3f51b5;
+  color: var(--primary-color);
+  transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #757de8;
+  color: var(--primary-hover);
 }
 
-/* Animation for page transitions */
+/* ================= PAGE TRANSITIONS ================= */
+
 .fade-enter {
   opacity: 0;
 }
+
 .fade-enter-active {
   opacity: 1;
   transition: opacity 300ms;
 }
+
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms;
 }
 
-/* Custom scrollbar */
+/* ================= SCROLLBAR ================= */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scrollbar-track);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c5c5c5;
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #888;
 }
 
-/* Utility classes */
+/* ================= UTILITY CLASSES ================= */
+
 .text-center {
   text-align: center;
 }
@@ -129,26 +181,75 @@ a:hover {
   padding: 16px;
 }
 
-/* Card hover effect */
+/* ================= CARDS ================= */
+
 .hover-card {
+  background: var(--card-bg);
   transition:
-    transform 0.3s ease-in-out,
-    box-shadow 0.3s ease-in-out;
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .hover-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px var(--shadow-color);
 }
 
-.App {
-  text-align: center;
-}
+/* ================= APP LOGO ================= */
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+
+/* ================= APP HEADER ================= */
+
+.App-header {
+  background-color: var(--card-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* ================= APP LINK ================= */
+
+.App-link {
+  color: var(--primary-color);
+}
+
+/* ================= BUTTONS ================= */
+
+button {
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ================= INPUTS ================= */
+
+input,
+textarea,
+select {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid #ccc;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* ================= ANIMATION ================= */
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -156,25 +257,11 @@ a:hover {
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
