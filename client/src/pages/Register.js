@@ -397,8 +397,9 @@ const Register = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
+        overflow: "hidden",
         backgroundColor: theme.palette.background.default,
       }}
     >
@@ -411,10 +412,8 @@ const Register = () => {
               "url(https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop)",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            position: "sticky",
-            top: 0,
+            position: "relative",
             height: "100vh",
-            alignSelf: "flex-start",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
@@ -452,153 +451,175 @@ const Register = () => {
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 4,
+          height: "100vh",
+          overflowY: "auto",
+          p: { xs: 3, sm: 4 },
+          backgroundColor: theme.palette.background.default,
         }}
       >
-        <Box sx={{ maxWidth: 480, width: "100%" }}>
-          <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
-            {/* Back to Home */}
-            <Box
-              sx={{
-                position: "absolute",
-                left: { xs: 0, sm: -20, md: -50, lg: -80 },
-                top: 0,
-              }}
-            >
-              <Link
-                component={RouterLink}
-                to="/"
-                variant="body2"
+        {/* Main form container centered in remaining space */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "fit-content", // Prevent content from compressing on short viewports
+          }}
+        >
+          <Box sx={{ maxWidth: 480, width: "100%", my: "auto" }}>
+            <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
+              {/* Back to Home */}
+              <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  backgroundColor: "background.paper",
-                  textDecoration: "none",
-                  transition: "0.2s ease",
-                  "&:hover": { backgroundColor: "action.hover" },
+                  position: "absolute",
+                  left: { xs: 0, sm: -20, md: -50, lg: -80 },
+                  top: 0,
                 }}
               >
-                <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
-              </Link>
-            </Box>
-
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-              Create Account
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Get started with your free account
-            </Typography>
-          </Box>
-
-          <Paper
-            elevation={isMobile ? 1 : 0}
-            sx={{
-              p: 4,
-              borderRadius: 4,
-              border: !isMobile ? "1px solid" : "none",
-              borderColor: "divider",
-            }}
-          >
-            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-
-            <form onSubmit={handleSubmit}>
-              <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
-
-              <Box sx={{ display: "flex", gap: 2 }}>
-                {activeStep > 0 && (
-                  <Button
-                    onClick={handleBack}
-                    startIcon={<ArrowBackIcon />}
-                    variant="outlined"
-                    sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
-                  >
-                    Back
-                  </Button>
-                )}
-                <PrimaryButton
-                  type="submit"
-                  disabled={isNextDisabled()}
-                  sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
-                  endIcon={
-                    activeStep === steps.length - 1 ? (
-                      <HowToRegIcon />
-                    ) : (
-                      <ArrowForwardIcon />
-                    )
-                  }
+                <Link
+                  component={RouterLink}
+                  to="/"
+                  variant="body2"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    backgroundColor: "background.paper",
+                    textDecoration: "none",
+                    transition: "0.2s ease",
+                    "&:hover": { backgroundColor: "action.hover" },
+                  }}
                 >
-                  {activeStep === steps.length - 1 ? "Create Account" : "Next"}
-                </PrimaryButton>
+                  <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
+                </Link>
               </Box>
 
-              {activeStep === 0 && (
-                <>
-                  <Divider sx={{ my: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      OR
-                    </Typography>
-                  </Divider>
+              <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
+                Create Account
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Get started with your free account
+              </Typography>
+            </Box>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <div id="google-signin-btn" />
+            <Paper
+              elevation={isMobile ? 1 : 0}
+              sx={{
+                p: 4,
+                borderRadius: 4,
+                border: !isMobile ? "1px solid" : "none",
+                borderColor: "divider",
+              }}
+            >
+              <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+
+              <form onSubmit={handleSubmit}>
+                <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  {activeStep > 0 && (
                     <Button
+                      onClick={handleBack}
+                      startIcon={<ArrowBackIcon />}
                       variant="outlined"
-                      startIcon={<FacebookIcon />}
-                      disabled
                       sx={{
+                        flex: 1,
+                        py: 1.5,
                         borderRadius: 2,
-                        py: 1,
-                        width: isMobile ? 280 : 360,
-                        color: "#4267B2",
-                        borderColor: "#4267B2",
-                        opacity: 0.5,
+                        fontWeight: 600,
                       }}
                     >
-                      Facebook
+                      Back
                     </Button>
-                  </Box>
-                </>
-              )}
-            </form>
-          </Paper>
+                  )}
+                  <PrimaryButton
+                    type="submit"
+                    disabled={isNextDisabled()}
+                    sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
+                    endIcon={
+                      activeStep === steps.length - 1 ? (
+                        <HowToRegIcon />
+                      ) : (
+                        <ArrowForwardIcon />
+                      )
+                    }
+                  >
+                    {activeStep === steps.length - 1
+                      ? "Create Account"
+                      : "Next"}
+                  </PrimaryButton>
+                </Box>
 
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="body2">
-              Already have an account?{" "}
-              <Link
-                component={RouterLink}
-                to="/login"
-                variant="subtitle2"
-                sx={{ fontWeight: 600 }}
-              >
-                Sign in
-              </Link>
-            </Typography>
+                {activeStep === 0 && (
+                  <>
+                    <Divider sx={{ my: 4 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        OR
+                      </Typography>
+                    </Divider>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <div id="google-signin-btn" />
+                      <Button
+                        variant="outlined"
+                        startIcon={<FacebookIcon />}
+                        disabled
+                        sx={{
+                          borderRadius: 2,
+                          py: 1,
+                          width: isMobile ? 280 : 360,
+                          color: "#4267B2",
+                          borderColor: "#4267B2",
+                          opacity: 0.5,
+                        }}
+                      >
+                        Facebook
+                      </Button>
+                    </Box>
+                  </>
+                )}
+              </form>
+            </Paper>
+
+            <Box sx={{ mt: 4, textAlign: "center" }}>
+              <Typography variant="body2">
+                Already have an account?{" "}
+                <Link
+                  component={RouterLink}
+                  to="/login"
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600 }}
+                >
+                  Sign in
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
-        <Box sx={{ mt: "auto", textAlign: "center", pt: 4 }}>
+        {/* Footer pinned cleanly at the bottom */}
+        <Box sx={{ mt: "auto", textAlign: "center", pt: 3, pb: 1 }}>
           <Typography variant="body2" color="text.secondary">
             © {new Date().getFullYear()} PackGo. All rights reserved.
           </Typography>
