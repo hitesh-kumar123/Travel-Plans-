@@ -289,14 +289,23 @@ const TripsView = () => {
                     border: "1px solid",
                     borderColor: "divider",
                     overflow: "hidden",
+                    aspectRatio: "1 / 1",
+                    display: "flex",
+                    flexDirection: "column",
                     transition: "transform 0.25s, box-shadow 0.25s",
                     "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
                   }}
                 >
                   <CardActionArea
                     onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                    }}
                   >
-                    <Box sx={{ position: "relative", pt: "55%" }}>
+                    <Box sx={{ position: "relative", flex: 1, minHeight: 0 }}>
                       <Box
                         component="img"
                         src={
@@ -326,8 +335,25 @@ const TripsView = () => {
                         />
                       </Box>
                     </Box>
-                    <CardContent sx={{ pb: "12px !important" }}>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        pb: "12px !important",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        gutterBottom
+                        sx={{
+                          overflow: "hidden",
+                          textOverFlow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {trip.destination}
                       </Typography>
                       <Box
