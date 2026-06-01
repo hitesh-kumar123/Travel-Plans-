@@ -37,5 +37,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
+export const getCurrencyRates = (base = "INR") =>
+  api.get(`/currency/rates?base=${base}`);
 export default api;
