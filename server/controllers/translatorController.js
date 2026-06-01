@@ -1,4 +1,4 @@
-const translate = require("google-translate-api-x");
+const { translate } = require("@vitalets/google-translate-api");
 
 // @desc    Translate text
 // @route   POST /api/translator/translate
