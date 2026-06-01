@@ -283,16 +283,27 @@ const TripsView = () => {
             return (
               <Grid xs={12} md={6} lg={4} key={trip._id}>
                 <Card
-                  elevation={0}
-                  sx={{
-                    borderRadius: 4,
-                    border: "1px solid",
-                    borderColor: "divider",
-                    overflow: "hidden",
-                    transition: "transform 0.25s, box-shadow 0.25s",
-                    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
-                  }}
-                >
+  elevation={0}
+  sx={{
+    borderRadius: 4,
+    border: "1px solid",
+    borderColor: "divider",
+    overflow: "hidden",
+
+    height: "100%",
+    aspectRatio: "1 / 1",
+
+    display: "flex",
+    flexDirection: "column",
+
+    transition: "transform 0.25s, box-shadow 0.25s",
+
+    "&:hover": {
+      transform: "translateY(-4px)",
+      boxShadow: 6
+    }
+  }}
+>
                   <CardActionArea
                     onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
                   >
@@ -327,9 +338,18 @@ const TripsView = () => {
                       </Box>
                     </Box>
                     <CardContent sx={{ pb: "12px !important" }}>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>
-                        {trip.destination}
-                      </Typography>
+                     <Typography
+  variant="h6"
+  fontWeight={700}
+  gutterBottom
+  sx={{
+  overflowWrap: "break-word",
+  wordBreak: "break-word",
+  whiteSpace: "normal"
+}}
+>
+  {trip.destination}
+</Typography>
                       <Box
                         sx={{
                           display: "flex",

@@ -125,7 +125,7 @@ html {
   padding: 4rem 3rem 4rem 4rem;
   gap: 3rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .wander-hero::before {
@@ -156,6 +156,7 @@ html {
   font-weight: 500;
   letter-spacing: 0.5px;
   margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 .wander-dot {
