@@ -24,6 +24,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
 import { toast } from "react-toastify";
+import { compressImagePipeline } from "../../utils/imageCompression";
 
 const ProfileView = () => {
   const dispatch = useDispatch();
@@ -396,6 +397,38 @@ const ProfileView = () => {
     }
   };
 
+  // Handle profile image picking, compression, and API upload
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const loadingToastId = toast.loading("Optimizing and uploading profile picture...");
+    try {
+      // 1. Process and compress image client-side to lightweight WebP format
+      const compressedFile = await compressImagePipeline(file, {
+        maxWidth: 512,
+        maxHeight: 512,
+        quality: 0.8
+      });
+
+      // 2. Prepare multipart form data payload
+      const formData = new FormData();
+      formData.append("avatar", compressedFile);
+
+      // 3. Send payload to the server backend endpoint
+      await api.put("/auth/profile/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
+      // 4. Reload user state context to update layout views globally
+      dispatch(loadUser());
+      toast.update(loadingToastId, { render: "Profile image updated!", type: "success", isLoading: false, autoClose: 3000 });
+    } catch (err) {
+      console.error("Avatar upload pipeline failed:", err);
+      toast.update(loadingToastId, { render: err.response?.data?.msg || "Failed to upload image", type: "error", isLoading: false, autoClose: 3000 });
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" fontWeight={700} mb={0.5}>
@@ -418,19 +451,46 @@ const ProfileView = () => {
               textAlign: "center",
             }}
           >
-            <Avatar
-              sx={{
-                width: 100,
-                height: 100,
-                mx: "auto",
-                mb: 2,
-                background: "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
-                fontSize: 36,
-                fontWeight: 700,
-              }}
-            >
-              {user?.name?.[0]?.toUpperCase() || "U"}
-            </Avatar>
+            <Box sx={{ position: "relative", width: 100, height: 100, mx: "auto", mb: 2 }}>
+              <Avatar
+                src={user?.avatar}
+                alt={user?.name}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  background: "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
+                  fontSize: 36,
+                  fontWeight: 700,
+                }}
+              >
+                {!user?.avatar && (user?.name?.[0]?.toUpperCase() || "U")}
+              </Avatar>
+              <Button
+                component="label"
+                variant="contained"
+                size="small"
+                sx={{
+                  position: "absolute",
+                  bottom: -4,
+                  right: -4,
+                  minWidth: 32,
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  p: 0,
+                  background: "#1976D2",
+                  "&:hover": { background: "#115293" }
+                }}
+              >
+                📸
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleAvatarChange}
+                />
+              </Button>
+            </Box>
             <Typography variant="h6" fontWeight={700}>
               {user?.name || "Traveler"}
             </Typography>
