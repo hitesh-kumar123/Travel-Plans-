@@ -21,7 +21,7 @@ export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get("/auth/profile");
 
-    console.log("loadUser response:",res);
+    console.log("loadUser response:", res);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -75,32 +75,33 @@ export const register = (userData, navigate) => async (dispatch) => {
 };
 
 //  for google login
-export const googleLogin = (CredentialResponse, navigate) => async (dispatch ) =>{
-  try{
-    dispatch({type: "AUTH_START"});
-    const res  = await api.post("/auth/google",{
-      credential: CredentialResponse.credential,
-    });
- 
-    dispatch({
-      type: "AUTH_SUCESS",
-      payload: res.data,
-    });
-    
-     // Set token to local storage
-     localStorage.setItem("token", res.data.token);
+export const googleLogin =
+  (CredentialResponse, navigate) => async (dispatch) => {
+    try {
+      dispatch({ type: "AUTH_START" });
+      const res = await api.post("/auth/google", {
+        credential: CredentialResponse.credential,
+      });
 
-     dispatch(loadUser());
-     toast.success("Welcome back! 🎉");
+      dispatch({
+        type: "AUTH_SUCESS",
+        payload: res.data,
+      });
 
-    navigate("/dashboard");
-  }catch(e){
-    dispatch({
-      type:"AUTH_FAIL",
-      payload: e.rensponse?.data?.message || e.message,
-    });
-  }
-};
+      // Set token to local storage
+      localStorage.setItem("token", res.data.token);
+
+      dispatch(loadUser());
+      toast.success("Welcome back! 🎉");
+
+      navigate("/dashboard");
+    } catch (e) {
+      dispatch({
+        type: "AUTH_FAIL",
+        payload: e.rensponse?.data?.message || e.message,
+      });
+    }
+  };
 
 // Logout User
 export const logout = () => (dispatch) => {

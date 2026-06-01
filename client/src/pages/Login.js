@@ -118,9 +118,9 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = (CredentialResponse) =>{
-    dispatch(googleLogin(CredentialResponse,navigate));
-  }
+  const handleGoogleSuccess = (CredentialResponse) => {
+    dispatch(googleLogin(CredentialResponse, navigate));
+  };
 
   return (
     <Box
@@ -334,8 +334,7 @@ const Login = () => {
                 }}
               >
                 <Box sx={{ display: "flex", gap: 2 }}>
-                <GoogleLogin
-
+                  <GoogleLogin
                     theme="outlined"
                     width={isMobile ? 360 : 500}
                     shape="pill"
@@ -344,22 +343,21 @@ const Login = () => {
                     sx={{
                       borderRadius: 2,
                       py: 1,
-                      
+
                       color: "#3f51b5",
                       borderColor: "#3f51b5",
-                      '&:hover':{
-                        backgroundColor:'rgba(66,133,244,0.08)',
-                        borderColor:'#3f51b5',
+                      "&:hover": {
+                        backgroundColor: "rgba(66,133,244,0.08)",
+                        borderColor: "#3f51b5",
                       },
-                      '&:active':{
-                        backgroundColor:'#3f51b5',
-                        color:'#fff',
-                        transform:'scale(0.98)'
+                      "&:active": {
+                        backgroundColor: "#3f51b5",
+                        color: "#fff",
+                        transform: "scale(0.98)",
                       },
                     }}
-
                     onSuccess={handleGoogleSuccess}
-                    onError={()=>console.log("Google Login failed")}
+                    onError={() => console.log("Google Login failed")}
                     useOneTap
                   />
                 </Box>

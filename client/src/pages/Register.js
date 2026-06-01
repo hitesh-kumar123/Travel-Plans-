@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register,googleLogin } from "../redux/actions/authActions";
+import { register, googleLogin } from "../redux/actions/authActions";
 import { GoogleLogin } from "@react-oauth/google";
 import {
   Box,
@@ -60,7 +60,6 @@ const Register = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
-
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];
 
@@ -145,9 +144,9 @@ const Register = () => {
     }
   };
 
-  const handleGoogleSuccess = (CredentialResponse) =>{
-    dispatch(googleLogin(CredentialResponse,navigate));
-  }
+  const handleGoogleSuccess = (CredentialResponse) => {
+    dispatch(googleLogin(CredentialResponse, navigate));
+  };
 
   const isNextDisabled = () => {
     if (activeStep === 0) {
@@ -513,37 +512,34 @@ const Register = () => {
                       gap: 2,
                     }}
                   >
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <GoogleLogin
+                        theme="outlined"
+                        width={isMobile ? 360 : 500}
+                        shape="pill"
+                        text="continue_with"
+                        size="large"
+                        sx={{
+                          borderRadius: 2,
+                          py: 1,
 
-<Box sx={{ display: "flex", gap: 2 }}>
-                <GoogleLogin
-
-                    theme="outlined"
-                    width={isMobile ? 360 : 500}
-                    shape="pill"
-                    text="continue_with"
-                    size="large"
-                    sx={{
-                      borderRadius: 2,
-                      py: 1,
-                      
-                      color: "#3f51b5",
-                      borderColor: "#3f51b5",
-                      '&:hover':{
-                        backgroundColor:'rgba(66,133,244,0.08)',
-                        borderColor:'#3f51b5',
-                      },
-                      '&:active':{
-                        backgroundColor:'#3f51b5',
-                        color:'#fff',
-                        transform:'scale(0.98)'
-                      },
-                    }}
-
-                    onSuccess={handleGoogleSuccess}
-                    onError={()=>console.log("Google Login failed")}
-                    useOneTap
-                  />
-                </Box>
+                          color: "#3f51b5",
+                          borderColor: "#3f51b5",
+                          "&:hover": {
+                            backgroundColor: "rgba(66,133,244,0.08)",
+                            borderColor: "#3f51b5",
+                          },
+                          "&:active": {
+                            backgroundColor: "#3f51b5",
+                            color: "#fff",
+                            transform: "scale(0.98)",
+                          },
+                        }}
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.log("Google Login failed")}
+                        useOneTap
+                      />
+                    </Box>
                   </Box>
                 </>
               )}
