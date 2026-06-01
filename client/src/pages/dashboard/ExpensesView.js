@@ -32,7 +32,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import WarningIcon from "@mui/icons-material/Warning";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -40,6 +39,7 @@ import {
   Pie,
   Cell,
   Tooltip as ReTooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -83,11 +83,21 @@ const CURRENCY_SYMBOLS = {
   AUD: "A$",
 };
 
+const CHART_COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#a855f7",
+  "#f56565",
+];
+
 const ExpensesView = () => {
   const dispatch = useDispatch();
 
-  const { expenses, expenseSummary, loading, exchangeRates, baseCurrency } =
-    useSelector((state) => state.expenses);
+  const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
+    (state) => state.expenses,
+  );
   const { trips } = useSelector((state) => state.trips);
 
   const [activeTripId, setActiveTripId] = useState("");
