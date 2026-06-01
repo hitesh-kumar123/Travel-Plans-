@@ -1,17 +1,9 @@
 import React, { useState } from "react";
-import {
-  IconButton,
-  Tooltip,
-  Box,
-  TextField,
-  Typography,
-  Paper,
-  InputAdornment,
-} from "@mui/material";
+import { IconButton, Tooltip, Box, TextField, Typography, Paper, InputAdornment } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -21,7 +13,7 @@ const Login = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
   };
