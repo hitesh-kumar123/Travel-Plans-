@@ -50,7 +50,7 @@ function App() {
               <Route path="/register" element={<Register />} />
 
               {/* ✅ Contact Route Added */}
-              <Route path="/Contact" element={<Contact />} />
+              <Route path="/contact" element={<Contact />} />
 
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
