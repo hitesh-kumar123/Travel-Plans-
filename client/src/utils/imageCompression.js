@@ -1,7 +1,7 @@
 /**
  * Compresses an image file on the client-side using HTML5 Canvas
  * downscaling to reduce network payload and server storage overhead.
- * 
+ *
  * @param {File} file - The original image file input object.
  * @param {Object} options - Optional configuration flags.
  * @returns {Promise<File>} A resolved promise returning the optimized WebP image file.
@@ -13,7 +13,7 @@ export const compressImagePipeline = (file, options = {}) => {
 
   return new Promise((resolve, reject) => {
     // If it's not an image format, bypass compression safely
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith("image/")) {
       return resolve(file);
     }
 
@@ -42,28 +42,32 @@ export const compressImagePipeline = (file, options = {}) => {
         }
 
         // Initialize high-performance offscreen rendering canvas context
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
 
         // Export to progressive webp format chunk array
         canvas.toBlob(
           (blob) => {
             if (!blob) {
-              return reject(new Error('Canvas rasterization pipeline failed'));
+              return reject(new Error("Canvas rasterization pipeline failed"));
             }
             // Construct replacement optimized file wrapper object
-            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", {
-              type: 'image/webp',
-              lastModified: Date.now(),
-            });
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, "") + ".webp",
+              {
+                type: "image/webp",
+                lastModified: Date.now(),
+              },
+            );
             resolve(compressedFile);
           },
-          'image/webp',
-          quality
+          "image/webp",
+          quality,
         );
       };
 

@@ -402,13 +402,15 @@ const ProfileView = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const loadingToastId = toast.loading("Optimizing and uploading profile picture...");
+    const loadingToastId = toast.loading(
+      "Optimizing and uploading profile picture...",
+    );
     try {
       // 1. Process and compress image client-side to lightweight WebP format
       const compressedFile = await compressImagePipeline(file, {
         maxWidth: 512,
         maxHeight: 512,
-        quality: 0.8
+        quality: 0.8,
       });
 
       // 2. Prepare multipart form data payload
@@ -417,15 +419,25 @@ const ProfileView = () => {
 
       // 3. Send payload to the server backend endpoint
       await api.put("/auth/profile/avatar", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       // 4. Reload user state context to update layout views globally
       dispatch(loadUser());
-      toast.update(loadingToastId, { render: "Profile image updated!", type: "success", isLoading: false, autoClose: 3000 });
+      toast.update(loadingToastId, {
+        render: "Profile image updated!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } catch (err) {
       console.error("Avatar upload pipeline failed:", err);
-      toast.update(loadingToastId, { render: err.response?.data?.msg || "Failed to upload image", type: "error", isLoading: false, autoClose: 3000 });
+      toast.update(loadingToastId, {
+        render: err.response?.data?.msg || "Failed to upload image",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
@@ -451,14 +463,23 @@ const ProfileView = () => {
               textAlign: "center",
             }}
           >
-            <Box sx={{ position: "relative", width: 100, height: 100, mx: "auto", mb: 2 }}>
+            <Box
+              sx={{
+                position: "relative",
+                width: 100,
+                height: 100,
+                mx: "auto",
+                mb: 2,
+              }}
+            >
               <Avatar
                 src={user?.avatar}
                 alt={user?.name}
                 sx={{
                   width: 100,
                   height: 100,
-                  background: "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
+                  background:
+                    "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
                   fontSize: 36,
                   fontWeight: 700,
                 }}
@@ -479,7 +500,7 @@ const ProfileView = () => {
                   borderRadius: "50%",
                   p: 0,
                   background: "#1976D2",
-                  "&:hover": { background: "#115293" }
+                  "&:hover": { background: "#115293" },
                 }}
               >
                 📸
