@@ -41,6 +41,7 @@
 - [🎨 Design Highlights](#-design-highlights)
 - [🔮 Future Enhancements](#-future-enhancements)
 - [🤝 Contributing](#-contributing)
+- [🌟 Contributors](#-contributors)
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
@@ -559,6 +560,33 @@ git push origin feature/your-amazing-feature
 ```
 
 > **Good First Issues** are labelled [`good first issue`](../../issues?q=label%3A%22good+first+issue%22) — a great place to start! 🌱
+
+---
+
+## 🌟 Contributors
+
+<div align="center">
+
+Thanks to these amazing people who have contributed to **PackGo** ✨
+
+[![Contributors](https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-)](https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors)
+
+</div>
+
+---
+
+## 📊 Project Support
+
+<div align="center">
+
+[![GitHub Stars](https://img.shields.io/github/stars/hitesh-kumar123/Travel-Plans-?style=for-the-badge&logo=github&label=Stars&color=yellow)](https://github.com/hitesh-kumar123/Travel-Plans-/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/hitesh-kumar123/Travel-Plans-?style=for-the-badge&logo=github&label=Forks&color=blue)](https://github.com/hitesh-kumar123/Travel-Plans-/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/hitesh-kumar123/Travel-Plans-?style=for-the-badge&logo=github&label=Issues&color=red)](https://github.com/hitesh-kumar123/Travel-Plans-/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/hitesh-kumar123/Travel-Plans-?style=for-the-badge&logo=github&label=PRs&color=brightgreen)](https://github.com/hitesh-kumar123/Travel-Plans-/pulls)
+
+⭐ **Star this repo to show your support and help others discover PackGo!** ⭐
+
+</div>
 
 ---
 
