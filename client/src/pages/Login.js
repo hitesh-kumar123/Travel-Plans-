@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IconButton,
   Tooltip,
@@ -13,97 +13,67 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-const Login = ({ handleSubmit, handleChange, formData, errors, showPassword, toggleShowPassword, isMobile }) => {
+const Login = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors] = useState({});
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const toggleShowPassword = () => setShowPassword(!showPassword);
+
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex" }}>
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 4,
-        }}
-      >
-        <Paper elevation={1} sx={{ p: 4, borderRadius: 4, width: "100%", maxWidth: 480 }}>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Email Address"
-              name="email"
-              value={formData?.email || ""}
-              onChange={handleChange}
-              error={!!errors?.email}
-              helperText={errors?.email}
-            />
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData?.password || ""}
-              onChange={handleChange}
-              error={!!errors?.password}
-              helperText={errors?.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={toggleShowPassword}>
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}>
-              <Tooltip title="Facebook login is currently unavailable" arrow>
-                <span>
-                  <IconButton
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      p: 1.5,
-                      color: "#4267B2",
-                      opacity: 0.5,
-                      cursor: "not-allowed",
-                      pointerEvents: "auto",
-                    }}
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <FacebookIcon />
+    <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", p: 4 }}>
+      <Paper elevation={1} sx={{ p: 4, borderRadius: 4, width: "100%", maxWidth: 480 }}>
+        <Box sx={{ textAlign: "center", mb: 3 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>Welcome Back</Typography>
+        </Box>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            margin="normal" fullWidth label="Email Address" name="email"
+            value={formData.email} onChange={handleChange}
+          />
+          <TextField
+            margin="normal" fullWidth label="Password" name="password"
+            type={showPassword ? "text" : "password"}
+            value={formData.password} onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleShowPassword} edge="end">
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </IconButton>
-                </span>
-              </Tooltip>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-              <Tooltip title="Twitter login is currently unavailable" arrow>
-                <span>
-                  <IconButton
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      p: 1.5,
-                      color: "#1DA1F2",
-                      opacity: 0.5,
-                      cursor: "not-allowed",
-                      pointerEvents: "auto",
-                    }}
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <TwitterIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-          </form>
-        </Paper>
-      </Box>
+          <Box sx={{ display: "flex", gap: 2, mt: 3, justifyContent: "center" }}>
+            <Tooltip title="Facebook login is currently unavailable" arrow>
+              <span>
+                <IconButton sx={{ border: "1px solid", borderRadius: 2, p: 1.5, color: "#4267B2", opacity: 0.5, pointerEvents: "auto" }}>
+                  <FacebookIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title="Twitter login is currently unavailable" arrow>
+              <span>
+                <IconButton sx={{ border: "1px solid", borderRadius: 2, p: 1.5, color: "#1DA1F2", opacity: 0.5, pointerEvents: "auto" }}>
+                  <TwitterIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Box>
+        </form>
+      </Paper>
     </Box>
   );
 };
+
 export default Login;
