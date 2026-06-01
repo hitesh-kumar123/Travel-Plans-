@@ -23,6 +23,25 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
 import PrimaryButton from "../components/PrimaryButton";
 
+// GSSOC FIX: Array of Carousel Images & Content
+const CAROUSEL_SLIDES = [
+  {
+    image: "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop",
+    title: "PackGo",
+    description: "Your ultimate companion for discovering and planning your dream adventures",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1887&auto=format&fit=crop",
+    title: "Explore the World",
+    description: "Track your budgets, check real-time weather details, and map out routes seamlessly",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1887&auto=format&fit=crop",
+    title: "Share Memories",
+    description: "Organize bookings and create curated trip itineraries in one single intuitive dashboard",
+  }
+];
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -34,6 +53,9 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  // GSSOC FIX: State to manage the active slide index
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,10 +69,18 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // GSSOC FIX: Set up automatic slide rotation (Interval clears on unmount to avoid memory leaks)
+  useEffect(() => {
+    if (isMobile) return; // Don't run intervals if banner hidden on mobile
+    
+    const interval = setInterval(() => {
+      setActiveSlide((prevIndex) => (prevIndex + 1) % CAROUSEL_SLIDES.length);
+    }, 5000); // Rotates every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [isMobile]);
+
   const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
     console.log("Google callback received", response);
   };
 
@@ -170,12 +200,12 @@ const Login = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
+      {/* GSSOC FIX: Animated Carousel Container Section */}
       {!isMobile && (
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
+            backgroundImage: `url(${CAROUSEL_SLIDES[activeSlide].image})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "sticky",
@@ -185,6 +215,7 @@ const Login = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
+            transition: "background-image 0.6s ease-in-out", // Smooth transition effect
           }}
         >
           <Box
@@ -198,18 +229,40 @@ const Login = () => {
               backdropFilter: "blur(2px)",
             }}
           />
+          
+          {/* Main Typography content synced with Active State */}
           <Box sx={{ position: "relative", p: 6, color: "white" }}>
             <Typography
               variant="h3"
               component="h1"
               sx={{ fontWeight: 700, mb: 2 }}
             >
-              PackGo
+              {CAROUSEL_SLIDES[activeSlide].title}
             </Typography>
             <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Your ultimate companion for discovering and planning your dream
-              adventures
+              {CAROUSEL_SLIDES[activeSlide].description}
             </Typography>
+
+            {/* GSSOC FIX: Clickable Navigation Carousel Dots */}
+            <Box sx={{ display: "flex", gap: 1.5, mt: 2 }}>
+              {CAROUSEL_SLIDES.map((_, index) => (
+                <Box
+                  key={index}
+                  onClick={() => setActiveSlide(index)}
+                  sx={{
+                    width: index === activeSlide ? 24 : 10, // Active dot stretches wide
+                    height: 10,
+                    borderRadius: "5px",
+                    backgroundColor: index === activeSlide ? "primary.main" : "rgba(255, 255, 255, 0.5)",
+                    cursor: "pointer",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    "&:hover": {
+                      backgroundColor: index === activeSlide ? "primary.main" : "white",
+                    },
+                  }}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
       )}

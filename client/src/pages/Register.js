@@ -29,8 +29,28 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PrimaryButton from "../components/PrimaryButton";
 
+// Carousel slides config matching the onboarding/travel theme
+const CAROUSEL_SLIDES = [
+  {
+    image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop",
+    title: "Join PackGo",
+    description: "Create an account to start planning your next adventure.",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop",
+    title: "Track Budgets",
+    description: "Keep your expenses in check and spend wisely with your companions.",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop",
+    title: "Explore Together",
+    description: "Collaborate in real-time and orchestrate the ultimate itinerary.",
+  },
+];
+
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0); // Carousel State
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -55,6 +75,15 @@ const Register = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Carousel Autoplay Effect
+  useEffect(() => {
+    if (isMobile) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isMobile]);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
@@ -62,14 +91,10 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
     console.log("Google callback received", response);
   };
 
   useEffect(() => {
-    // Only initialize Google Sign-In if activeStep is 0 (Personal Information / first step)
     if (activeStep !== 0) return;
 
     const initializeGoogleSignIn = () => {
@@ -96,7 +121,7 @@ const Register = () => {
     initializeGoogleSignIn();
 
     const script = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]',
+      'script[src="https://accounts.google.com/gsi/client"]'
     );
     if (script) {
       script.addEventListener("load", initializeGoogleSignIn);
@@ -131,7 +156,7 @@ const Register = () => {
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-          value,
+          value
         )
       ) {
         newErrors.email = "Please enter a valid email address";
@@ -181,7 +206,7 @@ const Register = () => {
       const payload = {
         name: `${formData.firstName.trim()} ${formData.lastName.trim()}`.replace(
           /\s+/g,
-          " ",
+          " "
         ),
         email: formData.email,
         password: formData.password,
@@ -321,7 +346,7 @@ const Register = () => {
             />
             <FormControlLabel
               sx={{
-                alignItems: "flex-start", // Shifts the alignment anchor to the top line
+                alignItems: "flex-start",
                 mt: 1.5,
               }}
               control={
@@ -402,15 +427,11 @@ const Register = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {/* Left side with image - shown only on desktop */}
+      {/* Left side with Carousel - shown only on desktop */}
       {!isMobile && (
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
             position: "sticky",
             top: 0,
             height: "100vh",
@@ -418,30 +439,83 @@ const Register = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
+            overflow: "hidden",
           }}
         >
+          {CAROUSEL_SLIDES.map((slide, index) => (
+            <Box
+              key={index}
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url(${slide.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                transition: "opacity 1s ease-in-out",
+                opacity: currentSlide === index ? 1 : 0,
+                zIndex: currentSlide === index ? 1 : 0,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+              }}
+            >
+              {/* Overlay inside slide structure */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.4)",
+                  backdropFilter: "blur(2px)",
+                }}
+              />
+              <Box sx={{ position: "relative", p: 6, color: "white", zIndex: 2 }}>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  sx={{ fontWeight: 700, mb: 2 }}
+                >
+                  {slide.title}
+                </Typography>
+                <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
+                  {slide.description}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+
+          {/* Navigation Dots Container */}
           <Box
             sx={{
               position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              backdropFilter: "blur(2px)",
+              bottom: 40,
+              left: 48,
+              display: "flex",
+              gap: 1.5,
+              zIndex: 10,
             }}
-          />
-          <Box sx={{ position: "relative", p: 6, color: "white" }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
-            >
-              Join PackGo
-            </Typography>
-            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Create an account to start planning your next adventure
-            </Typography>
+          >
+            {CAROUSEL_SLIDES.map((_, index) => (
+              <Box
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                sx={{
+                  width: currentSlide === index ? 24 : 10,
+                  height: 10,
+                  borderRadius: "5px",
+                  backgroundColor: "white",
+                  opacity: currentSlide === index ? 1 : 0.5,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  "&:hover": { opacity: 1 },
+                }}
+              />
+            ))}
           </Box>
         </Box>
       )}
