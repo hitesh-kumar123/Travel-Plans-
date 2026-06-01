@@ -122,7 +122,7 @@ html {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  padding: 4rem 3rem 4rem 4rem;
+  padding: 7rem 3rem 4rem 4rem; /* FIX: Increased top padding from 4rem to 7rem to prevent badge overlap */
   gap: 3rem;
   position: relative;
   overflow: hidden;
@@ -328,7 +328,7 @@ html {
 /* ═══ SEARCH BAR ═══ */
 .wander-search-section {
   padding: 0 3rem;
-  margin-top: -2.5rem;
+  margin-top: 2rem;
   position: relative;
   z-index: 10;
 }
@@ -364,7 +364,7 @@ html {
 }
 
 .wander-sf-val.placeholder {
-  color: #bdc8d0;
+  color: #6b8fa3; /* FIX: Darkened from #bdc8d0 */
   font-weight: 400;
 }
 
@@ -380,7 +380,7 @@ html {
 }
 
 .wander-sf input::placeholder {
-  color: #bdc8d0;
+  color: #6b8fa3; /* FIX: Darkened from #bdc8d0 */
   font-weight: 400;
 }
 
@@ -1024,6 +1024,7 @@ html {
   border-radius: 16px !important;
   overflow: hidden !important;
   width: 100% !important;
+  border: 1px solid rgba(26, 74, 107, 0.25) !important;
 }
 
 /* 2. Structured Box Adjustments for Inner Fields */
@@ -1035,7 +1036,7 @@ html {
   justify-content: center !important;
   padding: 1rem 1.75rem !important;
   height: 84px !important;
-  border-right: 1px solid rgba(26, 74, 107, 0.12) !important;
+  border-right: 1px solid rgba(26, 74, 107, 0.25) !important;
   border-bottom: none !important;
 }
 
@@ -1044,7 +1045,7 @@ html {
   font-size: 0.75rem !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
-  color: #8bafc4 !important;
+  color: #4a6b7c !important; /* FIX: Darkened from #8bafc4 to improve contrast */
   letter-spacing: 0.8px !important;
   margin-bottom: 0.3rem !important;
 }
@@ -1092,7 +1093,7 @@ html {
   gap: 0.5rem !important;
 }
 
-/*  Viewport Breakpoints (Responsive Fixing Layouts) */
+/* Viewport Breakpoints (Responsive Fixing Layouts) */
 
 @media (max-width: 1024px) {
   .wander-page .wander-search-bar {
