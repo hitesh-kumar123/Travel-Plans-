@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -45,6 +46,7 @@ import {
 import {
   getExpenses,
   addExpense,
+  updateExpense,
   deleteExpense,
   getExpenseSummary,
 } from "../../redux/actions/expenseActions";
@@ -79,6 +81,7 @@ const ExpensesView = () => {
   const [amountError, setAmountError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -150,6 +153,21 @@ const ExpensesView = () => {
     }
   };
 
+  const handleEditClick = (expense) => {
+    setEditingExpenseId(expense._id);
+    setForm({
+      amount: expense.amount.toString(),
+      category: expense.category,
+      description: expense.description || "",
+      date: expense.date
+        ? new Date(expense.date).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      currency: expense.currency || "INR",
+    });
+    setAmountError("");
+    setOpen(true);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
@@ -160,14 +178,25 @@ const ExpensesView = () => {
     }
     if (!activeTripId) return;
 
-    dispatch(
-      addExpense({
-        ...form,
-        trip: activeTripId,
-        amount: parsed,
-      }),
-    );
+    if (editingExpenseId) {
+      dispatch(
+        updateExpense(editingExpenseId, {
+          ...form,
+          amount: parsed,
+        }),
+      );
+    } else {
+      dispatch(
+        addExpense({
+          ...form,
+          trip: activeTripId,
+          amount: parsed,
+        }),
+      );
+    }
+
     setOpen(false);
+    setEditingExpenseId(null);
     setForm({
       amount: "",
       category: "Food",
@@ -184,6 +213,7 @@ const ExpensesView = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setEditingExpenseId(null);
     setAmountError("");
     setForm({
       amount: "",
@@ -227,9 +257,12 @@ const ExpensesView = () => {
     URL.revokeObjectURL(url);
   };
 
+  const editingExpense = expenses?.find((e) => e._id === editingExpenseId);
+  const oldAmount = editingExpense ? editingExpense.amount : 0;
   const dialogAmount = parseFloat(form.amount) || 0;
-  const isOverBudgetDialog = budget > 0 && totalSpent + dialogAmount > budget;
-  const overBudgetBy = totalSpent + dialogAmount - budget;
+  const isOverBudgetDialog =
+    budget > 0 && totalSpent - oldAmount + dialogAmount > budget;
+  const overBudgetBy = totalSpent - oldAmount + dialogAmount - budget;
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, margin: "0 auto" }}>
@@ -774,6 +807,23 @@ const ExpensesView = () => {
                           ₹{expense.amount.toLocaleString()}
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
+                          <Tooltip title="Edit Expense">
+                            <IconButton
+                              size="small"
+                              sx={{
+                                color: "primary.main",
+                                bgcolor: "rgba(63, 81, 181, 0.05)",
+                                "&:hover": {
+                                  bgcolor: "rgba(63, 81, 181, 0.15)",
+                                },
+                                borderRadius: 2,
+                                mr: 1,
+                              }}
+                              onClick={() => handleEditClick(expense)}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
                           <Tooltip title="Delete Expense">
                             <IconButton
                               size="small"
@@ -1033,7 +1083,9 @@ const ExpensesView = () => {
             color: "text.primary",
           }}
         >
-          📝 Add Transaction Record
+          {editingExpenseId
+            ? "📝 Edit Transaction Record"
+            : "📝 Add Transaction Record"}
         </DialogTitle>
         <DialogContent>
           <Box

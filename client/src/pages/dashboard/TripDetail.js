@@ -49,6 +49,7 @@ import {
 import {
   getExpenses,
   addExpense,
+  updateExpense,
   deleteExpense,
 } from "../../redux/actions/expenseActions";
 
@@ -84,6 +85,8 @@ const TripDetail = () => {
   const [shareLink, setShareLink] = useState("");
   const [shareLoading, setShareLoading] = useState(false);
   const [budgetOpen, setBudgetOpen] = useState(false);
+  const [isEditingExpense, setIsEditingExpense] = useState(false);
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -148,14 +151,25 @@ const TripDetail = () => {
 
   const handleAddExpense = (e) => {
     e.preventDefault();
-    dispatch(
-      addExpense({
-        ...expenseForm,
-        trip: id,
-        amount: parseFloat(expenseForm.amount),
-      }),
-    );
+    if (isEditingExpense) {
+      dispatch(
+        updateExpense(editingExpenseId, {
+          ...expenseForm,
+          amount: parseFloat(expenseForm.amount),
+        }),
+      );
+    } else {
+      dispatch(
+        addExpense({
+          ...expenseForm,
+          trip: id,
+          amount: parseFloat(expenseForm.amount),
+        }),
+      );
+    }
     setExpenseOpen(false);
+    setIsEditingExpense(false);
+    setEditingExpenseId(null);
     setExpenseForm({
       amount: "",
       category: "Food",
@@ -163,6 +177,21 @@ const TripDetail = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+  };
+
+  const handleEditExpenseClick = (expense) => {
+    setIsEditingExpense(true);
+    setEditingExpenseId(expense._id);
+    setExpenseForm({
+      amount: expense.amount.toString(),
+      category: expense.category,
+      description: expense.description || "",
+      date: expense.date
+        ? new Date(expense.date).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      currency: expense.currency || "INR",
+    });
+    setExpenseOpen(true);
   };
 
   const handleEditTrip = (e) => {
@@ -600,7 +629,18 @@ const TripDetail = () => {
                 size="small"
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setExpenseOpen(true)}
+                onClick={() => {
+                  setIsEditingExpense(false);
+                  setEditingExpenseId(null);
+                  setExpenseForm({
+                    amount: "",
+                    category: "Food",
+                    description: "",
+                    date: new Date().toISOString().split("T")[0],
+                    currency: "INR",
+                  });
+                  setExpenseOpen(true);
+                }}
               >
                 Add
               </Button>
@@ -644,7 +684,15 @@ const TripDetail = () => {
                         <TableCell align="right" sx={{ fontWeight: 600 }}>
                           {e.amount.toLocaleString()}
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleEditExpenseClick(e)}
+                            sx={{ mr: 0.5 }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
                           <IconButton
                             size="small"
                             color="error"
@@ -716,11 +764,17 @@ const TripDetail = () => {
       {/* Add Expense Dialog */}
       <Dialog
         open={expenseOpen}
-        onClose={() => setExpenseOpen(false)}
+        onClose={() => {
+          setExpenseOpen(false);
+          setIsEditingExpense(false);
+          setEditingExpenseId(null);
+        }}
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add Expense</DialogTitle>
+        <DialogTitle>
+          {isEditingExpense ? "Edit Expense" : "Add Expense"}
+        </DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -793,7 +847,15 @@ const TripDetail = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setExpenseOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setExpenseOpen(false);
+              setIsEditingExpense(false);
+              setEditingExpenseId(null);
+            }}
+          >
+            Cancel
+          </Button>
           <Button onClick={handleAddExpense} variant="contained">
             Save Expense
           </Button>

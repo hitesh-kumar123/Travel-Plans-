@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import {
   GET_EXPENSES,
   ADD_EXPENSE,
+  UPDATE_EXPENSE,
   DELETE_EXPENSE,
   GET_EXPENSE_SUMMARY,
   EXPENSE_ERROR,
@@ -56,6 +57,26 @@ export const addExpense = (formData) => async (dispatch) => {
     toast.success("Expense added! 💰");
   } catch (err) {
     const msg = err.response?.data?.msg || "Error adding expense";
+    dispatch({
+      type: EXPENSE_ERROR,
+      payload: msg,
+    });
+    toast.error(msg);
+  }
+};
+
+// Update expense
+export const updateExpense = (id, formData) => async (dispatch) => {
+  try {
+    const res = await api.put(`/expenses/${id}`, formData);
+
+    dispatch({
+      type: UPDATE_EXPENSE,
+      payload: res.data,
+    });
+    toast.success("Expense updated! 💰");
+  } catch (err) {
+    const msg = err.response?.data?.msg || "Error updating expense";
     dispatch({
       type: EXPENSE_ERROR,
       payload: msg,
