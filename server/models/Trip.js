@@ -1,78 +1,79 @@
 const mongoose = require("mongoose");
 
-const TripSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  destination: {
-    type: String,
-    required: true,
-  },
-  images: [
-    {
+const TripSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    destination: {
+      type: String,
+      required: true,
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+      validate: {
+        validator(value) {
+          return !this.startDate || !value || value >= this.startDate;
+        },
+        message: "End date cannot be before start date",
+      },
+    },
+    description: {
       type: String,
     },
-  ],
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  budget: {
-    type: Number,
-    default: 0,
-  },
-  status: {
-    type: String,
-    enum: ["planned", "ongoing", "completed"],
-    default: "planned",
-  },
-  activities: [
-    {
-      name: String,
-      date: Date,
-      location: String,
-      notes: String,
+    budget: {
+      type: Number,
+      default: 0,
     },
-  ],
-  accommodation: {
-    name: String,
-    bookingRef: String,
-    checkIn: Date,
-    checkOut: Date,
-    address: String,
-    contactInfo: String,
+    status: {
+      type: String,
+      enum: ["planned", "ongoing", "completed"],
+      default: "planned",
+    },
+    activities: [
+      {
+        name: String,
+        date: Date,
+        location: String,
+        notes: String,
+      },
+    ],
+    accommodation: {
+      name: String,
+      bookingRef: String,
+      checkIn: Date,
+      checkOut: Date,
+      address: String,
+      contactInfo: String,
+    },
+    transportation: {
+      type: String,
+      bookingRef: String,
+      departureTime: Date,
+      arrivalTime: Date,
+    },
+    shareToken: {
+      type: String,
+      default: null,
+    },
+    shareEnabled: {
+      type: Boolean,
+      default: false,
+    },
   },
-  transportation: {
-    type: String,
-    bookingRef: String,
-    departureTime: Date,
-    arrivalTime: Date,
-  },
-  shareToken: {
-    type: String,
-    default: null,
-  },
-  shareEnabled: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true },
+);
 
 module.exports = mongoose.model("Trip", TripSchema);

@@ -103,7 +103,23 @@ exports.updateTrip = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    const updateData = { ...req.body, updatedAt: Date.now() };
+    const updateData = { ...req.body };
+    const nextStartDate =
+      updateData.startDate !== undefined
+        ? updateData.startDate
+        : trip.startDate;
+    const nextEndDate =
+      updateData.endDate !== undefined ? updateData.endDate : trip.endDate;
+
+    if (
+      nextStartDate &&
+      nextEndDate &&
+      new Date(nextEndDate) < new Date(nextStartDate)
+    ) {
+      return res
+        .status(400)
+        .json({ msg: "End date cannot be before start date" });
+    }
 
     // Update images if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
@@ -118,7 +134,7 @@ exports.updateTrip = async (req, res) => {
     trip = await Trip.findByIdAndUpdate(
       req.params.id,
       { $set: updateData },
-      { new: true },
+      { new: true, runValidators: true },
     );
 
     res.json(trip);
