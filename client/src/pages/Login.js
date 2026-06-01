@@ -13,13 +13,9 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-const Login = () => {
-  // ... (Ensure your state/handlers like formData, handleChange, etc. are defined here)
-
+const Login = ({ handleSubmit, handleChange, formData, errors, showPassword, toggleShowPassword, isMobile }) => {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex" }}>
-      {/* ... (Keep your side image Box code here) ... */}
-
       <Box
         sx={{
           flex: 1,
@@ -30,17 +26,40 @@ const Login = () => {
           p: 4,
         }}
       >
-        <Paper
-          elevation={1}
-          sx={{ p: 4, borderRadius: 4, width: "100%", maxWidth: 480 }}
-        >
+        <Paper elevation={1} sx={{ p: 4, borderRadius: 4, width: "100%", maxWidth: 480 }}>
           <form onSubmit={handleSubmit}>
-            {/* ... (Keep your Email and Password fields here) ... */}
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Email Address"
+              name="email"
+              value={formData?.email || ""}
+              onChange={handleChange}
+              error={!!errors?.email}
+              helperText={errors?.email}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData?.password || ""}
+              onChange={handleChange}
+              error={!!errors?.password}
+              helperText={errors?.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowPassword}>
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-            {/* HERE IS WHERE YOUR TOOLTIPS GO */}
-            <Box
-              sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}
-            >
+            <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}>
               <Tooltip title="Facebook login is currently unavailable" arrow>
                 <span>
                   <IconButton
