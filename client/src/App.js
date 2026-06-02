@@ -24,7 +24,6 @@ import SharedTripView from "./pages/dashboard/SharedTripView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
-import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
