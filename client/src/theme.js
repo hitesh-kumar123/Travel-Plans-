@@ -1,7 +1,8 @@
 import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme({
+const getTheme = (mode) => createTheme({
   palette: {
+    mode,
     primary: {
       main: "#3f51b5", // A modern indigo
       light: "#757de8",
@@ -144,4 +145,4 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+export default getTheme;
