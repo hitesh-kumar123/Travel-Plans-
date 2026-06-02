@@ -444,7 +444,7 @@ const Home = () => {
             <a href="#wander-dest-section">Destinations</a>
           </li>
           <li>
-            <a href="#wander-features">Experiences</a>
+            <a href="#wander-testi">Experiences</a>
           </li>
           <li>
             <a href="#wander-features">Features</a>
@@ -845,7 +845,7 @@ const Home = () => {
       </section>
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
+      <section className="wander-testi-section" id="wander-testi">
         <div>
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
@@ -944,9 +944,11 @@ const Home = () => {
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>
+
             <a href="/" aria-label="Instagram">
               <FaInstagram />
             </a>
+
             <a href="/" aria-label="Twitter">
               <FaTwitter />
             </a>

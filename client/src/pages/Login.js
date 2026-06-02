@@ -210,32 +210,6 @@ const Login = () => {
               Your ultimate companion for discovering and planning your dream
               adventures
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "white",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-            </Box>
           </Box>
         </Box>
       )}
