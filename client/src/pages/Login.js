@@ -26,20 +26,26 @@ import PrimaryButton from "../components/PrimaryButton";
 // GSSOC FIX: Array of Carousel Images & Content
 const CAROUSEL_SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop",
     title: "PackGo",
-    description: "Your ultimate companion for discovering and planning your dream adventures",
+    description:
+      "Your ultimate companion for discovering and planning your dream adventures",
   },
   {
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1887&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1887&auto=format&fit=crop",
     title: "Explore the World",
-    description: "Track your budgets, check real-time weather details, and map out routes seamlessly",
+    description:
+      "Track your budgets, check real-time weather details, and map out routes seamlessly",
   },
   {
-    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1887&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1887&auto=format&fit=crop",
     title: "Share Memories",
-    description: "Organize bookings and create curated trip itineraries in one single intuitive dashboard",
-  }
+    description:
+      "Organize bookings and create curated trip itineraries in one single intuitive dashboard",
+  },
 ];
 
 const Login = () => {
@@ -72,7 +78,7 @@ const Login = () => {
   // GSSOC FIX: Set up automatic slide rotation (Interval clears on unmount to avoid memory leaks)
   useEffect(() => {
     if (isMobile) return; // Don't run intervals if banner hidden on mobile
-    
+
     const interval = setInterval(() => {
       setActiveSlide((prevIndex) => (prevIndex + 1) % CAROUSEL_SLIDES.length);
     }, 5000); // Rotates every 5 seconds
@@ -229,7 +235,7 @@ const Login = () => {
               backdropFilter: "blur(2px)",
             }}
           />
-          
+
           {/* Main Typography content synced with Active State */}
           <Box sx={{ position: "relative", p: 6, color: "white" }}>
             <Typography
@@ -253,11 +259,15 @@ const Login = () => {
                     width: index === activeSlide ? 24 : 10, // Active dot stretches wide
                     height: 10,
                     borderRadius: "5px",
-                    backgroundColor: index === activeSlide ? "primary.main" : "rgba(255, 255, 255, 0.5)",
+                    backgroundColor:
+                      index === activeSlide
+                        ? "primary.main"
+                        : "rgba(255, 255, 255, 0.5)",
                     cursor: "pointer",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     "&:hover": {
-                      backgroundColor: index === activeSlide ? "primary.main" : "white",
+                      backgroundColor:
+                        index === activeSlide ? "primary.main" : "white",
                     },
                   }}
                 />

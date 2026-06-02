@@ -32,19 +32,24 @@ import PrimaryButton from "../components/PrimaryButton";
 // Carousel slides config matching the onboarding/travel theme
 const CAROUSEL_SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop",
     title: "Join PackGo",
     description: "Create an account to start planning your next adventure.",
   },
   {
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop",
     title: "Track Budgets",
-    description: "Keep your expenses in check and spend wisely with your companions.",
+    description:
+      "Keep your expenses in check and spend wisely with your companions.",
   },
   {
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop",
     title: "Explore Together",
-    description: "Collaborate in real-time and orchestrate the ultimate itinerary.",
+    description:
+      "Collaborate in real-time and orchestrate the ultimate itinerary.",
   },
 ];
 
@@ -121,7 +126,7 @@ const Register = () => {
     initializeGoogleSignIn();
 
     const script = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]'
+      'script[src="https://accounts.google.com/gsi/client"]',
     );
     if (script) {
       script.addEventListener("load", initializeGoogleSignIn);
@@ -156,7 +161,7 @@ const Register = () => {
       if (
         value &&
         !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-          value
+          value,
         )
       ) {
         newErrors.email = "Please enter a valid email address";
@@ -206,7 +211,7 @@ const Register = () => {
       const payload = {
         name: `${formData.firstName.trim()} ${formData.lastName.trim()}`.replace(
           /\s+/g,
-          " "
+          " ",
         ),
         email: formData.email,
         password: formData.password,
@@ -474,7 +479,9 @@ const Register = () => {
                   backdropFilter: "blur(2px)",
                 }}
               />
-              <Box sx={{ position: "relative", p: 6, color: "white", zIndex: 2 }}>
+              <Box
+                sx={{ position: "relative", p: 6, color: "white", zIndex: 2 }}
+              >
                 <Typography
                   variant="h3"
                   component="h1"
