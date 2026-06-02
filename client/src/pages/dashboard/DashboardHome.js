@@ -23,6 +23,7 @@ import ArrowForwardIcon from "@mui/icons-material/East";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import HotelIcon from "@mui/icons-material/Hotel";
 import PrimaryButton from "../../components/PrimaryButton";
+import TripSkeleton from "../../components/TripSkeleton";
 import { getTrips } from "../../redux/actions/tripActions";
 import TripCountdownBadge from "../../components/TripCountdownBadge";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
@@ -362,7 +363,13 @@ const DashboardHome = () => {
         </Box>
 
         {loading ? (
-          <LinearProgress sx={{ borderRadius: 2 }} />
+          <Grid container spacing={3}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Grid xs={12} md={6} lg={4} key={i}>
+                <TripSkeleton />
+              </Grid>
+            ))}
+          </Grid>
         ) : tripsArr.length === 0 ? (
           <Paper
             elevation={0}

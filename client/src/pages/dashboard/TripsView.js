@@ -25,6 +25,7 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
 import PrimaryButton from "../../components/PrimaryButton";
+import TripSkeleton from "../../components/TripSkeleton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 
@@ -266,9 +267,9 @@ const TripsView = () => {
       {/* Trips Grid */}
       <Grid container spacing={3}>
         {loading ? (
-          Array.from({ length: 3 }).map((_, i) => (
+          Array.from({ length: 6 }).map((_, i) => (
             <Grid xs={12} md={6} lg={4} key={i}>
-              <Paper sx={{ height: 280, borderRadius: 4 }} elevation={0} />
+              <TripSkeleton />
             </Grid>
           ))
         ) : filteredTrips.length > 0 ? (
