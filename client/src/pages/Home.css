@@ -887,7 +887,7 @@ html {
 @media (max-width: 900px) {
   .wander-hero {
     grid-template-columns: 1fr;
-    padding: 3rem 1.5rem;
+    padding: 6rem 1.5rem 3rem;
     min-height: auto;
   }
 
@@ -908,7 +908,7 @@ html {
   }
 
   .wander-search-section {
-    padding: 0 1.5rem;
+    margin-top: 1rem;
   }
 
   .wander-search-bar {
