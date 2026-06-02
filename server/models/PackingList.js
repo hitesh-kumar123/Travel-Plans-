@@ -38,4 +38,6 @@ const packingListSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+packingListSchema.index({ user: 1, trip: 1 });
+
 module.exports = mongoose.model("PackingList", packingListSchema);

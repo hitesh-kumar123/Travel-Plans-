@@ -75,4 +75,7 @@ const TripSchema = new mongoose.Schema({
   },
 });
 
+TripSchema.index({ user: 1, startDate: -1 });
+TripSchema.index({ shareToken: 1 });
+
 module.exports = mongoose.model("Trip", TripSchema);
