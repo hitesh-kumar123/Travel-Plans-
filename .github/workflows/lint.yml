@@ -1,0 +1,13 @@
+name: Linting
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+        working-directory: ./client
+      - run: npm run lint
+        working-directory: ./client
