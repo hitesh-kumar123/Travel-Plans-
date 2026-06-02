@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -361,12 +361,19 @@ const Home = () => {
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const checkInRef = useRef(null);
 
   useEffect(() => {
     api
       .get("/destinations")
       .then((r) => {
-        setDestinations(r.data);
+        setDestinations(
+          Array.isArray(r.data)
+            ? r.data
+            : Array.isArray(r.data?.destinations)
+              ? r.data.destinations
+              : [],
+        );
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -410,14 +417,16 @@ const Home = () => {
 
   /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
-    ? destinations.filter(
+    ? (Array.isArray(destinations) ? destinations : []).filter(
         (d) =>
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.category || "").toLowerCase().includes(where.toLowerCase()),
       )
-    : destinations;
+    : Array.isArray(destinations)
+      ? destinations
+      : [];
 
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
@@ -435,7 +444,7 @@ const Home = () => {
             <a href="#wander-dest-section">Destinations</a>
           </li>
           <li>
-            <a href="#wander-features">Experiences</a>
+            <a href="#wander-testi">Experiences</a>
           </li>
           <li>
             <a href="#wander-features">Features</a>
@@ -624,10 +633,12 @@ const Home = () => {
 
             <div style={{ position: "relative" }}>
               <input
+                ref={checkInRef}
                 className="wander-sf-val"
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
+                onClick={() => checkInRef.current?.showPicker()}
                 style={{ paddingRight: "35px" }}
               />
 
@@ -836,7 +847,7 @@ const Home = () => {
       </section>
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
+      <section className="wander-testi-section" id="wander-testi">
         <div>
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
@@ -934,13 +945,14 @@ const Home = () => {
           </div>
 
           <div className="wander-footer-socials">
-            {/* Social media icons */}
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>
+
             <a href="/" aria-label="Instagram">
               <FaInstagram />
             </a>
+
             <a href="/" aria-label="Twitter">
               <FaTwitter />
             </a>

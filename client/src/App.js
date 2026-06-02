@@ -17,8 +17,8 @@ import Register from "./pages/Register";
 import SharedTripView from "./pages/dashboard/SharedTripView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 import TermsOfService from "./pages/TermsOfService";
@@ -67,6 +67,7 @@ function App() {
           </div>
         </Router>
       </ThemeProvider>
+
       <ToastContainer
         position="bottom-right"
         autoClose={3000}

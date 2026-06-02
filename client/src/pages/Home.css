@@ -749,54 +749,11 @@ html {
 /* ═══ FOOTER ═══ */
 .wander-footer {
   background: var(--dark);
-  color: rgba(253, 250, 245, 0.5);
-  padding: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.wander-footer-logo {
-  font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
-  color: var(--white);
-  text-decoration: none;
-}
-
-.wander-footer-logo span {
-  color: var(--coral);
-}
-
-.wander-footer-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.wander-footer-links a {
-  color: rgba(253, 250, 245, 0.4);
-  font-size: 0.82rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.wander-footer-links a:hover {
-  color: rgba(253, 250, 245, 0.8);
-}
-
-.wander-footer-copy {
-  font-size: 0.78rem;
-}
-
-/* ═══ FOOTER ═══ */
-.wander-footer {
-  background: var(--dark);
   color: rgba(253, 250, 245, 0.7);
-  padding: 4rem 3rem 2rem;
+  padding: 5rem 3rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 3.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -809,16 +766,21 @@ html {
 }
 
 .wander-footer-brand {
-  max-width: 320px;
+  max-width: 340px;
 }
 
 .wander-footer-logo {
   font-family: "Playfair Display", serif;
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   color: var(--white);
   text-decoration: none;
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  transition: opacity 0.2s;
+}
+
+.wander-footer-logo:hover {
+  opacity: 0.9;
 }
 
 .wander-footer-logo span {
@@ -826,51 +788,74 @@ html {
 }
 
 .wander-footer-brand p {
-  color: rgba(253, 250, 245, 0.55);
+  color: rgba(253, 250, 245, 0.65);
   line-height: 1.8;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .wander-footer-links-wrapper {
   display: flex;
-  gap: 4rem;
+  gap: 4.5rem;
   flex-wrap: wrap;
+}
+
+.wander-footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .wander-footer-col h4 {
   color: var(--white);
-  font-size: 1rem;
-  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .wander-footer-col a {
-  display: block;
-  color: rgba(253, 250, 245, 0.55);
+  display: inline-block;
+  color: rgba(253, 250, 245, 0.6);
   text-decoration: none;
-  margin-bottom: 0.7rem;
-  font-size: 0.88rem;
-  transition: all 0.2s ease;
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.wander-footer-col a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--coral);
+  transition: width 0.3s ease;
 }
 
 .wander-footer-col a:hover {
-  color: var(--coral);
-  transform: translateX(3px);
+  color: var(--white);
+  transform: translateX(4px);
+}
+
+.wander-footer-col a:hover::after {
+  width: 100%;
 }
 
 .wander-footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 1.5rem;
+  padding-top: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .wander-footer-copy {
-  font-size: 0.82rem;
-  color: rgba(253, 250, 245, 0.45);
+  font-size: 0.85rem;
+  color: rgba(253, 250, 245, 0.5);
 }
 
 .wander-footer-socials {
@@ -879,42 +864,23 @@ html {
 }
 
 .wander-footer-socials a {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(253, 250, 245, 0.75);
-  transition: all 0.25s ease;
+  color: rgba(253, 250, 245, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
 .wander-footer-socials a:hover {
   background: var(--coral);
   color: white;
-  transform: translateY(-3px);
-}
-
-/* ═══ RESPONSIVE ═══ */
-@media (max-width: 900px) {
-  .wander-footer {
-    padding: 3rem 1.5rem 2rem;
-  }
-
-  .wander-footer-top {
-    flex-direction: column;
-  }
-
-  .wander-footer-links-wrapper {
-    gap: 2rem;
-  }
-
-  .wander-footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(232, 115, 90, 0.3);
 }
 
 /* ═══ RESPONSIVE ═══ */
@@ -986,9 +952,51 @@ html {
   }
 
   .wander-footer {
-    padding: 2rem 1.5rem;
+    padding: 3rem 1.5rem 2rem;
+    align-items: center;
+  }
+
+  .wander-footer-top {
     flex-direction: column;
     text-align: center;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  .wander-footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .wander-footer-links-wrapper {
+    gap: 2.5rem;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .wander-footer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wander-footer-col a::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .wander-footer-col a:hover {
+    transform: translateY(-2px);
+  }
+
+  .wander-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
   }
 
   .wander-cta-actions {
@@ -999,5 +1007,121 @@ html {
   .wander-btn-ghost {
     width: 100%;
     text-align: center;
+  }
+}
+
+/* GSSoC '26 Super-Override Fix: Booking Search Section (#119)*/
+
+/* 1. Container Flexbox Reset */
+.wander-page .wander-search-bar {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: none !important; /* Disables the broken grid grid structure */
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+  background: #fdfaf5 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+/* 2. Structured Box Adjustments for Inner Fields */
+.wander-page .wander-sf {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 1rem 1.75rem !important;
+  height: 84px !important;
+  border-right: 1px solid rgba(26, 74, 107, 0.12) !important;
+  border-bottom: none !important;
+}
+
+/* 3. Typography Consistency for Labels */
+.wander-page .wander-sf-label {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: #8bafc4 !important;
+  letter-spacing: 0.8px !important;
+  margin-bottom: 0.3rem !important;
+}
+
+/* 4. Input Text Fields Normalization */
+.wander-page .wander-sf input,
+.wander-page .wander-sf-val {
+  width: 100% !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 0.95rem !important;
+  color: #1a4a6b !important;
+  font-weight: 500 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+/* 5. Date Picker Calendar Alignment Overrides */
+.wander-page .wander-sf input[type="date"] {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-right: 0 !important;
+}
+
+/* Hide the absolute emoji span entirely because native browsers have built-in calendar tags */
+.wander-page .wander-sf span[style*="position: absolute"] {
+  display: none !important;
+}
+
+/* 6. Action Button Perfect Height Snap */
+.wander-page .wander-search-btn {
+  height: 84px !important;
+  padding: 0 2.5rem !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+
+/*  Viewport Breakpoints (Responsive Fixing Layouts) */
+
+@media (max-width: 1024px) {
+  .wander-page .wander-search-bar {
+    flex-wrap: wrap !important;
+  }
+  .wander-page .wander-sf {
+    flex: 1 1 calc(50% - 1px) !important;
+  }
+  .wander-page .wander-sf:nth-child(2) {
+    border-right: none !important;
+  }
+  .wander-page .wander-search-btn {
+    flex: 1 1 100% !important;
+    height: 56px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .wander-page .wander-search-bar {
+    flex-direction: column !important;
+  }
+  .wander-page .wander-sf {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
+    padding: 1.2rem 1.5rem !important;
+  }
+  .wander-page .wander-search-btn {
+    height: 52px !important;
   }
 }

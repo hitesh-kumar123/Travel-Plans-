@@ -48,19 +48,7 @@ export const login = (userData, navigate) => async (dispatch) => {
     dispatch(loadUser());
     toast.success("Welcome back! 🎉");
   } catch (error) {
-    const data = error.response?.data;
-    if (data?.unverified) {
-      toast.warning(data.msg);
-      navigate("/verify-otp", {
-        state: {
-          email: data.email,
-          blocked: data.blocked || false,
-          blockedUntil: data.blockedUntil || null,
-        },
-      });
-      return;
-    }
-    const msg = data?.msg || "Login failed";
+    const msg = error.response?.data?.msg || "Login failed";
     dispatch({
       type: LOGIN_FAIL,
       payload: msg,
@@ -74,12 +62,8 @@ export const register = (userData, navigate) => async (dispatch) => {
   try {
     await api.post("/auth/register", userData);
 
-    // Note: We do not dispatch REGISTER_SUCCESS or loadUser here since the user
-    // is unverified and cannot be logged in yet.
-    toast.success(
-      "Account created! A verification code was sent to your email. 🚀",
-    );
-    navigate("/verify-otp", { state: { email: userData.email } });
+    toast.success("Account created successfully! Please log in.");
+    navigate("/login");
   } catch (error) {
     const msg = error.response?.data?.msg || "Registration failed";
     dispatch({
@@ -87,27 +71,6 @@ export const register = (userData, navigate) => async (dispatch) => {
       payload: msg,
     });
     toast.error(msg);
-  }
-};
-
-// Verify OTP
-export const verifyOtp = (email, otp, navigate) => async (dispatch) => {
-  try {
-    const res = await api.post("/auth/verify-otp", { email, otp });
-
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data, // res.data contains token and user
-    });
-
-    localStorage.setItem("token", res.data.token);
-    dispatch(loadUser());
-    toast.success("Email verified successfully! Welcome to PackGo! 🚀");
-    navigate("/dashboard");
-  } catch (error) {
-    const msg = error.response?.data?.msg || "Verification failed";
-    toast.error(msg);
-    throw error;
   }
 };
 

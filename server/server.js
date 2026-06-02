@@ -13,6 +13,9 @@ dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
 // Initialize express app
 const app = express();
+// When running behind a proxy (like Render), trust the proxy so express
+// and express-rate-limit can use the X-Forwarded-* headers correctly.
+app.set("trust proxy", 1);
 
 // Security Middleware
 app.use(helmet());
@@ -48,12 +51,8 @@ allowedOrigins.push(...frontendUrls);
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
-      }
-      if (process.env.NODE_ENV !== "production") {
+      if (origin.includes("localhost") || origin.includes("vercel.app")) {
         return callback(null, true);
       }
       callback(new Error("Not allowed by CORS"));
@@ -72,6 +71,7 @@ const translatorRoutes = require("./routes/translator");
 const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
 const packingRoutes = require("./routes/packing");
+const currencyRoutes = require("./routes/currency");
 
 // Use routes
 app.use("/api/auth", authRoutes);
@@ -82,6 +82,7 @@ app.use("/api/translator", translatorRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/packing", packingRoutes);
+app.use("/api/currency", currencyRoutes);
 
 // Base route
 app.get("/", (req, res) => {
