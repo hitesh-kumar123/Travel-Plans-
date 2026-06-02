@@ -933,10 +933,10 @@ const Home = () => {
             </div>
 
             <div className="wander-footer-col">
-            <h4>Company</h4>
-            <Link to="/about">About</Link>
-            <Link to="/careers">Careers</Link>
-            <Link to="/contact">Contact</Link> main
+              <h4>Company</h4>
+              <Link to="/about">About</Link>
+              <Link to="/careers">Careers</Link>
+              <Link to="/contact">Contact</Link> main
             </div>
 
             <div className="wander-footer-col">

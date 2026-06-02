@@ -12,7 +12,7 @@ const Contact = () => {
       <div style={{ marginTop: "20px" }}>
         <p>Email: support@travelplans.com</p>
         <p>Phone: +91-XXXXXXXXXX</p>
-        <p>We usually respond within 24–48 hours.</p>
+        <p>We usually respond within 24-48 hours.</p>
       </div>
     </div>
   );

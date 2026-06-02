@@ -69,7 +69,10 @@ function App() {
               <Route path="/careers" element={<Careers />} />
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route
+                path="/terms-and-conditions"
+                element={<TermsAndConditions />}
+              />
 
               {/* Fallback */}
               <Route path="*" element={<NotFound />} />
