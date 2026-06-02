@@ -1,27 +1,26 @@
-<div align="center">
+<div style="text-align:center;">
 
 # ✈️ PackGo — Smart Travel Planner
 
-<img src="assets/landing_page.png" alt="PackGo Landing Page" width="100%" style="border-radius: 12px;" />
-
-<br />
+<br/>
 
 [![MERN Stack](https://img.shields.io/badge/Stack-MERN-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/cloud/atlas)
 [![Material UI](https://img.shields.io/badge/MUI-v6-007FFF?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](CONTRIBUTING.md)
-[![GSSoC](https://img.shields.io/badge/GSSoC-2026-orange?style=for-the-badge)](https://gssoc.girlscript.tech/)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/DebasmitaBose0/Travel-Plans-/ci.yml?branch=main&style=for-the-badge&label=Build%20Check)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
+[![Security Scan](https://img.shields.io/badge/Security-Audit--Audit-brightgreen?style=for-the-badge&logo=github-actions)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 
-<br />
+<br>
+
+<img src="assets/new-landing-page.png" alt="PackGo Landing Page" width="100%" />
 
 > **Plan trips. Track expenses. Check weather. Translate languages. Book flights & hotels.**  
 > All in one beautiful, full-stack travel companion.
 
-<br />
+<br>
 
-[🚀 Live Demo](#-live-demo) · [📖 Docs](#-api-endpoints) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
+[🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
 </div>
 
@@ -42,6 +41,7 @@
 - [🎨 Design Highlights](#-design-highlights)
 - [🔮 Future Enhancements](#-future-enhancements)
 - [🤝 Contributing](#-contributing)
+- [🌟 Contributors](#-contributors)
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
@@ -60,21 +60,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### 🏠 Landing Page & Dashboard
 
-|               Landing Page               |             Dashboard              |
-| :--------------------------------------: | :--------------------------------: |
-| ![Landing Page](assets/landing_page.png) | ![Dashboard](assets/dashboard.png) |
+|               Landing Page                   |             Dashboard                  |
+| :-----------------------------------------:  | :------------------------------------: |
+| ![Landing Page](assets/new-landing-page.png) | ![Dashboard](assets/new-dashboard.png) |
 
 ### 🗺️ Trip Detail & Expense Tracker
 
-|              Trip Detail               |                Expense Tracker                 |
+|              Trip Detail               |                Destinations                    |
 | :------------------------------------: | :--------------------------------------------: |
-| ![Trip Detail](assets/trip_detail.png) | ![Expense Tracker](assets/expense_tracker.png) |
-
-### 🌤️ Weather Forecast & Live Translator
-
-|                 Weather Forecast                 |                Live Translator                 |
-| :----------------------------------------------: | :--------------------------------------------: |
-| ![Weather Forecast](assets/weather_forecast.png) | ![Live Translator](assets/live_translator.png) |
+| ![Trip Detail](assets/photo1.png)      | ![Destinations](assets/photo1.png)             |
 
 ---
 
@@ -168,7 +162,7 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ## 📁 Project Structure
 
-```
+```bash
 travel-planner/
 ├── assets/                          # README screenshots
 │   ├── landing_page.png
@@ -262,6 +256,19 @@ cd travel-planner
 
 ### 2. Install Dependencies
 
+> ⚠️ **Important:**  
+> This repository uses separate frontend (`client`) and backend (`server`) environments.
+>
+> Running commands like:
+>
+> ```bash
+> npm run dev
+> ```
+>
+> from the root directory will result in a missing script error.
+>
+> Please install dependencies and run scripts separately inside the `client` and `server` directories.
+
 ```bash
 # Install backend dependencies
 cd server
@@ -352,9 +359,6 @@ Base URL: `http://localhost:5000/api`
 | `GET`  | `/auth/profile`              | Get current user profile                         |  ✅  |
 | `PUT`  | `/auth/profile`              | Update user profile                              |  ✅  |
 | `PUT`  | `/auth/change-password`      | Change password                                  |  ✅  |
-| `POST` | `/auth/verify-otp`           | Verify registration/login 6-digit OTP code       |  ❌  |
-| `POST` | `/auth/resend-otp`           | Request a new registration/login OTP code        |  ❌  |
-| `POST` | `/auth/otp-status`           | Query active registration/login countdown state  |  ❌  |
 | `POST` | `/auth/request-email-change` | Initiate profile email update                    |  ✅  |
 | `POST` | `/auth/verify-email-change`  | Confirm and execute pending profile email change |  ✅  |
 | `POST` | `/auth/discard-email-change` | Cancel and discard pending profile email change  |  ✅  |
@@ -553,6 +557,32 @@ git push origin feature/your-amazing-feature
 
 ---
 
+## 💖 Contributors
+
+Thanks to all the amazing people who contribute to **Travel-Plans** 🚀
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors"/>
+  </a>
+</p>
+
+<br>
+
+## ⭐ Project Support
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/stargazers">
+    <img src="https://img.shields.io/github/stars/hitesh-kumar123/Travel-Plans-?style=social" alt="Stars">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/network/members">
+    <img src="https://img.shields.io/github/forks/hitesh-kumar123/Travel-Plans-?style=social" alt="Forks">
+  </a>
+</p>
+
+---
+
 ## 📄 License
 
 This project is licensed under the **MIT License**.  
@@ -578,8 +608,39 @@ We are incredibly grateful to our mentors for their valuable support and code re
 
 [![GitHub](https://img.shields.io/badge/GitHub-hitesh--kumar123-181717?style=for-the-badge&logo=github)](https://github.com/hitesh-kumar123/Travel-Plans-)
 
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Hitesh--Kumar-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/hitesh-kumar-dev/)
+
 ---
+
 
 ⭐ **If PackGo helped you, please give it a star — it means a lot!** ⭐
 
 </div>
+
+/**
+## ✨ README Improvement Notes
+
+### 📌 Formatting Enhancements Needed
+- Improve heading hierarchy for better readability
+- Ensure consistent spacing between sections
+- Use proper Markdown formatting for code blocks and lists
+- Align all installation and usage steps properly
+
+### 🚀 Suggested Structure Upgrade
+- Introduction
+- Features
+- Tech Stack
+- Installation
+- Usage
+- Project Structure
+- Contribution Guidelines
+- License
+
+### 🛠️ Documentation Improvements
+- Add badges (optional): build, license, contributors
+- Add screenshots for better UI understanding
+- Standardize code blocks for commands
+
+### 🎯 Goal
+Improve onboarding experience for new contributors and users by making README more structured, readable, and professional.
+*/

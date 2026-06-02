@@ -38,6 +38,8 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
 import {
   getTrip,
   updateTrip,
@@ -81,6 +83,7 @@ const TripDetail = () => {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareLink, setShareLink] = useState("");
   const [shareLoading, setShareLoading] = useState(false);
+  const [budgetOpen, setBudgetOpen] = useState(false);
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -121,6 +124,22 @@ const TripDetail = () => {
     currentTrip?.budget > 0
       ? Math.min((totalSpent / currentTrip.budget) * 100, 100)
       : 0;
+
+  const tripDataForBudget = {
+    destination: currentTrip?.destination || currentTrip?.name || "",
+    duration:
+      currentTrip?.startDate && currentTrip?.endDate
+        ? Math.max(
+            1,
+            Math.round(
+              (new Date(currentTrip.endDate) -
+                new Date(currentTrip.startDate)) /
+                (1000 * 60 * 60 * 24),
+            ),
+          )
+        : 0,
+    travelers: currentTrip?.travelers || 1,
+  };
 
   const handleDeleteTrip = () => {
     dispatch(deleteTrip(id));
@@ -232,6 +251,15 @@ const TripDetail = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+          <Tooltip title="Estimate Budget">
+            <IconButton
+              onClick={() => setBudgetOpen(true)}
+              color="info"
+              sx={{ bgcolor: "info.light" }}
+            >
+              <CalculateIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
 
@@ -290,10 +318,10 @@ const TripDetail = () => {
 
       <Grid container spacing={3}>
         {/* Left Column */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           {/* Trip Info Cards */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -322,7 +350,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -351,7 +379,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -376,7 +404,7 @@ const TripDetail = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid xs={6} sm={3}>
               <Paper
                 elevation={0}
                 sx={{
@@ -548,7 +576,7 @@ const TripDetail = () => {
         </Grid>
 
         {/* Right Column: Expenses */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Paper
             elevation={0}
             sx={{
@@ -670,11 +698,13 @@ const TripDetail = () => {
       {/* Delete Confirm Dialog */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
         <DialogTitle>Delete Trip?</DialogTitle>
-        <DialogContentText sx={{ px: 3 }}>
-          This will permanently delete your trip to{" "}
-          <strong>{currentTrip.destination}</strong> and all associated
-          expenses.
-        </DialogContentText>
+        <DialogContent>
+          <DialogContentText sx={{ px: 3 }}>
+            This will permanently delete your trip to{" "}
+            <strong>{currentTrip.destination}</strong> and all associated
+            expenses.
+          </DialogContentText>
+        </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
           <Button onClick={handleDeleteTrip} variant="contained" color="error">
@@ -697,7 +727,7 @@ const TripDetail = () => {
             sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   label="Amount (₹)"
@@ -709,7 +739,7 @@ const TripDetail = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -754,7 +784,7 @@ const TripDetail = () => {
               fullWidth
               type="date"
               label="Date"
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               value={expenseForm.date}
               onChange={(e) =>
                 setExpenseForm({ ...expenseForm, date: e.target.value })
@@ -792,24 +822,24 @@ const TripDetail = () => {
               }
             />
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   type="date"
                   label="Start Date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={editForm.startDate || ""}
                   onChange={(e) =>
                     setEditForm({ ...editForm, startDate: e.target.value })
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   type="date"
                   label="End Date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={editForm.endDate || ""}
                   onChange={(e) =>
                     setEditForm({ ...editForm, endDate: e.target.value })
@@ -818,7 +848,7 @@ const TripDetail = () => {
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   label="Budget (₹)"
@@ -829,7 +859,7 @@ const TripDetail = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -881,7 +911,7 @@ const TripDetail = () => {
           <TextField
             fullWidth
             value={shareLink}
-            InputProps={{ readOnly: true }}
+            slotProps={{ input: { readOnly: true } }}
             onClick={(e) => e.target.select()}
           />
         </DialogContent>
@@ -898,6 +928,17 @@ const TripDetail = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Budget Calculator Modal */}
+      <BudgetCalculator
+        open={budgetOpen}
+        onClose={() => setBudgetOpen(false)}
+        tripData={tripDataForBudget}
+        onSaveBudget={(estimatedBudget) => {
+          dispatch(updateTrip(id, { budget: estimatedBudget }));
+          toast.success("Estimated budget saved to trip! 💰");
+        }}
+      />
     </Box>
   );
 };

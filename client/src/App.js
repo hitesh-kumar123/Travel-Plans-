@@ -19,6 +19,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
@@ -36,6 +37,7 @@ function App() {
         <Router>
           <div className="App">
             <Routes>
+              {/* Protected Dashboard */}
               <Route
                 path="/dashboard/*"
                 element={
@@ -44,9 +46,16 @@ function App() {
                   </PrivateRoute>
                 }
               />
+
+              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              {/* ✅ Contact Route Added */}
+              <Route path="/contact" element={<Contact />} />
+
+              {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
 
               <Route path="/contact" element={<Contact />} />
@@ -58,6 +67,7 @@ function App() {
           </div>
         </Router>
       </ThemeProvider>
+
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
