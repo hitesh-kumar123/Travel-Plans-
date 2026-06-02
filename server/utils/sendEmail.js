@@ -10,7 +10,7 @@ const parseBoolean = (value, fallback = false) => {
   return ["true", "1", "yes", "on"].includes(String(value).toLowerCase());
 };
 
-const buildTransporter = () => {
+const buildTransporter = async () => {
   const service = (process.env.EMAIL_SERVICE || process.env.SMTP_SERVICE || "")
     .trim()
     .toLowerCase();
@@ -19,9 +19,29 @@ const buildTransporter = () => {
   const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
 
   if (!user || !pass) {
-    throw new Error(
-      "Email credentials are not configured. Set EMAIL_USER and EMAIL_PASS, or SMTP_USER and SMTP_PASS.",
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Email credentials are not configured. Set EMAIL_USER and EMAIL_PASS, or SMTP_USER and SMTP_PASS.",
+      );
+    }
+
+    const testAccount = await nodemailer.createTestAccount();
+    const etherealTransport = nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      family: 4,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+
+    console.warn(
+      "No SMTP credentials found. Using Nodemailer Ethereal fallback for email delivery. Preview emails from the generated Ethereal account.",
     );
+
+    return etherealTransport;
   }
 
   let host = hostFromEnv;
@@ -50,6 +70,7 @@ const buildTransporter = () => {
     host,
     port,
     secure,
+    family: 4,
     auth: {
       user,
       pass,
@@ -57,21 +78,22 @@ const buildTransporter = () => {
   });
 };
 
-const getTransporter = () => {
+const getTransporter = async () => {
   if (!transporter) {
-    transporter = buildTransporter();
+    transporter = await buildTransporter();
   }
 
   return transporter;
 };
 
 const sendEmail = async (options) => {
-  const activeTransporter = getTransporter();
+  const activeTransporter = await getTransporter();
   const fromEmail =
     process.env.EMAIL_FROM ||
     process.env.FROM_EMAIL ||
     process.env.EMAIL_USER ||
-    process.env.SMTP_USER;
+    process.env.SMTP_USER ||
+    "noreply@packgo.com";
   const fromName =
     process.env.EMAIL_FROM_NAME || process.env.FROM_NAME || "PackGo";
 
@@ -85,8 +107,28 @@ const sendEmail = async (options) => {
 
   try {
     await activeTransporter.verify();
-    return await activeTransporter.sendMail(message);
+    const info = await activeTransporter.sendMail(message);
+
+    const previewUrl = nodemailer.getTestMessageUrl(info);
+    if (previewUrl) {
+      console.log(`Ethereal preview URL: ${previewUrl}`);
+    }
+
+    return info;
   } catch (error) {
+    console.error("[sendEmail] SMTP send failed", {
+      to: options.email,
+      subject: options.subject,
+      host: activeTransporter.options?.host,
+      port: activeTransporter.options?.port,
+      secure: activeTransporter.options?.secure,
+      authUser: activeTransporter.options?.auth?.user,
+      message: error.message,
+      code: error.code,
+      response: error.response,
+      stack: error.stack,
+    });
+
     const wrappedError = new Error(
       `Failed to send email to ${options.email}: ${error.message}`,
     );

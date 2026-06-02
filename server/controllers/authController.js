@@ -3,20 +3,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const {
-  getOtpEmailTemplate,
   getPasswordResetTemplate,
+  getOtpEmailTemplate,
 } = require("../utils/emailTemplates");
-
-const buildEmailFailureMessage = (action) =>
-  `We could not send the verification email for ${action}. Please try again in a moment.`;
-
-const logEmailFailure = (action, emailErr) => {
-  console.error(`[authController] ${action} email send failed`, {
-    message: emailErr.message,
-    cause: emailErr.cause?.message,
-    stack: emailErr.stack,
-  });
-};
 
 // Register a new user
 exports.register = async (req, res, next) => {
@@ -54,57 +43,19 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpire = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
-    // Create new user with normalized single-spaced name and OTP verification fields
+    // Create new user with normalized single-spaced name
     user = new User({
       name: name.trim().replace(/\s+/g, " "),
       email,
       password,
-      isVerified: false,
-      otp,
-      otpExpire,
-      otpResendAttempts: 1, // Count the initial registration OTP send as attempt #1
-      otpLastResent: new Date(),
     });
 
     await user.save();
 
-    // Send email with OTP code
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: "Verify Your Email - PackGo",
-        message: `Welcome to PackGo! Your 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-        html: getOtpEmailTemplate(
-          user.name,
-          otp,
-          "Welcome to PackGo! Your one time verification code is:",
-        ),
-      });
-    } catch (emailErr) {
-      logEmailFailure("registration", emailErr);
-      await User.deleteOne({ _id: user._id });
-      return res.status(500).json({
-        msg: buildEmailFailureMessage("registration"),
-      });
-    }
-
-    // Dev mode log
-    if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
-      console.log("\n=======================================================");
-      console.log("🚀 DEV MODE: EMAIL VERIFICATION OTP GENERATED");
-      console.log(`Email: ${user.email}`);
-      console.log(`OTP Code: ${otp}`);
-      console.log("=======================================================\n");
-    }
-
     res.status(201).json({
       success: true,
       email: user.email,
-      msg: "Account created! A 6-digit verification code has been sent to your email.",
+      msg: "Account created successfully. Please login.",
     });
   } catch (err) {
     next(err);
@@ -137,97 +88,6 @@ exports.login = async (req, res, next) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
-    }
-
-    // Prevent login if not verified
-    if (!user.isVerified) {
-      const now = Date.now();
-
-      // Check if blocked (24-hour lockout)
-      if (
-        user.otpBlockedUntil &&
-        new Date(user.otpBlockedUntil).getTime() > now
-      ) {
-        const timeLeft = new Date(user.otpBlockedUntil).getTime() - now;
-        const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-        return res.status(401).json({
-          msg: `Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`,
-          unverified: true,
-          email: user.email,
-          blocked: true,
-          blockedUntil: user.otpBlockedUntil,
-        });
-      }
-
-      // Generate a new OTP if current is missing or expired
-      if (!user.otp || new Date(user.otpExpire).getTime() < now) {
-        const newAttempts = user.otpResendAttempts + 1;
-
-        // If triggering a new login OTP exceeds the limit, block them
-        if (newAttempts > 5) {
-          const blockedTime = new Date(now + 24 * 60 * 60 * 1000);
-          user.otpBlockedUntil = blockedTime;
-          await user.save();
-
-          return res.status(401).json({
-            msg: "Please verify your email before logging in. You have reached the maximum number of resend attempts and are blocked from requesting new codes. Please try again in 24 hours.",
-            unverified: true,
-            email: user.email,
-            blocked: true,
-            blockedUntil: blockedTime,
-          });
-        }
-
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        user.otp = otp;
-        user.otpExpire = new Date(now + 5 * 60 * 1000);
-        user.otpLastResent = new Date();
-        user.otpResendAttempts = newAttempts; // Persist the incremented attempt count
-        await user.save();
-
-        try {
-          await sendEmail({
-            email: user.email,
-            subject: "Verify Your Email - PackGo",
-            message: `Your 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-            html: getOtpEmailTemplate(
-              user.name,
-              otp,
-              "Your one time verification code is:",
-            ),
-          });
-        } catch (emailErr) {
-          logEmailFailure("login OTP resend", emailErr);
-          return res.status(500).json({
-            msg: buildEmailFailureMessage("login OTP resend"),
-          });
-        }
-
-        if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
-          console.log(
-            "\n=======================================================",
-          );
-          console.log("🚀 DEV MODE: EMAIL VERIFICATION OTP GENERATED");
-          console.log(`Email: ${user.email}`);
-          console.log(`OTP Code: ${otp}`);
-          console.log(
-            "=======================================================\n",
-          );
-        }
-
-        return res.status(401).json({
-          msg: "Please verify your email before logging in. A new 6-digit code has been sent to your email.",
-          unverified: true,
-          email: user.email,
-        });
-      }
-
-      // Current OTP is still valid, redirect user without sending a new email
-      return res.status(401).json({
-        msg: "Please verify your email before logging in. Use the verification code previously sent to your email.",
-        unverified: true,
-        email: user.email,
-      });
     }
 
     // Create JWT token
@@ -394,250 +254,6 @@ exports.resetPassword = async (req, res, next) => {
         });
       },
     );
-  } catch (err) {
-    next(err);
-  }
-};
-
-// Verify OTP
-exports.verifyOtp = async (req, res, next) => {
-  try {
-    const { email, otp } = req.body;
-
-    if (!email || !otp) {
-      return res
-        .status(400)
-        .json({ msg: "Please provide email and verification code" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
-    }
-
-    if (user.isVerified) {
-      const payload = { user: { id: user.id } };
-      return jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: "5d" },
-        (err, token) => {
-          if (err) throw err;
-          res.json({
-            msg: "Email is already verified",
-            token,
-            user: { id: user.id, name: user.name, email: user.email },
-          });
-        },
-      );
-    }
-
-    // Check if OTP matches
-    if (user.otp !== otp) {
-      return res.status(400).json({
-        msg: "Invalid verification code. Please check and try again.",
-      });
-    }
-
-    // Check if OTP is expired
-    if (new Date(user.otpExpire).getTime() < Date.now()) {
-      return res.status(400).json({
-        msg: "Verification code has expired. Please request a new one.",
-      });
-    }
-
-    // Successful verification
-    user.isVerified = true;
-    user.otp = null;
-    user.otpExpire = null;
-    user.otpResendAttempts = 0;
-    user.otpLastResent = null;
-    user.otpBlockedUntil = null;
-    await user.save();
-
-    // Create JWT token and log user in automatically
-    const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          msg: "Email verified successfully! 🎉",
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
-  } catch (err) {
-    next(err);
-  }
-};
-
-// Resend OTP
-exports.resendOtp = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ msg: "Please provide email address" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
-    }
-
-    if (user.isVerified) {
-      return res.status(400).json({ msg: "This email is already verified" });
-    }
-
-    const now = Date.now();
-
-    // Check if locked out (24-hour block)
-    if (
-      user.otpBlockedUntil &&
-      new Date(user.otpBlockedUntil).getTime() > now
-    ) {
-      const timeLeft = new Date(user.otpBlockedUntil).getTime() - now;
-      const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-      return res.status(429).json({
-        msg: `Too many resend attempts. You are blocked from requesting new codes. Please try again in ${hoursLeft} hours.`,
-        blocked: true,
-        blockedUntil: user.otpBlockedUntil,
-      });
-    }
-
-    // Enforce cooldown (60 seconds)
-    if (
-      user.otpLastResent &&
-      now - new Date(user.otpLastResent).getTime() < 60000
-    ) {
-      const timeLeftSeconds = Math.ceil(
-        (60000 - (now - new Date(user.otpLastResent).getTime())) / 1000,
-      );
-      return res.status(400).json({
-        msg: `Please wait ${timeLeftSeconds} seconds before requesting another code.`,
-      });
-    }
-
-    // Check if they are about to exceed limits (limit is 5 attempts)
-    if (user.otpResendAttempts >= 5) {
-      const blockedTime = new Date(now + 24 * 60 * 60 * 1000);
-      user.otpBlockedUntil = blockedTime;
-      await user.save();
-
-      return res.status(429).json({
-        msg: "You have reached the maximum number of resend attempts (5). You are blocked from requesting new codes for 24 hours.",
-        blocked: true,
-        blockedUntil: blockedTime,
-      });
-    }
-
-    // Generate new OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Save to user
-    user.otp = otp;
-    user.otpExpire = new Date(now + 5 * 60 * 1000); // 5 minutes
-    user.otpResendAttempts += 1;
-    user.otpLastResent = new Date();
-    await user.save();
-
-    // Send Email
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: "Verify Your Email - PackGo",
-        message: `Your new 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-        html: getOtpEmailTemplate(
-          user.name,
-          otp,
-          "Your new one time verification code is:",
-        ),
-      });
-    } catch (emailErr) {
-      logEmailFailure("OTP resend", emailErr);
-      return res.status(500).json({
-        msg: buildEmailFailureMessage("OTP resend"),
-      });
-    }
-
-    if (process.env.NODE_ENV === "development" || !process.env.SMTP_HOST) {
-      console.log("\n=======================================================");
-      console.log("🚀 DEV MODE: EMAIL VERIFICATION OTP GENERATED");
-      console.log(`Email: ${user.email}`);
-      console.log(`OTP Code: ${otp}`);
-      console.log("=======================================================\n");
-    }
-
-    res.json({
-      success: true,
-      msg: "A new 6-digit verification code has been sent to your email.",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-// Get OTP Status (Time left, cooldown, lockout blocks)
-exports.getOtpStatus = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ msg: "Please provide email address" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ msg: "User does not exist" });
-    }
-
-    if (user.isVerified) {
-      return res.json({ isVerified: true });
-    }
-
-    const now = Date.now();
-
-    // 1. Calculate time left for current OTP expiration
-    let timeLeft = 0;
-    if (user.otp && user.otpExpire) {
-      const expireTime = new Date(user.otpExpire).getTime();
-      if (expireTime > now) {
-        timeLeft = Math.ceil((expireTime - now) / 1000);
-      }
-    }
-
-    // 2. Calculate remaining resend cooldown (60 seconds)
-    let resendCooldown = 0;
-    if (user.otpLastResent) {
-      const lastResentTime = new Date(user.otpLastResent).getTime();
-      if (now - lastResentTime < 60000) {
-        resendCooldown = Math.ceil((60000 - (now - lastResentTime)) / 1000);
-      }
-    }
-
-    // 3. Calculate lockout details
-    let isBlocked = false;
-    let hoursLeft = 0;
-    if (user.otpBlockedUntil) {
-      const blockEnd = new Date(user.otpBlockedUntil).getTime();
-      if (blockEnd > now) {
-        isBlocked = true;
-        hoursLeft = Math.ceil((blockEnd - now) / (1000 * 60 * 60));
-      }
-    }
-
-    res.json({
-      isVerified: false,
-      timeLeft,
-      resendCooldown,
-      isBlocked,
-      blockedUntil: user.otpBlockedUntil,
-      hoursLeft,
-    });
   } catch (err) {
     next(err);
   }

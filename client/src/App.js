@@ -23,8 +23,8 @@ import Register from "./pages/Register";
 import SharedTripView from "./pages/dashboard/SharedTripView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import VerifyOtp from "./pages/VerifyOtp";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
@@ -40,6 +40,7 @@ function App() {
         <Router>
           <div className="App">
             <Routes>
+              {/* Protected Dashboard */}
               <Route
                 path="/dashboard/*"
                 element={
@@ -48,28 +49,37 @@ function App() {
                   </PrivateRoute>
                 }
               />
+
+              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              {/* ✅ Contact Route Added */}
+              <Route path="/contact" element={<Contact />} />
+
+              {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
+              <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-otp" element={<VerifyOtp />} />
-              <Route path="/shared-trip/:token" element={<SharedTripView />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/help-center" element={<HelpCenter />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route
-                path="/terms-and-conditions"
-                element={<TermsAndConditions />}
-              />
+<Route path="/verify-otp" element={<VerifyOtp />} />
+<Route path="/shared-trip/:token" element={<SharedTripView />} />
+
+<Route path="/about" element={<About />} />
+<Route path="/contact" element={<Contact />} />
+<Route path="/careers" element={<Careers />} />
+<Route path="/help-center" element={<HelpCenter />} />
+<Route path="/privacy-policy" element={<PrivacyPolicy />} />
+<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+
+{/* Fallback */}main
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </Router>
       </ThemeProvider>
+
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
