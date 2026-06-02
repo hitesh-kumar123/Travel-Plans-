@@ -20,7 +20,7 @@
 
 <br>
 
-[🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
+[🚀 Live Demo](#-live-demo) · [📖 API Docs](docs/API_DOCUMENTATION.md) · [🏗️ Architecture](docs/ARCHITECTURE.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
 </div>
 
