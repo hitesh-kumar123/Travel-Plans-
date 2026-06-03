@@ -1131,3 +1131,29 @@ html {
     height: 52px !important;
   }
 }
+/* Fix: Search button below 900px */
+@media (max-width: 900px) {
+  .wander-page .wander-search-bar {
+    flex-direction: column !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .wander-page .wander-sf {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
+    padding: 1.2rem 1.5rem !important;
+    height: auto !important;
+  }
+
+  .wander-page .wander-search-btn {
+    width: 100% !important;
+    height: 52px !important;
+    border-radius: 0 0 16px 16px !important;
+    flex: unset !important;
+    padding: 0 2rem !important;
+    justify-content: center !important;
+  }
+}
