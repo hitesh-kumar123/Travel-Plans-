@@ -25,7 +25,7 @@
     "recharts": "^3.8.1",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
-    "web-vitals": "^5.2.0"
+    "web-vitals": "^5.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
