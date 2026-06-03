@@ -114,8 +114,7 @@ const BookingView = () => {
       searchHotels({
         ...hotelForm,
         ...hotelFilters,
-        checkIn:
-          hotelForm.checkIn || new Date().toISOString().split("T")[0],
+        checkIn: hotelForm.checkIn || new Date().toISOString().split("T")[0],
         checkOut:
           hotelForm.checkOut ||
           new Date(Date.now() + 86400000).toISOString().split("T")[0],
@@ -280,7 +279,10 @@ const BookingView = () => {
                 </Grid>
                 <Grid item xs={12} md={2.4}>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Badge badgeContent={activeFlightFilterCount} color="primary">
+                    <Badge
+                      badgeContent={activeFlightFilterCount}
+                      color="primary"
+                    >
                       <Button
                         variant={showFilters ? "contained" : "outlined"}
                         size="large"
@@ -308,7 +310,12 @@ const BookingView = () => {
               {/* Flight Filters Panel */}
               <Collapse in={showFilters}>
                 <Box
-                  sx={{ mt: 3, p: 2.5, bgcolor: "action.hover", borderRadius: 2 }}
+                  sx={{
+                    mt: 3,
+                    p: 2.5,
+                    bgcolor: "action.hover",
+                    borderRadius: 2,
+                  }}
                 >
                   <Box
                     sx={{
@@ -451,7 +458,10 @@ const BookingView = () => {
                 </Grid>
                 <Grid item xs={12} md={2.4}>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Badge badgeContent={activeHotelFilterCount} color="primary">
+                    <Badge
+                      badgeContent={activeHotelFilterCount}
+                      color="primary"
+                    >
                       <Button
                         variant={showFilters ? "contained" : "outlined"}
                         size="large"
@@ -778,14 +788,26 @@ const BookingView = () => {
                   <Box
                     sx={{
                       height: 160,
-                      bgcolor: "primary.light",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      overflow: "hidden",
+                      position: "relative",
                     }}
                   >
-                    <HotelIcon
-                      sx={{ fontSize: 64, color: "primary.main", opacity: 0.4 }}
+                    <img
+                      src={hotel.image}
+                      alt={hotel.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      onError={(e) => {
+                        // Fallback to icon if image fails
+                        e.target.style.display = "none";
+                        e.target.parentNode.style.background = "#e3f2fd";
+                        e.target.parentNode.style.display = "flex";
+                        e.target.parentNode.style.alignItems = "center";
+                        e.target.parentNode.style.justifyContent = "center";
+                      }}
                     />
                   </Box>
                   <CardContent>

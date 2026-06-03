@@ -127,7 +127,9 @@ exports.searchHotels = async (req, res) => {
 
     // Use today and tomorrow as default dates if not provided
     const today = new Date().toISOString().split("T")[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const tomorrow = new Date(Date.now() + 86400000)
+      .toISOString()
+      .split("T")[0];
     const searchCheckIn = checkIn || today;
     const searchCheckOut = checkOut || tomorrow;
 
@@ -141,9 +143,11 @@ exports.searchHotels = async (req, res) => {
         price: 199.99,
         currency: "USD",
         amenities: ["WiFi", "Pool", "Gym", "Restaurant"],
-        images: ["hotel1_img1.jpg"],
-        // Direct Booking.com URL for this specific hotel in the searched location
-        bookingUrl: `https://www.booking.com/search.html?ss=Grand+Plaza+Hotel+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
+        // Real hotel image from Unsplash
+        image:
+          "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=250&fit=crop",
+        // Booking.com URL with location, dates and guests pre-filled
+        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=grand-plaza`,
       },
       {
         id: "ht-2",
@@ -154,9 +158,11 @@ exports.searchHotels = async (req, res) => {
         price: 149.99,
         currency: "USD",
         amenities: ["WiFi", "Breakfast", "Parking"],
-        images: ["hotel2_img1.jpg"],
-        // Direct Booking.com URL for this specific hotel in the searched location
-        bookingUrl: `https://www.booking.com/search.html?ss=Comfort+Inn+%26+Suites+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
+        // Real hotel image from Unsplash
+        image:
+          "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=250&fit=crop",
+        // Booking.com URL with location, dates and guests pre-filled
+        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=comfort-inn`,
       },
       {
         id: "ht-3",
@@ -167,9 +173,11 @@ exports.searchHotels = async (req, res) => {
         price: 299.99,
         currency: "USD",
         amenities: ["WiFi", "Pool", "Spa", "Restaurant", "Bar", "Gym"],
-        images: ["hotel3_img1.jpg"],
-        // Direct Booking.com URL for this specific hotel in the searched location
-        bookingUrl: `https://www.booking.com/search.html?ss=Luxury+Resort+%26+Spa+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
+        // Real hotel image from Unsplash
+        image:
+          "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=400&h=250&fit=crop",
+        // Booking.com URL with location, dates and guests pre-filled
+        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=luxury-resort`,
       },
       {
         id: "ht-4",
@@ -180,9 +188,11 @@ exports.searchHotels = async (req, res) => {
         price: 79.99,
         currency: "USD",
         amenities: ["WiFi", "Parking"],
-        images: ["hotel4_img1.jpg"],
-        // Direct Booking.com URL for this specific hotel in the searched location
-        bookingUrl: `https://www.booking.com/search.html?ss=Budget+Stay+Inn+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
+        // Real hotel image from Unsplash
+        image:
+          "https://images.unsplash.com/photo-1455587734955-081b22074882?w=400&h=250&fit=crop",
+        // Booking.com URL with location, dates and guests pre-filled
+        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=budget-stay`,
       },
       {
         id: "ht-5",
@@ -193,9 +203,11 @@ exports.searchHotels = async (req, res) => {
         price: 129.99,
         currency: "USD",
         amenities: ["WiFi", "Restaurant", "Gym"],
-        images: ["hotel5_img1.jpg"],
-        // Direct Booking.com URL for this specific hotel in the searched location
-        bookingUrl: `https://www.booking.com/search.html?ss=City+Center+Hotel+${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}`,
+        // Real hotel image from Unsplash
+        image:
+          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=250&fit=crop",
+        // Booking.com URL with location, dates and guests pre-filled
+        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=city-center`,
       },
     ];
 
