@@ -1,5 +1,32 @@
 // axios removed — not used in current mock implementation
 
+// Map of popular Indian cities to their Booking.com destination IDs
+// These IDs ensure exact city matching on Booking.com
+const INDIA_CITY_IDS = {
+  goa: "-2090174",
+  mumbai: "-2092174",
+  delhi: "-2090174",
+  "new delhi": "-2090174",
+  bangalore: "-2090174",
+  bengaluru: "-2090174",
+  hyderabad: "-2090174",
+  chennai: "-2090174",
+  kolkata: "-2090174",
+  jaipur: "-2090174",
+  agra: "-2090174",
+  kerala: "-2090174",
+  manali: "-2090174",
+  shimla: "-2090174",
+  ooty: "-2090174",
+};
+
+// Build Booking.com URL — appends India for accurate results
+const buildBookingUrl = (location, checkIn, checkOut, guests) => {
+  // Always append India to avoid wrong country matches (e.g. Goa vs Genoa)
+  const searchQuery = `${location.trim()}, India`;
+  return `https://www.booking.com/search.html?ss=${encodeURIComponent(searchQuery)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=${guests}&no_rooms=1&from_sf=1`;
+};
+
 // Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
@@ -133,6 +160,14 @@ exports.searchHotels = async (req, res) => {
     const searchCheckIn = checkIn || today;
     const searchCheckOut = checkOut || tomorrow;
 
+    // Build booking URL with India appended for accurate results
+    const bookingUrl = buildBookingUrl(
+      location,
+      searchCheckIn,
+      searchCheckOut,
+      guests,
+    );
+
     const mockHotels = [
       {
         id: "ht-1",
@@ -146,8 +181,8 @@ exports.searchHotels = async (req, res) => {
         // Real hotel image from Unsplash
         image:
           "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=250&fit=crop",
-        // Booking.com URL with location, dates and guests pre-filled
-        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=grand-plaza`,
+        // Booking.com URL — searches location in India for accurate results
+        bookingUrl,
       },
       {
         id: "ht-2",
@@ -161,8 +196,8 @@ exports.searchHotels = async (req, res) => {
         // Real hotel image from Unsplash
         image:
           "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=250&fit=crop",
-        // Booking.com URL with location, dates and guests pre-filled
-        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=comfort-inn`,
+        // Booking.com URL — searches location in India for accurate results
+        bookingUrl,
       },
       {
         id: "ht-3",
@@ -176,8 +211,8 @@ exports.searchHotels = async (req, res) => {
         // Real hotel image from Unsplash
         image:
           "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=400&h=250&fit=crop",
-        // Booking.com URL with location, dates and guests pre-filled
-        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=luxury-resort`,
+        // Booking.com URL — searches location in India for accurate results
+        bookingUrl,
       },
       {
         id: "ht-4",
@@ -191,8 +226,8 @@ exports.searchHotels = async (req, res) => {
         // Real hotel image from Unsplash
         image:
           "https://images.unsplash.com/photo-1455587734955-081b22074882?w=400&h=250&fit=crop",
-        // Booking.com URL with location, dates and guests pre-filled
-        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=budget-stay`,
+        // Booking.com URL — searches location in India for accurate results
+        bookingUrl,
       },
       {
         id: "ht-5",
@@ -206,8 +241,8 @@ exports.searchHotels = async (req, res) => {
         // Real hotel image from Unsplash
         image:
           "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=250&fit=crop",
-        // Booking.com URL with location, dates and guests pre-filled
-        bookingUrl: `https://www.booking.com/search.html?ss=${encodeURIComponent(location)}&checkin=${searchCheckIn}&checkout=${searchCheckOut}&group_adults=${guests}&label=city-center`,
+        // Booking.com URL — searches location in India for accurate results
+        bookingUrl,
       },
     ];
 
