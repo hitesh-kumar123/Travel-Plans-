@@ -124,8 +124,30 @@ exports.updateProfile = async (req, res, next) => {
   try {
     const { name, email } = req.body;
     const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
+
+    if (name) {
+      if (!/^[A-Za-z\s]+$/.test(name) || name.trim().length < 2) {
+        return res.status(400).json({
+          msg: "Name must be at least 2 characters and contain only letters",
+        });
+      }
+      updateFields.name = name.trim().replace(/\s+/g, " ");
+    }
+
+    if (email) {
+      if (
+        !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+      ) {
+        return res.status(400).json({ msg: "Please enter a valid email" });
+      }
+
+      // Check if email is already taken by another account
+      const existingUser = await User.findOne({ email, _id: { $ne: req.user.id } });
+      if (existingUser) {
+        return res.status(400).json({ msg: "Email is already taken by another account." });
+      }
+      updateFields.email = email;
+    }
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
