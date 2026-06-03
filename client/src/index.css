@@ -68,3 +68,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: #ffffff;
   z-index: 2;
 }
+
+/* Dark mode overrides for MUI labels */
+[data-theme="dark"] .MuiTextField-root .MuiInputLabel-root {
+  background-color: #1a1e23;
+}
+
+[data-theme="dark"] .MuiTextField-root label[data-shrink="true"] {
+  background-color: #1a1e23;
+}

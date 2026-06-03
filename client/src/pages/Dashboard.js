@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useThemeMode } from "../ThemeContext";
 import {
   Routes,
   Route,
@@ -38,6 +39,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import ShieldIcon from "@mui/icons-material/Shield";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 
 import { logout } from "../redux/actions/authActions";
 
@@ -65,6 +69,7 @@ const Dashboard = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { preference, toggleTheme, isDark } = useThemeMode();
 
   const notifications = [
     {
@@ -325,7 +330,7 @@ const Dashboard = () => {
         sx={{
           flexGrow: 1,
           width: { md: `calc(100% - ${drawerWidth}px)` },
-          bgcolor: "grey.50",
+          bgcolor: isDark ? "background.default" : "grey.50",
         }}
       >
         <AppBar
@@ -348,6 +353,28 @@ const Dashboard = () => {
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip
+                title={`Theme: ${preference.charAt(0).toUpperCase() + preference.slice(1)}`}
+              >
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={toggleTheme}
+                  id="theme-toggle-btn"
+                  sx={{
+                    transition: "transform 0.3s ease",
+                    "&:hover": { transform: "rotate(30deg)" },
+                  }}
+                >
+                  {preference === "dark" ? (
+                    <DarkModeIcon />
+                  ) : preference === "light" ? (
+                    <LightModeIcon />
+                  ) : (
+                    <SettingsBrightnessIcon />
+                  )}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Notifications">
                 <IconButton
                   size="large"
