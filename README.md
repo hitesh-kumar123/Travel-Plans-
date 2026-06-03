@@ -1,10 +1,8 @@
-<div align="center">
+<div style="text-align:center;">
 
 # ✈️ PackGo — Smart Travel Planner
 
-<img src="assets/landing_page.png" alt="PackGo Landing Page" width="100%" style="border-radius: 12px;" />
-
-<br />
+<br/>
 
 [![MERN Stack](https://img.shields.io/badge/Stack-MERN-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -13,12 +11,14 @@
 [![CI Pipeline](https://img.shields.io/github/actions/workflow/status/DebasmitaBose0/Travel-Plans-/ci.yml?branch=main&style=for-the-badge&label=Build%20Check)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 [![Security Scan](https://img.shields.io/badge/Security-Audit--Audit-brightgreen?style=for-the-badge&logo=github-actions)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 
-<br />
+<br>
+
+<img src="assets/new-landing-page.png" alt="PackGo Landing Page" width="100%" />
 
 > **Plan trips. Track expenses. Check weather. Translate languages. Book flights & hotels.**  
 > All in one beautiful, full-stack travel companion.
 
-<br />
+<br>
 
 [🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
@@ -41,6 +41,7 @@
 - [🎨 Design Highlights](#-design-highlights)
 - [🔮 Future Enhancements](#-future-enhancements)
 - [🤝 Contributing](#-contributing)
+- [🌟 Contributors](#-contributors)
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
@@ -59,21 +60,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### 🏠 Landing Page & Dashboard
 
-|               Landing Page               |             Dashboard              |
-| :--------------------------------------: | :--------------------------------: |
-| ![Landing Page](assets/landing_page.png) | ![Dashboard](assets/dashboard.png) |
+|               Landing Page                   |             Dashboard                  |
+| :-----------------------------------------:  | :------------------------------------: |
+| ![Landing Page](assets/new-landing-page.png) | ![Dashboard](assets/new-dashboard.png) |
 
 ### 🗺️ Trip Detail & Expense Tracker
 
-|              Trip Detail               |                Expense Tracker                 |
+|              Trip Detail               |                Destinations                    |
 | :------------------------------------: | :--------------------------------------------: |
-| ![Trip Detail](assets/trip_detail.png) | ![Expense Tracker](assets/expense_tracker.png) |
-
-### 🌤️ Weather Forecast & Live Translator
-
-|                 Weather Forecast                 |                Live Translator                 |
-| :----------------------------------------------: | :--------------------------------------------: |
-| ![Weather Forecast](assets/weather_forecast.png) | ![Live Translator](assets/live_translator.png) |
+| ![Trip Detail](assets/photo1.png)      | ![Destinations](assets/photo1.png)             |
 
 ---
 
@@ -167,7 +162,7 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ## 📁 Project Structure
 
-```
+```bash
 travel-planner/
 ├── assets/                          # README screenshots
 │   ├── landing_page.png
@@ -559,6 +554,32 @@ git push origin feature/your-amazing-feature
 ```
 
 > **Good First Issues** are labelled [`good first issue`](../../issues?q=label%3A%22good+first+issue%22) — a great place to start! 🌱
+
+---
+
+## 💖 Contributors
+
+Thanks to all the amazing people who contribute to **Travel-Plans** 🚀
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors"/>
+  </a>
+</p>
+
+<br>
+
+## ⭐ Project Support
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/stargazers">
+    <img src="https://img.shields.io/github/stars/hitesh-kumar123/Travel-Plans-?style=social" alt="Stars">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/network/members">
+    <img src="https://img.shields.io/github/forks/hitesh-kumar123/Travel-Plans-?style=social" alt="Forks">
+  </a>
+</p>
 
 ---
 

@@ -105,11 +105,6 @@ We are proud to have dedicated mentors guiding our contributors throughout GSSoC
 - **GitHub:** [@Mrigakshi-Rathore](https://github.com/Mrigakshi-Rathore)
 - **LinkedIn:** [Mrigakshi Rathore](https://www.linkedin.com/in/mrigakshi-rathore/)
 
-### 🌟 Ankush Singh
-
-- **Role:** GSSoC'26 Mentor
-- **GitHub:** [@whyankush07](https://github.com/whyankush07)
-- **LinkedIn:** [Ankush Singh](https://www.linkedin.com/in/whyankush07/)
 
 ---
 
