@@ -145,8 +145,14 @@ exports.deleteTrip = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    // Also delete all expenses for this trip
+    // Also delete all expenses and packing lists for this trip
     await Expense.deleteMany({ trip: req.params.id });
+    try {
+      const PackingList = require("../models/PackingList");
+      await PackingList.deleteMany({ trip: req.params.id });
+    } catch (e) {
+      console.error("Failed to delete packing list:", e.message);
+    }
     await trip.deleteOne();
     res.json({ msg: "Trip removed" });
   } catch (err) {
