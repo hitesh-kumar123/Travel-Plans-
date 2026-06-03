@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/authActions";
@@ -26,7 +26,6 @@ import PrimaryButton from "../components/PrimaryButton";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -145,7 +144,7 @@ const Login = () => {
           <Typography variant="body2">Don't have an account? <Link component={RouterLink} to="/register" variant="subtitle2" sx={{ fontWeight: 600 }}>Get started</Link></Typography>
         </Box>
         <Box sx={{ mt: 4, textAlign: "center" }}>
-          <Typography variant="body2" color="text.secondary">© {new Date().getFullYear()} PackGo. All rights reserved.</Typography>
+          <Typography variant="body2" color="text.secondary">© 2026 PackGo. All rights reserved.</Typography>
         </Box>
       </Box>
     </Box>
