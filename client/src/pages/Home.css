@@ -143,6 +143,12 @@ html {
   pointer-events: none;
 }
 
+.wander-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .wander-hero-badge {
   display: inline-flex;
   align-items: center;
