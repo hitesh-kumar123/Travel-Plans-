@@ -144,6 +144,14 @@ html {
 }
 
 /*.wander-hero-badge {
+=======
+.wander-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wander-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;

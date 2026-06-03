@@ -8,6 +8,7 @@ import {
   EXPENSE_ERROR,
   CLEAR_EXPENSES,
   SET_LOADING,
+  GET_CURRENCY_RATES,
 } from "../types/expenseTypes";
 
 const initialState = {
@@ -17,6 +18,8 @@ const initialState = {
   expenseSummary: null,
   loading: false,
   error: null,
+  exchangeRates: {},
+  baseCurrency: "INR",
 };
 
 export default function expenseReducer(state = initialState, action) {
@@ -86,6 +89,12 @@ export default function expenseReducer(state = initialState, action) {
         currentExpense: null,
         expenseSummary: null,
         loading: false,
+      };
+    case GET_CURRENCY_RATES:
+      return {
+        ...state,
+        baseCurrency: action.payload.base,
+        exchangeRates: action.payload.rates,
       };
     default:
       return state;

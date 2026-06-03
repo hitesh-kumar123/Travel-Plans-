@@ -32,7 +32,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import WarningIcon from "@mui/icons-material/Warning";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -40,6 +39,7 @@ import {
   Pie,
   Cell,
   Tooltip as ReTooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -47,6 +47,7 @@ import {
   addExpense,
   deleteExpense,
   getExpenseSummary,
+  fetchCurrencyRates,
 } from "../../redux/actions/expenseActions";
 import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -69,14 +70,40 @@ const CATEGORY_COLORS = {
   Other: "#f56565",
 };
 
+const CURRENCIES = ["INR", "USD", "EUR", "GBP", "JPY", "AED", "SGD", "AUD"];
+
+const CURRENCY_SYMBOLS = {
+  INR: "₹",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  AED: "د.إ",
+  SGD: "S$",
+  AUD: "A$",
+};
+
+const CHART_COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#a855f7",
+  "#f56565",
+];
+
 const ExpensesView = () => {
   const dispatch = useDispatch();
-  const { expenses, loading } = useSelector((state) => state.expenses);
+
+  const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
+    (state) => state.expenses,
+  );
   const { trips } = useSelector((state) => state.trips);
 
   const [activeTripId, setActiveTripId] = useState("");
   const [open, setOpen] = useState(false);
   const [amountError, setAmountError] = useState("");
+  const [selectedBase, setSelectedBase] = useState("INR");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
@@ -105,11 +132,50 @@ const ExpensesView = () => {
     }
   }, [dispatch, activeTripId]);
 
+  // Fetch exchange rates whenever user changes base currency.
+  // Always fetches with base=INR so all rates are "1 INR = X currency",
+  // which lets us convert between any two currencies using INR as pivot.
+  useEffect(() => {
+    dispatch(fetchCurrencyRates(selectedBase));
+  }, [dispatch, selectedBase]);
+
+  // Converts any amount from its stored currency to the user's baseCurrency.
+  // Uses INR as a pivot: amount → INR → baseCurrency
+  const toBase = (amount, currency) => {
+    if (currency === baseCurrency) return amount;
+    if (!exchangeRates || Object.keys(exchangeRates).length === 0)
+      return amount;
+
+    let amountInINR;
+    if (currency === "INR") {
+      amountInINR = amount;
+    } else {
+      const rateToINR = exchangeRates[currency];
+      if (!rateToINR) return amount;
+      amountInINR = amount / rateToINR;
+    }
+
+    if (baseCurrency === "INR") return amountInINR.toFixed(2);
+    const rateToBase = exchangeRates[baseCurrency];
+    if (!rateToBase) return amount;
+    return (amountInINR * rateToBase).toFixed(2);
+  };
+
+  const currencySymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
+
   const totalSpent = expenses
-    ? expenses.reduce((acc, e) => acc + e.amount, 0)
+    ? expenses.reduce(
+        (acc, e) => acc + parseFloat(toBase(e.amount, e.currency)),
+        0,
+      )
     : 0;
+
   const activeTrip = trips?.find((t) => t._id === activeTripId);
-  const budget = activeTrip?.budget || 0;
+
+  // Budget is stored in INR in the Trip model, so convert it to baseCurrency
+  const rawBudget = activeTrip?.budget || 0;
+  const budget = rawBudget > 0 ? parseFloat(toBase(rawBudget, "INR")) : 0;
+
   const remaining = budget > 0 ? budget - totalSpent : null;
 
   // Filter and Search logic
@@ -297,6 +363,27 @@ const ExpensesView = () => {
         </Box>
       </Box>
 
+      {/* Base Currency Selector */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          Display totals in:
+        </Typography>
+        <TextField
+          select
+          size="small"
+          value={selectedBase}
+          onChange={(e) => setSelectedBase(e.target.value)}
+          sx={{ width: 120 }}
+        >
+          {CURRENCIES.map((c) => (
+            <MenuItem key={c} value={c}>
+              {CURRENCY_SYMBOLS[c]} {c}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
+      {/* Trip Selector */}
       {/* Select Trip Panel */}
       {trips && trips.length > 0 && (
         <Paper
@@ -436,28 +523,15 @@ const ExpensesView = () => {
               },
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 1,
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                sx={{ opacity: 0.85, fontWeight: 600 }}
-              >
-                Total Expenses
-              </Typography>
-              <WalletIcon sx={{ opacity: 0.8 }} />
-            </Box>
-            <Typography
-              variant="h3"
-              fontWeight={800}
-              sx={{ letterSpacing: "-1px" }}
-            >
-              ₹{totalSpent.toLocaleString()}
+            <WalletIcon sx={{ mb: 1, opacity: 0.8 }} />
+            <Typography variant="body2" sx={{ opacity: 0.85 }}>
+              Total Spent
+            </Typography>
+            <Typography variant="h5" fontWeight={700}>
+              {currencySymbol}
+              {totalSpent.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
             </Typography>
             <Typography
               variant="caption"
@@ -481,40 +555,14 @@ const ExpensesView = () => {
               boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 1,
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                fontWeight={600}
-              >
-                Allocated Budget
-              </Typography>
-              <Box
-                sx={{
-                  p: 0.75,
-                  borderRadius: 2,
-                  bgcolor: "rgba(72, 187, 120, 0.1)",
-                  color: "#48bb78",
-                  display: "flex",
-                }}
-              >
-                <CheckCircleIcon sx={{ fontSize: 18 }} />
-              </Box>
-            </Box>
-            <Typography
-              variant="h3"
-              fontWeight={800}
-              color="text.primary"
-              sx={{ letterSpacing: "-1px" }}
-            >
-              {budget > 0 ? `₹${budget.toLocaleString()}` : "—"}
+            <WalletIcon sx={{ mb: 1, color: "success.main" }} />
+            <Typography variant="body2" color="text.secondary">
+              Budget
+            </Typography>
+            <Typography variant="h5" fontWeight={700} color="success.main">
+              {budget > 0
+                ? `${currencySymbol}${budget.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
             <Typography
               variant="caption"
@@ -588,7 +636,9 @@ const ExpensesView = () => {
               }
               sx={{ letterSpacing: "-1px" }}
             >
-              {remaining !== null ? `₹${remaining.toLocaleString()}` : "—"}
+              {remaining !== null
+                ? `${currencySymbol}${remaining.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
             <Typography
               variant="caption"
@@ -767,11 +817,24 @@ const ExpensesView = () => {
                         >
                           {expense.description || "—"}
                         </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{ fontWeight: 700, color: "text.primary", py: 2 }}
-                        >
-                          ₹{expense.amount.toLocaleString()}
+                        <TableCell align="right" sx={{ fontWeight: 700 }}>
+                          {CURRENCY_SYMBOLS[expense.currency] ||
+                            expense.currency}
+                          {expense.amount.toLocaleString()}
+                          {expense.currency !== baseCurrency && (
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              color="text.secondary"
+                            >
+                              ≈ {currencySymbol}
+                              {parseFloat(
+                                toBase(expense.amount, expense.currency),
+                              ).toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              })}
+                            </Typography>
+                          )}
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
                           <Tooltip title="Delete Expense">
@@ -856,117 +919,33 @@ const ExpensesView = () => {
               Spending Allocation
             </Typography>
             {chartData.length > 0 ? (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="48%"
-                      innerRadius={65}
-                      outerRadius={90}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ReTooltip
-                      contentStyle={{
-                        background: "rgba(255, 255, 255, 0.95)",
-                        borderRadius: 12,
-                        border: "1px solid rgba(224, 224, 224, 0.5)",
-                        boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-                        fontFamily: "Poppins",
-                      }}
-                      itemStyle={{ fontFamily: "Poppins", fontWeight: 600 }}
-                      formatter={(value) => [
-                        `₹${value.toLocaleString()}`,
-                        "Amount",
-                      ]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-
-                {/* Legend list with custom styled percentages */}
-                <Box
-                  sx={{
-                    mt: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1.5,
-                  }}
-                >
-                  {chartData.map((d, idx) => {
-                    const percent = Math.round((d.value / totalSpent) * 100);
-                    return (
-                      <Box
-                        key={idx}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1.5,
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              width: 12,
-                              height: 12,
-                              borderRadius: "50%",
-                              bgcolor: d.color,
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            fontWeight={600}
-                            color="text.primary"
-                          >
-                            {d.name}
-                          </Typography>
-                        </Box>
-                        <Box
-                          sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                        >
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            fontWeight={500}
-                          >
-                            ₹{d.value.toLocaleString()}
-                          </Typography>
-                          <Chip
-                            label={`${percent}%`}
-                            size="small"
-                            sx={{
-                              fontSize: "0.7rem",
-                              fontWeight: 700,
-                              bgcolor: d.color + "12",
-                              color: d.color,
-                              height: 20,
-                              borderRadius: 1,
-                            }}
-                          />
-                        </Box>
-                      </Box>
-                    );
-                  })}
-                </Box>
-              </Box>
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={85}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <ReTooltip
+                    formatter={(value) => [
+                      `${currencySymbol}${value.toLocaleString()}`,
+                      "",
+                    ]}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
             ) : (
               <Box
                 sx={{
@@ -1075,7 +1054,7 @@ const ExpensesView = () => {
               <Grid item xs={12} sm={8}>
                 <TextField
                   fullWidth
-                  label="Amount (₹) *"
+                  label="Amount *"
                   type="number"
                   value={form.amount}
                   onChange={handleAmountChange}
@@ -1098,9 +1077,9 @@ const ExpensesView = () => {
                   }
                   slotProps={{ input: { style: { borderRadius: 12 } } }}
                 >
-                  {["INR", "USD", "EUR", "GBP"].map((c) => (
+                  {CURRENCIES.map((c) => (
                     <MenuItem key={c} value={c}>
-                      {c}
+                      {CURRENCY_SYMBOLS[c]} {c}
                     </MenuItem>
                   ))}
                 </TextField>
