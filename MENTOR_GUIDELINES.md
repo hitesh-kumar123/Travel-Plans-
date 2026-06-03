@@ -1,8 +1,10 @@
 # 🌟 GirlScript Summer of Code 2026 (GSSoC'26) - Mentor Guidelines
 
-Welcome to the official GSSoC'26 Mentor Guidelines for the **Travel Planner** project!
+Welcome to the official GSSoC'26 Mentor Guidelines for the **PackGo (Travel Planner)** project!
 
 As a mentor, your role is pivotal in shaping the future of young developers, encouraging open-source contribution, and maintaining high software quality standards. Thank you for your time, commitment, and dedication.
+
+> 📖 Also read: [GSSoC Official Mentor Guidelines](https://gssoc.girlscript.org/guidelines/mentor)
 
 ---
 
@@ -102,3 +104,13 @@ We are proud to have dedicated mentors guiding our contributors throughout GSSoC
 - **Role:** GSSoC'26 Mentor
 - **GitHub:** [@Mrigakshi-Rathore](https://github.com/Mrigakshi-Rathore)
 - **LinkedIn:** [Mrigakshi Rathore](https://www.linkedin.com/in/mrigakshi-rathore/)
+
+
+---
+
+### 🚀 Project Admin
+
+### Hitesh Kumar
+
+- **Role:** Project Admin & Maintainer
+- **GitHub:** [@hitesh-kumar123](https://github.com/hitesh-kumar123)

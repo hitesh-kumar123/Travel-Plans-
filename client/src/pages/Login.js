@@ -29,7 +29,7 @@ const Login = () => {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -82,51 +82,72 @@ const Login = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", bgcolor: "background.default", p: 2 }}>
-      <Paper elevation={3} sx={{ p: 4, width: "100%", maxWidth: isMobile ? 320 : 400, borderRadius: 3 }}>
-        <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 700 }}>
-          Sign In
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField fullWidth margin="normal" label="Email Address" name="email" value={formData.email} onChange={handleChange} />
-          <TextField fullWidth margin="normal" label="Password" name="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={toggleShowPassword} edge="end">
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: isMobile ? "column" : "row", bgcolor: "background.default" }}>
+      {!isMobile && (
+        <Box sx={{ flex: 1, backgroundImage: "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)", backgroundSize: "cover", backgroundPosition: "center", position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+          <Box sx={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, backgroundColor: "rgba(0, 0, 0, 0.4)", backdropFilter: "blur(2px)" }} />
+          <Box sx={{ position: "relative", p: 6, color: "white" }}>
+            <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 2 }}>PackGo</Typography>
+            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>Your ultimate companion for discovering and planning your dream adventures</Typography>
+          </Box>
+        </Box>
+      )}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", p: 4, width: "100%" }}>
+        <Paper elevation={isMobile ? 1 : 3} sx={{ p: 4, width: "100%", maxWidth: 400, borderRadius: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 700, mb: 1 }}>Welcome Back</Typography>
+          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>Sign in to continue to PackGo</Typography>
+          
+          <form onSubmit={handleSubmit}>
+            <TextField fullWidth margin="normal" label="Email Address" name="email" value={formData.email} onChange={handleChange} sx={{ mb: 2 }} />
+            <TextField fullWidth margin="normal" label="Password" name="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleChange} sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowPassword} edge="end">
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+              <FormControlLabel control={<Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} color="primary" />} label="Remember me" />
+              <Link component={RouterLink} to="/forgot-password" variant="body2">Forgot password?</Link>
+            </Box>
+            
+            <PrimaryButton type="submit" fullWidth size="large" sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }} endIcon={<LoginIcon />}>
+              Sign In
+            </PrimaryButton>
+            
+            <Divider sx={{ my: 3 }}><Typography variant="body2" color="text.secondary">OR</Typography></Divider>
+            
+            <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}><div id="google-signin-btn" /></Box>
+            
+            <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}>
+              <Tooltip title="Facebook login is currently unavailable" arrow>
+                <span>
+                  <IconButton sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5, color: "#4267B2", opacity: 0.5, cursor: "not-allowed", pointerEvents: "auto" }} onClick={(e) => e.preventDefault()}>
+                    <FacebookIcon />
                   </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3, mt: 1 }}>
-            <FormControlLabel control={<Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} color="primary" />} label="Remember me" />
-            <Link component={RouterLink} to="/forgot-password" variant="body2">Forgot password?</Link>
-          </Box>
-          <PrimaryButton type="submit" fullWidth size="large" sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }} endIcon={<LoginIcon />}>
-            Sign In
-          </PrimaryButton>
-          <Divider sx={{ my: 3 }}><Typography variant="body2" color="text.secondary">OR</Typography></Divider>
-          <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}><div id="google-signin-btn" /></Box>
-          <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}>
-            <Tooltip title="Facebook login is currently unavailable" arrow>
-              <span>
-                <IconButton sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5, color: "#4267B2", opacity: 0.5, cursor: "not-allowed", pointerEvents: "auto" }} onClick={(e) => e.preventDefault()}>
-                  <FacebookIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title="Twitter login is currently unavailable" arrow>
-              <span>
-                <IconButton sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5, color: "#1DA1F2", opacity: 0.5, cursor: "not-allowed", pointerEvents: "auto" }} onClick={(e) => e.preventDefault()}>
-                  <TwitterIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Box>
-        </form>
-      </Paper>
+                </span>
+              </Tooltip>
+              <Tooltip title="Twitter login is currently unavailable" arrow>
+                <span>
+                  <IconButton sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5, color: "#1DA1F2", opacity: 0.5, cursor: "not-allowed", pointerEvents: "auto" }} onClick={(e) => e.preventDefault()}>
+                    <TwitterIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </Box>
+          </form>
+        </Paper>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Typography variant="body2">Don't have an account? <Link component={RouterLink} to="/register" variant="subtitle2" sx={{ fontWeight: 600 }}>Get started</Link></Typography>
+        </Box>
+        <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Typography variant="body2" color="text.secondary">© {new Date().getFullYear()} PackGo. All rights reserved.</Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };
