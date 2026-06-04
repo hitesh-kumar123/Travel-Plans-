@@ -13,7 +13,6 @@ import {
   Chip,
   LinearProgress,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import ExploreIcon from "@mui/icons-material/Explore";
 import WalletIcon from "@mui/icons-material/Wallet";
 import CheckCircleIcon from "@mui/icons-material/TaskAlt";
@@ -22,7 +21,7 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import HotelIcon from "@mui/icons-material/Hotel";
-import PrimaryButton from "../../components/PrimaryButton";
+import EmptyState from "../../components/EmptyState";
 import { getTrips } from "../../redux/actions/tripActions";
 import TripCountdownBadge from "../../components/TripCountdownBadge";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
@@ -364,31 +363,14 @@ const DashboardHome = () => {
         {loading ? (
           <LinearProgress sx={{ borderRadius: 2 }} />
         ) : tripsArr.length === 0 ? (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 5,
-              textAlign: "center",
-              borderRadius: 3,
-              border: "2px dashed",
-              borderColor: "divider",
-            }}
-          >
-            <FlightTakeoffIcon
-              sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
-            />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No trips yet
-            </Typography>
-            <PrimaryButton
-              component={Link}
-              to="/dashboard/trips"
-              startIcon={<AddIcon />}
-              sx={{ mt: 1 }}
-            >
-              Plan Your First Trip
-            </PrimaryButton>
-          </Paper>
+          <EmptyState
+            type="trips"
+            title="No Trips Yet"
+            description="Start planning your next adventure by creating your first trip."
+            ctaText="Create Your First Trip"
+            component={Link}
+            to="/dashboard/trips"
+          />
         ) : (
           <Grid container spacing={3}>
             {(upcomingTrips.length > 0

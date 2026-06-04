@@ -176,6 +176,29 @@ exports.shareTrip = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+exports.disableSharing = async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+
+    if (!trip) {
+      return res.status(404).json({ msg: "Trip not found" });
+    }
+
+    if (trip.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    trip.shareEnabled = false;
+    trip.shareToken = null;
+
+    await trip.save();
+
+    res.json({ msg: "Trip sharing disabled" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
 
 // View shared trip (public, no auth needed)
 exports.getSharedTrip = async (req, res) => {
@@ -184,7 +207,18 @@ exports.getSharedTrip = async (req, res) => {
     if (!trip || !trip.shareEnabled)
       return res.status(404).json({ msg: "Shared trip not found or disabled" });
 
-    res.json(trip);
+    res.json({
+      destination: trip.destination,
+      images: trip.images,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      description: trip.description,
+      budget: trip.budget,
+      status: trip.status,
+      activities: trip.activities,
+      accommodation: trip.accommodation,
+      transportation: trip.transportation,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

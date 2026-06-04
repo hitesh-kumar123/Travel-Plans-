@@ -38,4 +38,6 @@ router.delete("/:id", auth, tripController.deleteTrip);
 // @access  Private
 router.post("/:id/share", auth, tripController.shareTrip);
 
+router.post("/:id/unshare", auth, tripController.disableSharing);
+
 module.exports = router;

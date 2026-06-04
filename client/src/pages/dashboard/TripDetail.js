@@ -39,6 +39,8 @@ import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import EmptyState from "../../components/EmptyState";
 import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
 import {
   getTrip,
@@ -84,6 +86,13 @@ const TripDetail = () => {
   const [shareLink, setShareLink] = useState("");
   const [shareLoading, setShareLoading] = useState(false);
   const [budgetOpen, setBudgetOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [activityForm, setActivityForm] = useState({
+    name: "",
+    date: "",
+    location: "",
+    notes: "",
+  });
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -163,6 +172,33 @@ const TripDetail = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+  };
+
+  const handleAddActivity = (e) => {
+    e.preventDefault();
+    if (!activityForm.name.trim()) return;
+    const newActivity = {
+      name: activityForm.name.trim(),
+      date: activityForm.date ? new Date(activityForm.date) : undefined,
+      location: activityForm.location.trim(),
+      notes: activityForm.notes.trim(),
+    };
+    const updatedActivities = [...(currentTrip.activities || []), newActivity];
+    dispatch(updateTrip(id, { ...currentTrip, activities: updatedActivities }));
+    setActivityOpen(false);
+    setActivityForm({
+      name: "",
+      date: "",
+      location: "",
+      notes: "",
+    });
+  };
+
+  const handleDeleteActivity = (activityId) => {
+    const updatedActivities = currentTrip.activities.filter(
+      (act) => act._id !== activityId,
+    );
+    dispatch(updateTrip(id, { ...currentTrip, activities: updatedActivities }));
   };
 
   const handleEditTrip = (e) => {
@@ -573,6 +609,155 @@ const TripDetail = () => {
               )}
             </Paper>
           )}
+
+          {/* Activities Checklist */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              mb: 3,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2.5,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CalendarMonthIcon color="primary" />
+                <Typography variant="subtitle1" fontWeight={700}>
+                  Trip Activities & Itinerary
+                </Typography>
+              </Box>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<AddIcon />}
+                onClick={() => setActivityOpen(true)}
+                sx={{ borderRadius: 2 }}
+              >
+                Add Activity
+              </Button>
+            </Box>
+
+            {currentTrip.activities && currentTrip.activities.length > 0 ? (
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {currentTrip.activities.map((act) => (
+                  <Paper
+                    key={act._id}
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      borderRadius: 2.5,
+                      borderColor: "grey.200",
+                      position: "relative",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                        borderColor: "primary.light",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                      }}
+                    >
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteActivity(act._id)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={700}
+                      sx={{ pr: 4 }}
+                    >
+                      {act.name}
+                    </Typography>
+
+                    <Box
+                      sx={{ display: "flex", gap: 2, flexWrap: "wrap", mt: 1 }}
+                    >
+                      {act.date && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                          }}
+                        >
+                          <DateRangeIcon
+                            sx={{ fontSize: 16, color: "text.secondary" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(act.date).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </Typography>
+                        </Box>
+                      )}
+                      {act.location && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                          }}
+                        >
+                          <PlaceIcon
+                            sx={{ fontSize: 16, color: "text.secondary" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            {act.location}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+
+                    {act.notes && (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          mt: 1,
+                          pl: 1,
+                          borderLeft: "2px solid",
+                          borderColor: "grey.200",
+                        }}
+                      >
+                        {act.notes}
+                      </Typography>
+                    )}
+                  </Paper>
+                ))}
+              </Box>
+            ) : (
+              <Box sx={{ py: 2 }}>
+                <EmptyState
+                  type="activities"
+                  title="No Activities Added"
+                  description="Add activities to organize and enrich your travel experience."
+                  ctaText="Add Activity"
+                  onCtaClick={() => setActivityOpen(true)}
+                />
+              </Box>
+            )}
+          </Paper>
         </Grid>
 
         {/* Right Column: Expenses */}
@@ -796,6 +981,87 @@ const TripDetail = () => {
           <Button onClick={() => setExpenseOpen(false)}>Cancel</Button>
           <Button onClick={handleAddExpense} variant="contained">
             Save Expense
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add Activity Dialog */}
+      <Dialog
+        open={activityOpen}
+        onClose={() => setActivityOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontWeight: 700 }}>
+          📌 Add Activity to Itinerary
+        </DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            onSubmit={handleAddActivity}
+            sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 2.5 }}
+          >
+            <TextField
+              fullWidth
+              label="Activity Name *"
+              required
+              value={activityForm.name}
+              onChange={(e) =>
+                setActivityForm({ ...activityForm, name: e.target.value })
+              }
+              placeholder="e.g. Visit Eiffel Tower"
+            />
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Date"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  value={activityForm.date}
+                  onChange={(e) =>
+                    setActivityForm({ ...activityForm, date: e.target.value })
+                  }
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Location"
+                  value={activityForm.location}
+                  onChange={(e) =>
+                    setActivityForm({
+                      ...activityForm,
+                      location: e.target.value,
+                    })
+                  }
+                  placeholder="e.g. Paris, France"
+                />
+              </Grid>
+            </Grid>
+            <TextField
+              fullWidth
+              label="Notes"
+              multiline
+              rows={3}
+              value={activityForm.notes}
+              onChange={(e) =>
+                setActivityForm({ ...activityForm, notes: e.target.value })
+              }
+              placeholder="e.g. Entrance ticket bought online, slots at 2:00 PM."
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setActivityOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleAddActivity}
+            variant="contained"
+            disabled={!activityForm.name.trim()}
+          >
+            Save Activity
           </Button>
         </DialogActions>
       </Dialog>

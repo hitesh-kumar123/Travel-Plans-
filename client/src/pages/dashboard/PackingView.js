@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import EmptyState from "../../components/EmptyState";
 import {
   fetchPackingList,
   addPackingItem,
@@ -215,40 +217,15 @@ const PackingView = () => {
   // ── Empty trips guard ──────────────────────────────────────────────────────
   if (!trips || trips.length === 0) {
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight={460}
-        gap={2}
-        sx={{ textAlign: "center", px: 3 }}
-      >
-        <Box
-          sx={{
-            width: 120,
-            height: 120,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mb: 1,
-          }}
-        >
-          <LuggageIcon sx={{ fontSize: 56, color: "#6366f1" }} />
-        </Box>
-        <Typography variant="h5" fontWeight={700} color="text.primary">
-          No active trips found
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ maxWidth: 360 }}
-        >
-          Create your first trip inside the planner board, then come back to
-          build your packing checklist here.
-        </Typography>
+      <Box sx={{ py: 8, px: 3 }}>
+        <EmptyState
+          type="generic"
+          title="No Active Trips Found"
+          description="Create your first trip inside the planner board, then come back to build your packing checklist here."
+          ctaText="Plan Your First Trip"
+          component={Link}
+          to="/dashboard/trips"
+        />
       </Box>
     );
   }

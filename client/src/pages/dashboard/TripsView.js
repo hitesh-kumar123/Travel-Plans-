@@ -21,10 +21,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
 import PrimaryButton from "../../components/PrimaryButton";
+import EmptyState from "../../components/EmptyState";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 
@@ -379,30 +379,19 @@ const TripsView = () => {
           })
         ) : (
           <Grid xs={12}>
-            <Paper
-              sx={{
-                p: 6,
-                textAlign: "center",
-                borderRadius: 4,
-                border: "2px dashed",
-                borderColor: "divider",
-              }}
-              elevation={0}
-            >
-              <FlightTakeoffIcon
-                sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
-              />
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                {filter === "all" ? "No trips yet!" : `No ${filter} trips`}
-              </Typography>
-              <PrimaryButton
-                startIcon={<AddIcon />}
-                onClick={() => setOpen(true)}
-                sx={{ mt: 1 }}
-              >
-                Plan Your First Trip
-              </PrimaryButton>
-            </Paper>
+            <EmptyState
+              type="trips"
+              title={filter === "all" ? "No Trips Yet" : `No ${filter} Trips`}
+              description={
+                filter === "all"
+                  ? "Start planning your next adventure by creating your first trip."
+                  : `You have no ${filter} trips scheduled.`
+              }
+              ctaText={
+                filter === "all" ? "Create Your First Trip" : "Plan a New Trip"
+              }
+              onCtaClick={() => setOpen(true)}
+            />
           </Grid>
         )}
       </Grid>
