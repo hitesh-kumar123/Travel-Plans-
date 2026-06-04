@@ -105,6 +105,7 @@ const Contact = () => {
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           gap: "24px",
           alignItems: "start",
+          textAlign: "left",
         }}
       >
         {/* Contact Information */}
@@ -142,11 +143,12 @@ const Contact = () => {
                 style={{
                   display: "flex",
                   gap: "14px",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   padding: "14px 16px",
                   background: "#f8fafc",
                   borderRadius: "12px",
                   border: "1px solid #e8eef3",
+                  textAlign: "left",
                 }}
               >
                 <div
@@ -159,6 +161,7 @@ const Contact = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
+                    marginTop: "2px",
                   }}
                 >
                   <Icon
@@ -169,13 +172,14 @@ const Contact = () => {
                   />
                 </div>
 
-                <div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <h4
                     style={{
                       margin: "0 0 2px",
                       color: "#1a4a6b",
                       fontSize: "0.9rem",
                       fontWeight: 600,
+                      textAlign: "left",
                     }}
                   >
                     {label}
@@ -186,6 +190,7 @@ const Contact = () => {
                       color: "#64748b",
                       fontSize: "0.9rem",
                       lineHeight: 1.4,
+                      textAlign: "left",
                     }}
                   >
                     {value}
@@ -222,7 +227,7 @@ const Contact = () => {
                 gap: "8px",
               }}
             >
-              {businessHours.map(({ day, hours }) => (
+              {businessHours.map(({ day, hours }, index) => (
                 <div
                   key={day}
                   style={{
@@ -231,14 +236,30 @@ const Contact = () => {
                     alignItems: "center",
                     gap: "12px",
                     padding: "6px 0",
-                    borderBottom: "1px solid #e8eef3",
+                    borderBottom:
+                      index < businessHours.length - 1
+                        ? "1px solid #e8eef3"
+                        : "none",
                     fontSize: "0.875rem",
+                    textAlign: "left",
                   }}
                 >
-                  <span style={{ color: "#1a4a6b", fontWeight: 500 }}>
+                  <span
+                    style={{
+                      color: "#1a4a6b",
+                      fontWeight: 500,
+                      textAlign: "left",
+                    }}
+                  >
                     {day}
                   </span>
-                  <span style={{ color: "#64748b", textAlign: "right" }}>
+                  <span
+                    style={{
+                      color: "#64748b",
+                      textAlign: "right",
+                      flexShrink: 0,
+                    }}
+                  >
                     {hours}
                   </span>
                 </div>
