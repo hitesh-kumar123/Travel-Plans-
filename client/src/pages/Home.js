@@ -5,6 +5,20 @@ import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+
+/* ── REVIEWS HELPERS ─────────────────────────────────────────── */
+const REVIEWS_KEY = "packgo_reviews";
+const loadReviews = () => {
+  try {
+    const stored = localStorage.getItem(REVIEWS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
+const saveReviews = (reviews) => {
+  localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+};
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -362,6 +376,29 @@ const Home = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const checkInRef = useRef(null);
+  // Reviews state
+  const [reviews, setReviews] = useState(loadReviews);
+  const [reviewForm, setReviewForm] = useState({ name: "", destination: "", rating: 5, text: "" });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewForm.name.trim() || !reviewForm.destination.trim() || !reviewForm.text.trim()) return;
+    const newReview = {
+      ...reviewForm,
+      id: Date.now(),
+      date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long" }),
+      initials: reviewForm.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2),
+    };
+    const updated = [newReview, ...reviews];
+    setReviews(updated);
+    saveReviews(updated);
+    setReviewForm({ name: "", destination: "", rating: 5, text: "" });
+    setReviewSubmitted(true);
+    setShowReviewForm(false);
+    setTimeout(() => setReviewSubmitted(false), 4000);
+  };
 
   useEffect(() => {
     api
@@ -878,6 +915,115 @@ const Home = () => {
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
+      {/* ═══ TRAVELLER REVIEWS ═══ */}
+      <section className="packgo-reviews-section" id="traveller-reviews">
+        <div className="packgo-reviews-header">
+          <div className="wander-testi-label">Community Reviews</div>
+          <h2 className="packgo-reviews-title">What Our Travellers Say</h2>
+          <p className="packgo-reviews-subtitle">
+            Real experiences from real travellers — share yours too!
+          </p>
+        </div>
+
+        {/* Success message */}
+        {reviewSubmitted && (
+          <div className="packgo-review-success">
+            ✅ Thank you! Your review has been posted.
+          </div>
+        )}
+
+        {/* Write a review toggle */}
+        <div className="packgo-reviews-actions">
+          <button
+            className="packgo-write-review-btn"
+            onClick={() => setShowReviewForm((v) => !v)}
+          >
+            {showReviewForm ? "✕ Cancel" : "✍️ Write a Review"}
+          </button>
+        </div>
+
+        {/* Review submission form */}
+        {showReviewForm && (
+          <form className="packgo-review-form" onSubmit={handleReviewSubmit}>
+            <div className="packgo-form-row">
+              <div className="packgo-form-group">
+                <label>Your Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Priya Sharma"
+                  value={reviewForm.name}
+                  onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="packgo-form-group">
+                <label>Destination Visited</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Santorini, Greece"
+                  value={reviewForm.destination}
+                  onChange={(e) => setReviewForm({ ...reviewForm, destination: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+            <div className="packgo-form-group">
+              <label>Star Rating</label>
+              <div className="packgo-star-picker">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    className={`packgo-star-btn ${reviewForm.rating >= star ? "active" : ""}`}
+                    onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="packgo-form-group">
+              <label>Your Experience</label>
+              <textarea
+                placeholder="Tell us about your trip with PackGo..."
+                value={reviewForm.text}
+                onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                rows={4}
+                required
+              />
+            </div>
+            <button type="submit" className="packgo-submit-review-btn">
+              Post Review
+            </button>
+          </form>
+        )}
+
+        {/* Reviews grid */}
+        {reviews.length > 0 ? (
+          <div className="packgo-reviews-grid">
+            {reviews.map((r) => (
+              <div key={r.id} className="packgo-review-card">
+                <div className="packgo-review-top">
+                  <div className="packgo-review-avatar">{r.initials}</div>
+                  <div className="packgo-review-meta">
+                    <div className="packgo-review-name">{r.name}</div>
+                    <div className="packgo-review-destination">📍 {r.destination}</div>
+                  </div>
+                  <div className="packgo-review-date">{r.date}</div>
+                </div>
+                <div className="packgo-review-stars">
+                  {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}
+                </div>
+                <p className="packgo-review-text">"{r.text}"</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="packgo-no-reviews">
+            <p>No reviews yet — be the first to share your experience! 🌍</p>
+          </div>
+        )}
+      </section>
       <div className="wander-cta-section">
         <div className="wander-cta-text">
           <h2>

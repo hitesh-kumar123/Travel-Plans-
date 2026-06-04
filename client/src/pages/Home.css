@@ -1131,3 +1131,247 @@ html {
     height: 52px !important;
   }
 }
+/* ═══════════════════════════════════════════════════════════════
+   TRAVELLER REVIEWS SECTION
+═══════════════════════════════════════════════════════════════ */
+.packgo-reviews-section {
+  padding: 80px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.packgo-reviews-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.packgo-reviews-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--ocean);
+  margin: 8px 0;
+}
+
+.packgo-reviews-subtitle {
+  color: var(--mist);
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.packgo-reviews-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.packgo-write-review-btn {
+  background: var(--coral);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.packgo-write-review-btn:hover {
+  background: #d4614a;
+  transform: translateY(-2px);
+}
+
+.packgo-review-success {
+  text-align: center;
+  background: #e6f9f0;
+  color: #1a6b45;
+  border: 1px solid #b2dfcc;
+  border-radius: 12px;
+  padding: 14px 24px;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.packgo-review-form {
+  background: var(--white);
+  border: 1px solid #e0ddd5;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 48px;
+  box-shadow: 0 4px 24px rgba(26, 74, 107, 0.08);
+}
+
+.packgo-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .packgo-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.packgo-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.packgo-form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ocean);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.packgo-form-group input,
+.packgo-form-group textarea {
+  padding: 12px 16px;
+  border: 1.5px solid #ddd;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--dark);
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.packgo-form-group input:focus,
+.packgo-form-group textarea:focus {
+  border-color: var(--coral);
+  background: white;
+}
+
+.packgo-star-picker {
+  display: flex;
+  gap: 6px;
+}
+
+.packgo-star-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.packgo-star-btn.active {
+  color: #f5a623;
+}
+
+.packgo-star-btn:hover {
+  transform: scale(1.2);
+}
+
+.packgo-submit-review-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--ocean);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.packgo-submit-review-btn:hover {
+  background: var(--dark);
+  transform: translateY(-2px);
+}
+
+.packgo-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.packgo-review-card {
+  background: var(--white);
+  border: 1px solid #e8e4da;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 2px 16px rgba(26, 74, 107, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.packgo-review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(26, 74, 107, 0.12);
+}
+
+.packgo-review-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.packgo-review-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--coral);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.packgo-review-meta {
+  flex: 1;
+}
+
+.packgo-review-name {
+  font-weight: 700;
+  color: var(--dark);
+  font-size: 0.95rem;
+}
+
+.packgo-review-destination {
+  font-size: 0.8rem;
+  color: var(--mist);
+  margin-top: 2px;
+}
+
+.packgo-review-date {
+  font-size: 0.75rem;
+  color: var(--mist);
+  white-space: nowrap;
+}
+
+.packgo-review-stars {
+  color: #f5a623;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.packgo-review-text {
+  color: var(--dark);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.packgo-no-reviews {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--mist);
+  font-size: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 20px;
+}
