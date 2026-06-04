@@ -34,18 +34,48 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const slides = [
+    {
+      image:
+        "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop",
+      title: "PackGo",
+      description:
+        "Your ultimate companion for discovering and planning your dream adventures",
+    },
+    {
+      image:
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1770&q=80",
+      title: "Explore",
+      description: "Discover breathtaking destinations around the world",
+    },
+    ,
+    {
+      image:
+        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1770&auto=format&fit=crop",
+      title: "Plan",
+      description: "Organize trips effortlessly and travel with confidence",
+    },
+  ];
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleGoogleCallback = (response) => {
     // Google Sign-In disabled in this commit since googleLogin action
@@ -174,10 +204,10 @@ const Login = () => {
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
+            backgroundImage: `url(${slides[currentSlide].image})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+            transition: "all 0.8s ease-in-out",
             position: "sticky",
             top: 0,
             height: "100vh",
@@ -204,12 +234,39 @@ const Login = () => {
               component="h1"
               sx={{ fontWeight: 700, mb: 2 }}
             >
-              PackGo
+              {slides[currentSlide].title}
             </Typography>
             <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Your ultimate companion for discovering and planning your dream
-              adventures
+              {slides[currentSlide].description}
             </Typography>
+            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
+              {slides[currentSlide].description}
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                mt: 2,
+              }}
+            >
+              {slides.map((_, index) => (
+                <Box
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    backgroundColor:
+                      currentSlide === index
+                        ? "white"
+                        : "rgba(255,255,255,0.5)",
+                  }}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
       )}
