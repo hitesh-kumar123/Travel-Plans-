@@ -19,6 +19,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/contact"; // ✅ ADDED
+import Wishlist from "./pages/Wishlist";
 import PrivateRoute from "./components/PrivateRoute";
 import { loadUser } from "./redux/actions/authActions";
 
@@ -51,6 +52,7 @@ function App() {
 
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
+              <Route path="/wishlist" element={<Wishlist />} />
 
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
