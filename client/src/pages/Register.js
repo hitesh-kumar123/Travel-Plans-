@@ -455,6 +455,8 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 4,
+          height: "100vh",
+          overflow: "auto",
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
