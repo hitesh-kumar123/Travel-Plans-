@@ -116,6 +116,19 @@ const sendEmail = async (options) => {
 
     return info;
   } catch (error) {
+    console.error("[sendEmail] SMTP send failed", {
+      to: options.email,
+      subject: options.subject,
+      host: activeTransporter.options?.host,
+      port: activeTransporter.options?.port,
+      secure: activeTransporter.options?.secure,
+      authUser: activeTransporter.options?.auth?.user,
+      message: error.message,
+      code: error.code,
+      response: error.response,
+      stack: error.stack,
+    });
+
     const wrappedError = new Error(
       `Failed to send email to ${options.email}: ${error.message}`,
     );

@@ -3,9 +3,33 @@
   margin: 40px auto;
   padding: 20px;
   line-height: 1.6;
-  color: #333;
+  color: #080101;
 }
-.legal-container h1 { color: #1976d2; margin-bottom: 20px; }
-.legal-container h2 { margin-top: 30px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-.legal-container ul { margin-left: 20px; }
-.faq-item { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+.legal-container h1 {
+  color: #1976d2;
+  background-color: orange;
+  margin-bottom: 20px;
+}
+.legal-container h2 {
+  margin-top: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  background-color: aquamarine;
+}
+.legal-container h3 {
+  margin-top: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  background-color: aquamarine;
+}
+
+.legal-container ul {
+  margin-left: 20px;
+  color: #1976d2;
+}
+.faq-item {
+  margin-bottom: 20px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
