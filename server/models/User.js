@@ -72,10 +72,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-      baseCurrency: {
-    type: String,
-    default: "INR",
-  },
+    baseCurrency: {
+      type: String,
+      default: "INR",
+    },
   },
   {
     toJSON: {
