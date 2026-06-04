@@ -122,15 +122,24 @@ exports.getProfile = async (req, res, next) => {
 // Update user profile
 exports.updateProfile = async (req, res, next) => {
   try {
-    const { name, email } = req.body;
+    const { name, baseCurrency } = req.body;
     const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
+    if (name !== undefined) {
+      updateFields.name = name.trim().replace(/\s+/g, " ");
+    }
+    if (baseCurrency !== undefined) {
+      updateFields.baseCurrency = baseCurrency;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      const user = await User.findById(req.user.id).select("-password");
+      return res.json(user);
+    }
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { $set: updateFields },
-      { new: true },
+      { new: true, runValidators: true },
     ).select("-password");
 
     res.json(user);
