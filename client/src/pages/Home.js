@@ -5,6 +5,7 @@ import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -357,6 +358,7 @@ const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -376,6 +378,13 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const savedSearches =
+      JSON.parse(localStorage.getItem("recentDestinationSearches")) || [];
+
+    setRecentSearches(savedSearches);
   }, []);
 
   useEffect(() => {
@@ -407,8 +416,34 @@ const Home = () => {
     navigate("/dashboard/trips");
   };
 
+  const saveRecentSearch = (destination) => {
+    const trimmedDestination = destination.trim();
+
+    if (!trimmedDestination) return;
+
+    const updatedSearches = [
+      trimmedDestination,
+      ...recentSearches.filter(
+        (item) => item.toLowerCase() !== trimmedDestination.toLowerCase(),
+      ),
+    ].slice(0, 5);
+
+    setRecentSearches(updatedSearches);
+    localStorage.setItem(
+      "recentDestinationSearches",
+      JSON.stringify(updatedSearches),
+    );
+  };
+
+  const clearRecentSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentDestinationSearches");
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
+    saveRecentSearch(where);
+
     document
       .getElementById("wander-dest-section")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -627,6 +662,7 @@ const Home = () => {
               onChange={(e) => setWhere(e.target.value)}
             />
           </div>
+
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
 
@@ -652,6 +688,7 @@ const Home = () => {
               </span>
             </div>
           </div>
+
           <div className="wander-sf">
             <div className="wander-sf-label">Travellers</div>
             <input
@@ -661,10 +698,42 @@ const Home = () => {
               onChange={(e) => setTravellers(e.target.value)}
             />
           </div>
+
           <button type="submit" className="wander-search-btn">
             <SearchIcon /> Search
           </button>
         </form>
+
+        {recentSearches.length > 0 && (
+          <div className="wander-recent-searches">
+            <div className="wander-recent-header">
+              <span>Recent Searches</span>
+              <button type="button" onClick={clearRecentSearches}>
+                Clear
+              </button>
+            </div>
+
+            <div className="wander-recent-list">
+              {recentSearches.map((item) => (
+                <button
+                  type="button"
+                  key={item}
+                  className="wander-recent-chip"
+                  onClick={() => {
+                    setWhere(item);
+                    saveRecentSearch(item);
+
+                    document
+                      .getElementById("wander-dest-section")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ═══ DESTINATIONS ═══ */}
@@ -942,7 +1011,6 @@ const Home = () => {
           </div>
 
           <div className="wander-footer-socials">
-            {/* Social media icons */}
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>

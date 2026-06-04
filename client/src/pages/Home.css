@@ -1125,3 +1125,56 @@ html {
     height: 52px !important;
   }
 }
+.wander-recent-searches {
+  max-width: 980px;
+  margin: 1rem auto 0;
+  padding: 0 1rem;
+}
+
+.wander-recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ocean);
+}
+
+.wander-recent-header button {
+  border: none;
+  background: transparent;
+  color: var(--coral);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wander-recent-header button:hover {
+  text-decoration: underline;
+}
+
+.wander-recent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.wander-recent-chip {
+  border: 1px solid rgba(26, 74, 107, 0.18);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ocean);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.wander-recent-chip:hover {
+  transform: translateY(-2px);
+  background: var(--white);
+  box-shadow: 0 8px 20px rgba(26, 74, 107, 0.12);
+}
