@@ -1,6 +1,6 @@
-const axios = require("axios");
+// axios removed — not used in current mock implementation
 
-// Search for flights
+// Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
     const {
@@ -9,6 +9,8 @@ exports.searchFlights = async (req, res) => {
       departureDate,
       returnDate,
       adults = 1,
+      minBudget,
+      maxBudget,
     } = req.body;
 
     if (!origin || !destination || !departureDate) {
@@ -17,8 +19,6 @@ exports.searchFlights = async (req, res) => {
       });
     }
 
-    // Normally you would use a real flight API here
-    // This is just a placeholder response for demonstration
     const mockFlights = [
       {
         id: "fl-1",
@@ -56,19 +56,67 @@ exports.searchFlights = async (req, res) => {
         price: 279.99,
         currency: "USD",
       },
+      {
+        id: "fl-4",
+        airline: "BudgetWings",
+        origin,
+        destination,
+        departureDate,
+        departureTime: "05:00",
+        arrivalTime: "07:30",
+        duration: "2h 30m",
+        price: 149.99,
+        currency: "USD",
+      },
+      {
+        id: "fl-5",
+        airline: "LuxeAir",
+        origin,
+        destination,
+        departureDate,
+        departureTime: "20:00",
+        arrivalTime: "22:30",
+        duration: "2h 30m",
+        price: 499.99,
+        currency: "USD",
+      },
     ];
 
-    res.json({ flights: mockFlights });
+    // Apply budget filters
+    let filteredFlights = mockFlights;
+
+    if (minBudget !== undefined && minBudget !== "") {
+      filteredFlights = filteredFlights.filter(
+        (f) => f.price >= Number(minBudget),
+      );
+    }
+    if (maxBudget !== undefined && maxBudget !== "") {
+      filteredFlights = filteredFlights.filter(
+        (f) => f.price <= Number(maxBudget),
+      );
+    }
+
+    res.json({ flights: filteredFlights });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
   }
 };
 
-// Search for hotels
+// Search for hotels with filters
 exports.searchHotels = async (req, res) => {
   try {
-    const { location, checkIn, checkOut, guests = 2, rooms = 1 } = req.body;
+    const {
+      location,
+      checkIn,
+      checkOut,
+      guests = 2,
+      rooms = 1,
+      minBudget,
+      maxBudget,
+      minRating,
+      amenities,
+    } = req.body;
 
     if (!location || !checkIn || !checkOut) {
       return res.status(400).json({
@@ -76,8 +124,6 @@ exports.searchHotels = async (req, res) => {
       });
     }
 
-    // Normally you would use a real hotel API here
-    // This is just a placeholder response for demonstration
     const mockHotels = [
       {
         id: "ht-1",
@@ -112,9 +158,59 @@ exports.searchHotels = async (req, res) => {
         amenities: ["WiFi", "Pool", "Spa", "Restaurant", "Bar", "Gym"],
         images: ["hotel3_img1.jpg", "hotel3_img2.jpg"],
       },
+      {
+        id: "ht-4",
+        name: "Budget Stay Inn",
+        location,
+        address: "321 Economy Road",
+        rating: 3.5,
+        price: 79.99,
+        currency: "USD",
+        amenities: ["WiFi", "Parking"],
+        images: ["hotel4_img1.jpg"],
+      },
+      {
+        id: "ht-5",
+        name: "City Center Hotel",
+        location,
+        address: "555 Downtown Ave",
+        rating: 4.0,
+        price: 129.99,
+        currency: "USD",
+        amenities: ["WiFi", "Restaurant", "Gym"],
+        images: ["hotel5_img1.jpg"],
+      },
     ];
 
-    res.json({ hotels: mockHotels });
+    let filteredHotels = mockHotels;
+
+    // Budget filter
+    if (minBudget !== undefined && minBudget !== "") {
+      filteredHotels = filteredHotels.filter(
+        (h) => h.price >= Number(minBudget),
+      );
+    }
+    if (maxBudget !== undefined && maxBudget !== "") {
+      filteredHotels = filteredHotels.filter(
+        (h) => h.price <= Number(maxBudget),
+      );
+    }
+
+    // Rating filter
+    if (minRating !== undefined && minRating !== "" && Number(minRating) > 0) {
+      filteredHotels = filteredHotels.filter(
+        (h) => h.rating >= Number(minRating),
+      );
+    }
+
+    // Amenities filter — hotel must have ALL selected amenities
+    if (amenities && amenities.length > 0) {
+      filteredHotels = filteredHotels.filter((h) =>
+        amenities.every((a) => h.amenities.includes(a)),
+      );
+    }
+
+    res.json({ hotels: filteredHotels });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -132,7 +228,6 @@ exports.bookFlight = async (req, res) => {
       });
     }
 
-    // Mock booking confirmation
     const bookingConfirmation = {
       bookingId: "BK" + Math.floor(Math.random() * 10000000),
       flightId,
@@ -160,7 +255,6 @@ exports.bookHotel = async (req, res) => {
       });
     }
 
-    // Mock booking confirmation
     const bookingConfirmation = {
       bookingId: "HB" + Math.floor(Math.random() * 10000000),
       hotelId,

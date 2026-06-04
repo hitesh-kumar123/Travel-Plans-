@@ -1,7 +1,13 @@
 import axios from "axios";
 
-// Standard professional approach: Strictly using environment variable
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+// Use the client environment variable when available.
+// In production, a missing REACT_APP_API_URL should still route through
+// the backend prefix at the same origin.
+const API_BASE =
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "/api"
+    : "http://localhost:5000/api");
 
 // Create an axios instance with defaults
 const api = axios.create({
@@ -31,5 +37,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
+export const getCurrencyRates = (base = "INR") =>
+  api.get(`/currency/rates?base=${base}`);
 export default api;

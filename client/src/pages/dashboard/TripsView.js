@@ -175,46 +175,49 @@ const TripsView = () => {
                   {...params}
                   label="Destination *"
                   name="destination"
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <React.Fragment>
-                        {loadingOpts ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </React.Fragment>
-                    ),
+                  slotProps={{
+                    ...params.slotProps,
+                    input: {
+                      ...params.slotProps?.input,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loadingOpts ? (
+                            <CircularProgress color="inherit" size={20} />
+                          ) : null}
+                          {params.slotProps?.input?.endAdornment}
+                        </React.Fragment>
+                      ),
+                    },
                   }}
                 />
               )}
             />
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   name="startDate"
                   label="Start Date *"
                   type="date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={formData.startDate}
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   name="endDate"
                   label="End Date *"
                   type="date"
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   value={formData.endDate}
                   onChange={handleChange}
                 />
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   name="budget"
@@ -224,7 +227,7 @@ const TripsView = () => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <TextField
                   fullWidth
                   select
@@ -264,7 +267,7 @@ const TripsView = () => {
       <Grid container spacing={3}>
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Grid item xs={12} md={6} lg={4} key={i}>
+            <Grid xs={12} md={6} lg={4} key={i}>
               <Paper sx={{ height: 280, borderRadius: 4 }} elevation={0} />
             </Grid>
           ))
@@ -278,7 +281,7 @@ const TripsView = () => {
                   )
                 : 0;
             return (
-              <Grid item xs={12} md={6} lg={4} key={trip._id}>
+              <Grid xs={12} md={6} lg={4} key={trip._id}>
                 <Card
                   elevation={0}
                   sx={{
@@ -375,7 +378,7 @@ const TripsView = () => {
             );
           })
         ) : (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Paper
               sx={{
                 p: 6,

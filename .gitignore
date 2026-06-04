@@ -26,3 +26,4 @@ coverage/
 *.log
 temp/
 tmp/
+".env.bak.*" 

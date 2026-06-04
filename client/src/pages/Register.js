@@ -45,6 +45,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
@@ -283,22 +284,24 @@ const Register = () => {
               onChange={handleChange}
               error={!!fieldErrors.password}
               helperText={fieldErrors.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={toggleShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={toggleShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ mb: 2 }}
             />
@@ -317,17 +320,24 @@ const Register = () => {
               sx={{ mb: 2 }}
             />
             <FormControlLabel
+              sx={{
+                alignItems: "flex-start", // Shifts the alignment anchor to the top line
+                mt: 1.5,
+              }}
               control={
                 <Checkbox
                   checked={formData.agreeTerms}
                   onChange={handleChange}
                   name="agreeTerms"
                   color="primary"
-                  required
+                  sx={{
+                    paddingTop: 0,
+                    marginTop: "-2px",
+                  }}
                 />
               }
               label={
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
                   I agree to the{" "}
                   <Link
                     component={RouterLink}
@@ -345,7 +355,8 @@ const Register = () => {
                     sx={{ fontWeight: 600 }}
                   >
                     Privacy Policy
-                  </Link>
+                  </Link>{" "}
+                  *
                 </Typography>
               }
             />
@@ -431,32 +442,6 @@ const Register = () => {
             <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
               Create an account to start planning your next adventure
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "white",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-            </Box>
           </Box>
         </Box>
       )}
@@ -473,7 +458,38 @@ const Register = () => {
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
+            {/* Back to Home */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: { xs: 0, sm: -20, md: -50, lg: -80 },
+                top: 0,
+              }}
+            >
+              <Link
+                component={RouterLink}
+                to="/"
+                variant="body2"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  backgroundColor: "background.paper",
+                  textDecoration: "none",
+                  transition: "0.2s ease",
+                  "&:hover": { backgroundColor: "action.hover" },
+                }}
+              >
+                <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
+              </Link>
+            </Box>
+
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
             </Typography>
