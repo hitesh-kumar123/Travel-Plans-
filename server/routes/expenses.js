@@ -18,6 +18,11 @@ router.post("/", auth, expenseController.createExpense);
 // @access  Private
 router.get("/trip/:tripId", auth, expenseController.getTripExpenses);
 
+// @route   GET api/expenses/analytics
+// @desc    Get analytics data
+// @access  Private
+router.get("/analytics", auth, expenseController.getAnalytics);
+
 // @route   GET api/expenses/:id
 // @desc    Get expense by ID
 // @access  Private

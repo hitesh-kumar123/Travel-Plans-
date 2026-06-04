@@ -1,3 +1,5 @@
+import ExpenseAnalytics from "../../components/ExpenseAnalytics";
+
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -329,23 +331,25 @@ const ExpensesView = () => {
         </Box>
         <Box sx={{ display: "flex", gap: 1.5, justifyContent: "flex-end" }}>
           <Tooltip title="Download CSV Report">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<FileDownloadIcon />}
-              onClick={handleExportCSV}
-              disabled={!activeTripId || !expenses || expenses.length === 0}
-              sx={{
-                borderRadius: 2.5,
-                fontWeight: 600,
-                textTransform: "none",
-                px: 2.5,
-                borderWidth: "1.5px",
-                "&:hover": { borderWidth: "1.5px" },
-              }}
-            >
-              Export Report
-            </Button>
+            <span>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<FileDownloadIcon />}
+                onClick={handleExportCSV}
+                disabled={!activeTripId || !expenses || expenses.length === 0}
+                sx={{
+                  borderRadius: 2.5,
+                  fontWeight: 600,
+                  textTransform: "none",
+                  px: 2.5,
+                  borderWidth: "1.5px",
+                  "&:hover": { borderWidth: "1.5px" },
+                }}
+              >
+                Export Report
+              </Button>
+            </span>
           </Tooltip>
           <PrimaryButton
             startIcon={<AddIcon />}
@@ -399,8 +403,8 @@ const ExpensesView = () => {
             boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
           }}
         >
-          <Grid container spacing={3} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={3} sx={{ alignItems: "center" }}>
+            <Grid xs={12} md={6}>
               <Typography
                 variant="subtitle2"
                 fontWeight={700}
@@ -435,7 +439,6 @@ const ExpensesView = () => {
             </Grid>
             {activeTrip && (
               <Grid
-                item
                 xs={12}
                 md={6}
                 sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}
@@ -500,7 +503,7 @@ const ExpensesView = () => {
       {/* Financial Status Summary */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {/* Total Spent Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -543,7 +546,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Budget Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -575,7 +578,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Remaining Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -663,7 +666,7 @@ const ExpensesView = () => {
       {/* Main Analytics Area */}
       <Grid container spacing={4}>
         {/* Expenses List & Filter Card */}
-        <Grid item xs={12} md={7.5}>
+        <Grid xs={12} md={7.5}>
           <Paper
             elevation={0}
             sx={{
@@ -896,7 +899,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Visual Analytics Pie Chart */}
-        <Grid item xs={12} md={4.5}>
+        <Grid xs={12} md={4.5}>
           <Paper
             elevation={0}
             sx={{
@@ -1141,6 +1144,9 @@ const ExpensesView = () => {
           </PrimaryButton>
         </DialogActions>
       </Dialog>
+      <Box sx={{ mt: 4 }}>
+        <ExpenseAnalytics activeTrip={activeTrip} />
+      </Box>
     </Box>
   );
 };

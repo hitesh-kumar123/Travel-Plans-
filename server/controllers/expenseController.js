@@ -182,22 +182,29 @@ exports.deleteExpense = async (req, res) => {
 };
 
 // Get expense summary by category for a trip
+
+// Get expense summary by category for a trip
 exports.getExpenseSummary = async (req, res) => {
   try {
     const { tripId } = req.params;
 
-    // Check if trip exists and belongs to user
     const tripExists = await Trip.findOne({
       _id: tripId,
       user: req.user.id,
     });
 
     if (!tripExists) {
-      return res.status(404).json({ msg: "Trip not found or unauthorized" });
+      return res.status(404).json({
+        msg: "Trip not found or unauthorized",
+      });
     }
 
     const summary = await Expense.aggregate([
-      { $match: { trip: new mongoose.Types.ObjectId(tripId) } },
+      {
+        $match: {
+          trip: new mongoose.Types.ObjectId(tripId),
+        },
+      },
       {
         $group: {
           _id: "$category",
@@ -205,15 +212,71 @@ exports.getExpenseSummary = async (req, res) => {
           count: { $sum: 1 },
         },
       },
-      { $sort: { totalAmount: -1 } },
+      {
+        $sort: {
+          totalAmount: -1,
+        },
+      },
     ]);
 
     res.json(summary);
   } catch (err) {
     console.error(err.message);
+
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return res.status(404).json({
+        msg: "Trip not found",
+      });
     }
+
     res.status(500).send("Server error");
+  }
+};
+
+// Analytics endpoint
+exports.getAnalytics = async (req, res) => {
+  try {
+    const expenses = await Expense.find({
+      user: req.user.id,
+    });
+
+    const categoryMap = {};
+
+    expenses.forEach((expense) => {
+      categoryMap[expense.category] =
+        (categoryMap[expense.category] || 0) + expense.amount;
+    });
+
+    const categoryData = Object.entries(categoryMap).map(([name, value]) => ({
+      name,
+      value,
+    }));
+
+    const dailyMap = {};
+
+    expenses.forEach((expense) => {
+      const day = expense.date.toISOString().split("T")[0];
+
+      dailyMap[day] = (dailyMap[day] || 0) + expense.amount;
+    });
+
+    const trendData = Object.entries(dailyMap).map(([date, amount]) => ({
+      date,
+      amount,
+    }));
+
+    const totalSpent = expenses.reduce(
+      (sum, expense) => sum + expense.amount,
+      0,
+    );
+
+    res.json({
+      categoryData,
+      trendData,
+      totalSpent,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 };
