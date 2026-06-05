@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -6,6 +6,8 @@ import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import FAQSection from "../components/FAQSection";
+import RecentlyViewed from "../components/RecentlyViewed";
+import { addRecentlyViewed } from "../utils/recentlyViewed";
 
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
@@ -363,6 +365,7 @@ const Home = () => {
   const [travellers, setTravellers] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const checkInRef = useRef(null);
 
   useEffect(() => {
     api
@@ -391,10 +394,14 @@ const Home = () => {
   }, []);
 
   const handleAddTrip = (dest) => {
+    // Save to recently viewed regardless of auth status
+    addRecentlyViewed(dest); // ← MOVE THIS to the top, before the auth check
+
     if (!isAuthenticated) {
       navigate("/login");
       return;
     }
+
     const today = new Date(),
       next = new Date();
     next.setDate(today.getDate() + 7);
@@ -445,7 +452,7 @@ const Home = () => {
             <a href="#wander-dest-section">Destinations</a>
           </li>
           <li>
-            <a href="#wander-features">Experiences</a>
+            <a href="#wander-testi">Experiences</a>
           </li>
           <li>
             <a href="#wander-features">Features</a>
@@ -473,6 +480,7 @@ const Home = () => {
         >
           {mobileOpen ? (
             <svg
+              key="close-icon"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -484,6 +492,7 @@ const Home = () => {
             </svg>
           ) : (
             <svg
+              key="menu-icon"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -497,65 +506,48 @@ const Home = () => {
             </svg>
           )}
         </button>
-      </nav>
-
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div
-          style={{
-            background: "var(--white)",
-            borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-            padding: "1rem 1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          <a
-            href="#wander-dest-section"
+        {mobileOpen && (
+          <div
             style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "var(--white)",
+              borderBottom: "0.5px solid rgba(26,74,107,0.12)",
+              boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
+              padding: "1rem 1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              zIndex: 1001,
             }}
-            onClick={() => setMobileOpen(false)}
           >
-            Destinations
-          </a>
-          <a
-            href="#wander-features"
-            style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Features
-          </a>
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
+            <a
+              href="#wander-dest-section"
               style={{
-                color: "var(--coral)",
-                fontWeight: 600,
+                color: "var(--ocean)",
                 textDecoration: "none",
+                fontWeight: 500,
               }}
               onClick={() => setMobileOpen(false)}
             >
-              Dashboard →
-            </Link>
-          ) : (
-            <>
+              Destinations
+            </a>
+            <a
+              href="#wander-features"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Features
+            </a>
+            {isAuthenticated ? (
               <Link
-                to="/login"
-                style={{ color: "var(--ocean)", textDecoration: "none" }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
+                to="/dashboard"
                 style={{
                   color: "var(--coral)",
                   fontWeight: 600,
@@ -563,12 +555,33 @@ const Home = () => {
                 }}
                 onClick={() => setMobileOpen(false)}
               >
-                Sign Up Free →
+                Dashboard →
               </Link>
-            </>
-          )}
-        </div>
-      )}
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  style={{ color: "var(--ocean)", textDecoration: "none" }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  style={{
+                    color: "var(--coral)",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Sign Up Free →
+                </Link>
+              </>
+            )}
+          </div>
+        )}
+      </nav>
 
       {/* ═══ HERO ═══ */}
       <section className="wander-hero">
@@ -634,10 +647,12 @@ const Home = () => {
 
             <div style={{ position: "relative" }}>
               <input
+                ref={checkInRef}
                 className="wander-sf-val"
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
+                onClick={() => checkInRef.current?.showPicker()}
                 style={{ paddingRight: "35px" }}
               />
 
@@ -670,6 +685,21 @@ const Home = () => {
       </div>
 
       {/* ═══ DESTINATIONS ═══ */}
+
+      {/* ═══ RECENTLY VIEWED ═══ */}
+      <div
+        style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}
+      >
+        <RecentlyViewed
+          onSelectDestination={(dest) => {
+            document
+              .getElementById("wander-dest-section")
+              ?.scrollIntoView({ behavior: "smooth" });
+            setWhere(dest.name);
+          }}
+        />
+      </div>
+
       <section className="wander-section" id="wander-dest-section">
         <div className="wander-section-header">
           <div>
@@ -847,7 +877,7 @@ const Home = () => {
       <FAQSection />
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section">
+      <section className="wander-testi-section" id="wander-testi">
         <div>
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
@@ -925,16 +955,20 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <a href="/">About</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
+
+              {/* Add your routes here if they exist */}
+              <Link to="/about">About</Link>
+              <Link to="/careers">Careers</Link>
+
+              {/* Contact Page Link */}
+              <Link to="/contact">Contact Us</Link>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <a href="/">Help Center</a>
-              <a href="/">Privacy Policy</a>
-              <a href="/">Terms & Conditions</a>
+              <Link to="/help-center">Help Center</Link>
+              <Link to="/privacy-policy">Privacy Policy</Link>
+              <Link to="/terms-and-conditions">Terms & Conditions</Link>
             </div>
           </div>
         </div>
@@ -945,13 +979,14 @@ const Home = () => {
           </div>
 
           <div className="wander-footer-socials">
-            {/* Social media icons */}
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>
+
             <a href="/" aria-label="Instagram">
               <FaInstagram />
             </a>
+
             <a href="/" aria-label="Twitter">
               <FaTwitter />
             </a>

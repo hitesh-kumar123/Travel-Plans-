@@ -1,10 +1,8 @@
-<div align="center">
+<div style="text-align:center;">
 
 # ✈️ PackGo — Smart Travel Planner
 
-<img src="assets/landing_page.png" alt="PackGo Landing Page" width="100%" style="border-radius: 12px;" />
-
-<br />
+<br/>
 
 [![MERN Stack](https://img.shields.io/badge/Stack-MERN-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -13,12 +11,14 @@
 [![CI Pipeline](https://img.shields.io/github/actions/workflow/status/DebasmitaBose0/Travel-Plans-/ci.yml?branch=main&style=for-the-badge&label=Build%20Check)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 [![Security Scan](https://img.shields.io/badge/Security-Audit--Audit-brightgreen?style=for-the-badge&logo=github-actions)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 
-<br />
+<br>
+
+<img src="assets/new-landing-page.png" alt="PackGo Landing Page" width="100%" />
 
 > **Plan trips. Track expenses. Check weather. Translate languages. Book flights & hotels.**  
 > All in one beautiful, full-stack travel companion.
 
-<br />
+<br>
 
 [🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
@@ -41,6 +41,7 @@
 - [🎨 Design Highlights](#-design-highlights)
 - [🔮 Future Enhancements](#-future-enhancements)
 - [🤝 Contributing](#-contributing)
+- [🌟 Contributors](#-contributors)
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
@@ -60,21 +61,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### 🏠 Landing Page & Dashboard
 
-|               Landing Page               |             Dashboard              |
-| :--------------------------------------: | :--------------------------------: |
-| ![Landing Page](assets/landing_page.png) | ![Dashboard](assets/dashboard.png) |
+|               Landing Page                   |             Dashboard                  |
+| :-----------------------------------------:  | :------------------------------------: |
+| ![Landing Page](assets/new-landing-page.png) | ![Dashboard](assets/new-dashboard.png) |
 
 ### 🗺️ Trip Detail & Expense Tracker
 
-|              Trip Detail               |                Expense Tracker                 |
+|              Trip Detail               |                Destinations                    |
 | :------------------------------------: | :--------------------------------------------: |
-| ![Trip Detail](assets/trip_detail.png) | ![Expense Tracker](assets/expense_tracker.png) |
-
-### 🌤️ Weather Forecast & Live Translator
-
-|                 Weather Forecast                 |                Live Translator                 |
-| :----------------------------------------------: | :--------------------------------------------: |
-| ![Weather Forecast](assets/weather_forecast.png) | ![Live Translator](assets/live_translator.png) |
+| ![Trip Detail](assets/photo1.png)      | ![Destinations](assets/photo1.png)             |
 
 ---
 
@@ -132,6 +127,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 - Quick action cards for navigation
 - Upcoming trip cards with status badges
 
+### 🕐 Recently Viewed Destinations
+
+- Tracks the last **5 destinations** you explored on the home page
+- Persists across page refreshes using **localStorage**
+- Horizontally scrollable cards with destination image, name, and location
+- One-click to jump back to a destination
+- **Clear all** button to reset history
+- No duplicates — revisiting a destination moves it to the top
+
 ---
 
 ## 🛠️ Tech Stack
@@ -168,7 +172,7 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ## 📁 Project Structure
 
-```
+```bash
 travel-planner/
 ├── assets/                          # README screenshots
 │   ├── landing_page.png
@@ -257,7 +261,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/hitesh-kumar123/Travel-Plans-.git
-cd travel-planner
+cd Travel-Plans-
 ```
 
 ### 2. Install Dependencies
@@ -276,6 +280,41 @@ cd travel-planner
 > Please install dependencies and run scripts separately inside the `client` and `server` directories.
 
 ```bash
+
+### Important
+
+Run commands from the appropriate project directory.
+
+Backend:
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Frontend:
+
+```bash
+cd client
+npm install
+npm start
+```
+
+Running commands from the wrong directory may result in missing files or package.json errors.
+
+
+### ⚠️ Important
+
+Do not run installation or start commands from the repository root directory.
+
+Install dependencies separately inside:
+
+- `server/`
+- `client/`
+
+Running commands from the root directory may result in missing script errors.
+
 # Install backend dependencies
 cd server
 npm install
@@ -291,6 +330,7 @@ Copy the example file and fill in your values:
 
 ```bash
 cp .env.example server/.env
+Copy-Item .env.example server\.env
 ```
 
 Open `server/.env` and update:
@@ -351,6 +391,29 @@ Then open your browser at **[http://localhost:3000](http://localhost:3000)** �
 | `FROM_NAME`       |    ❌    | Custom sender display name (default: `PackGo`)                     |
 
 ---
+
+## Troubleshooting
+
+### MongoDB Connection Error
+
+If you see:
+
+```text
+The uri parameter to openUri() must be a string, got undefined
+```
+
+Make sure your `.env` file exists and contains a valid MongoDB connection string.
+
+### package.json Not Found
+
+If npm reports:
+
+```text
+Could not read package.json
+```
+
+Verify that you are running commands from the correct project directory (`server/` or `client/`).
+
 
 ## 📡 API Endpoints
 
@@ -548,8 +611,12 @@ Please read our:
 # 2. Clone your fork
 git clone https://github.com/<your-username>/Travel-Plans-.git
 
-# 3. Create a feature branch
+git fetch upstream
+git pull upstream main
+
+# 3. Create a feature branchP
 git checkout -b feature/your-amazing-feature
+
 
 # 4. Make your changes and commit
 git add .
@@ -560,6 +627,32 @@ git push origin feature/your-amazing-feature
 ```
 
 > **Good First Issues** are labelled [`good first issue`](../../issues?q=label%3A%22good+first+issue%22) — a great place to start! 🌱
+
+---
+
+## 💖 Contributors
+
+Thanks to all the amazing people who contribute to **Travel-Plans** 🚀
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors"/>
+  </a>
+</p>
+
+<br>
+
+## ⭐ Project Support
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/stargazers">
+    <img src="https://img.shields.io/github/stars/hitesh-kumar123/Travel-Plans-?style=social" alt="Stars">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/network/members">
+    <img src="https://img.shields.io/github/forks/hitesh-kumar123/Travel-Plans-?style=social" alt="Forks">
+  </a>
+</p>
 
 ---
 
@@ -592,40 +685,23 @@ We are incredibly grateful to our mentors for their valuable support and code re
 
 ---
 
-
 ⭐ **If PackGo helped you, please give it a star — it means a lot!** ⭐
 
 </div>
 
----
-
-## 🙌 Thanks to Contributors
-
-We sincerely thank all contributors who have helped improve PackGo
-
-Your efforts make this project better for everyone. ❤️
-
-<div align="center">
-
-<a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors" />
-</a>
-
-</div>
-
----
-
-
+/\*\*
 
 ## ✨ README Improvement Notes
 
 ### 📌 Formatting Enhancements Needed
+
 - Improve heading hierarchy for better readability
 - Ensure consistent spacing between sections
 - Use proper Markdown formatting for code blocks and lists
 - Align all installation and usage steps properly
 
 ### 🚀 Suggested Structure Upgrade
+
 - Introduction
 - Features
 - Tech Stack
@@ -636,10 +712,12 @@ Your efforts make this project better for everyone. ❤️
 - License
 
 ### 🛠️ Documentation Improvements
+
 - Add badges (optional): build, license, contributors
 - Add screenshots for better UI understanding
 - Standardize code blocks for commands
 
 ### 🎯 Goal
+
 Improve onboarding experience for new contributors and users by making README more structured, readable, and professional.
-*/
+\*/

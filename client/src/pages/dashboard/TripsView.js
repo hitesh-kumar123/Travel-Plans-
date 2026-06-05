@@ -264,7 +264,7 @@ const TripsView = () => {
       </Dialog>
 
       {/* Trips Grid */}
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, md: 3 }}>
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <Grid xs={12} md={6} lg={4} key={i}>
@@ -326,8 +326,15 @@ const TripsView = () => {
                         />
                       </Box>
                     </Box>
-                    <CardContent sx={{ pb: "12px !important" }}>
-                      <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <CardContent
+                      sx={{ pb: "12px !important", p: { xs: 2, sm: 3 } }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        gutterBottom
+                        sx={{ wordBreak: "break-word" }}
+                      >
                         {trip.destination}
                       </Typography>
                       <Box
@@ -336,6 +343,7 @@ const TripsView = () => {
                           alignItems: "center",
                           gap: 0.5,
                           mb: 1,
+                          flexWrap: "wrap",
                         }}
                       >
                         <DateRangeIcon fontSize="small" color="action" />
@@ -359,6 +367,7 @@ const TripsView = () => {
                             display: "flex",
                             alignItems: "center",
                             gap: 0.5,
+                            flexWrap: "wrap",
                           }}
                         >
                           <WalletIcon fontSize="small" color="success" />

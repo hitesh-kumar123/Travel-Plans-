@@ -19,8 +19,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
+import { FaXTwitter } from "react-icons/fa6";
 import PrimaryButton from "../components/PrimaryButton";
 
 const Login = () => {
@@ -210,32 +210,6 @@ const Login = () => {
               Your ultimate companion for discovering and planning your dream
               adventures
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "white",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-            </Box>
           </Box>
         </Box>
       )}
@@ -390,16 +364,17 @@ const Login = () => {
                   </IconButton>
                   <IconButton
                     disabled
+                    aria-label="Sign in with X"
                     sx={{
                       border: "1px solid",
                       borderColor: "divider",
                       borderRadius: 2,
                       p: 1.5,
-                      color: "#1DA1F2",
+                      color: "text.primary",
                       opacity: 0.5,
                     }}
                   >
-                    <TwitterIcon />
+                    <FaXTwitter />
                   </IconButton>
                 </Box>
               </Box>

@@ -66,33 +66,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
-  const notifications = [
-    {
-      id: 1,
-      title: "Trip created successfully",
-      time: "2 min ago",
-    },
-    {
-      id: 2,
-      title: "Weather forecast updated",
-      time: "10 min ago",
-    },
-    {
-      id: 3,
-      title: "Budget exceeded for Goa trip",
-      time: "1 hour ago",
-    },
-    {
-      id: 4,
-      title: "New destination suggestions available",
-      time: "Today",
-    },
-    {
-      id: 5,
-      title: "Manali trip completed",
-      time: "Yesterday",
-    },
-  ];
+  const notifications = [];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -437,39 +411,47 @@ const Dashboard = () => {
                     overflowY: "auto",
                   }}
                 >
-                  {notifications.map((notification) => (
-                    <MenuItem
-                      key={notification.id}
-                      onClick={handleNotificationClose}
-                      sx={{
-                        py: 1.5,
-                        alignItems: "flex-start",
-                        borderBottom: "1px solid",
-                        borderColor: "grey.100",
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 600,
-                            color: "text.primary",
-                          }}
-                        >
-                          {notification.title}
-                        </Typography>
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <MenuItem
+                        key={notification.id}
+                        onClick={handleNotificationClose}
+                        sx={{
+                          py: 1.5,
+                          alignItems: "flex-start",
+                          borderBottom: "1px solid",
+                          borderColor: "grey.100",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.primary",
+                            }}
+                          >
+                            {notification.title}
+                          </Typography>
 
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "text.secondary",
-                          }}
-                        >
-                          {notification.time}
-                        </Typography>
-                      </Box>
-                    </MenuItem>
-                  ))}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                            }}
+                          >
+                            {notification.time}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <Box sx={{ p: 3, textAlign: "center" }}>
+                      <Typography variant="body2" color="text.secondary">
+                        No new notifications
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               </Menu>
             </Box>
