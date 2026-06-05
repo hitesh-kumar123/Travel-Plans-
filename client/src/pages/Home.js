@@ -673,6 +673,11 @@ const Home = () => {
                 Explore Destinations
               </button>
             </a>
+
+            <Link to="/budget-estimator">
+              <button className="wander-btn-ghost">Budget Estimator</button>
+            </Link>
+
             <Link to={isAuthenticated ? "/dashboard" : "/register"}>
               <button className="wander-btn-ghost">
                 {isAuthenticated ? "Dashboard →" : "Start Free"}
