@@ -39,7 +39,6 @@ import {
   Pie,
   Cell,
   Tooltip as ReTooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -82,15 +81,6 @@ const CURRENCY_SYMBOLS = {
   SGD: "S$",
   AUD: "A$",
 };
-
-const CHART_COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#a855f7",
-  "#f56565",
-];
 
 const ExpensesView = () => {
   const dispatch = useDispatch();
@@ -895,19 +885,17 @@ const ExpensesView = () => {
           </Paper>
         </Grid>
 
-        {/* Visual Analytics Pie Chart */}
-        <Grid item xs={12} md={4.5}>
+        {/* Pie Chart */}
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
-              p: 3,
-              borderRadius: 4,
+              p: 4,
+              borderRadius: 3,
               border: "1px solid",
-              borderColor: "rgba(224, 224, 224, 0.6)",
-              boxShadow: "0 12px 32px -12px rgba(0,0,0,0.04)",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
+              borderColor: "divider",
+              boxSizing: "border-box",
+              alignSelf: "flex-start",
             }}
           >
             <Typography
@@ -919,40 +907,83 @@ const ExpensesView = () => {
               Spending Allocation
             </Typography>
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={85}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 3,
+                }}
+              >
+                <Box sx={{ flex: 1, minWidth: 180, width: 0 }}>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart
+                      margin={{ top: 15, right: 15, bottom: 15, left: 30 }}
+                    >
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={55}
+                        outerRadius={80}
+                        paddingAngle={4}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={CATEGORY_COLORS[entry.name] || "#8884d8"}
+                          />
+                        ))}
+                      </Pie>
+                      <ReTooltip
+                        formatter={(value) => [
+                          `₹${value.toLocaleString()}`,
+                          "",
+                        ]}
                       />
-                    ))}
-                  </Pie>
-                  <ReTooltip
-                    formatter={(value) => [
-                      `${currencySymbol}${value.toLocaleString()}`,
-                      "",
-                    ]}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </Box>
+                {/* Custom Legend */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0.75,
+                    alignSelf: "center",
+                    pl: 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  {chartData.map((entry) => (
+                    <Box
+                      key={entry.name}
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <Box
+                        sx={{
+                          width: 15,
+                          height: 15,
+                          borderRadius: "3px",
+                          bgcolor: CATEGORY_COLORS[entry.name] || "#8884d8",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                        {entry.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
             ) : (
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: 320,
+                  height: 120,
                   flexDirection: "column",
                   gap: 1.5,
                 }}

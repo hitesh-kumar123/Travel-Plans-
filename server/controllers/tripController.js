@@ -18,6 +18,12 @@ exports.createTrip = async (req, res) => {
       transportation,
     } = req.body;
 
+    if (startDate && new Date(startDate) < new Date().setHours(0, 0, 0, 0)) {
+      return res
+        .status(400)
+        .json({ msg: "Trip start date cannot be in the past" });
+    }
+
     // Default images
     let images = [];
     if (destination) {

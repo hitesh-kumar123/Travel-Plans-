@@ -80,6 +80,14 @@ const TripsView = () => {
     e.preventDefault();
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (new Date(formData.startDate) < today) {
+      alert("Trip start date cannot be in the past!");
+      return;
+    }
+
     dispatch(
       addTrip({ ...formData, budget: parseFloat(formData.budget) || 0 }),
     );
@@ -199,7 +207,10 @@ const TripsView = () => {
                   name="startDate"
                   label="Start Date *"
                   type="date"
-                  slotProps={{ inputLabel: { shrink: true } }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    htmlInput: { min: new Date().toISOString().split("T")[0] },
+                  }}
                   value={formData.startDate}
                   onChange={handleChange}
                 />
@@ -210,7 +221,14 @@ const TripsView = () => {
                   name="endDate"
                   label="End Date *"
                   type="date"
-                  slotProps={{ inputLabel: { shrink: true } }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    htmlInput: {
+                      min:
+                        formData.startDate ||
+                        new Date().toISOString().split("T")[0],
+                    },
+                  }}
                   value={formData.endDate}
                   onChange={handleChange}
                 />

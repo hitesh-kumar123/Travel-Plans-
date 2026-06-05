@@ -346,12 +346,12 @@ html {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
   overflow: hidden;
-  border: 0.5px solid rgba(26, 74, 107, 0.1);
+  border: 1.5px solid rgba(26, 74, 107, 0.4);
 }
 
 .wander-sf {
   padding: 1.4rem 1.5rem;
-  border-right: 0.5px solid rgba(26, 74, 107, 0.08);
+  border-right: 1px solid rgba(26, 74, 107, 0.3);
 }
 
 .wander-recent-searches {
@@ -390,6 +390,7 @@ html {
   letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-bottom: 0.3rem;
+  text-align: left;
 }
 
 .wander-sf-val {
@@ -960,7 +961,7 @@ html {
 
   .wander-sf {
     border-right: none;
-    border-bottom: 0.5px solid rgba(26, 74, 107, 0.08);
+    border-bottom: 1px solid rgba(26, 74, 107, 0.3);
   }
 
   .wander-section {
@@ -1190,4 +1191,55 @@ html {
   font-size: 0.85rem;
   color: var(--ocean);
   font-weight: 500;
+.wander-testi-quote-container {
+  height: 280px; /* Adjust if your cards are taller or shorter */
+  overflow: hidden;
+  position: relative;
+}
+
+.wander-testi-quote-track {
+  display: flex;
+  flex-direction: column;
+  /* Updated total time to 19s to give a 4-second reading hold per review */
+  animation: scrollUpTestimonials 19s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+.wander-testi-card-slide {
+  height: 280px; /* Must match container height perfectly */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* ── 4-Second Hold & Scroll Animation ── */
+@keyframes scrollUpTestimonials {
+  /* REVIEW 1 (Hold from 0% to 21%) */
+  0%,
+  21% {
+    transform: translateY(0);
+  }
+
+  /* Slide down to Review 2 */
+  25%,
+  46% {
+    transform: translateY(-280px);
+  }
+
+  /* Slide down to Review 3 */
+  50%,
+  71% {
+    transform: translateY(-560px);
+  }
+
+  /* Slide down to Review 4 */
+  75%,
+  96% {
+    transform: translateY(-840px);
+  }
+
+  /* Slide down to Clone (End of loop) and snap instantly back to 0% */
+  100% {
+    transform: translateY(-1120px);
+  }
 }

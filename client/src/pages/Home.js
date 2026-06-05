@@ -9,6 +9,38 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 
+/* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
+const REVIEWS = [
+  {
+    stars: "★★★★★",
+    quote: `"PackGo turned our anniversary trip into something we'll tell grandkids about. Every single detail was perfect — from the sunrise hike in Santorini to the candlelit dinner by the Aegean."`,
+    avatar: "PS",
+    name: "Priya Sharma",
+    loc: "Mumbai, India",
+  },
+  {
+    stars: "★★★★★",
+    quote: `"I was hesitant to plan solo travel but PackGo made it seamless. Kyoto in cherry blossom season was a dream — every ryokan, every temple, perfectly curated."`,
+    avatar: "AR",
+    name: "Arjun Rao",
+    loc: "Bengaluru, India",
+  },
+  {
+    stars: "★★★★★",
+    quote: `"The itinerary balance was spot on. Plenty of structured, unique experiences mixed with enough free time to explore hidden backalleys on our own."`,
+    avatar: "MK",
+    name: "Meera Kapoor",
+    loc: "Delhi, India",
+  },
+  {
+    stars: "★★★★★",
+    quote: `"24/7 support came through when our domestic flight got delayed. They rebooked our connections before we even landed. Absolute lifesavers!"`,
+    avatar: "JM",
+    name: "John Martin",
+    loc: "London, UK",
+  },
+];
+
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -975,26 +1007,34 @@ const Home = () => {
       <FAQSection />
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section" id="wander-testimonials">
-        <div>
+      <section className="wander-testi-section">
+        {/* Left Side: Fixed wrapper containing the sliding carousel content */}
+        <div className="wander-testi-carousel-wrapper">
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
             Journeys that changed everything
           </div>
-          <div className="wander-stars">★★★★★</div>
-          <p className="wander-testi-quote">
-            "PackGo turned our anniversary trip into something we'll tell
-            grandkids about. Every single detail was perfect — from the sunrise
-            hike in Santorini to the candlelit dinner by the Aegean."
-          </p>
-          <div className="wander-testi-author">
-            <div className="wander-author-avatar">PS</div>
-            <div>
-              <div className="wander-author-name">Priya Sharma</div>
-              <div className="wander-author-loc">Mumbai, India</div>
+
+          <div className="wander-testi-quote-container">
+            <div className="wander-testi-quote-track">
+              {REVIEWS.map((review, index) => (
+                <div className="wander-testi-card-slide" key={index}>
+                  <div className="wander-stars">{review.stars}</div>
+                  <p className="wander-testi-quote">{review.quote}</p>
+                  <div className="wander-testi-author">
+                    <div className="wander-author-avatar">{review.avatar}</div>
+                    <div>
+                      <div className="wander-author-name">{review.name}</div>
+                      <div className="wander-author-loc">{review.loc}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Right Side Metrics Box Grid (Remains unshifted) */}
         <div className="wander-stats-grid">
           {STATS.map((s, i) => (
             <div key={i} className="wander-stat-box">
