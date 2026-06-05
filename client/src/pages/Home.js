@@ -349,6 +349,8 @@ const SearchIcon = () => (
   </svg>
 );
 
+const SEARCH_HISTORY_KEY = "recentDestinationSearches";
+
 /* ══════════════════════════════════════════════════════════════ */
 /*  COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
@@ -362,9 +364,39 @@ const Home = () => {
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const checkInRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(SEARCH_HISTORY_KEY) ?? "[]",
+      );
+      if (Array.isArray(saved)) {
+        setRecentSearches(saved.filter((item) => typeof item === "string"));
+      }
+    } catch (error) {
+      console.error("Failed to load search history:", error);
+    }
+  }, []);
+
+  const updateSearchHistory = (query) => {
+    const normalized = query.trim();
+    if (!normalized) return;
+
+    const nextSearches = [
+      normalized,
+      ...recentSearches.filter(
+        (item) => item.toLowerCase() !== normalized.toLowerCase(),
+      ),
+    ].slice(0, 5);
+
+    setRecentSearches(nextSearches);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(nextSearches));
+  };
 
   useEffect(() => {
     api
@@ -417,6 +449,11 @@ const Home = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    const query = where.trim();
+    if (query) {
+      updateSearchHistory(query);
+    }
+    setShowRecentSearches(false);
     document
       .getElementById("wander-dest-section")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -632,14 +669,41 @@ const Home = () => {
       {/* ═══ SEARCH BAR ═══ */}
       <div className="wander-search-section">
         <form className="wander-search-bar" onSubmit={handleSearch}>
-          <div className="wander-sf">
+          <div className="wander-sf" style={{ position: "relative" }}>
             <div className="wander-sf-label">Where to</div>
             <input
               className="wander-sf-val"
               placeholder="Bali, Indonesia"
               value={where}
-              onChange={(e) => setWhere(e.target.value)}
+              onChange={(e) => {
+                setWhere(e.target.value);
+                if (recentSearches.length > 0) {
+                  setShowRecentSearches(true);
+                }
+              }}
+              onFocus={() => {
+                if (recentSearches.length > 0) {
+                  setShowRecentSearches(true);
+                }
+              }}
             />
+            {showRecentSearches && recentSearches.length > 0 && (
+              <div className="wander-recent-searches">
+                {recentSearches.map((search) => (
+                  <button
+                    key={search}
+                    type="button"
+                    className="wander-recent-search-item"
+                    onMouseDown={() => {
+                      setWhere(search);
+                      setShowRecentSearches(false);
+                    }}
+                  >
+                    {search}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>

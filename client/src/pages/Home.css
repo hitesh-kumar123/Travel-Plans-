@@ -354,6 +354,35 @@ html {
   border-right: 0.5px solid rgba(26, 74, 107, 0.08);
 }
 
+.wander-recent-searches {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  top: calc(100% + 0.5rem);
+  background: #ffffff;
+  border: 1px solid rgba(26, 74, 107, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(15, 45, 64, 0.14);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.wander-recent-search-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  color: var(--ocean);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.wander-recent-search-item:hover {
+  background: rgba(26, 74, 107, 0.05);
+}
+
 .wander-sf-label {
   font-size: 0.7rem;
   font-weight: 500;
