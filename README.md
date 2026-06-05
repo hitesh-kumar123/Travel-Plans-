@@ -154,6 +154,36 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### Backend
 
+## Backend Environment Setup
+
+Create a `.env` file inside the `server` directory before running the backend locally.
+
+Example:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/travel-plan
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+```
+
+Make sure MongoDB is running locally before starting the backend server.
+
+On macOS (Homebrew):
+
+```bash
+brew services start mongodb-community
+```
+
+Then start the backend:
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Without a valid `MONGO_URI`, authentication-related endpoints such as forgot password may fail due to database connection timeouts.
+
 | Technology                 | Version | Purpose                               |
 | -------------------------- | ------- | ------------------------------------- |
 | **Node.js**                | 18+     | JavaScript runtime                    |
