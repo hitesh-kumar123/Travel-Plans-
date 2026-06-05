@@ -1191,8 +1191,8 @@ html {
   font-size: 0.85rem;
   color: var(--ocean);
   font-weight: 500;
-
 }
+
 .wander-testi-quote-container {
   height: 280px; /* Adjust if your cards are taller or shorter */
   overflow: hidden;
