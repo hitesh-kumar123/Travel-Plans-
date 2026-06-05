@@ -126,18 +126,32 @@ exports.getProfile = async (req, res, next) => {
   }
 };
 
-// Update user profile
+// Update user profile (name only)
+// Email changes must use the dedicated OTP flow: POST /request-email-change → POST /verify-email-change
 exports.updateProfile = async (req, res, next) => {
   try {
-    const { name, email } = req.body;
-    const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
+    const { name } = req.body;
+
+    if (!name || name.trim().length < 2) {
+      return res
+        .status(400)
+        .json({ msg: "Name must be at least 2 characters" });
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(name.trim())) {
+      return res
+        .status(400)
+        .json({ msg: "Name can only contain letters and spaces" });
+    }
+
+    const updateFields = {
+      name: name.trim().replace(/\s+/g, " "),
+    };
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { $set: updateFields },
-      { new: true },
+      { new: true, runValidators: true },
     ).select("name email date isVerified");
 
     res.json(user);
