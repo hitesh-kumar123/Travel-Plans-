@@ -45,6 +45,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
@@ -446,7 +447,8 @@ const Register = () => {
                 sx={{
                   width: 12,
                   height: 12,
-                  bgcolor: "white",
+                  bgcolor:
+                    activeStep === 0 ? "white" : "rgba(255, 255, 255, 0.5)",
                   borderRadius: "50%",
                 }}
               />
@@ -454,7 +456,8 @@ const Register = () => {
                 sx={{
                   width: 12,
                   height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
+                  bgcolor:
+                    activeStep === 1 ? "white" : "rgba(255, 255, 255, 0.5)",
                   borderRadius: "50%",
                 }}
               />
@@ -462,7 +465,8 @@ const Register = () => {
                 sx={{
                   width: 12,
                   height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
+                  bgcolor:
+                    activeStep === 2 ? "white" : "rgba(255, 255, 255, 0.5)",
                   borderRadius: "50%",
                 }}
               />
@@ -480,10 +484,43 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 4,
+          height: "100vh",
+          overflow: "auto",
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
+            {/* Back to Home */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: { xs: 0, sm: -20, md: -50, lg: -80 },
+                top: 0,
+              }}
+            >
+              <Link
+                component={RouterLink}
+                to="/"
+                variant="body2"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  backgroundColor: "background.paper",
+                  textDecoration: "none",
+                  transition: "0.2s ease",
+                  "&:hover": { backgroundColor: "action.hover" },
+                }}
+              >
+                <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
+              </Link>
+            </Box>
+
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
             </Typography>
@@ -560,6 +597,7 @@ const Register = () => {
                       variant="outlined"
                       startIcon={<FacebookIcon />}
                       disabled
+                      title="Facebook signup is coming soon"
                       sx={{
                         borderRadius: 2,
                         py: 1,
@@ -570,6 +608,12 @@ const Register = () => {
                       }}
                     >
                       Facebook
+                      <Typography
+                        component="span"
+                        sx={{ ml: 1, fontSize: "0.75rem", fontWeight: 600 }}
+                      >
+                        Coming Soon
+                      </Typography>
                     </Button>
                   </Box>
                 </>

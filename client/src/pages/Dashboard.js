@@ -53,7 +53,8 @@ import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
 
-const drawerWidth = 280;
+const mobileDrawerWidth = 240;
+const desktopDrawerWidth = 280;
 
 const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -66,33 +67,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
-  const notifications = [
-    {
-      id: 1,
-      title: "Trip created successfully",
-      time: "2 min ago",
-    },
-    {
-      id: 2,
-      title: "Weather forecast updated",
-      time: "10 min ago",
-    },
-    {
-      id: 3,
-      title: "Budget exceeded for Goa trip",
-      time: "1 hour ago",
-    },
-    {
-      id: 4,
-      title: "New destination suggestions available",
-      time: "Today",
-    },
-    {
-      id: 5,
-      title: "Manali trip completed",
-      time: "Yesterday",
-    },
-  ];
+  const notifications = [];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -289,7 +264,7 @@ const Dashboard = () => {
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        sx={{ width: { md: desktopDrawerWidth }, flexShrink: { md: 0 } }}
       >
         <Drawer
           variant="temporary"
@@ -298,7 +273,10 @@ const Dashboard = () => {
           ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": { width: drawerWidth },
+            "& .MuiDrawer-paper": {
+              width: mobileDrawerWidth,
+              transition: "all 0.3s ease",
+            },
           }}
         >
           {drawer}
@@ -308,7 +286,7 @@ const Dashboard = () => {
           sx={{
             display: { xs: "none", md: "block" },
             "& .MuiDrawer-paper": {
-              width: drawerWidth,
+              width: desktopDrawerWidth,
               borderRight: "1px solid",
               borderColor: "divider",
               boxShadow: "2px 0 12px rgba(0,0,0,0.04)",
@@ -324,7 +302,10 @@ const Dashboard = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
+          width: {
+            xs: "100%",
+            md: `calc(100% - ${desktopDrawerWidth}px)`,
+          },
           bgcolor: "grey.50",
         }}
       >
@@ -437,39 +418,47 @@ const Dashboard = () => {
                     overflowY: "auto",
                   }}
                 >
-                  {notifications.map((notification) => (
-                    <MenuItem
-                      key={notification.id}
-                      onClick={handleNotificationClose}
-                      sx={{
-                        py: 1.5,
-                        alignItems: "flex-start",
-                        borderBottom: "1px solid",
-                        borderColor: "grey.100",
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 600,
-                            color: "text.primary",
-                          }}
-                        >
-                          {notification.title}
-                        </Typography>
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <MenuItem
+                        key={notification.id}
+                        onClick={handleNotificationClose}
+                        sx={{
+                          py: 1.5,
+                          alignItems: "flex-start",
+                          borderBottom: "1px solid",
+                          borderColor: "grey.100",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.primary",
+                            }}
+                          >
+                            {notification.title}
+                          </Typography>
 
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "text.secondary",
-                          }}
-                        >
-                          {notification.time}
-                        </Typography>
-                      </Box>
-                    </MenuItem>
-                  ))}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                            }}
+                          >
+                            {notification.time}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <Box sx={{ p: 3, textAlign: "center" }}>
+                      <Typography variant="body2" color="text.secondary">
+                        No new notifications
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               </Menu>
             </Box>
