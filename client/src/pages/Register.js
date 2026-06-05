@@ -550,6 +550,7 @@ const Register = () => {
                       variant="outlined"
                       startIcon={<FacebookIcon />}
                       disabled
+                      title="Facebook signup is coming soon"
                       sx={{
                         borderRadius: 2,
                         py: 1,
@@ -560,6 +561,12 @@ const Register = () => {
                       }}
                     >
                       Facebook
+                      <Typography
+                        component="span"
+                        sx={{ ml: 1, fontSize: "0.75rem", fontWeight: 600 }}
+                      >
+                        Coming Soon
+                      </Typography>
                     </Button>
                   </Box>
                 </>
