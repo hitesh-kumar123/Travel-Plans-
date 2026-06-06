@@ -1,5 +1,92 @@
 // axios removed — not used in current mock implementation
 
+// Mock data shared across search and booking endpoints
+const mockFlights = [
+  {
+    id: "fl-1",
+    airline: "SkyAir",
+    price: 299.99,
+    departureTime: "08:00",
+    arrivalTime: "10:30",
+    duration: "2h 30m",
+  },
+  {
+    id: "fl-2",
+    airline: "OceanAir",
+    price: 349.99,
+    departureTime: "12:15",
+    arrivalTime: "14:45",
+    duration: "2h 30m",
+  },
+  {
+    id: "fl-3",
+    airline: "MountainExpress",
+    price: 279.99,
+    departureTime: "16:30",
+    arrivalTime: "19:00",
+    duration: "2h 30m",
+  },
+  {
+    id: "fl-4",
+    airline: "BudgetWings",
+    price: 149.99,
+    departureTime: "05:00",
+    arrivalTime: "07:30",
+    duration: "2h 30m",
+  },
+  {
+    id: "fl-5",
+    airline: "LuxeAir",
+    price: 499.99,
+    departureTime: "20:00",
+    arrivalTime: "22:30",
+    duration: "2h 30m",
+  },
+];
+
+const mockHotels = [
+  {
+    id: "ht-1",
+    name: "Grand Plaza Hotel",
+    rating: 4.5,
+    price: 199.99,
+    amenities: ["WiFi", "Pool", "Gym", "Restaurant"],
+    images: ["hotel1_img1.jpg", "hotel1_img2.jpg"],
+  },
+  {
+    id: "ht-2",
+    name: "Comfort Inn & Suites",
+    rating: 4.2,
+    price: 149.99,
+    amenities: ["WiFi", "Breakfast", "Parking"],
+    images: ["hotel2_img1.jpg", "hotel2_img2.jpg"],
+  },
+  {
+    id: "ht-3",
+    name: "Luxury Resort & Spa",
+    rating: 4.8,
+    price: 299.99,
+    amenities: ["WiFi", "Pool", "Spa", "Restaurant", "Bar", "Gym"],
+    images: ["hotel3_img1.jpg", "hotel3_img2.jpg"],
+  },
+  {
+    id: "ht-4",
+    name: "Budget Stay Inn",
+    rating: 3.5,
+    price: 79.99,
+    amenities: ["WiFi", "Parking"],
+    images: ["hotel4_img1.jpg"],
+  },
+  {
+    id: "ht-5",
+    name: "City Center Hotel",
+    rating: 4.0,
+    price: 129.99,
+    amenities: ["WiFi", "Restaurant", "Gym"],
+    images: ["hotel5_img1.jpg"],
+  },
+];
+
 // Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
@@ -19,71 +106,17 @@ exports.searchFlights = async (req, res) => {
       });
     }
 
-    const mockFlights = [
-      {
-        id: "fl-1",
-        airline: "SkyAir",
-        origin,
-        destination,
-        departureDate,
-        departureTime: "08:00",
-        arrivalTime: "10:30",
-        duration: "2h 30m",
-        price: 299.99,
-        currency: "USD",
-      },
-      {
-        id: "fl-2",
-        airline: "OceanAir",
-        origin,
-        destination,
-        departureDate,
-        departureTime: "12:15",
-        arrivalTime: "14:45",
-        duration: "2h 30m",
-        price: 349.99,
-        currency: "USD",
-      },
-      {
-        id: "fl-3",
-        airline: "MountainExpress",
-        origin,
-        destination,
-        departureDate,
-        departureTime: "16:30",
-        arrivalTime: "19:00",
-        duration: "2h 30m",
-        price: 279.99,
-        currency: "USD",
-      },
-      {
-        id: "fl-4",
-        airline: "BudgetWings",
-        origin,
-        destination,
-        departureDate,
-        departureTime: "05:00",
-        arrivalTime: "07:30",
-        duration: "2h 30m",
-        price: 149.99,
-        currency: "USD",
-      },
-      {
-        id: "fl-5",
-        airline: "LuxeAir",
-        origin,
-        destination,
-        departureDate,
-        departureTime: "20:00",
-        arrivalTime: "22:30",
-        duration: "2h 30m",
-        price: 499.99,
-        currency: "USD",
-      },
-    ];
+    // Add request-specific fields to the shared flight data
+    const flights = mockFlights.map((f) => ({
+      ...f,
+      origin,
+      destination,
+      departureDate,
+      currency: "USD",
+    }));
 
     // Apply budget filters
-    let filteredFlights = mockFlights;
+    let filteredFlights = flights;
 
     if (minBudget !== undefined && minBudget !== "") {
       filteredFlights = filteredFlights.filter(
@@ -124,65 +157,22 @@ exports.searchHotels = async (req, res) => {
       });
     }
 
-    const mockHotels = [
-      {
-        id: "ht-1",
-        name: "Grand Plaza Hotel",
-        location,
-        address: "123 Main Street",
-        rating: 4.5,
-        price: 199.99,
-        currency: "USD",
-        amenities: ["WiFi", "Pool", "Gym", "Restaurant"],
-        images: ["hotel1_img1.jpg", "hotel1_img2.jpg"],
-      },
-      {
-        id: "ht-2",
-        name: "Comfort Inn & Suites",
-        location,
-        address: "456 Park Avenue",
-        rating: 4.2,
-        price: 149.99,
-        currency: "USD",
-        amenities: ["WiFi", "Breakfast", "Parking"],
-        images: ["hotel2_img1.jpg", "hotel2_img2.jpg"],
-      },
-      {
-        id: "ht-3",
-        name: "Luxury Resort & Spa",
-        location,
-        address: "789 Beach Boulevard",
-        rating: 4.8,
-        price: 299.99,
-        currency: "USD",
-        amenities: ["WiFi", "Pool", "Spa", "Restaurant", "Bar", "Gym"],
-        images: ["hotel3_img1.jpg", "hotel3_img2.jpg"],
-      },
-      {
-        id: "ht-4",
-        name: "Budget Stay Inn",
-        location,
-        address: "321 Economy Road",
-        rating: 3.5,
-        price: 79.99,
-        currency: "USD",
-        amenities: ["WiFi", "Parking"],
-        images: ["hotel4_img1.jpg"],
-      },
-      {
-        id: "ht-5",
-        name: "City Center Hotel",
-        location,
-        address: "555 Downtown Ave",
-        rating: 4.0,
-        price: 129.99,
-        currency: "USD",
-        amenities: ["WiFi", "Restaurant", "Gym"],
-        images: ["hotel5_img1.jpg"],
-      },
-    ];
+    // Add request-specific fields to the shared hotel data
+    const addresses = {
+      "ht-1": "123 Main Street",
+      "ht-2": "456 Park Avenue",
+      "ht-3": "789 Beach Boulevard",
+      "ht-4": "321 Economy Road",
+      "ht-5": "555 Downtown Ave",
+    };
+    const hotels = mockHotels.map((h) => ({
+      ...h,
+      location,
+      address: addresses[h.id],
+      currency: "USD",
+    }));
 
-    let filteredHotels = mockHotels;
+    let filteredHotels = hotels;
 
     // Budget filter
     if (minBudget !== undefined && minBudget !== "") {
@@ -228,12 +218,18 @@ exports.bookFlight = async (req, res) => {
       });
     }
 
+    // Look up the selected flight to get its actual price
+    const selectedFlight = mockFlights.find((f) => f.id === flightId);
+    if (!selectedFlight) {
+      return res.status(404).json({ msg: "Flight not found" });
+    }
+
     const bookingConfirmation = {
       bookingId: "BK" + Math.floor(Math.random() * 10000000),
       flightId,
       status: "confirmed",
       passengers,
-      totalPrice: 299.99 * passengers.length,
+      totalPrice: selectedFlight.price * passengers.length,
       currency: "USD",
     };
 
@@ -255,6 +251,14 @@ exports.bookHotel = async (req, res) => {
       });
     }
 
+    // Look up the selected hotel to get its actual price
+    const selectedHotel = mockHotels.find((h) => h.id === hotelId);
+    if (!selectedHotel) {
+      return res.status(404).json({ msg: "Hotel not found" });
+    }
+
+    const nights =
+      (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24);
     const bookingConfirmation = {
       bookingId: "HB" + Math.floor(Math.random() * 10000000),
       hotelId,
@@ -263,9 +267,7 @@ exports.bookHotel = async (req, res) => {
       checkOut,
       guests,
       status: "confirmed",
-      totalPrice:
-        (199.99 * (new Date(checkOut) - new Date(checkIn))) /
-        (1000 * 60 * 60 * 24),
+      totalPrice: selectedHotel.price * nights,
       currency: "USD",
     };
 

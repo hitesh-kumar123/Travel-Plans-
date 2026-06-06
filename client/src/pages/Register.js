@@ -442,6 +442,35 @@ const Register = () => {
             <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
               Create an account to start planning your next adventure
             </Typography>
+            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  bgcolor:
+                    activeStep === 0 ? "white" : "rgba(255, 255, 255, 0.5)",
+                  borderRadius: "50%",
+                }}
+              />
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  bgcolor:
+                    activeStep === 1 ? "white" : "rgba(255, 255, 255, 0.5)",
+                  borderRadius: "50%",
+                }}
+              />
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  bgcolor:
+                    activeStep === 2 ? "white" : "rgba(255, 255, 255, 0.5)",
+                  borderRadius: "50%",
+                }}
+              />
+            </Box>
           </Box>
         </Box>
       )}
@@ -455,6 +484,8 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 4,
+          height: "100vh",
+          overflow: "auto",
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
@@ -566,6 +597,7 @@ const Register = () => {
                       variant="outlined"
                       startIcon={<FacebookIcon />}
                       disabled
+                      title="Facebook signup is coming soon"
                       sx={{
                         borderRadius: 2,
                         py: 1,
@@ -576,6 +608,12 @@ const Register = () => {
                       }}
                     >
                       Facebook
+                      <Typography
+                        component="span"
+                        sx={{ ml: 1, fontSize: "0.75rem", fontWeight: 600 }}
+                      >
+                        Coming Soon
+                      </Typography>
                     </Button>
                   </Box>
                 </>

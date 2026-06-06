@@ -75,4 +75,37 @@ const TripSchema = new mongoose.Schema({
   },
 });
 
+// Enforce chronological date ordering constraints
+TripSchema.pre("validate", function (next) {
+  if (this.startDate && this.endDate && this.endDate < this.startDate) {
+    this.invalidate("endDate", "End date must be on or after the start date.");
+  }
+
+  if (
+    this.accommodation &&
+    this.accommodation.checkIn &&
+    this.accommodation.checkOut &&
+    this.accommodation.checkOut < this.accommodation.checkIn
+  ) {
+    this.invalidate(
+      "accommodation.checkOut",
+      "Accommodation check-out date must be on or after the check-in date.",
+    );
+  }
+
+  if (
+    this.transportation &&
+    this.transportation.departureTime &&
+    this.transportation.arrivalTime &&
+    this.transportation.arrivalTime < this.transportation.departureTime
+  ) {
+    this.invalidate(
+      "transportation.arrivalTime",
+      "Transportation arrival time must be on or after the departure time.",
+    );
+  }
+
+  next();
+});
+
 module.exports = mongoose.model("Trip", TripSchema);

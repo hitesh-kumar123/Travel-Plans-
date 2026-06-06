@@ -30,9 +30,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import DownloadIcon from "@mui/icons-material/Download";
 import WarningIcon from "@mui/icons-material/Warning";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 import {
@@ -47,9 +46,12 @@ import {
   addExpense,
   deleteExpense,
   getExpenseSummary,
+  fetchCurrencyRates,
 } from "../../redux/actions/expenseActions";
 import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
+import * as XLSX from "xlsx";
+import Menu from "@mui/material/Menu";
 
 const EXPENSE_CATEGORIES = [
   "Accommodation",
@@ -69,14 +71,41 @@ const CATEGORY_COLORS = {
   Other: "#f56565",
 };
 
+const CURRENCIES = ["INR", "USD", "EUR", "GBP", "JPY", "AED", "SGD", "AUD"];
+
+const CURRENCY_SYMBOLS = {
+  INR: "₹",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  AED: "د.إ",
+  SGD: "S$",
+  AUD: "A$",
+};
+
 const ExpensesView = () => {
   const dispatch = useDispatch();
-  const { expenses, loading } = useSelector((state) => state.expenses);
+
+  const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
+    (state) => state.expenses,
+  );
   const { trips } = useSelector((state) => state.trips);
 
   const [activeTripId, setActiveTripId] = useState("");
   const [open, setOpen] = useState(false);
   const [amountError, setAmountError] = useState("");
+
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+
+  const handleExportMenuOpen = (event) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+
+  const handleExportMenuClose = () => {
+    setExportAnchorEl(null);
+  };
+  const [selectedBase, setSelectedBase] = useState("INR");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
@@ -105,11 +134,50 @@ const ExpensesView = () => {
     }
   }, [dispatch, activeTripId]);
 
+  // Fetch exchange rates whenever user changes base currency.
+  // Always fetches with base=INR so all rates are "1 INR = X currency",
+  // which lets us convert between any two currencies using INR as pivot.
+  useEffect(() => {
+    dispatch(fetchCurrencyRates(selectedBase));
+  }, [dispatch, selectedBase]);
+
+  // Converts any amount from its stored currency to the user's baseCurrency.
+  // Uses INR as a pivot: amount → INR → baseCurrency
+  const toBase = (amount, currency) => {
+    if (currency === baseCurrency) return amount;
+    if (!exchangeRates || Object.keys(exchangeRates).length === 0)
+      return amount;
+
+    let amountInINR;
+    if (currency === "INR") {
+      amountInINR = amount;
+    } else {
+      const rateToINR = exchangeRates[currency];
+      if (!rateToINR) return amount;
+      amountInINR = amount / rateToINR;
+    }
+
+    if (baseCurrency === "INR") return amountInINR.toFixed(2);
+    const rateToBase = exchangeRates[baseCurrency];
+    if (!rateToBase) return amount;
+    return (amountInINR * rateToBase).toFixed(2);
+  };
+
+  const currencySymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
+
   const totalSpent = expenses
-    ? expenses.reduce((acc, e) => acc + e.amount, 0)
+    ? expenses.reduce(
+        (acc, e) => acc + parseFloat(toBase(e.amount, e.currency)),
+        0,
+      )
     : 0;
+
   const activeTrip = trips?.find((t) => t._id === activeTripId);
-  const budget = activeTrip?.budget || 0;
+
+  // Budget is stored in INR in the Trip model, so convert it to baseCurrency
+  const rawBudget = activeTrip?.budget || 0;
+  const budget = rawBudget > 0 ? parseFloat(toBase(rawBudget, "INR")) : 0;
+
   const remaining = budget > 0 ? budget - totalSpent : null;
 
   // Filter and Search logic
@@ -227,6 +295,32 @@ const ExpensesView = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportExcel = () => {
+    if (!expenses || expenses.length === 0) {
+      alert("No expenses to export!");
+      return;
+    }
+
+    const data = expenses.map((e) => ({
+      Date: new Date(e.date).toLocaleDateString(),
+      Category: e.category,
+      Description: e.description || "",
+      Amount: e.amount,
+      Currency: e.currency,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+
+    XLSX.writeFile(
+      workbook,
+      `expenses_${activeTrip?.destination || "trip"}.xlsx`,
+    );
+
+    handleExportMenuClose();
+  };
   const dialogAmount = parseFloat(form.amount) || 0;
   const isOverBudgetDialog = budget > 0 && totalSpent + dialogAmount > budget;
   const overBudgetBy = totalSpent + dialogAmount - budget;
@@ -261,25 +355,38 @@ const ExpensesView = () => {
             Visualize and optimize your travel finances in real-time
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", gap: 1.5, justifyContent: "flex-end" }}>
-          <Tooltip title="Download CSV Report">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<FileDownloadIcon />}
-              onClick={handleExportCSV}
-              disabled={!activeTripId || !expenses || expenses.length === 0}
-              sx={{
-                borderRadius: 2.5,
-                fontWeight: 600,
-                textTransform: "none",
-                px: 2.5,
-                borderWidth: "1.5px",
-                "&:hover": { borderWidth: "1.5px" },
-              }}
-            >
-              Export Report
-            </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Export Expenses">
+            <>
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={handleExportMenuOpen}
+                disabled={!activeTripId || !expenses || expenses.length === 0}
+                sx={{ borderRadius: 3 }}
+              >
+                Export
+              </Button>
+
+              <Menu
+                anchorEl={exportAnchorEl}
+                open={Boolean(exportAnchorEl)}
+                onClose={handleExportMenuClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleExportCSV();
+                    handleExportMenuClose();
+                  }}
+                >
+                  Export CSV
+                </MenuItem>
+
+                <MenuItem onClick={handleExportExcel}>
+                  Export Excel (.xlsx)
+                </MenuItem>
+              </Menu>
+            </>
           </Tooltip>
           <PrimaryButton
             startIcon={<AddIcon />}
@@ -297,6 +404,27 @@ const ExpensesView = () => {
         </Box>
       </Box>
 
+      {/* Base Currency Selector */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          Display totals in:
+        </Typography>
+        <TextField
+          select
+          size="small"
+          value={selectedBase}
+          onChange={(e) => setSelectedBase(e.target.value)}
+          sx={{ width: 120 }}
+        >
+          {CURRENCIES.map((c) => (
+            <MenuItem key={c} value={c}>
+              {CURRENCY_SYMBOLS[c]} {c}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
+      {/* Trip Selector */}
       {/* Select Trip Panel */}
       {trips && trips.length > 0 && (
         <Paper
@@ -436,28 +564,15 @@ const ExpensesView = () => {
               },
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 1,
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                sx={{ opacity: 0.85, fontWeight: 600 }}
-              >
-                Total Expenses
-              </Typography>
-              <WalletIcon sx={{ opacity: 0.8 }} />
-            </Box>
-            <Typography
-              variant="h3"
-              fontWeight={800}
-              sx={{ letterSpacing: "-1px" }}
-            >
-              ₹{totalSpent.toLocaleString()}
+            <WalletIcon sx={{ mb: 1, opacity: 0.8 }} />
+            <Typography variant="body2" sx={{ opacity: 0.85 }}>
+              Total Spent
+            </Typography>
+            <Typography variant="h5" fontWeight={700}>
+              {currencySymbol}
+              {totalSpent.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
             </Typography>
             <Typography
               variant="caption"
@@ -481,40 +596,14 @@ const ExpensesView = () => {
               boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 1,
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                fontWeight={600}
-              >
-                Allocated Budget
-              </Typography>
-              <Box
-                sx={{
-                  p: 0.75,
-                  borderRadius: 2,
-                  bgcolor: "rgba(72, 187, 120, 0.1)",
-                  color: "#48bb78",
-                  display: "flex",
-                }}
-              >
-                <CheckCircleIcon sx={{ fontSize: 18 }} />
-              </Box>
-            </Box>
-            <Typography
-              variant="h3"
-              fontWeight={800}
-              color="text.primary"
-              sx={{ letterSpacing: "-1px" }}
-            >
-              {budget > 0 ? `₹${budget.toLocaleString()}` : "—"}
+            <WalletIcon sx={{ mb: 1, color: "success.main" }} />
+            <Typography variant="body2" color="text.secondary">
+              Budget
+            </Typography>
+            <Typography variant="h5" fontWeight={700} color="success.main">
+              {budget > 0
+                ? `${currencySymbol}${budget.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
             <Typography
               variant="caption"
@@ -588,7 +677,9 @@ const ExpensesView = () => {
               }
               sx={{ letterSpacing: "-1px" }}
             >
-              {remaining !== null ? `₹${remaining.toLocaleString()}` : "—"}
+              {remaining !== null
+                ? `${currencySymbol}${remaining.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </Typography>
             <Typography
               variant="caption"
@@ -767,11 +858,24 @@ const ExpensesView = () => {
                         >
                           {expense.description || "—"}
                         </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{ fontWeight: 700, color: "text.primary", py: 2 }}
-                        >
-                          ₹{expense.amount.toLocaleString()}
+                        <TableCell align="right" sx={{ fontWeight: 700 }}>
+                          {CURRENCY_SYMBOLS[expense.currency] ||
+                            expense.currency}
+                          {expense.amount.toLocaleString()}
+                          {expense.currency !== baseCurrency && (
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              color="text.secondary"
+                            >
+                              ≈ {currencySymbol}
+                              {parseFloat(
+                                toBase(expense.amount, expense.currency),
+                              ).toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              })}
+                            </Typography>
+                          )}
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
                           <Tooltip title="Delete Expense">
@@ -832,19 +936,17 @@ const ExpensesView = () => {
           </Paper>
         </Grid>
 
-        {/* Visual Analytics Pie Chart */}
-        <Grid item xs={12} md={4.5}>
+        {/* Pie Chart */}
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
-              p: 3,
-              borderRadius: 4,
+              p: 4,
+              borderRadius: 3,
               border: "1px solid",
-              borderColor: "rgba(224, 224, 224, 0.6)",
-              boxShadow: "0 12px 32px -12px rgba(0,0,0,0.04)",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
+              borderColor: "divider",
+              boxSizing: "border-box",
+              alignSelf: "flex-start",
             }}
           >
             <Typography
@@ -858,113 +960,72 @@ const ExpensesView = () => {
             {chartData.length > 0 ? (
               <Box
                 sx={{
-                  flexGrow: 1,
                   display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 3,
                 }}
               >
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="48%"
-                      innerRadius={65}
-                      outerRadius={90}
-                      paddingAngle={3}
-                      dataKey="value"
+                <Box sx={{ flex: 1, minWidth: 180, width: 0 }}>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart
+                      margin={{ top: 15, right: 15, bottom: 15, left: 30 }}
                     >
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ReTooltip
-                      contentStyle={{
-                        background: "rgba(255, 255, 255, 0.95)",
-                        borderRadius: 12,
-                        border: "1px solid rgba(224, 224, 224, 0.5)",
-                        boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-                        fontFamily: "Poppins",
-                      }}
-                      itemStyle={{ fontFamily: "Poppins", fontWeight: 600 }}
-                      formatter={(value) => [
-                        `₹${value.toLocaleString()}`,
-                        "Amount",
-                      ]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-
-                {/* Legend list with custom styled percentages */}
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={55}
+                        outerRadius={80}
+                        paddingAngle={4}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={CATEGORY_COLORS[entry.name] || "#8884d8"}
+                          />
+                        ))}
+                      </Pie>
+                      <ReTooltip
+                        formatter={(value) => [
+                          `₹${value.toLocaleString()}`,
+                          "",
+                        ]}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </Box>
+                {/* Custom Legend */}
                 <Box
                   sx={{
-                    mt: 3,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 1.5,
+                    gap: 0.75,
+                    alignSelf: "center",
+                    pl: 1,
+                    flexShrink: 0,
                   }}
                 >
-                  {chartData.map((d, idx) => {
-                    const percent = Math.round((d.value / totalSpent) * 100);
-                    return (
+                  {chartData.map((entry) => (
+                    <Box
+                      key={entry.name}
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
                       <Box
-                        key={idx}
                         sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
+                          width: 15,
+                          height: 15,
+                          borderRadius: "3px",
+                          bgcolor: CATEGORY_COLORS[entry.name] || "#8884d8",
+                          flexShrink: 0,
                         }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1.5,
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              width: 12,
-                              height: 12,
-                              borderRadius: "50%",
-                              bgcolor: d.color,
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            fontWeight={600}
-                            color="text.primary"
-                          >
-                            {d.name}
-                          </Typography>
-                        </Box>
-                        <Box
-                          sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                        >
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            fontWeight={500}
-                          >
-                            ₹{d.value.toLocaleString()}
-                          </Typography>
-                          <Chip
-                            label={`${percent}%`}
-                            size="small"
-                            sx={{
-                              fontSize: "0.7rem",
-                              fontWeight: 700,
-                              bgcolor: d.color + "12",
-                              color: d.color,
-                              height: 20,
-                              borderRadius: 1,
-                            }}
-                          />
-                        </Box>
-                      </Box>
-                    );
-                  })}
+                      />
+                      <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                        {entry.name}
+                      </Typography>
+                    </Box>
+                  ))}
                 </Box>
               </Box>
             ) : (
@@ -973,7 +1034,7 @@ const ExpensesView = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: 320,
+                  height: 120,
                   flexDirection: "column",
                   gap: 1.5,
                 }}
@@ -1075,7 +1136,7 @@ const ExpensesView = () => {
               <Grid item xs={12} sm={8}>
                 <TextField
                   fullWidth
-                  label="Amount (₹) *"
+                  label="Amount *"
                   type="number"
                   value={form.amount}
                   onChange={handleAmountChange}
@@ -1098,9 +1159,9 @@ const ExpensesView = () => {
                   }
                   slotProps={{ input: { style: { borderRadius: 12 } } }}
                 >
-                  {["INR", "USD", "EUR", "GBP"].map((c) => (
+                  {CURRENCIES.map((c) => (
                     <MenuItem key={c} value={c}>
-                      {c}
+                      {CURRENCY_SYMBOLS[c]} {c}
                     </MenuItem>
                   ))}
                 </TextField>

@@ -18,6 +18,12 @@ exports.createTrip = async (req, res) => {
       transportation,
     } = req.body;
 
+    if (startDate && new Date(startDate) < new Date().setHours(0, 0, 0, 0)) {
+      return res
+        .status(400)
+        .json({ msg: "Trip start date cannot be in the past" });
+    }
+
     // Default images
     let images = [];
     if (destination) {
@@ -115,11 +121,8 @@ exports.updateTrip = async (req, res) => {
       }
     }
 
-    trip = await Trip.findByIdAndUpdate(
-      req.params.id,
-      { $set: updateData },
-      { new: true },
-    );
+    trip.set(updateData);
+    await trip.save();
 
     res.json(trip);
   } catch (err) {
