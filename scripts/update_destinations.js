@@ -80,10 +80,11 @@ function getCategory(name = '', type = '') {
 
 function getJSON(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, {
+    const req = https.get(url, {
       headers: {
         'User-Agent': 'PackGoTravelPlannerBot/1.0 (contact@packgo.org)'
-      }
+      },
+      timeout: 10000 // 10 seconds timeout
     }, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
@@ -94,8 +95,15 @@ function getJSON(url) {
           reject(e);
         }
       });
-    }).on('error', (err) => {
+    });
+
+    req.on('error', (err) => {
       reject(err);
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Request timed out'));
     });
   });
 }

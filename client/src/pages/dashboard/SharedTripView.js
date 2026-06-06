@@ -8,10 +8,12 @@ import {
   Chip,
   CircularProgress,
   Grid,
+  Button,
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import WalletIcon from "@mui/icons-material/Wallet";
+import PrintIcon from "@mui/icons-material/Print";
 
 const SharedTripView = () => {
   const { token } = useParams();
@@ -64,13 +66,44 @@ const SharedTripView = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", p: { xs: 2, md: 4 } }}>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ mb: 1, display: "block" }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+          "@media print": { display: "none" },
+        }}
       >
-        👁️ Shared Trip (Read-only)
-      </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block" }}
+        >
+          👁️ Shared Trip (Read-only)
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<PrintIcon />}
+          onClick={() => window.print()}
+          sx={{ borderRadius: 2, textTransform: "none", fontWeight: 600 }}
+        >
+          🖨️ Export PDF / Print Itinerary
+        </Button>
+      </Box>
+      <Box
+        className="no-print"
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mb: 2,
+        }}
+      >
+        <Button variant="contained" onClick={() => window.print()}>
+          🖨️ Export PDF / Print Itinerary
+        </Button>
+      </Box>
       <Box
         sx={{
           position: "relative",
@@ -78,13 +111,26 @@ const SharedTripView = () => {
           overflow: "hidden",
           mb: 3,
           height: { xs: 200, md: 300 },
+          "@media print": {
+            height: "auto",
+            borderRadius: 0,
+            pageBreakInside: "avoid",
+          },
         }}
       >
         <Box
           component="img"
           src={tripImage}
           alt={trip.destination}
-          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            "@media print": {
+              maxHeight: "300px",
+              borderRadius: "8px",
+            },
+          }}
         />
         <Box
           sx={{
@@ -95,6 +141,13 @@ const SharedTripView = () => {
             p: 3,
             background: "linear-gradient(transparent, rgba(0,0,0,0.75))",
             color: "white",
+            "@media print": {
+              position: "relative",
+              background: "none",
+              color: "black",
+              p: 0,
+              mt: 2,
+            },
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -106,12 +159,19 @@ const SharedTripView = () => {
           <Chip
             label={`${daysCount} days`}
             size="small"
-            sx={{ mt: 1, bgcolor: "rgba(255,255,255,0.2)", color: "white" }}
+            sx={{
+              mt: 1,
+              bgcolor: "rgba(255,255,255,0.2)",
+              color: "white",
+              "@media print": {
+                bgcolor: "grey.200",
+                color: "black",
+              },
+            }}
           />
         </Box>
       </Box>
-
-      <Grid container spacing={2} sx={{ mb: 3 }}>
+      <Grid container spacing={2} sx={{ mb: 3 }} className="print-section">
         {[
           {
             label: "Start Date",
@@ -146,6 +206,10 @@ const SharedTripView = () => {
                 textAlign: "center",
                 border: "1px solid",
                 borderColor: "divider",
+                "@media print": {
+                  border: "2px solid #eee",
+                  pageBreakInside: "avoid",
+                },
               }}
             >
               {icon}
@@ -167,12 +231,19 @@ const SharedTripView = () => {
 
       {trip.description && (
         <Paper
+          className="print-section"
           elevation={0}
           sx={{
             p: 3,
             borderRadius: 3,
             border: "1px solid",
             borderColor: "divider",
+            "@media print": {
+              border: "none",
+              p: 0,
+              mt: 3,
+              pageBreakInside: "avoid",
+            },
           }}
         >
           <Typography variant="subtitle1" fontWeight={700} mb={1}>

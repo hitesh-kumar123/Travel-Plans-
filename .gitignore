@@ -27,3 +27,6 @@ coverage/
 temp/
 tmp/
 ".env.bak.*" 
+
+# Ignore the entire project directory to prevent accidental commits of sensitive data or build artifacts(made a mistake, should be removed)
+Travel-Plans-/

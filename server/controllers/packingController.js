@@ -59,19 +59,43 @@ exports.getPackingList = async (req, res) => {
 exports.addItem = async (req, res) => {
   try {
     const { name, category } = req.body;
-    if (!name)
-      return res.status(400).json({ message: "Item name is required" });
 
-    const list = await PackingList.findOneAndUpdate(
+    if (!name?.trim()) {
+      return res.status(400).json({ message: "Item name is required" });
+    }
+
+    const list = await PackingList.findOne({
+      trip: req.params.tripId,
+      user: req.user.id,
+    });
+
+    if (list) {
+      const duplicate = list.items.find(
+        (item) => item.name.trim().toLowerCase() === name.trim().toLowerCase(),
+      );
+
+      if (duplicate) {
+        return res.status(400).json({
+          message: "Item already exists in the packing list",
+        });
+      }
+    }
+
+    const updatedList = await PackingList.findOneAndUpdate(
       { trip: req.params.tripId, user: req.user.id },
       {
         $push: {
-          items: { name, category: category || "Other", packed: false },
+          items: {
+            name: name.trim(),
+            category: category || "Other",
+            packed: false,
+          },
         },
       },
       { new: true, upsert: true },
     );
-    res.json(list);
+
+    res.json(updatedList);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -122,19 +146,38 @@ exports.applyTemplate = async (req, res) => {
     if (!items)
       return res.status(400).json({ message: "Invalid template name" });
 
-    const templateItems = items.map((i) => ({ ...i, packed: false }));
+    let list = await PackingList.findOne({
+      trip: req.params.tripId,
+      user: req.user.id,
+    });
 
-    const list = await PackingList.findOneAndUpdate(
-      { trip: req.params.tripId, user: req.user.id },
-      { $push: { items: { $each: templateItems } } },
-      { new: true, upsert: true },
+    if (!list) {
+      list = await PackingList.create({
+        trip: req.params.tripId,
+        user: req.user.id,
+        items: [],
+      });
+    }
+
+    const existingNames = new Set(
+      list.items.map((item) => item.name.trim().toLowerCase()),
     );
+
+    const templateItems = items
+      .filter((item) => !existingNames.has(item.name.trim().toLowerCase()))
+      .map((item) => ({
+        ...item,
+        packed: false,
+      }));
+
+    list.items.push(...templateItems);
+    await list.save();
+
     res.json(list);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 // DELETE /api/packing/:tripId/items — clear all items
 exports.clearAll = async (req, res) => {
   try {

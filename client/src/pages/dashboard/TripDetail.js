@@ -38,6 +38,8 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
 import {
   getTrip,
   updateTrip,
@@ -81,6 +83,7 @@ const TripDetail = () => {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareLink, setShareLink] = useState("");
   const [shareLoading, setShareLoading] = useState(false);
+  const [budgetOpen, setBudgetOpen] = useState(false);
 
   const [expenseForm, setExpenseForm] = useState({
     amount: "",
@@ -121,6 +124,22 @@ const TripDetail = () => {
     currentTrip?.budget > 0
       ? Math.min((totalSpent / currentTrip.budget) * 100, 100)
       : 0;
+
+  const tripDataForBudget = {
+    destination: currentTrip?.destination || currentTrip?.name || "",
+    duration:
+      currentTrip?.startDate && currentTrip?.endDate
+        ? Math.max(
+            1,
+            Math.round(
+              (new Date(currentTrip.endDate) -
+                new Date(currentTrip.startDate)) /
+                (1000 * 60 * 60 * 24),
+            ),
+          )
+        : 0,
+    travelers: currentTrip?.travelers || 1,
+  };
 
   const handleDeleteTrip = () => {
     dispatch(deleteTrip(id));
@@ -230,6 +249,15 @@ const TripDetail = () => {
               sx={{ bgcolor: "error.light" }}
             >
               <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Estimate Budget">
+            <IconButton
+              onClick={() => setBudgetOpen(true)}
+              color="info"
+              sx={{ bgcolor: "info.light" }}
+            >
+              <CalculateIcon />
             </IconButton>
           </Tooltip>
         </Box>
@@ -900,6 +928,17 @@ const TripDetail = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Budget Calculator Modal */}
+      <BudgetCalculator
+        open={budgetOpen}
+        onClose={() => setBudgetOpen(false)}
+        tripData={tripDataForBudget}
+        onSaveBudget={(estimatedBudget) => {
+          dispatch(updateTrip(id, { budget: estimatedBudget }));
+          toast.success("Estimated budget saved to trip! 💰");
+        }}
+      />
     </Box>
   );
 };
