@@ -502,7 +502,7 @@ const Register = () => {
               ←
             </IconButton>
           </Box>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+          
 
           <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
             {/* Back to Home */}
