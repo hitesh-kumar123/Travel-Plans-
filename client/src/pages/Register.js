@@ -489,7 +489,6 @@ const Register = () => {
         }}
       >
         <Box sx={{ maxWidth: 480, width: "100%" }}>
-
           <Box sx={{ mb: 2 }}>
             <IconButton
               onClick={() => navigate(-1)}
@@ -502,7 +501,6 @@ const Register = () => {
               ←
             </IconButton>
           </Box>
-          
 
           <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
             {/* Back to Home */}
@@ -535,7 +533,6 @@ const Register = () => {
                 <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
               </Link>
             </Box>
-
 
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
