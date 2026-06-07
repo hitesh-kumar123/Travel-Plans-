@@ -24,10 +24,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
-import PrivacyPolicy from "./pages/PrivacyPolicy";  // ADD THIS LINE
-import TermsConditions from "./pages/TermsConditions";  // ADD THIS LINE
-
-
+import PrivacyPolicy from "./pages/PrivacyPolicy"; // ADD THIS LINE
+import TermsConditions from "./pages/TermsConditions"; // ADD THIS LINE
 
 function App() {
   useEffect(() => {
@@ -56,9 +54,8 @@ function App() {
               {/* <-- ADD THIS ROUTE */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-
-		<Route path="/privacy-policy" element={<PrivacyPolicy />} />
-		<Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
               {/* Other Routes */}
