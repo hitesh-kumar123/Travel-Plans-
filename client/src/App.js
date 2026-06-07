@@ -24,6 +24,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
+import HelpCenter from "./pages/HelpCenter";
 
 function App() {
   useEffect(() => {
@@ -54,6 +55,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
+		<Route path="/help" element={<HelpCenter />} />
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
