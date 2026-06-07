@@ -1075,16 +1075,16 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <Link to="/about">About</Link>
-              <Link to="/careers">Careers</Link>
-              <Link to="/contact">Contact</Link>
+              <Link to="/about" onClick={()=>window.scrollTo(0,0)}>About</Link>
+              <Link to="/careers" onClick={()=>window.scrollTo(0,0)}>Careers</Link>
+              <Link to="/contact" onClick={()=>window.scrollTo(0,0)}>Contact</Link>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <Link to="/help">Help Center</Link>
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/terms">Terms & Conditions</Link>
+              <Link to="/help" onClick={()=>window.scrollTo(0,0)}>Help Center</Link>
+              <Link to="/privacy" onClick={()=>window.scrollTo(0,0)}>Privacy Policy</Link>
+              <Link to="/terms" onClick={()=>window.scrollTo(0,0)}>Terms & Conditions</Link>
             </div>
           </div>
         </div>
