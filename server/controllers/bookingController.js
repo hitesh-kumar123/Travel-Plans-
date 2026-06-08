@@ -1,3 +1,6 @@
+// Payment verification module for secure payment processing
+const paymentVerification = require('../utils/paymentVerification');
+
 // axios removed — not used in current mock implementation
 
 // Mock data shared across search and booking endpoints
@@ -210,11 +213,17 @@ exports.searchHotels = async (req, res) => {
 // Book a flight
 exports.bookFlight = async (req, res) => {
   try {
-    const { flightId, passengers, tripId } = req.body;
+    const { flightId, passengers, tripId, customerEmail } = req.body;
 
     if (!flightId || !passengers || !tripId) {
       return res.status(400).json({
         msg: "Please provide flight ID, passenger details, and trip ID",
+      });
+    }
+
+    if (!customerEmail) {
+      return res.status(400).json({
+        msg: "Customer email is required for payment verification",
       });
     }
 
@@ -224,31 +233,57 @@ exports.bookFlight = async (req, res) => {
       return res.status(404).json({ msg: "Flight not found" });
     }
 
-    const bookingConfirmation = {
-      bookingId: "BK" + Math.floor(Math.random() * 10000000),
+    const bookingId = "BK" + Math.floor(Math.random() * 10000000);
+    const totalPrice = selectedFlight.price * passengers.length;
+
+    // Step 1: Initiate payment verification before booking confirmation
+    const paymentInitiation = paymentVerification.initiatePaymentVerification(
+      bookingId,
+      totalPrice,
+      "USD",
+      { email: customerEmail }
+    );
+
+    // Step 2: Return payment verification details along with booking
+    // Booking is in PENDING_PAYMENT status until payment is verified
+    const bookingResponse = {
+      bookingId,
       flightId,
-      status: "confirmed",
+      status: paymentVerification.BOOKING_STATUS.PENDING_PAYMENT,
       passengers,
-      totalPrice: selectedFlight.price * passengers.length,
+      totalPrice,
       currency: "USD",
+      paymentRequired: true,
+      transactionId: paymentInitiation.transactionId,
+      paymentUrl: paymentInitiation.paymentUrl,
+      message: "Please complete payment verification to confirm booking",
     };
 
-    res.json(bookingConfirmation);
+    res.json(bookingResponse);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({
+      msg: "Server error",
+      error: err.message,
+    });
   }
 };
 
 // Book a hotel
 exports.bookHotel = async (req, res) => {
   try {
-    const { hotelId, roomType, guests, checkIn, checkOut, tripId } = req.body;
+    const { hotelId, roomType, guests, checkIn, checkOut, tripId, customerEmail } = req.body;
 
     // Validate that all required fields are present
     if (!hotelId || !roomType || !guests || !checkIn || !checkOut || !tripId) {
       return res.status(400).json({
         msg: "Please provide all required booking details",
+      });
+    }
+
+    if (!customerEmail) {
+      return res.status(400).json({
+        msg: "Customer email is required for payment verification",
       });
     }
 
@@ -278,21 +313,148 @@ exports.bookHotel = async (req, res) => {
       (PRICE_PER_NIGHT * totalNights).toFixed(2),
     );
 
-    const bookingConfirmation = {
-      bookingId: "HB" + Math.floor(Math.random() * 10000000),
+    const bookingId = "HB" + Math.floor(Math.random() * 10000000);
+
+    // Step 1: Initiate payment verification before booking confirmation
+    const paymentInitiation = paymentVerification.initiatePaymentVerification(
+      bookingId,
+      calculatedPrice,
+      "USD",
+      { email: customerEmail }
+    );
+
+    // Step 2: Return payment verification details along with booking
+    // Booking is in PENDING_PAYMENT status until payment is verified
+    const bookingResponse = {
+      bookingId,
       hotelId,
       roomType,
       checkIn,
       checkOut,
       guests,
-      status: "confirmed",
+      status: paymentVerification.BOOKING_STATUS.PENDING_PAYMENT,
       totalPrice: calculatedPrice,
       currency: "USD",
+      paymentRequired: true,
+      transactionId: paymentInitiation.transactionId,
+      paymentUrl: paymentInitiation.paymentUrl,
+      message: "Please complete payment verification to confirm booking",
     };
 
-    res.json(bookingConfirmation);
+    res.json(bookingResponse);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({
+      msg: "Server error",
+      error: err.message,
+    });
+  }
+};
+
+// Handle payment webhook callback from payment processor
+exports.handlePaymentWebhook = async (req, res) => {
+  try {
+    const webhookData = req.body;
+
+    if (!webhookData || !webhookData.transactionId) {
+      return res.status(400).json({
+        msg: "Invalid webhook data: missing transactionId",
+      });
+    }
+
+    // Process webhook and verify payment
+    const webhookResult = paymentVerification.handlePaymentWebhook(webhookData);
+
+    if (webhookResult.success) {
+      res.json({
+        success: true,
+        transactionId: webhookResult.transactionId,
+        status: webhookResult.status,
+        message: "Payment verified successfully",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        transactionId: webhookResult.transactionId,
+        message: webhookResult.message,
+      });
+    }
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    res.status(500).json({
+      msg: "Webhook processing error",
+      error: err.message,
+    });
+  }
+};
+
+// Confirm booking after payment verification
+exports.confirmBookingAfterPayment = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+
+    if (!bookingId) {
+      return res.status(400).json({
+        msg: "Please provide booking ID",
+      });
+    }
+
+    // Check if payment is verified for this booking
+    const paymentStatus = paymentVerification.getPaymentStatus(bookingId);
+
+    if (!paymentStatus.verified) {
+      return res.status(400).json({
+        success: false,
+        bookingId,
+        paymentStatus: paymentStatus.status,
+        message: "Payment not verified. Booking cannot be confirmed.",
+      });
+    }
+
+    // Payment is verified, finalize booking
+    const bookingData = {
+      totalPrice: paymentStatus.amount,
+      currency: paymentStatus.currency,
+      status: paymentVerification.BOOKING_STATUS.PAYMENT_VERIFIED,
+    };
+
+    const finalizedBooking = paymentVerification.finalizeBookingAfterPayment(
+      bookingId,
+      bookingData
+    );
+
+    res.json(finalizedBooking);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      msg: "Error confirming booking",
+      error: err.message,
+    });
+  }
+};
+
+// Get payment status for a booking
+exports.getPaymentStatus = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    if (!bookingId) {
+      return res.status(400).json({
+        msg: "Please provide booking ID",
+      });
+    }
+
+    const paymentStatus = paymentVerification.getPaymentStatus(bookingId);
+
+    res.json({
+      bookingId,
+      ...paymentStatus,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      msg: "Error retrieving payment status",
+      error: err.message,
+    });
   }
 };
