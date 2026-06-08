@@ -20,6 +20,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.6.0",
     "react-leaflet": "^5.0.0",
+    "react-qr-code": "^2.0.21",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.15.1",
     "react-scripts": "5.0.1",

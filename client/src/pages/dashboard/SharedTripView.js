@@ -252,6 +252,45 @@ const SharedTripView = () => {
           <Typography color="text.secondary">{trip.description}</Typography>
         </Paper>
       )}
+      {trip.activities?.length > 0 && (
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 3,
+            p: 3,
+            borderRadius: 3,
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight={700} mb={2}>
+            Activities
+          </Typography>
+
+          {trip.activities.map((activity, index) => (
+            <Box
+              key={index}
+              sx={{
+                mb: 2,
+                pb: 2,
+                borderBottom:
+                  index !== trip.activities.length - 1 ? "1px solid" : "none",
+                borderColor: "divider",
+              }}
+            >
+              <Typography fontWeight={600}>{activity.name}</Typography>
+
+              {activity.location && (
+                <Typography variant="body2">📍 {activity.location}</Typography>
+              )}
+
+              {activity.notes && (
+                <Typography variant="body2">{activity.notes}</Typography>
+              )}
+            </Box>
+          ))}
+        </Paper>
+      )}
     </Box>
   );
 };

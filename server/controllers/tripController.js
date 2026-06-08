@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
@@ -188,6 +189,36 @@ exports.getSharedTrip = async (req, res) => {
       return res.status(404).json({ msg: "Shared trip not found or disabled" });
 
     res.json(trip);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// Enable/Disable trip sharing
+exports.toggleTripSharing = async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+
+    if (!trip) {
+      return res.status(404).json({
+        msg: "Trip not found",
+      });
+    }
+
+    if (trip.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        msg: "User not authorized",
+      });
+    }
+
+    trip.shareEnabled = !trip.shareEnabled;
+
+    await trip.save();
+
+    res.json({
+      shareEnabled: trip.shareEnabled,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
