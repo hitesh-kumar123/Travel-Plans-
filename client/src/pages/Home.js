@@ -628,21 +628,17 @@ const Home = () => {
             >
               Features
             </a>
-
-
-<Link
-  to="/travel-checklist"
-  style={{
-    color: "var(--ocean)",
-    textDecoration: "none",
-    fontWeight: 500,
-  }}
-  onClick={() => setMobileOpen(false)}
->
-  Checklist
-</Link>
-
-
+            <Link
+              to="/travel-checklist"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Checklist
+            </Link>
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
