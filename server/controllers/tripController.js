@@ -4,6 +4,14 @@ const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
 
+/**
+ * Escape special regex metacharacters in a string so it can be safely
+ * interpolated into a RegExp without altering the intended pattern.
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Create new trip
 exports.createTrip = async (req, res) => {
   try {
@@ -30,7 +38,7 @@ exports.createTrip = async (req, res) => {
     if (destination) {
       // Find destination in DB by name case-insensitively
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${destination}$`, "i") },
+        name: { $regex: new RegExp(`^${escapeRegExp(destination)}$`, "i") },
       });
       if (dest && dest.images && dest.images.length > 0) {
         images = dest.images;
@@ -115,7 +123,9 @@ exports.updateTrip = async (req, res) => {
     // Update images if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${updateData.destination}$`, "i") },
+        name: {
+          $regex: new RegExp(`^${escapeRegExp(updateData.destination)}$`, "i"),
+        },
       });
       if (dest && dest.images && dest.images.length > 0) {
         updateData.images = dest.images;
