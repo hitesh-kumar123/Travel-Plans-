@@ -123,9 +123,16 @@ exports.getProfile = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   try {
     const { name, email } = req.body;
-    const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
+const updateFields = {};
+
+if (email) {
+  return res.status(403).json({
+    success: false,
+    message: "Email can only be changed through the OTP verification process."
+  });
+}
+
+if (name) updateFields.name = name;
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
