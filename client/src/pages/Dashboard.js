@@ -32,6 +32,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import WalletIcon from "@mui/icons-material/Wallet";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import TranslateIcon from "@mui/icons-material/Translate";
 import HotelIcon from "@mui/icons-material/Hotel";
 import PersonIcon from "@mui/icons-material/Person";
@@ -54,10 +55,11 @@ import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
 import NotFound from "./NotFound";
 
+
 const mobileDrawerWidth = 240;
 const desktopDrawerWidth = 280;
 
-const Dashboard = () => {
+const Dashboard = ({ mode, toggleTheme }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -307,7 +309,7 @@ const Dashboard = () => {
             xs: "100%",
             md: `calc(100% - ${desktopDrawerWidth}px)`,
           },
-          bgcolor: "grey.50",
+          bgcolor: "background.default",
         }}
       >
         <AppBar
@@ -330,6 +332,11 @@ const Dashboard = () => {
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip title="Toggle Theme">
+                <IconButton color="inherit" onClick={toggleTheme}>
+                  {mode === "light" ? <DarkModeIcon /> : <WbSunnyIcon />}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Notifications">
                 <IconButton
                   size="large"

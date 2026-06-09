@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 import {
   Typography,
   Box,
@@ -85,6 +86,7 @@ const CURRENCY_SYMBOLS = {
 };
 
 const ExpensesView = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
 
   const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
@@ -435,7 +437,10 @@ const ExpensesView = () => {
             mb: 4,
             border: "1px solid",
             borderColor: "rgba(224, 224, 224, 0.6)",
-            background: "rgba(255, 255, 255, 0.8)",
+            background:
+              theme.palette.mode === "dark"
+                ? "rgba(30,30,30,0.9)"
+                : "rgba(255,255,255,0.8)",
             backdropFilter: "blur(20px)",
             boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
           }}
@@ -592,7 +597,7 @@ const ExpensesView = () => {
               borderRadius: 4,
               border: "1px solid",
               borderColor: "rgba(72, 187, 120, 0.2)",
-              background: "rgba(255, 255, 255, 0.8)",
+              bgcolor: "background.paper",
               boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
             }}
           >
@@ -628,9 +633,12 @@ const ExpensesView = () => {
                   ? "rgba(245, 101, 101, 0.2)"
                   : "rgba(66, 153, 225, 0.2)",
               background:
-                remaining !== null && remaining < 0
-                  ? "rgba(254, 242, 242, 0.6)"
-                  : "rgba(240, 249, 255, 0.6)",
+                theme.palette.mode === "dark"
+                    ? theme.palette.grey[900]
+                    : remaining !== null && remaining < 0
+                      ? "rgba(254,242,242,0.6)"
+                      : "rgba(240,249,255,0.6)",
+
               boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
             }}
           >

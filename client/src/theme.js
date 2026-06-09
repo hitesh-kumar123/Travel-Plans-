@@ -1,7 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme({
+const getTheme = (mode) =>
+  createTheme({
   palette: {
+    mode,
     primary: {
       main: "#3f51b5", // A modern indigo
       light: "#757de8",
@@ -15,13 +17,16 @@ const theme = createTheme({
       contrastText: "#ffffff",
     },
     background: {
-      default: "#f5f7fa",
-      paper: "#ffffff",
+      default: mode === "dark" ? "#121212" : "#f5f7fa",
+      paper: mode === "dark" ? "#1e1e1e" : "#ffffff",
     },
+
     text: {
-      primary: "#2d3748",
-      secondary: "#718096",
+      primary: mode === "dark" ? "#ffffff" : "#2d3748",
+      secondary: mode === "dark" ? "#b0b0b0" : "#718096",
     },
+
+      divider: mode === "dark" ? "#333333" : "#e0e0e0",
     success: {
       main: "#48bb78",
     },
@@ -144,4 +149,4 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+export default getTheme;

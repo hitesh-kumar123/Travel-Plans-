@@ -129,8 +129,14 @@ const DashboardHome = () => {
     },
   ];
 
-  return (
-    <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+    return (
+      <Box
+        sx={{
+          p: { xs: 2, sm: 3, md: 4 },
+          bgcolor: "background.default",
+          minHeight: "100vh",
+        }}
+      >
       {/* Greeting */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>

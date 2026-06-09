@@ -33,6 +33,39 @@ import {
   searchHotels,
 } from "../../redux/actions/bookingActions";
 
+const darkFieldStyles = {
+  "& .MuiOutlinedInput-root": {
+    backgroundColor: "#1e1e1e",
+    color: "#fff",
+
+    "& input": {
+      color: "#fff",
+      backgroundColor: "transparent",
+    },
+
+    "& textarea": {
+      color: "#fff",
+      backgroundColor: "transparent",
+    },
+
+    "& fieldset": {
+      borderColor: "rgba(255,255,255,0.2)",
+    },
+
+    "&:hover fieldset": {
+      borderColor: "rgba(255,255,255,0.4)",
+    },
+  },
+
+  "& .MuiInputLabel-root": {
+    color: "#aaa",
+  },
+
+  "& .MuiSvgIcon-root": {
+    color: "#fff",
+  },
+};
+
 const amenityIcons = {
   WiFi: <WifiIcon fontSize="small" />,
   Pool: <PoolIcon fontSize="small" />,
@@ -191,6 +224,7 @@ const BookingView = () => {
                       setFlightForm({ ...flightForm, origin: e.target.value })
                     }
                     required
+                    sx={darkFieldStyles}
                   />
                 </Grid>
                 <Grid xs={12} sm={6} md={2.4}>
@@ -208,6 +242,7 @@ const BookingView = () => {
                       })
                     }
                     required
+                    sx={darkFieldStyles}
                   />
                 </Grid>
                 <Grid xs={6} md={2.4}>
@@ -221,6 +256,7 @@ const BookingView = () => {
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
                     sx={{
+                      ...darkFieldStyles,
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
@@ -248,6 +284,7 @@ const BookingView = () => {
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
                     sx={{
+                      ...darkFieldStyles,
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
@@ -346,6 +383,7 @@ const BookingView = () => {
                               minBudget: e.target.value,
                             })
                           }
+                          sx={darkFieldStyles}
                         />
                         <TextField
                           id="flight-max-budget"
@@ -362,6 +400,7 @@ const BookingView = () => {
                               maxBudget: e.target.value,
                             })
                           }
+                          sx={darkFieldStyles}
                         />
                       </Box>
                     </Grid>
@@ -387,6 +426,7 @@ const BookingView = () => {
                       setHotelForm({ ...hotelForm, location: e.target.value })
                     }
                     required
+                    sx={darkFieldStyles}
                   />
                 </Grid>
                 <Grid xs={6} md={2.4}>
@@ -400,6 +440,7 @@ const BookingView = () => {
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
                     sx={{
+                      ...darkFieldStyles,
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
@@ -424,6 +465,7 @@ const BookingView = () => {
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ placeholder: "" }}
                     sx={{
+                      ...darkFieldStyles,
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
                         paddingBottom: "12px",
@@ -448,6 +490,7 @@ const BookingView = () => {
                     onChange={(e) =>
                       setHotelForm({ ...hotelForm, guests: e.target.value })
                     }
+                    sx={darkFieldStyles}
                   >
                     {[1, 2, 3, 4, 5, 6].map((n) => (
                       <MenuItem key={n} value={n}>
@@ -540,6 +583,7 @@ const BookingView = () => {
                               minBudget: e.target.value,
                             })
                           }
+                          sx={darkFieldStyles}
                         />
                         <TextField
                           id="hotel-max-budget"
@@ -556,6 +600,7 @@ const BookingView = () => {
                               maxBudget: e.target.value,
                             })
                           }
+                          sx={darkFieldStyles}
                         />
                       </Box>
                     </Grid>

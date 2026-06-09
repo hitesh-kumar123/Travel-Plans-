@@ -1,11 +1,11 @@
 // src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import getTheme from "./theme";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +27,19 @@ import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
 
 function App() {
+  const [mode, setMode] = useState(
+    localStorage.getItem("themeMode") || "light"
+  );
+
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  const toggleTheme = () => {
+    const newMode = mode === "light" ? "dark" : "light";
+
+    setMode(newMode);
+    localStorage.setItem("themeMode", newMode);
+  };
+
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -43,7 +56,9 @@ function App() {
                 path="/dashboard/*"
                 element={
                   <PrivateRoute>
-                    <Dashboard />
+                    <Dashboard
+                      mode={mode}
+                      toggleTheme={toggleTheme}/>
                   </PrivateRoute>
                 }
               />
