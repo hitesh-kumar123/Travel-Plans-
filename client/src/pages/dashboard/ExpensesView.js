@@ -634,10 +634,10 @@ const ExpensesView = () => {
                   : "rgba(66, 153, 225, 0.2)",
               background:
                 theme.palette.mode === "dark"
-                    ? theme.palette.grey[900]
-                    : remaining !== null && remaining < 0
-                      ? "rgba(254,242,242,0.6)"
-                      : "rgba(240,249,255,0.6)",
+                  ? theme.palette.grey[900]
+                  : remaining !== null && remaining < 0
+                    ? "rgba(254,242,242,0.6)"
+                    : "rgba(240,249,255,0.6)",
 
               boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
             }}

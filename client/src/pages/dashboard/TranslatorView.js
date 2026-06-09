@@ -245,13 +245,13 @@ const TranslatorView = () => {
               placeholder="Enter text to translate..."
               value={text}
               onChange={(e) => setText(e.target.value)}
-              sx={{ 
-                 borderRadius: 2,
+              sx={{
+                borderRadius: 2,
                 "& .MuiOutlinedInput-root": {
                   bgcolor: "background.paper",
                   color: "text.primary",
                 },
-               }}
+              }}
             />
             {detectedLang && (
               <Typography
@@ -497,7 +497,6 @@ const TranslatorView = () => {
           bgcolor: "background.paper",
         }}
       >
-
         <Typography variant="subtitle1" fontWeight={700} mb={1.5}>
           ✈️ Language Tips for Travelers
         </Typography>

@@ -55,7 +55,6 @@ import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
 import NotFound from "./NotFound";
 
-
 const mobileDrawerWidth = 240;
 const desktopDrawerWidth = 280;
 

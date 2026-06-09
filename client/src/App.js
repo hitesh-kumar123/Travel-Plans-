@@ -28,7 +28,7 @@ import TravelChecklist from "./components/TravelChecklist";
 
 function App() {
   const [mode, setMode] = useState(
-    localStorage.getItem("themeMode") || "light"
+    localStorage.getItem("themeMode") || "light",
   );
 
   const theme = useMemo(() => getTheme(mode), [mode]);
@@ -56,9 +56,7 @@ function App() {
                 path="/dashboard/*"
                 element={
                   <PrivateRoute>
-                    <Dashboard
-                      mode={mode}
-                      toggleTheme={toggleTheme}/>
+                    <Dashboard mode={mode} toggleTheme={toggleTheme} />
                   </PrivateRoute>
                 }
               />
