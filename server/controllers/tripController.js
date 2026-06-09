@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
@@ -38,6 +40,14 @@ const scheduleReviewRequestEmail = async (userId, destination) => {
   }
 };
 
+/**
+ * Escape special regex metacharacters in a string so it can be safely
+ * interpolated into a RegExp without altering the intended pattern.
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Create new trip
 exports.createTrip = async (req, res) => {
   try {
@@ -64,7 +74,7 @@ exports.createTrip = async (req, res) => {
     if (destination) {
       // Find destination in DB by name case-insensitively
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${destination}$`, "i") },
+        name: { $regex: new RegExp(`^${escapeRegExp(destination)}$`, "i") },
       });
       if (dest && dest.images && dest.images.length > 0) {
         images = dest.images;
@@ -149,7 +159,9 @@ exports.updateTrip = async (req, res) => {
     // Update images if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${updateData.destination}$`, "i") },
+        name: {
+          $regex: new RegExp(`^${escapeRegExp(updateData.destination)}$`, "i"),
+        },
       });
       if (dest && dest.images && dest.images.length > 0) {
         updateData.images = dest.images;
@@ -234,6 +246,36 @@ exports.getSharedTrip = async (req, res) => {
       return res.status(404).json({ msg: "Shared trip not found or disabled" });
 
     res.json(trip);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// Enable/Disable trip sharing
+exports.toggleTripSharing = async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+
+    if (!trip) {
+      return res.status(404).json({
+        msg: "Trip not found",
+      });
+    }
+
+    if (trip.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        msg: "User not authorized",
+      });
+    }
+
+    trip.shareEnabled = !trip.shareEnabled;
+
+    await trip.save();
+
+    res.json({
+      shareEnabled: trip.shareEnabled,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

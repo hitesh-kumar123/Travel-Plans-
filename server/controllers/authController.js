@@ -102,7 +102,7 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           token,
           user: { id: user.id, name: user.name, email: user.email },
@@ -272,7 +272,7 @@ exports.resetPassword = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           msg: "Password reset successful",
           token,

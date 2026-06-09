@@ -195,7 +195,9 @@ const ExpensesView = () => {
   // Calculate chart data from filtered/unfiltered list dynamically to be accurate
   const categoryTotals = {};
   filteredExpenses.forEach((e) => {
-    categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+    categoryTotals[e.category] =
+      (categoryTotals[e.category] || 0) +
+      parseFloat(toBase(e.amount, e.currency));
   });
 
   const chartData = Object.keys(categoryTotals).map((cat) => ({
@@ -989,7 +991,7 @@ const ExpensesView = () => {
                       </Pie>
                       <ReTooltip
                         formatter={(value) => [
-                          `₹${value.toLocaleString()}`,
+                          `${currencySymbol}${value.toLocaleString()}`,
                           "",
                         ]}
                       />

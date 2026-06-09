@@ -964,6 +964,11 @@ html {
     border-bottom: 1px solid rgba(26, 74, 107, 0.3);
   }
 
+  .wander-search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .wander-section {
     padding: 3rem 1.5rem;
   }
@@ -1157,16 +1162,22 @@ html {
 @media (max-width: 900px) {
   .wander-page .wander-search-bar {
     flex-direction: column !important;
+    align-items: stretch !important;
   }
   .wander-page .wander-sf {
     flex: 1 1 100% !important;
     width: 100% !important;
+    height: auto !important;
     border-right: none !important;
     border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
     padding: 1.2rem 1.5rem !important;
   }
   .wander-page .wander-search-btn {
+    flex: 1 1 100% !important;
+    width: 100% !important;
     height: 52px !important;
+    align-self: stretch !important;
+    justify-content: center !important;
   }
 }
 

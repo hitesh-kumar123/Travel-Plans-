@@ -18,6 +18,12 @@ router.post("/", auth, expenseController.createExpense);
 // @access  Private
 router.get("/trip/:tripId", auth, expenseController.getTripExpenses);
 
+// @route   GET api/expenses/summary/:tripId
+// @desc    Get expense summary by category for a trip
+// @access  Private
+// NOTE: Must be defined BEFORE /:id to avoid Express matching "summary" as an :id param.
+router.get("/summary/:tripId", auth, expenseController.getExpenseSummary);
+
 // @route   GET api/expenses/:id
 // @desc    Get expense by ID
 // @access  Private
@@ -32,10 +38,5 @@ router.put("/:id", auth, expenseController.updateExpense);
 // @desc    Delete an expense
 // @access  Private
 router.delete("/:id", auth, expenseController.deleteExpense);
-
-// @route   GET api/expenses/summary/:tripId
-// @desc    Get expense summary by category for a trip
-// @access  Private
-router.get("/summary/:tripId", auth, expenseController.getExpenseSummary);
 
 module.exports = router;

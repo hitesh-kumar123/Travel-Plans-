@@ -2,16 +2,17 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
+const requireDb = require("../middleware/requireDb");
 
 // @route   POST api/auth/register
 // @desc    Register a user
 // @access  Public
-router.post("/register", authController.register);
+router.post("/register", requireDb, authController.register);
 
 // @route   POST api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post("/login", authController.login);
+router.post("/login", requireDb, authController.login);
 
 // @route   GET api/auth/profile
 // @desc    Get user profile
@@ -46,11 +47,11 @@ router.get("/email-change-status", auth, authController.getEmailChangeStatus);
 // @route   POST api/auth/forgot-password
 // @desc    Forgot password (send email)
 // @access  Public
-router.post("/forgot-password", authController.forgotPassword);
+router.post("/forgot-password", requireDb, authController.forgotPassword);
 
 // @route   PUT api/auth/reset-password/:token
 // @desc    Reset password
 // @access  Public
-router.put("/reset-password/:token", authController.resetPassword);
+router.put("/reset-password/:token", requireDb, authController.resetPassword);
 
 module.exports = router;
