@@ -7,6 +7,13 @@ import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import {
+  RiMapPin2Fill,
+  RiCalendarLine,
+  RiLogoutCircleRFill,
+  RiGroupFill,
+  RiArrowRightLine,
+} from "@remixicon/react";
 
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
@@ -356,14 +363,17 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
-
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState(""); // ← ADD THIS
   const [travellers, setTravellers] = useState("");
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
   const checkInRef = useRef(null);
 
   useEffect(() => {
@@ -626,53 +636,85 @@ const Home = () => {
       {/* ═══ SEARCH BAR ═══ */}
       <div className="wander-search-section">
         <form className="wander-search-bar" onSubmit={handleSearch}>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Where to</div>
+          {/* WHERE */}
+          <div className="wander-field">
+            <label>
+              <span className="icon-box">
+                <RiMapPin2Fill />
+              </span>
+
+              <div className="field-title">Where</div>
+            </label>
+
             <input
-              className="wander-sf-val"
-              placeholder="Bali, Indonesia"
+              type="text"
+              placeholder="Search Destination"
               value={where}
               onChange={(e) => setWhere(e.target.value)}
             />
           </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Check In</div>
 
-            <div style={{ position: "relative" }}>
-              <input
-                ref={checkInRef}
-                className="wander-sf-val"
-                type="date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                onClick={() => checkInRef.current?.showPicker()}
-                style={{ paddingRight: "35px" }}
-              />
+          <div className="divider" />
 
-              <span
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                }}
-              >
-                📅
+          {/* CHECK IN */}
+          <div className="wander-field">
+            <label>
+              {" "}
+              <span className="icon-box">
+                <RiCalendarLine className="field-icon" />
               </span>
-            </div>
-          </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Travellers</div>
+              Check In
+            </label>
             <input
-              className="wander-sf-val"
-              placeholder="2 Adults, 1 Child"
+              type=""
+              value={checkIn}
+              placeholder="When You Reached"
+              onChange={(e) => setCheckIn(e.target.value)}
+            />
+          </div>
+
+          <div className="divider" />
+
+          {/* CHECK OUT */}
+          <div className="wander-field">
+            <label>
+              {" "}
+              <span className="icon-box">
+                {" "}
+                <RiCalendarLine className="field-icon " />{" "}
+              </span>{" "}
+              Check Out
+            </label>
+            <input
+              type=""
+              value={checkOut}
+              placeholder="When You Move-Out"
+              onChange={(e) => setCheckOut(e.target.value)}
+            />
+          </div>
+
+          <div className="divider" />
+
+          {/* WHO */}
+          <div className="wander-field">
+            <label>
+              <span className="icon-box">
+                {" "}
+                <RiGroupFill />
+              </span>
+              Who
+            </label>
+            <input
+              type="text"
+              placeholder="Guests"
               value={travellers}
               onChange={(e) => setTravellers(e.target.value)}
             />
           </div>
-          <button type="submit" className="wander-search-btn">
-            <SearchIcon /> Search
+
+          {/* BUTTON */}
+          <button className="wander-search-btn" type="submit">
+            Start My Journey <RiArrowRightLine className="bg-[#111]" />
           </button>
         </form>
       </div>
