@@ -107,12 +107,24 @@ exports.searchFlights = async (req, res) => {
     }
 
     // Add request-specific fields to the shared flight data
+    // Validate adults
+    const adultsCount = parseInt(adults, 10);
+    if (!Number.isInteger(adultsCount) || adultsCount < 1) {
+      return res.status(400).json({
+        msg: "Invalid value: 'adults' must be a positive integer.",
+      });
+    }
+
+    // Add request-specific fields to the shared flight data
     const flights = mockFlights.map((f) => ({
       ...f,
       origin,
       destination,
       departureDate,
       currency: "USD",
+      adults: adultsCount,
+      pricePerAdult: f.price,
+      totalPrice: f.price * adultsCount,
     }));
 
     // Apply budget filters
@@ -120,12 +132,12 @@ exports.searchFlights = async (req, res) => {
 
     if (minBudget !== undefined && minBudget !== "") {
       filteredFlights = filteredFlights.filter(
-        (f) => f.price >= Number(minBudget),
+        (f) => f.totalPrice >= Number(minBudget),
       );
     }
     if (maxBudget !== undefined && maxBudget !== "") {
       filteredFlights = filteredFlights.filter(
-        (f) => f.price <= Number(maxBudget),
+        (f) => f.totalPrice <= Number(maxBudget),
       );
     }
 
