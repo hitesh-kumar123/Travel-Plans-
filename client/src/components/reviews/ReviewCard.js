@@ -5,7 +5,7 @@ import {
   Typography,
   Rating,
   Avatar,
-  Chip,
+  // Chip,
   IconButton,
   Tooltip,
   Divider,
