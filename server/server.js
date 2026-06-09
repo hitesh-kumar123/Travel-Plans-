@@ -72,6 +72,7 @@ const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
 const packingRoutes = require("./routes/packing");
 const currencyRoutes = require("./routes/currency");
+const reviewRoutes = require("./routes/reviews");
 
 // Use routes
 app.use("/api/auth", authRoutes);
@@ -83,6 +84,7 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/packing", packingRoutes);
 app.use("/api/currency", currencyRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Base route
 app.get("/", (req, res) => {
@@ -93,6 +95,7 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 // Connect to MongoDB
+console.log("Mongo URI =", process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))

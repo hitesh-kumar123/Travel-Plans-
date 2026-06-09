@@ -5,8 +5,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.5.2",
+    "google-translate-api-x": "^10.7.3",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
+    "nodemailer": "^8.0.10",
     "react-icons": "^5.6.0"
   },
   "devDependencies": {

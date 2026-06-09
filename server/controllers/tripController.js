@@ -1,7 +1,42 @@
-const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
+const crypto = require("crypto");
+const User = require("../models/User");
+
+const sendEmail = require("../utils/sendEmail");
+const { getReviewRequestTemplate } = require("../utils/emailTemplates");
+
+// ── Review-request email helper (fires 24h after trip completion) ──
+const scheduleReviewRequestEmail = async (userId, destination) => {
+  try {
+    const user = await User.findById(userId).select("name email");
+    if (!user) return;
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      process.env.FRONTEND_URLS?.split(",")[0]?.trim() ||
+      "http://localhost:3000";
+    const reviewUrl = `${frontendUrl}/reviews?write=true&destination=${encodeURIComponent(destination)}`;
+    setTimeout(
+      async () => {
+        try {
+          await sendEmail({
+            email: user.email,
+            subject: `How was your trip to ${destination}? ✈️ Leave a review on PackGo`,
+            message: `Hi ${user.name}, your trip to ${destination} is complete! Review it here: ${reviewUrl}`,
+            html: getReviewRequestTemplate(user.name, destination, reviewUrl),
+          });
+          console.log(`Review request email sent to ${user.email}`);
+        } catch (e) {
+          console.error("Review email failed:", e.message);
+        }
+      },
+      24 * 60 * 60 * 1000,
+    );
+  } catch (err) {
+    console.error("scheduleReviewRequestEmail:", err.message);
+  }
+};
 
 // Create new trip
 exports.createTrip = async (req, res) => {
@@ -121,8 +156,19 @@ exports.updateTrip = async (req, res) => {
       }
     }
 
+    // trip.set(updateData);
+    // await trip.save();
+
+    // res.json(trip);
+
+    const wasCompleted = trip.status === "completed";
     trip.set(updateData);
     await trip.save();
+
+    // Send review request email when trip first becomes "completed"
+    if (!wasCompleted && trip.status === "completed") {
+      scheduleReviewRequestEmail(req.user.id, trip.destination);
+    }
 
     res.json(trip);
   } catch (err) {

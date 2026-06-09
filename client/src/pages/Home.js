@@ -526,6 +526,9 @@ const Home = () => {
           <li>
             <a href="#wander-testimonials">Experiences</a>
           </li>
+          <li>
+            <Link to="/reviews">Reviews</Link>
+          </li>
           {isAuthenticated && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
@@ -625,7 +628,17 @@ const Home = () => {
             >
               Features
             </a>
-
+            <Link
+              to="/reviews"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Reviews
+            </Link>
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
@@ -709,10 +722,16 @@ const Home = () => {
               ₹89,000 <span>/ 7 nights</span>
             </div>
           </div>
-          <div className="wander-stat-tag">
-            <div className="wander-stat-num">4.9★</div>
-            <div className="wander-stat-txt">1,240 reviews</div>
-          </div>
+          <Link
+            to="/reviews"
+            style={{ textDecoration: "none" }}
+            title="View all reviews"
+          >
+            <div className="wander-stat-tag" style={{ cursor: "pointer" }}>
+              <div className="wander-stat-num">4.9★</div>
+              <div className="wander-stat-txt">1,240 reviews</div>
+            </div>
+          </Link>
         </div>
       </section>
 

@@ -51,6 +51,7 @@ import {
   addExpense,
   deleteExpense,
 } from "../../redux/actions/expenseActions";
+import DestinationReviews from "../../components/reviews/DestinationReviews";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -939,6 +940,19 @@ const TripDetail = () => {
           toast.success("Estimated budget saved to trip! 💰");
         }}
       />
+      {currentTrip?.destination && (
+        <Box
+          sx={{
+            mt: 4,
+            p: { xs: 2, md: 3 },
+            bgcolor: "background.paper",
+            borderRadius: 3,
+            boxShadow: 1,
+          }}
+        >
+          <DestinationReviews destination={currentTrip.destination} />
+        </Box>
+      )}
     </Box>
   );
 };

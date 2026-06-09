@@ -297,3 +297,53 @@ exports.getPasswordResetTemplate = (name, resetUrl) => {
 </html>
   `;
 };
+
+exports.getReviewRequestTemplate = (name, destination, reviewUrl) => {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Experience - PackGo</title>
+  <style>
+    body { font-family: "Poppins","Helvetica Neue",Arial,sans-serif; background:#f5f7fa; color:#2d3748; margin:0; padding:0; }
+    .container { max-width:520px; margin:40px auto; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 10px 25px rgba(63,81,181,.08); }
+    .header { background:linear-gradient(135deg,#3f51b5 0%,#757de8 100%); padding:35px 30px; text-align:center; }
+    .header h1 { margin:0; font-size:30px; font-weight:800; color:#fff; letter-spacing:2px; }
+    .header-sub { color:rgba(255,255,255,.85); font-size:13px; margin-top:5px; text-transform:uppercase; letter-spacing:1.5px; }
+    .stars { font-size:36px; letter-spacing:4px; color:#FFB300; margin:20px 0 10px; }
+    .content { padding:40px 30px; text-align:center; }
+    .content h2 { margin-top:0; font-size:22px; font-weight:700; color:#3f51b5; }
+    .greeting { font-size:17px; color:#2d3748; font-weight:600; margin-bottom:8px; }
+    .message { font-size:15px; color:#718096; line-height:1.6; margin-bottom:30px; }
+    .dest-badge { display:inline-block; background:linear-gradient(135deg,#ff6e40,#ffa06d); color:#fff; font-weight:700; font-size:16px; padding:8px 24px; border-radius:50px; margin-bottom:28px; }
+    .btn { display:inline-block; background:linear-gradient(135deg,#3f51b5,#5c6bc0); color:#fff !important; text-decoration:none; padding:14px 40px; border-radius:12px; font-weight:700; font-size:15px; }
+    .footer { font-size:12px; color:#a0aec0; line-height:1.6; margin-top:20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>PackGo</h1>
+      <div class="header-sub">Your Smart Travel Companion</div>
+    </div>
+    <div class="content">
+      <div class="stars">★★★★★</div>
+      <h2>How was your trip?</h2>
+      <div class="greeting">Hi ${name || "Traveler"},</div>
+      <div class="message">
+        Your trip to <strong>${destination}</strong> has been completed!
+        Share your thoughts — your review helps fellow travelers discover amazing destinations.
+      </div>
+      <div class="dest-badge">📍 ${destination}</div><br><br>
+      <a href="${reviewUrl}" class="btn" target="_blank">Write a Review</a>
+      <div class="footer">
+        You're receiving this because you recently completed a trip with PackGo.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+};

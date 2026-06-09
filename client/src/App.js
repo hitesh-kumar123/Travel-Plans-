@@ -24,6 +24,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
+import ReviewsPage from "./pages/Reviews";
 
 function App() {
   useEffect(() => {
@@ -55,6 +56,7 @@ function App() {
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
               {/* Other Routes */}
+              <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
