@@ -381,9 +381,9 @@ exports.requestEmailChange = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      console.error("[authController] Email change OTP failure:", emailErr);
+      console.error("Email change OTP dispatch failed:", emailErr);
       return res.status(500).json({
-        msg: "Failed to send email verification code. Please try again later.",
+        msg: "Verification email could not be sent. Please check your credentials.",
       });
     }
 
