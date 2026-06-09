@@ -396,10 +396,33 @@ const TranslatorView = () => {
                 ))}
               </TextField>
               <Tooltip title={copied ? "Copied!" : "Copy translation"}>
-                <IconButton onClick={handleCopy} sx={{ color: "white" }}>
+                <IconButton
+                  onClick={handleCopy}
+                  aria-label="Copy translated text to clipboard"
+                  sx={{
+                    color: "white",
+                    "&:focus-visible": {
+                      outline: "2px solid white",
+                      outlineOffset: "2px",
+                    },
+                  }}
+                >
                   <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
+
+              <Box
+                aria-live="polite"
+                sx={{
+                  position: "absolute",
+                  width: 1,
+                  height: 1,
+                  overflow: "hidden",
+                  clip: "rect(0 0 0 0)",
+                }}
+              >
+                {copied ? "Translation copied to clipboard" : ""}
+              </Box>
             </Box>
 
             <Box
