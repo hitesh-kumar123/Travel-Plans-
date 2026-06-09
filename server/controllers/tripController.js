@@ -33,6 +33,10 @@ exports.createTrip = async (req, res) => {
         .json({ msg: "Trip start date cannot be in the past" });
     }
 
+    if (budget !== undefined && budget < 0) {
+      return res.status(400).json({ msg: "Budget cannot be negative" });
+    }
+
     // Default images
     let images = [];
     if (destination) {
@@ -116,6 +120,10 @@ exports.updateTrip = async (req, res) => {
     // Make sure user owns the trip
     if (trip.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    if (req.body.budget !== undefined && req.body.budget < 0) {
+      return res.status(400).json({ msg: "Budget cannot be negative" });
     }
 
     const updateData = { ...req.body, updatedAt: Date.now() };
