@@ -721,3 +721,51 @@ We are incredibly grateful to our mentors for their valuable support and code re
 </div>
 
 ---
+
+## 🙌 Thanks to Contributors
+
+We sincerely thank all contributors who have helped improve PackGo
+
+Your efforts make this project better for everyone. ❤️
+
+<div align="center">
+
+<a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors" />
+</a>
+
+</div>
+
+---
+
+## ✨ README Improvement Notes
+
+### 📌 Formatting Enhancements Needed
+
+- Improve heading hierarchy for better readability
+- Ensure consistent spacing between sections
+- Use proper Markdown formatting for code blocks and lists
+- Align all installation and usage steps properly
+
+### 🚀 Suggested Structure Upgrade
+
+- Introduction
+- Features
+- Tech Stack
+- Installation
+- Usage
+- Project Structure
+- Contribution Guidelines
+- License
+
+### 🛠️ Documentation Improvements
+
+- Add badges (optional): build, license, contributors
+- Add screenshots for better UI understanding
+- Standardize code blocks for commands
+
+### 🎯 Goal
+
+Improve onboarding experience for new contributors and users by making README more structured, readable, and professional.
+\*/
+

@@ -26,6 +26,7 @@ import {
   Fade,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SearchIcon from "@mui/icons-material/Search";
@@ -44,6 +45,7 @@ import {
 import {
   getExpenses,
   addExpense,
+  updateExpense,
   deleteExpense,
   getExpenseSummary,
   fetchCurrencyRates,
@@ -108,6 +110,7 @@ const ExpensesView = () => {
   const [selectedBase, setSelectedBase] = useState("INR");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -195,7 +198,9 @@ const ExpensesView = () => {
   // Calculate chart data from filtered/unfiltered list dynamically to be accurate
   const categoryTotals = {};
   filteredExpenses.forEach((e) => {
-    categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+    categoryTotals[e.category] =
+      (categoryTotals[e.category] || 0) +
+      parseFloat(toBase(e.amount, e.currency));
   });
 
   const chartData = Object.keys(categoryTotals).map((cat) => ({
@@ -218,6 +223,20 @@ const ExpensesView = () => {
     }
   };
 
+  const handleEditClick = (expense) => {
+    setEditingExpenseId(expense._id);
+    setForm({
+      amount: expense.amount.toString(),
+      category: expense.category,
+      description: expense.description || "",
+      date: expense.date
+        ? new Date(expense.date).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      currency: expense.currency || "INR",
+    });
+    setOpen(true);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
@@ -228,13 +247,22 @@ const ExpensesView = () => {
     }
     if (!activeTripId) return;
 
-    dispatch(
-      addExpense({
-        ...form,
-        trip: activeTripId,
-        amount: parsed,
-      }),
-    );
+    if (editingExpenseId) {
+      dispatch(
+        updateExpense(editingExpenseId, {
+          ...form,
+          amount: parsed,
+        }),
+      );
+    } else {
+      dispatch(
+        addExpense({
+          ...form,
+          trip: activeTripId,
+          amount: parsed,
+        }),
+      );
+    }
     setOpen(false);
     setForm({
       amount: "",
@@ -243,6 +271,7 @@ const ExpensesView = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+    setEditingExpenseId(null);
     setAmountError("");
     setTimeout(() => {
       dispatch(getExpenses(activeTripId));
@@ -260,6 +289,7 @@ const ExpensesView = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+    setEditingExpenseId(null);
   };
 
   const handleDelete = (id) => {
@@ -878,22 +908,46 @@ const ExpensesView = () => {
                           )}
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
-                          <Tooltip title="Delete Expense">
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: "error.main",
-                                bgcolor: "rgba(245, 101, 101, 0.05)",
-                                "&:hover": {
-                                  bgcolor: "rgba(245, 101, 101, 0.15)",
-                                },
-                                borderRadius: 2,
-                              }}
-                              onClick={() => handleDelete(expense._id)}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Tooltip title="Edit Expense">
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "primary.main",
+                                  bgcolor: "rgba(63, 81, 181, 0.05)",
+                                  "&:hover": {
+                                    bgcolor: "rgba(63, 81, 181, 0.15)",
+                                  },
+                                  borderRadius: 2,
+                                }}
+                                onClick={() => handleEditClick(expense)}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Expense">
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "error.main",
+                                  bgcolor: "rgba(245, 101, 101, 0.05)",
+                                  "&:hover": {
+                                    bgcolor: "rgba(245, 101, 101, 0.15)",
+                                  },
+                                  borderRadius: 2,
+                                }}
+                                onClick={() => handleDelete(expense._id)}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))
@@ -989,7 +1043,7 @@ const ExpensesView = () => {
                       </Pie>
                       <ReTooltip
                         formatter={(value) => [
-                          `₹${value.toLocaleString()}`,
+                          `${currencySymbol}${value.toLocaleString()}`,
                           "",
                         ]}
                       />
@@ -1094,7 +1148,9 @@ const ExpensesView = () => {
             color: "text.primary",
           }}
         >
-          📝 Add Transaction Record
+          {editingExpenseId
+            ? "📝 Edit Transaction Record"
+            : "📝 Add Transaction Record"}
         </DialogTitle>
         <DialogContent>
           <Box
@@ -1219,7 +1275,7 @@ const ExpensesView = () => {
             disabled={Boolean(amountError) || !form.amount}
             sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
           >
-            Confirm & Save
+            {editingExpenseId ? "Save Changes" : "Confirm & Save"}
           </PrimaryButton>
         </DialogActions>
       </Dialog>
