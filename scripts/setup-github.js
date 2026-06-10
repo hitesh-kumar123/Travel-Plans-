@@ -22,7 +22,7 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-// Required Labels
+// Required Labels (Fixed: Added the missing 'refactor' label configuration)
 const labels = [
   {
     name: "good first issue",
@@ -48,6 +48,11 @@ const labels = [
   },
   { name: "frontend", color: "c2e0c6", description: "Frontend related issue" },
   { name: "backend", color: "bfd4f2", description: "Backend related issue" },
+  { 
+    name: "refactor", 
+    color: "ebd775", 
+    description: "Code cleanups, structure improvements, or optimizations" 
+  },
   { name: "urgent", color: "b60205", description: "Urgent priority" },
 ];
 
@@ -98,12 +103,13 @@ function makeRequest(path, method, data = null) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(JSON.parse(responseBody || "{}"));
         } else {
-          // If label already exists, GitHub returns 422, which is fine, we can ignore.
           if (res.statusCode === 422 && method === "POST") {
             resolve({ alreadyExists: true });
           } else {
-            console.error(`Request failed with status: ${res.statusCode}`);
-            reject(new Error(responseBody));
+            // Include status code in the thrown error object for fine-grained handling
+            const err = new Error(responseBody);
+            err.statusCode = res.statusCode;
+            reject(err);
           }
         }
       });
@@ -133,10 +139,11 @@ async function createLabels() {
         console.log(`[SUCCESS] Created label "${label.name}".`);
       }
     } catch (error) {
-      console.error(
-        `[ERROR] Failed to create label "${label.name}":`,
-        error.message,
-      );
+      console.error(`\n[CRITICAL ERROR] Failed to create label "${label.name}":`, error.message);
+      if (error.statusCode === 401 || error.statusCode === 404) {
+        console.error("❌ Authentication or Repo Path failed. Stopping execution to prevent repetitive failures.");
+        process.exit(1);
+      }
     }
   }
 }
@@ -154,10 +161,11 @@ async function createIssues() {
         `[SUCCESS] Created issue: "${issue.title}" (Issue #${res.number})`,
       );
     } catch (error) {
-      console.error(
-        `[ERROR] Failed to create issue "${issue.title}":`,
-        error.message,
-      );
+      console.error(`\n[CRITICAL ERROR] Failed to create issue "${issue.title}":`, error.message);
+      if (error.statusCode === 401 || error.statusCode === 404) {
+        console.error("❌ Request unauthorized or repository not found. Stopping execution.");
+        process.exit(1);
+      }
     }
   }
 }
