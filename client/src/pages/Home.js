@@ -523,12 +523,15 @@ const Home = () => {
           <li>
             <a href="#wander-features">Features</a>
           </li>
-          <li>
+         <li>
             <a href="#wander-testimonials">Experiences</a>
           </li>
           <li>
-            <Link to="/travel-checklist">Checklist</Link>
+            <Link to="/about">About</Link>
           </li>
+          <li>
+            <Link to="/travel-checklist">Checklist</Link>
+          </li> 
           {isAuthenticated && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
@@ -614,11 +617,22 @@ const Home = () => {
                 fontWeight: 500,
               }}
               onClick={() => setMobileOpen(false)}
-            >
+           >
               Experiences
             </a>
-            <a
-              href="#wander-features"
+            <Link
+              to="/about"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              About
+            </Link>
+            
+              <a href="#wander-features"
               style={{
                 color: "var(--ocean)",
                 textDecoration: "none",
