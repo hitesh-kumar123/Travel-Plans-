@@ -35,7 +35,7 @@ const TEMPLATES = {
 };
 
 // GET /api/packing/:tripId
-exports.getPackingList = async (req, res) => {
+exports.getPackingList = async (req, res, next) => {
   try {
     let list = await PackingList.findOne({
       trip: req.params.tripId,
@@ -51,12 +51,12 @@ exports.getPackingList = async (req, res) => {
     }
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };
 
 // POST /api/packing/:tripId/items  — add a single item
-exports.addItem = async (req, res) => {
+exports.addItem = async (req, res, next) => {
   try {
     const { name, category } = req.body;
 
@@ -97,12 +97,12 @@ exports.addItem = async (req, res) => {
 
     res.json(updatedList);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };
 
 // PATCH /api/packing/:tripId/items/:itemId — toggle packed
-exports.toggleItem = async (req, res) => {
+exports.toggleItem = async (req, res, next) => {
   try {
     const list = await PackingList.findOne({
       trip: req.params.tripId,
@@ -118,12 +118,12 @@ exports.toggleItem = async (req, res) => {
     await list.save();
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };
 
 // DELETE /api/packing/:tripId/items/:itemId
-exports.deleteItem = async (req, res) => {
+exports.deleteItem = async (req, res, next) => {
   try {
     const list = await PackingList.findOneAndUpdate(
       { trip: req.params.tripId, user: req.user.id },
@@ -134,12 +134,12 @@ exports.deleteItem = async (req, res) => {
       return res.status(404).json({ message: "Packing list not found" });
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };
 
 // POST /api/packing/:tripId/template — apply a preset template
-exports.applyTemplate = async (req, res) => {
+exports.applyTemplate = async (req, res, next) => {
   try {
     const { template } = req.body; // "beach" | "business" | "camping"
     const items = TEMPLATES[template];
@@ -175,11 +175,11 @@ exports.applyTemplate = async (req, res) => {
 
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };
 // DELETE /api/packing/:tripId/items — clear all items
-exports.clearAll = async (req, res) => {
+exports.clearAll = async (req, res, next) => {
   try {
     const list = await PackingList.findOneAndUpdate(
       { trip: req.params.tripId, user: req.user.id },
@@ -188,6 +188,6 @@ exports.clearAll = async (req, res) => {
     );
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    next(err);
   }
 };

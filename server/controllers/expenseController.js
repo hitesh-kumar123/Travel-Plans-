@@ -3,7 +3,7 @@ const Trip = require("../models/Trip");
 const mongoose = require("mongoose");
 
 // Get all expenses for a user (across all trips) - for analytics
-exports.getAllUserExpenses = async (req, res) => {
+exports.getAllUserExpenses = async (req, res, next) => {
   try {
     const expenses = await Expense.find({ user: req.user.id })
       .populate("trip", "destination startDate endDate")
@@ -11,12 +11,12 @@ exports.getAllUserExpenses = async (req, res) => {
     res.json(expenses);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Create a new expense
-exports.createExpense = async (req, res) => {
+exports.createExpense = async (req, res, next) => {
   try {
     const { trip, amount, currency, category, description, date } = req.body;
 
@@ -52,12 +52,12 @@ exports.createExpense = async (req, res) => {
     res.json(expense);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Get all expenses for a specific trip
-exports.getTripExpenses = async (req, res) => {
+exports.getTripExpenses = async (req, res, next) => {
   try {
     const { tripId } = req.params;
 
@@ -78,12 +78,12 @@ exports.getTripExpenses = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Get expense by ID
-exports.getExpense = async (req, res) => {
+exports.getExpense = async (req, res, next) => {
   try {
     const expense = await Expense.findById(req.params.id);
 
@@ -102,12 +102,12 @@ exports.getExpense = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Expense not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Update expense
-exports.updateExpense = async (req, res) => {
+exports.updateExpense = async (req, res, next) => {
   try {
     let expense = await Expense.findById(req.params.id);
 
@@ -152,12 +152,12 @@ exports.updateExpense = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Expense not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Delete expense
-exports.deleteExpense = async (req, res) => {
+exports.deleteExpense = async (req, res, next) => {
   try {
     const expense = await Expense.findById(req.params.id);
 
@@ -177,12 +177,12 @@ exports.deleteExpense = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Expense not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Get expense summary by category for a trip
-exports.getExpenseSummary = async (req, res) => {
+exports.getExpenseSummary = async (req, res, next) => {
   try {
     const { tripId } = req.params;
 
@@ -223,6 +223,6 @@ exports.getExpenseSummary = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };

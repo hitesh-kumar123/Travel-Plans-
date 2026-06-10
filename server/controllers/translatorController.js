@@ -34,7 +34,7 @@ const supportedLanguages = SUPPORTED_LANGUAGES.map((lang) => lang.code);
 // @desc    Translate text
 // @route   POST /api/translator/translate
 // @access  Public
-exports.translateText = async (req, res) => {
+exports.translateText = async (req, res, next) => {
   try {
     const { text, sourceLanguage, targetLanguage } = req.body;
 
@@ -92,22 +92,20 @@ exports.translateText = async (req, res) => {
         msg: "Translation service timed out",
       });
     }
-    return res.status(500).json({
-      msg: "Translation failed due to server error",
-    });
+    return next(err);
   }
 };
 
 // @desc    Get supported languages
 // @route   GET /api/translator/languages
 // @access  Public
-exports.getSupportedLanguages = async (req, res) => {
+exports.getSupportedLanguages = async (req, res, next) => {
   try {
     const languages = SUPPORTED_LANGUAGES;
 
     res.json(languages);
   } catch (err) {
     console.error("Languages error:", err.message);
-    res.status(500).json({ msg: "Failed to get languages" });
+    next(err);
   }
 };
