@@ -767,4 +767,5 @@ Your efforts make this project better for everyone. ❤️
 ### 🎯 Goal
 
 Improve onboarding experience for new contributors and users by making README more structured, readable, and professional.
+\*/
 

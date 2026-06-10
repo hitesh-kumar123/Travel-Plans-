@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/actions/authActions";
+import { register, googleLogin } from "../redux/actions/authActions";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Box,
   TextField,
@@ -25,7 +26,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/TaskAlt";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
-import FacebookIcon from "@mui/icons-material/Facebook";
+
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PrimaryButton from "../components/PrimaryButton";
 
@@ -60,54 +61,6 @@ const Register = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
-
-  const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
-    console.log("Google callback received", response);
-  };
-
-  useEffect(() => {
-    // Only initialize Google Sign-In if activeStep is 0 (Personal Information / first step)
-    if (activeStep !== 0) return;
-
-    const initializeGoogleSignIn = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id:
-            process.env.REACT_APP_GOOGLE_CLIENT_ID ||
-            "643113382684-q82ot662op6kq7fnc1brg3ivclq3pmvk.apps.googleusercontent.com",
-          callback: handleGoogleCallback,
-        });
-
-        const googleBtn = document.getElementById("google-signin-btn");
-        if (googleBtn) {
-          window.google.accounts.id.renderButton(googleBtn, {
-            theme: "outline",
-            size: "large",
-            text: "signup_with",
-            width: isMobile ? 280 : 360,
-          });
-        }
-      }
-    };
-
-    initializeGoogleSignIn();
-
-    const script = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]',
-    );
-    if (script) {
-      script.addEventListener("load", initializeGoogleSignIn);
-    }
-
-    return () => {
-      if (script) {
-        script.removeEventListener("load", initializeGoogleSignIn);
-      }
-    };
-  }, [activeStep, isMobile, dispatch]);
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];
 
@@ -190,6 +143,10 @@ const Register = () => {
     } else {
       handleNext();
     }
+  };
+
+  const handleGoogleSuccess = (CredentialResponse) => {
+    dispatch(googleLogin(CredentialResponse, navigate));
   };
 
   const isNextDisabled = () => {
@@ -592,29 +549,34 @@ const Register = () => {
                       gap: 2,
                     }}
                   >
-                    <div id="google-signin-btn" />
-                    <Button
-                      variant="outlined"
-                      startIcon={<FacebookIcon />}
-                      disabled
-                      title="Facebook signup is coming soon"
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        width: isMobile ? 280 : 360,
-                        color: "#4267B2",
-                        borderColor: "#4267B2",
-                        opacity: 0.5,
-                      }}
-                    >
-                      Facebook
-                      <Typography
-                        component="span"
-                        sx={{ ml: 1, fontSize: "0.75rem", fontWeight: 600 }}
-                      >
-                        Coming Soon
-                      </Typography>
-                    </Button>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <GoogleLogin
+                        theme="outlined"
+                        width={isMobile ? 360 : 500}
+                        shape="pill"
+                        text="continue_with"
+                        size="large"
+                        sx={{
+                          borderRadius: 2,
+                          py: 1,
+
+                          color: "#3f51b5",
+                          borderColor: "#3f51b5",
+                          "&:hover": {
+                            backgroundColor: "rgba(66,133,244,0.08)",
+                            borderColor: "#3f51b5",
+                          },
+                          "&:active": {
+                            backgroundColor: "#3f51b5",
+                            color: "#fff",
+                            transform: "scale(0.98)",
+                          },
+                        }}
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.log("Google Login failed")}
+                        useOneTap
+                      />
+                    </Box>
                   </Box>
                 </>
               )}

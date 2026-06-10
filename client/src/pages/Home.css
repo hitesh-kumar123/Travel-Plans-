@@ -89,6 +89,40 @@ html {
   opacity: 1;
 }
 
+.wander-nav-log-in {
+  background: transparent;
+  border: 1px solid rgba(26, 74, 107, 0.2);
+  color: var(--ocean);
+  padding: 0.75rem 1.2rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.wander-nav-log-in:hover {
+  background-color: var(--coral);
+  border-color: var(--coral);
+  color: white;
+}
+
+.wander-nav-create-account {
+  background: transparent;
+  border: 1px solid rgba(26, 74, 107, 0.2);
+  color: var(--ocean);
+  padding: 0.75rem 1.2rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.wander-nav-create-account:hover {
+  background-color: var(--coral);
+  color: white;
+  border-color: var(--coral);
+}
+
 .wander-nav-cta {
   background: var(--ocean);
   color: var(--white);
@@ -386,7 +420,7 @@ html {
 .wander-sf-label {
   font-size: 0.7rem;
   font-weight: 500;
-  color: var(--mist);
+  color: #4a5568;
   letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-bottom: 0.3rem;

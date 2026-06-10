@@ -126,7 +126,24 @@ exports.updateTrip = async (req, res, next) => {
       return res.status(400).json({ msg: "Budget cannot be negative" });
     }
 
-    const updateData = { ...req.body, updatedAt: Date.now() };
+    const allowedFields = [
+      "destination",
+      "startDate",
+      "endDate",
+      "description",
+      "budget",
+      "status",
+      "activities",
+      "accommodation",
+      "transportation",
+    ];
+
+    const updateData = { updatedAt: Date.now() };
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
     // Update images if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
