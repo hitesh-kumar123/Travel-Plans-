@@ -1,0 +1,77 @@
+# =============================================
+# PackGo — Docker Compose (Development)
+# =============================================
+# Usage:
+#   1. Copy .env.example to .env and fill in your values
+#   2. Run: docker-compose up --build
+#   3. Frontend: http://localhost:3000
+#   4. Backend:  http://localhost:5000
+#   5. MongoDB:  mongodb://localhost:27017
+
+services:
+  # ---------- MongoDB ----------
+  mongo:
+    image: mongo:7
+    container_name: packgo-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - packgo-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------- Backend (Express) ----------
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: packgo-server
+    restart: unless-stopped
+    ports:
+      - "5001:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/travel-plan
+      - JWT_SECRET=${JWT_SECRET:-change_me_to_a_strong_secret}
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-}
+      - FRONTEND_URL=http://localhost:3000
+      - EMAIL_USER=${EMAIL_USER:-}
+      - EMAIL_PASS=${EMAIL_PASS:-}
+    networks:
+      - packgo-network
+
+  # ---------- Frontend (React + Nginx) ----------
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:5001/api
+    container_name: packgo-client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - packgo-network
+
+# ---------- Volumes ----------
+volumes:
+  mongo_data:
+    driver: local
+
+# ---------- Networks ----------
+networks:
+  packgo-network:
+    driver: bridge
