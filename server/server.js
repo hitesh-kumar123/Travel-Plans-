@@ -100,6 +100,11 @@ app.get("/", (req, res) => {
   res.send("Travel Planner API is running!");
 });
 
+// Health check endpoint for Docker
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Global error handler (must be last)
 app.use(errorHandler);
 

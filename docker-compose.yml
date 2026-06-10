@@ -21,7 +21,7 @@ services:
     networks:
       - packgo-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      test: ["CMD-SHELL", "echo 'db.runCommand(\"ping\").ok' | mongosh --quiet"]
       interval: 15s
       timeout: 5s
       retries: 5

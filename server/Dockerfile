@@ -11,10 +11,10 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy package manifests first (better layer caching)
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json* ./
 
-# Install only production dependencies
-RUN npm ci --omit=dev && npm cache clean --force
+# Install only production dependencies and fix ownership
+RUN npm ci --omit=dev && npm cache clean --force && chown -R appuser:appgroup /app
 
 # Copy application source code with correct ownership
 COPY --chown=appuser:appgroup . .
@@ -25,9 +25,9 @@ USER appuser
 # Expose the default server port
 EXPOSE 5000
 
-# Health check using BusyBox-compatible wget flags
+# Health check against a dedicated health endpoint
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -q -O /dev/null http://localhost:5000/ || exit 1
+  CMD wget -q -O /dev/null http://localhost:5000/api/health || exit 1
 
 # Start the server
 CMD ["node", "server.js"]
