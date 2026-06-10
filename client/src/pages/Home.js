@@ -8,6 +8,7 @@ import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import CountryDropdownList from "../components/CountryDropdownList";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -767,6 +768,18 @@ const Home = () => {
                   setShowRecentSearches(true);
                 }
               }}
+              onKeyDown={(e) => {
+                if (window.__countryDropdownOnKeyDown) {
+                  window.__countryDropdownOnKeyDown(e);
+                }
+              }}
+              autoComplete="off"
+            />
+            <CountryDropdownList
+              where={where}
+              setWhere={setWhere}
+              destinations={destinations}
+              setShowRecentSearches={setShowRecentSearches}
             />
             {showRecentSearches && recentSearches.length > 0 && (
               <div className="wander-recent-searches">
