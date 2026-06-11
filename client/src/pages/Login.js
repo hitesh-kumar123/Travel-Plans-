@@ -22,33 +22,35 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LoginIcon from "@mui/icons-material/Login";
 import PrimaryButton from "../components/PrimaryButton";
- 
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
- 
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
- 
+
   useEffect(() => {
     if (isAuthenticated) navigate("/dashboard");
   }, [isAuthenticated, navigate]);
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
- 
+
     if (name === "email") {
       setErrors((prev) => ({
         ...prev,
         email:
           value &&
-          !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+          !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+            value,
+          )
             ? "Please enter a valid email"
             : "",
       }));
@@ -59,16 +61,18 @@ const Login = () => {
       }));
     }
   };
- 
+
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
- 
+
   const validateForm = () => {
     const tempErrors = { email: "", password: "" };
     let isValid = true;
- 
+
     if (
       !formData.email ||
-      !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+      !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        formData.email,
+      )
     ) {
       tempErrors.email = "Please enter a valid email";
       isValid = false;
@@ -77,11 +81,11 @@ const Login = () => {
       tempErrors.password = "Password is required";
       isValid = false;
     }
- 
+
     setErrors(tempErrors);
     return isValid;
   };
- 
+
   const isSignInDisabled = () =>
     !formData.email ||
     formData.email.trim() === "" ||
@@ -89,16 +93,16 @@ const Login = () => {
     !formData.password ||
     formData.password.trim() === "" ||
     !!errors.password;
- 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) dispatch(login(formData, navigate));
   };
- 
+
   const handleGoogleSuccess = (credentialResponse) => {
     dispatch(googleLogin(credentialResponse, navigate));
   };
- 
+
   return (
     <Box
       sx={{
@@ -139,7 +143,7 @@ const Login = () => {
                 "linear-gradient(155deg, rgba(10,18,35,0.68) 0%, rgba(20,30,55,0.58) 50%, rgba(10,18,35,0.86) 100%)",
             }}
           />
- 
+
           {/* Text content */}
           <Box
             sx={{
@@ -155,7 +159,12 @@ const Login = () => {
             <Box>
               <Typography
                 variant="overline"
-                sx={{ letterSpacing: 2.8, opacity: 0.82, display: "block", mb: 1.5 }}
+                sx={{
+                  letterSpacing: 2.8,
+                  opacity: 0.82,
+                  display: "block",
+                  mb: 1.5,
+                }}
               >
                 Travel planning made simple
               </Typography>
@@ -174,30 +183,32 @@ const Login = () => {
                 ready-to-follow itinerary — all in one place.
               </Typography>
             </Box>
- 
+
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.2 }}>
-              {["Budget planner", "Packing checklist", "Trip reminders"].map((item) => (
-                <Box
-                  key={item}
-                  sx={{
-                    px: 1.8,
-                    py: 0.9,
-                    borderRadius: 999,
-                    border: "1px solid rgba(255,255,255,0.22)",
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    backdropFilter: "blur(8px)",
-                    fontSize: "0.875rem",
-                    color: "white",
-                  }}
-                >
-                  {item}
-                </Box>
-              ))}
+              {["Budget planner", "Packing checklist", "Trip reminders"].map(
+                (item) => (
+                  <Box
+                    key={item}
+                    sx={{
+                      px: 1.8,
+                      py: 0.9,
+                      borderRadius: 999,
+                      border: "1px solid rgba(255,255,255,0.22)",
+                      bgcolor: "rgba(255,255,255,0.1)",
+                      backdropFilter: "blur(8px)",
+                      fontSize: "0.875rem",
+                      color: "white",
+                    }}
+                  >
+                    {item}
+                  </Box>
+                ),
+              )}
             </Box>
           </Box>
         </Box>
       )}
- 
+
       {/* ── Right: Form panel ── */}
       <Box
         sx={{
@@ -247,7 +258,7 @@ const Login = () => {
             >
               <ArrowBackIcon fontSize="small" />
             </IconButton>
- 
+
             <Link
               component={RouterLink}
               to="/"
@@ -263,7 +274,7 @@ const Login = () => {
               PackGo
             </Link>
           </Box>
- 
+
           {/* Heading */}
           <Box sx={{ mb: 3.5 }}>
             <Typography
@@ -273,11 +284,15 @@ const Login = () => {
             >
               Welcome back
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.5 }}>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ lineHeight: 1.5 }}
+            >
               Sign in to continue planning your next adventure.
             </Typography>
           </Box>
- 
+
           {/* Card */}
           <Paper
             elevation={0}
@@ -306,7 +321,7 @@ const Login = () => {
                 helperText={errors.email}
                 sx={{ mb: 2.5 }}
               />
- 
+
               <TextField
                 margin="none"
                 required
@@ -330,7 +345,11 @@ const Login = () => {
                           edge="end"
                           size="small"
                         >
-                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -338,7 +357,7 @@ const Login = () => {
                 }}
                 sx={{ mb: 1.5 }}
               />
- 
+
               {/* Remember me + Forgot password */}
               <Box
                 sx={{
@@ -372,7 +391,7 @@ const Login = () => {
                   Forgot password?
                 </Link>
               </Box>
- 
+
               {/* Submit */}
               <PrimaryButton
                 type="submit"
@@ -380,20 +399,32 @@ const Login = () => {
                 size="large"
                 disabled={isSignInDisabled()}
                 endIcon={<LoginIcon />}
-                sx={{ py: 1.5, mb: 2.5, borderRadius: 2, fontWeight: 700, fontSize: "0.95rem" }}
+                sx={{
+                  py: 1.5,
+                  mb: 2.5,
+                  borderRadius: 2,
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                }}
               >
                 Sign In
               </PrimaryButton>
- 
+
               {/* Divider */}
               <Divider sx={{ mb: 2.5 }}>
                 <Typography variant="caption" color="text.secondary">
                   or continue with
                 </Typography>
               </Divider>
- 
+
               {/* Google login */}
-              <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
                 <GoogleLogin
                   theme="outlined"
                   width="100%"
@@ -407,7 +438,7 @@ const Login = () => {
               </Box>
             </Box>
           </Paper>
- 
+
           {/* Sign up link */}
           <Box sx={{ textAlign: "center", mt: 3 }}>
             <Typography variant="body2" color="text.secondary">
@@ -422,7 +453,7 @@ const Login = () => {
               </Link>
             </Typography>
           </Box>
- 
+
           {/* Footer */}
           <Box sx={{ textAlign: "center", mt: 4 }}>
             <Typography variant="caption" color="text.disabled">
@@ -434,5 +465,5 @@ const Login = () => {
     </Box>
   );
 };
- 
+
 export default Login;
