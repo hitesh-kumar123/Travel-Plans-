@@ -441,13 +441,13 @@ const Home = () => {
     try {
       const url = `/destinations?page=${pageNum}&limit=8${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`;
       const r = await api.get(url);
-      
+
       const newDestinations = Array.isArray(r.data?.destinations)
         ? r.data.destinations
         : Array.isArray(r.data)
-        ? r.data
-        : [];
-      
+          ? r.data
+          : [];
+
       const totalPages = r.data?.totalPages || 1;
 
       if (reset) {
@@ -455,12 +455,14 @@ const Home = () => {
       } else {
         setDestinations((prev) => {
           // Avoid duplicates by comparing IDs
-          const existingIds = new Set(prev.map(d => d._id));
-          const uniqueNew = newDestinations.filter(d => !existingIds.has(d._id));
+          const existingIds = new Set(prev.map((d) => d._id));
+          const uniqueNew = newDestinations.filter(
+            (d) => !existingIds.has(d._id),
+          );
           return [...prev, ...uniqueNew];
         });
       }
-      
+
       // If we received fewer items than requested, we might have reached the end.
       setHasMore(pageNum < totalPages && newDestinations.length > 0);
     } catch (err) {
@@ -492,7 +494,7 @@ const Home = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, loadingMore, hasMore, where]
+    [loading, loadingMore, hasMore, where],
   );
 
   useEffect(() => {
@@ -535,7 +537,7 @@ const Home = () => {
       updateSearchHistory(query);
     }
     setShowRecentSearches(false);
-    
+
     setPage(1);
     setHasMore(true);
     fetchDestinations(1, query, true);
@@ -904,14 +906,21 @@ const Home = () => {
         <div className="wander-dest-grid">
           {destinations.map((dest, idx) => {
             const isTall = idx === 0;
-            const ref = idx === destinations.length - 1 ? lastDestinationElementRef : null;
-            
+            const ref =
+              idx === destinations.length - 1
+                ? lastDestinationElementRef
+                : null;
+
             // Assign some repeating fallbacks to normal cards if no image exists
-            const fallbackScenes = [<SceneAngkor />, <SceneBali />, <SceneSahara />];
+            const fallbackScenes = [
+              <SceneAngkor />,
+              <SceneBali />,
+              <SceneSahara />,
+            ];
             const fallbackBgs = [
               "linear-gradient(135deg,#5C4A2A,#2E2010)",
               "linear-gradient(135deg,#2A5C3A,#0F2E18)",
-              "linear-gradient(135deg,#5C3A2A,#2E150F)"
+              "linear-gradient(135deg,#5C3A2A,#2E150F)",
             ];
 
             return (
@@ -938,15 +947,15 @@ const Home = () => {
                         e.target.style.display = "none";
                       }}
                     />
+                  ) : isTall ? (
+                    <SceneSantorini />
                   ) : (
-                    isTall ? <SceneSantorini /> : fallbackScenes[idx % 3]
+                    fallbackScenes[idx % 3]
                   )}
                   <div className="wander-dest-overlay" />
                   {isTall && <div className="wander-dest-tag">Trending</div>}
                   <div className="wander-dest-info">
-                    <div className="wander-dest-name">
-                      {dest.name}
-                    </div>
+                    <div className="wander-dest-name">{dest.name}</div>
                     <div className="wander-dest-country">
                       {[dest.city, dest.state].filter(Boolean).join(", ")} •{" "}
                       {dest.entrance_fee_inr === 0
@@ -965,7 +974,9 @@ const Home = () => {
         {/* Loading More & No More Results Indicators */}
         {loadingMore && (
           <div style={{ textAlign: "center", padding: "20px" }}>
-            <span style={{ color: "var(--ocean)", fontWeight: 600 }}>Loading more destinations...</span>
+            <span style={{ color: "var(--ocean)", fontWeight: 600 }}>
+              Loading more destinations...
+            </span>
           </div>
         )}
         {!hasMore && destinations.length > 0 && (

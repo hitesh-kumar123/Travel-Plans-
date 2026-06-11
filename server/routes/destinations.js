@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
     if (city) filter.city = city;
     if (state) filter.state = state;
     if (type) filter.type = type;
-    
+
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -25,15 +25,15 @@ router.get("/", async (req, res) => {
       const pageNum = parseInt(page);
       const limitNum = parseInt(limit);
       const skip = (pageNum - 1) * limitNum;
-      
+
       const total = await Destination.countDocuments(filter);
       const data = await Destination.find(filter).skip(skip).limit(limitNum);
-      
+
       return res.json({
         destinations: data,
         total,
         page: pageNum,
-        totalPages: Math.ceil(total / limitNum)
+        totalPages: Math.ceil(total / limitNum),
       });
     }
 

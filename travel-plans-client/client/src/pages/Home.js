@@ -400,12 +400,12 @@ const Home = () => {
   /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
     ? destinations.filter(
-      (d) =>
-        (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
-        (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
-        (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-        (d.category || "").toLowerCase().includes(where.toLowerCase()),
-    )
+        (d) =>
+          (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
+          (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
+          (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
+          (d.category || "").toLowerCase().includes(where.toLowerCase()),
+      )
     : destinations;
 
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
@@ -598,10 +598,15 @@ const Home = () => {
 
       {/* ═══ SEARCH BAR ═══ */}
       <div className="wander-search-section">
-        <form className="wander-search-bar" onSubmit={handleSearch} role="search">
-
+        <form
+          className="wander-search-bar"
+          onSubmit={handleSearch}
+          role="search"
+        >
           <div className="wander-sf">
-            <label htmlFor="where-input" className="wander-sf-label">Where to</label>
+            <label htmlFor="where-input" className="wander-sf-label">
+              Where to
+            </label>
             <input
               id="where-input"
               className="wander-sf-val"
@@ -614,7 +619,9 @@ const Home = () => {
           </div>
 
           <div className="wander-sf">
-            <label htmlFor="checkin-input" className="wander-sf-label">Check In</label>
+            <label htmlFor="checkin-input" className="wander-sf-label">
+              Check In
+            </label>
             <input
               id="checkin-input"
               className="wander-sf-val"
@@ -626,7 +633,9 @@ const Home = () => {
           </div>
 
           <div className="wander-sf">
-            <label htmlFor="travellers-input" className="wander-sf-label">Travellers</label>
+            <label htmlFor="travellers-input" className="wander-sf-label">
+              Travellers
+            </label>
             <input
               id="travellers-input"
               className="wander-sf-val"
@@ -638,7 +647,11 @@ const Home = () => {
             />
           </div>
 
-          <button type="submit" className="wander-search-btn" aria-label="Submit search">
+          <button
+            type="submit"
+            className="wander-search-btn"
+            aria-label="Submit search"
+          >
             <SearchIcon /> <span>Search</span>
           </button>
         </form>
@@ -784,7 +797,7 @@ const Home = () => {
                     <div className="wander-dest-country">
                       {dest
                         ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                        item.fallbackLoc
+                          item.fallbackLoc
                         : item.fallbackLoc}
                     </div>
                   </div>
