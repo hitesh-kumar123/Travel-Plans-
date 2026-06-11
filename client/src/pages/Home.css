@@ -924,6 +924,7 @@ html {
 .wander-footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 2rem;
+  /* padding-bottom: 0.05rem; */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -939,6 +940,8 @@ html {
 .wander-footer-socials {
   display: flex;
   gap: 1rem;
+  /* Clearance for fixed scroll buttons (40px FAB + 24px offset + gap) */
+  margin-right: 4.5rem;
 }
 
 .wander-footer-socials a {
@@ -1092,6 +1095,10 @@ html {
     text-align: left;
     justify-content: flex-start;
     align-items: flex-start;
+  }
+
+  .wander-footer-socials {
+    margin-right: 0;
   }
 
   .wander-cta-actions {
