@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaXTwitter   } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
@@ -549,7 +549,7 @@ const Home = () => {
             }}
           >
             <Link to="/login">
-              <button className="wander-nav-log-in">Log In</button>
+              <button className=" wander-nav-log-in">Log In</button>
             </Link>
 
             <Link to="/register">
@@ -1091,7 +1091,7 @@ const Home = () => {
             <Link to="/" className="wander-footer-logo">
               Pack<span>Go</span>
             </Link>
-            <p>
+            <p className="wander-footer-description">
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
             </p>
@@ -1137,7 +1137,7 @@ const Home = () => {
             </a>
 
             <a href="/" aria-label="Twitter">
-              <FaTwitter />
+              <FaXTwitter   />
             </a>
           </div>
         </div>

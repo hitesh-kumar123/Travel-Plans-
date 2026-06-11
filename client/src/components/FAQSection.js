@@ -96,7 +96,7 @@ const FAQSection = () => {
               expandIcon={<ExpandMoreIcon style={{ color: "#0f172a" }} />}
               style={{
                 backgroundColor: "#f8fafc",
-                padding: "0.9rem 1.1rem",
+                padding: "0.7rem 1.0rem",
               }}
             >
               <Typography
@@ -120,7 +120,8 @@ const FAQSection = () => {
                 style={{
                   color: "#475569",
                   lineHeight: "1.7",
-                  fontSize: "0.95rem",
+                  fontSize: "0.85rem",
+                  textAlign:"left"
                 }}
               >
                 {faq.answer}
