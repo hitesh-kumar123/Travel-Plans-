@@ -24,8 +24,9 @@ import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
+import PrivacyPolicy from "./pages/PrivacyPolicy"; // ADD THIS LINE
+import TermsConditions from "./pages/TermsConditions"; // ADD THIS LINE
 import TravelChecklist from "./components/TravelChecklist";
-
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -53,6 +54,8 @@ function App() {
               <Route path="/travel-checklist" element={<TravelChecklist />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
               {/* Other Routes */}
