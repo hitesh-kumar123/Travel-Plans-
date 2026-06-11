@@ -67,7 +67,7 @@ exports.createTrip = async (req, res) => {
     res.json(trip);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -80,7 +80,7 @@ exports.getUserTrips = async (req, res) => {
     res.json(trips);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -104,7 +104,7 @@ exports.getTrip = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -166,7 +166,7 @@ exports.updateTrip = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -193,7 +193,7 @@ exports.deleteTrip = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 // Generate shareable link for a trip
@@ -212,7 +212,7 @@ exports.shareTrip = async (req, res) => {
     res.json({ shareToken: token });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -222,11 +222,10 @@ exports.getSharedTrip = async (req, res) => {
     const trip = await Trip.findOne({ shareToken: req.params.token });
     if (!trip || !trip.shareEnabled)
       return res.status(404).json({ msg: "Shared trip not found or disabled" });
-
     res.json(trip);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -256,6 +255,6 @@ exports.toggleTripSharing = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: "Server error" });
   }
 };
