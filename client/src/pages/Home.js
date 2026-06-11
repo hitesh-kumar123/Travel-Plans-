@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -10,7 +10,6 @@ import { addRecentlyViewed } from "../utils/recentlyViewed";
 import {
   RiMapPin2Fill,
   RiCalendarLine,
-  RiLogoutCircleRFill,
   RiGroupFill,
   RiArrowRightLine,
 } from "@remixicon/react";
@@ -341,21 +340,6 @@ const STATS = [
   { big: "180+", desc: "Countries covered" },
 ];
 
-/* ── SVG Search Icon ── */
-const SearchIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-  >
-    <circle cx="11" cy="11" r="8" />
-    <path d="m21 21-4.35-4.35" />
-  </svg>
-);
-
 /* ══════════════════════════════════════════════════════════════ */
 /*  COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
@@ -373,8 +357,6 @@ const Home = () => {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const checkInRef = useRef(null);
 
   useEffect(() => {
     api
