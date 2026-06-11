@@ -395,7 +395,7 @@ const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [page, setPage] = useState(1);
+  const [, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
