@@ -48,13 +48,24 @@ if (process.env.FRONTEND_URLS) {
 }
 allowedOrigins.push(...frontendUrls);
 
+function isOriginAllowed(origin) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  return (
+    origin.includes("localhost") ||
+    origin.includes("127.0.0.1") ||
+    origin.includes("vercel.app") ||
+    origin.includes("onrender.com")
+  );
+}
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (origin.includes("localhost") || origin.includes("vercel.app")) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
+      console.warn(`CORS blocked origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -91,6 +102,15 @@ app.get("/", (req, res) => {
 
 // Global error handler (must be last)
 app.use(errorHandler);
+
+if (!process.env.MONGO_URI) {
+  console.error(
+    "MONGO_URI is missing — set it in server/.env before using auth.",
+  );
+}
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is missing — login and register will fail.");
+}
 
 // Connect to MongoDB
 mongoose

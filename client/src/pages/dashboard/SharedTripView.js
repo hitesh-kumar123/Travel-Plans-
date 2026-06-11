@@ -93,6 +93,18 @@ const SharedTripView = () => {
         </Button>
       </Box>
       <Box
+        className="no-print"
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mb: 2,
+        }}
+      >
+        <Button variant="contained" onClick={() => window.print()}>
+          🖨️ Export PDF / Print Itinerary
+        </Button>
+      </Box>
+      <Box
         sx={{
           position: "relative",
           borderRadius: 4,
@@ -159,8 +171,7 @@ const SharedTripView = () => {
           />
         </Box>
       </Box>
-
-      <Grid container spacing={2} sx={{ mb: 3 }}>
+      <Grid container spacing={2} sx={{ mb: 3 }} className="print-section">
         {[
           {
             label: "Start Date",
@@ -220,6 +231,7 @@ const SharedTripView = () => {
 
       {trip.description && (
         <Paper
+          className="print-section"
           elevation={0}
           sx={{
             p: 3,
@@ -238,6 +250,45 @@ const SharedTripView = () => {
             About this Trip
           </Typography>
           <Typography color="text.secondary">{trip.description}</Typography>
+        </Paper>
+      )}
+      {trip.activities?.length > 0 && (
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 3,
+            p: 3,
+            borderRadius: 3,
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight={700} mb={2}>
+            Activities
+          </Typography>
+
+          {trip.activities.map((activity, index) => (
+            <Box
+              key={index}
+              sx={{
+                mb: 2,
+                pb: 2,
+                borderBottom:
+                  index !== trip.activities.length - 1 ? "1px solid" : "none",
+                borderColor: "divider",
+              }}
+            >
+              <Typography fontWeight={600}>{activity.name}</Typography>
+
+              {activity.location && (
+                <Typography variant="body2">📍 {activity.location}</Typography>
+              )}
+
+              {activity.notes && (
+                <Typography variant="body2">{activity.notes}</Typography>
+              )}
+            </Box>
+          ))}
         </Paper>
       )}
     </Box>

@@ -26,11 +26,12 @@ import {
   Fade,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import DownloadIcon from "@mui/icons-material/Download";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
@@ -39,18 +40,20 @@ import {
   Pie,
   Cell,
   Tooltip as ReTooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import {
   getExpenses,
   addExpense,
+  updateExpense,
   deleteExpense,
   getExpenseSummary,
   fetchCurrencyRates,
 } from "../../redux/actions/expenseActions";
 import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
+import * as XLSX from "xlsx";
+import Menu from "@mui/material/Menu";
 
 const EXPENSE_CATEGORIES = [
   "Accommodation",
@@ -83,15 +86,6 @@ const CURRENCY_SYMBOLS = {
   AUD: "A$",
 };
 
-const CHART_COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#a855f7",
-  "#f56565",
-];
-
 const ExpensesView = () => {
   const dispatch = useDispatch();
 
@@ -103,9 +97,20 @@ const ExpensesView = () => {
   const [activeTripId, setActiveTripId] = useState("");
   const [open, setOpen] = useState(false);
   const [amountError, setAmountError] = useState("");
+
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+
+  const handleExportMenuOpen = (event) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+
+  const handleExportMenuClose = () => {
+    setExportAnchorEl(null);
+  };
   const [selectedBase, setSelectedBase] = useState("INR");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -193,7 +198,9 @@ const ExpensesView = () => {
   // Calculate chart data from filtered/unfiltered list dynamically to be accurate
   const categoryTotals = {};
   filteredExpenses.forEach((e) => {
-    categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+    categoryTotals[e.category] =
+      (categoryTotals[e.category] || 0) +
+      parseFloat(toBase(e.amount, e.currency));
   });
 
   const chartData = Object.keys(categoryTotals).map((cat) => ({
@@ -216,6 +223,20 @@ const ExpensesView = () => {
     }
   };
 
+  const handleEditClick = (expense) => {
+    setEditingExpenseId(expense._id);
+    setForm({
+      amount: expense.amount.toString(),
+      category: expense.category,
+      description: expense.description || "",
+      date: expense.date
+        ? new Date(expense.date).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      currency: expense.currency || "INR",
+    });
+    setOpen(true);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
@@ -226,13 +247,22 @@ const ExpensesView = () => {
     }
     if (!activeTripId) return;
 
-    dispatch(
-      addExpense({
-        ...form,
-        trip: activeTripId,
-        amount: parsed,
-      }),
-    );
+    if (editingExpenseId) {
+      dispatch(
+        updateExpense(editingExpenseId, {
+          ...form,
+          amount: parsed,
+        }),
+      );
+    } else {
+      dispatch(
+        addExpense({
+          ...form,
+          trip: activeTripId,
+          amount: parsed,
+        }),
+      );
+    }
     setOpen(false);
     setForm({
       amount: "",
@@ -241,6 +271,7 @@ const ExpensesView = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+    setEditingExpenseId(null);
     setAmountError("");
     setTimeout(() => {
       dispatch(getExpenses(activeTripId));
@@ -258,6 +289,7 @@ const ExpensesView = () => {
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
     });
+    setEditingExpenseId(null);
   };
 
   const handleDelete = (id) => {
@@ -293,6 +325,32 @@ const ExpensesView = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportExcel = () => {
+    if (!expenses || expenses.length === 0) {
+      alert("No expenses to export!");
+      return;
+    }
+
+    const data = expenses.map((e) => ({
+      Date: new Date(e.date).toLocaleDateString(),
+      Category: e.category,
+      Description: e.description || "",
+      Amount: e.amount,
+      Currency: e.currency,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+
+    XLSX.writeFile(
+      workbook,
+      `expenses_${activeTrip?.destination || "trip"}.xlsx`,
+    );
+
+    handleExportMenuClose();
+  };
   const dialogAmount = parseFloat(form.amount) || 0;
   const isOverBudgetDialog = budget > 0 && totalSpent + dialogAmount > budget;
   const overBudgetBy = totalSpent + dialogAmount - budget;
@@ -327,25 +385,38 @@ const ExpensesView = () => {
             Visualize and optimize your travel finances in real-time
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", gap: 1.5, justifyContent: "flex-end" }}>
-          <Tooltip title="Download CSV Report">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<FileDownloadIcon />}
-              onClick={handleExportCSV}
-              disabled={!activeTripId || !expenses || expenses.length === 0}
-              sx={{
-                borderRadius: 2.5,
-                fontWeight: 600,
-                textTransform: "none",
-                px: 2.5,
-                borderWidth: "1.5px",
-                "&:hover": { borderWidth: "1.5px" },
-              }}
-            >
-              Export Report
-            </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Export Expenses">
+            <>
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={handleExportMenuOpen}
+                disabled={!activeTripId || !expenses || expenses.length === 0}
+                sx={{ borderRadius: 3 }}
+              >
+                Export
+              </Button>
+
+              <Menu
+                anchorEl={exportAnchorEl}
+                open={Boolean(exportAnchorEl)}
+                onClose={handleExportMenuClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleExportCSV();
+                    handleExportMenuClose();
+                  }}
+                >
+                  Export CSV
+                </MenuItem>
+
+                <MenuItem onClick={handleExportExcel}>
+                  Export Excel (.xlsx)
+                </MenuItem>
+              </Menu>
+            </>
           </Tooltip>
           <PrimaryButton
             startIcon={<AddIcon />}
@@ -837,22 +908,46 @@ const ExpensesView = () => {
                           )}
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
-                          <Tooltip title="Delete Expense">
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: "error.main",
-                                bgcolor: "rgba(245, 101, 101, 0.05)",
-                                "&:hover": {
-                                  bgcolor: "rgba(245, 101, 101, 0.15)",
-                                },
-                                borderRadius: 2,
-                              }}
-                              onClick={() => handleDelete(expense._id)}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Tooltip title="Edit Expense">
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "primary.main",
+                                  bgcolor: "rgba(63, 81, 181, 0.05)",
+                                  "&:hover": {
+                                    bgcolor: "rgba(63, 81, 181, 0.15)",
+                                  },
+                                  borderRadius: 2,
+                                }}
+                                onClick={() => handleEditClick(expense)}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Expense">
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: "error.main",
+                                  bgcolor: "rgba(245, 101, 101, 0.05)",
+                                  "&:hover": {
+                                    bgcolor: "rgba(245, 101, 101, 0.15)",
+                                  },
+                                  borderRadius: 2,
+                                }}
+                                onClick={() => handleDelete(expense._id)}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))
@@ -895,19 +990,17 @@ const ExpensesView = () => {
           </Paper>
         </Grid>
 
-        {/* Visual Analytics Pie Chart */}
-        <Grid item xs={12} md={4.5}>
+        {/* Pie Chart */}
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
-              p: 3,
-              borderRadius: 4,
+              p: 4,
+              borderRadius: 3,
               border: "1px solid",
-              borderColor: "rgba(224, 224, 224, 0.6)",
-              boxShadow: "0 12px 32px -12px rgba(0,0,0,0.04)",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
+              borderColor: "divider",
+              boxSizing: "border-box",
+              alignSelf: "flex-start",
             }}
           >
             <Typography
@@ -919,40 +1012,83 @@ const ExpensesView = () => {
               Spending Allocation
             </Typography>
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={85}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 3,
+                }}
+              >
+                <Box sx={{ flex: 1, minWidth: 180, width: 0 }}>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart
+                      margin={{ top: 15, right: 15, bottom: 15, left: 30 }}
+                    >
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={55}
+                        outerRadius={80}
+                        paddingAngle={4}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={CATEGORY_COLORS[entry.name] || "#8884d8"}
+                          />
+                        ))}
+                      </Pie>
+                      <ReTooltip
+                        formatter={(value) => [
+                          `${currencySymbol}${value.toLocaleString()}`,
+                          "",
+                        ]}
                       />
-                    ))}
-                  </Pie>
-                  <ReTooltip
-                    formatter={(value) => [
-                      `${currencySymbol}${value.toLocaleString()}`,
-                      "",
-                    ]}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </Box>
+                {/* Custom Legend */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0.75,
+                    alignSelf: "center",
+                    pl: 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  {chartData.map((entry) => (
+                    <Box
+                      key={entry.name}
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <Box
+                        sx={{
+                          width: 15,
+                          height: 15,
+                          borderRadius: "3px",
+                          bgcolor: CATEGORY_COLORS[entry.name] || "#8884d8",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                        {entry.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
             ) : (
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: 320,
+                  height: 120,
                   flexDirection: "column",
                   gap: 1.5,
                 }}
@@ -1012,7 +1148,9 @@ const ExpensesView = () => {
             color: "text.primary",
           }}
         >
-          📝 Add Transaction Record
+          {editingExpenseId
+            ? "📝 Edit Transaction Record"
+            : "📝 Add Transaction Record"}
         </DialogTitle>
         <DialogContent>
           <Box
@@ -1137,7 +1275,7 @@ const ExpensesView = () => {
             disabled={Boolean(amountError) || !form.amount}
             sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
           >
-            Confirm & Save
+            {editingExpenseId ? "Save Changes" : "Confirm & Save"}
           </PrimaryButton>
         </DialogActions>
       </Dialog>
