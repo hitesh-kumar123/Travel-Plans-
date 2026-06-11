@@ -121,7 +121,7 @@ const FAQSection = () => {
                   color: "#475569",
                   lineHeight: "1.7",
                   fontSize: "0.85rem",
-                  textAlign:"left"
+                  textAlign: "left",
                 }}
               >
                 {faq.answer}
