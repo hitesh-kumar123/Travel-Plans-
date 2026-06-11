@@ -1,10 +1,14 @@
 // src/pages/About.js
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import "./Home.css"; // reuse same styles
 
 const About = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="wander-page">
       {/* ═══ HEADER (same as Home) ═══ */}
