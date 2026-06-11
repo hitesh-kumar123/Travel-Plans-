@@ -526,6 +526,9 @@ const Home = () => {
           <li>
             <a href="#wander-testimonials">Experiences</a>
           </li>
+          <li>
+            <Link to="/travel-checklist">Checklist</Link>
+          </li>
           {isAuthenticated && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
@@ -538,9 +541,27 @@ const Home = () => {
             <button className="wander-nav-cta">My Dashboard</button>
           </Link>
         ) : (
-          <Link to="/register">
-            <button className="wander-nav-cta">Book Now</button>
-          </Link>
+          <div
+            style={{
+              display: "flex",
+              gap: "0.75rem",
+              alignItems: "center",
+            }}
+          >
+            <Link to="/login">
+              <button className="wander-nav-log-in">Log In</button>
+            </Link>
+
+            <Link to="/register">
+              <button className="wander-nav-create-account">
+                Create Free Account
+              </button>
+            </Link>
+
+            <Link to="/register">
+              <button className="wander-nav-cta">Book Now</button>
+            </Link>
+          </div>
         )}
 
         <button
@@ -625,7 +646,17 @@ const Home = () => {
             >
               Features
             </a>
-
+            <Link
+              to="/travel-checklist"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Checklist
+            </Link>
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
@@ -821,7 +852,9 @@ const Home = () => {
               {loading
                 ? "Loading destinations…"
                 : where.trim()
-                  ? `${filteredDestinations.length} destination${filteredDestinations.length !== 1 ? "s" : ""} found`
+                  ? `${filteredDestinations.length} destination${
+                      filteredDestinations.length !== 1 ? "s" : ""
+                    } found`
                   : "Destinations that steal hearts"}
             </div>
           </div>
@@ -1078,6 +1111,7 @@ const Home = () => {
               <Link to="/about">About</Link>
               <Link to="/careers">Careers</Link>
               <Link to="/contact">Contact</Link>
+              <Link to="/travel-checklist">Travel Checklist</Link>
             </div>
 
             <div className="wander-footer-col">

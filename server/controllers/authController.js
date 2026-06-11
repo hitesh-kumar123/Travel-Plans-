@@ -7,6 +7,10 @@ const {
   getOtpEmailTemplate,
 } = require("../utils/emailTemplates");
 
+// google signup
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 // Register a new user
 exports.register = async (req, res, next) => {
   try {
@@ -102,7 +106,7 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           token,
           user: { id: user.id, name: user.name, email: user.email },
@@ -114,6 +118,59 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// google signup
+
+exports.googleAuth = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: "Credential is required!!" });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload.email;
+    const name = payload.name;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        authProvider: "google",
+        isVerified: true,
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "5d" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          user: { id: user.id, name: user.name, email: user.email },
+        });
+      },
+    );
+  } catch (e) {
+    console.log(e);
+
+    return res.status(500).json({
+      Sucess: false,
+      Message: "Google Authentication failed",
+    });
+  }
+};
 // Get user profile
 exports.getProfile = async (req, res, next) => {
   try {
@@ -272,7 +329,7 @@ exports.resetPassword = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           msg: "Password reset successful",
           token,

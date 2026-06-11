@@ -36,6 +36,7 @@ router.delete("/:id", auth, tripController.deleteTrip);
 // @route   POST api/trips/:id/share
 // @desc    Generate shareable link
 // @access  Private
-router.post("/:id/share", auth, tripController.shareTrip);
 
+router.post("/:id/share", auth, tripController.shareTrip);
+router.put("/:id/share-toggle", auth, tripController.toggleTripSharing);
 module.exports = router;
