@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -394,6 +394,9 @@ const Home = () => {
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [travellers, setTravellers] = useState("");
@@ -431,21 +434,66 @@ const Home = () => {
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(nextSearches));
   };
 
+  const fetchDestinations = async (pageNum, searchQuery, reset = false) => {
+    if (pageNum === 1) setLoading(true);
+    else setLoadingMore(true);
+
+    try {
+      const url = `/destinations?page=${pageNum}&limit=8${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`;
+      const r = await api.get(url);
+      
+      const newDestinations = Array.isArray(r.data?.destinations)
+        ? r.data.destinations
+        : Array.isArray(r.data)
+        ? r.data
+        : [];
+      
+      const totalPages = r.data?.totalPages || 1;
+
+      if (reset) {
+        setDestinations(newDestinations);
+      } else {
+        setDestinations((prev) => {
+          // Avoid duplicates by comparing IDs
+          const existingIds = new Set(prev.map(d => d._id));
+          const uniqueNew = newDestinations.filter(d => !existingIds.has(d._id));
+          return [...prev, ...uniqueNew];
+        });
+      }
+      
+      // If we received fewer items than requested, we might have reached the end.
+      setHasMore(pageNum < totalPages && newDestinations.length > 0);
+    } catch (err) {
+      console.error(err);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
   useEffect(() => {
-    api
-      .get("/destinations")
-      .then((r) => {
-        setDestinations(
-          Array.isArray(r.data)
-            ? r.data
-            : Array.isArray(r.data?.destinations)
-              ? r.data.destinations
-              : [],
-        );
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    fetchDestinations(1, "");
   }, []);
+
+  const observer = useRef();
+  const lastDestinationElementRef = useCallback(
+    (node) => {
+      if (loading || loadingMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => {
+            const nextPage = prevPage + 1;
+            fetchDestinations(nextPage, where.trim(), false);
+            return nextPage;
+          });
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, loadingMore, hasMore, where]
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -487,26 +535,17 @@ const Home = () => {
       updateSearchHistory(query);
     }
     setShowRecentSearches(false);
+    
+    setPage(1);
+    setHasMore(true);
+    fetchDestinations(1, query, true);
+
     document
       .getElementById("wander-dest-section")
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* Filter destinations based on "Where to" search input */
-  const filteredDestinations = where.trim()
-    ? (Array.isArray(destinations) ? destinations : []).filter(
-        (d) =>
-          (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase()),
-      )
-    : Array.isArray(destinations)
-      ? destinations
-      : [];
-
-  /* First 4 destinations for the editorial grid; fallback if DB has fewer */
-  const editorialDests = filteredDestinations.slice(0, 4);
+  /* Removed client-side filteredDestinations since it's server-side now */
 
   return (
     <div className="wander-page">
@@ -849,12 +888,10 @@ const Home = () => {
           <div>
             <div className="wander-section-label">Top Picks</div>
             <div className="wander-section-title">
-              {loading
+              {loading && destinations.length === 0
                 ? "Loading destinations…"
                 : where.trim()
-                  ? `${filteredDestinations.length} destination${
-                      filteredDestinations.length !== 1 ? "s" : ""
-                    } found`
+                  ? `Destinations found for "${where.trim()}"`
                   : "Destinations that steal hearts"}
             </div>
           </div>
@@ -863,103 +900,30 @@ const Home = () => {
           </Link>
         </div>
 
-        {/* Editorial 4-card grid */}
+        {/* Destinations grid */}
         <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
-          {editorialDests[0] ? (
-            <div
-              className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
-            >
-              <div className="wander-dest-card-img">
-                {editorialDests[0].images?.[0] ? (
-                  <img
-                    src={editorialDests[0].images[0]}
-                    alt={editorialDests[0].name}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <SceneSantorini />
-                )}
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">
-                    {editorialDests[0].name || "Santorini"}
-                  </div>
-                  <div className="wander-dest-country">
-                    {[editorialDests[0].city, editorialDests[0].state]
-                      .filter(Boolean)
-                      .join(", ") || "Greece"}{" "}
-                    •{" "}
-                    {editorialDests[0].entrance_fee_inr === 0
-                      ? "Free Entry"
-                      : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div
-              className="wander-dest-card tall"
-              style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
-            >
-              <div className="wander-dest-card-img">
-                <SceneSantorini />
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">Santorini</div>
-                  <div className="wander-dest-country">
-                    Greece • From ₹1,20,000
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {destinations.map((dest, idx) => {
+            const isTall = idx === 0;
+            const ref = idx === destinations.length - 1 ? lastDestinationElementRef : null;
+            
+            // Assign some repeating fallbacks to normal cards if no image exists
+            const fallbackScenes = [<SceneAngkor />, <SceneBali />, <SceneSahara />];
+            const fallbackBgs = [
+              "linear-gradient(135deg,#5C4A2A,#2E2010)",
+              "linear-gradient(135deg,#2A5C3A,#0F2E18)",
+              "linear-gradient(135deg,#5C3A2A,#2E150F)"
+            ];
 
-          {/* Small cards */}
-          {[
-            {
-              svgScene: <SceneAngkor />,
-              fallbackName: "Angkor Wat",
-              fallbackLoc: "Cambodia • From ₹65,000",
-              bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
-            },
-            {
-              svgScene: <SceneBali />,
-              fallbackName: "Ubud, Bali",
-              fallbackLoc: "Indonesia • From ₹55,000",
-              bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
-            },
-            {
-              svgScene: <SceneSahara />,
-              fallbackName: "Sahara Desert",
-              fallbackLoc: "Morocco • From ₹95,000",
-              bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
-            },
-          ].map((item, idx) => {
-            const dest = editorialDests[idx + 1];
             return (
               <div
-                key={idx}
-                className="wander-dest-card"
-                style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
+                key={dest._id || idx}
+                ref={ref}
+                className={`wander-dest-card ${isTall ? "tall" : ""}`}
+                style={!isTall ? { background: fallbackBgs[idx % 3] } : {}}
+                onClick={() => handleAddTrip(dest)}
               >
                 <div className="wander-dest-card-img">
-                  {dest?.images?.[0] ? (
+                  {dest.images?.[0] ? (
                     <img
                       src={dest.images[0]}
                       alt={dest.name}
@@ -975,18 +939,21 @@ const Home = () => {
                       }}
                     />
                   ) : (
-                    item.svgScene
+                    isTall ? <SceneSantorini /> : fallbackScenes[idx % 3]
                   )}
                   <div className="wander-dest-overlay" />
+                  {isTall && <div className="wander-dest-tag">Trending</div>}
                   <div className="wander-dest-info">
                     <div className="wander-dest-name">
-                      {dest?.name || item.fallbackName}
+                      {dest.name}
                     </div>
                     <div className="wander-dest-country">
-                      {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
-                        : item.fallbackLoc}
+                      {[dest.city, dest.state].filter(Boolean).join(", ")} •{" "}
+                      {dest.entrance_fee_inr === 0
+                        ? "Free Entry"
+                        : dest.entrance_fee_inr
+                          ? `₹${dest.entrance_fee_inr}`
+                          : "Explore"}
                     </div>
                   </div>
                 </div>
@@ -994,6 +961,23 @@ const Home = () => {
             );
           })}
         </div>
+
+        {/* Loading More & No More Results Indicators */}
+        {loadingMore && (
+          <div style={{ textAlign: "center", padding: "20px" }}>
+            <span style={{ color: "var(--ocean)", fontWeight: 600 }}>Loading more destinations...</span>
+          </div>
+        )}
+        {!hasMore && destinations.length > 0 && (
+          <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+            No more destinations available.
+          </div>
+        )}
+        {!loading && destinations.length === 0 && (
+          <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+            No destinations found. Please try a different search.
+          </div>
+        )}
       </section>
 
       {/* ═══ FEATURES ═══ */}
