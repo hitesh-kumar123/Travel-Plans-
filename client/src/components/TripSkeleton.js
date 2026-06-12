@@ -15,7 +15,12 @@ const TripSkeleton = () => {
     >
       <Skeleton variant="rectangular" height={160} />
       <CardContent sx={{ flexGrow: 1, pt: 2, pb: 1, px: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          mb={1}
+        >
           <Skeleton variant="text" width="60%" height={32} />
           <Skeleton variant="circular" width={24} height={24} />
         </Box>
@@ -24,7 +29,12 @@ const TripSkeleton = () => {
       </CardContent>
       <CardActions sx={{ px: 2, pb: 2, justifyContent: "space-between" }}>
         <Skeleton variant="text" width="30%" height={24} />
-        <Skeleton variant="rectangular" width={80} height={32} sx={{ borderRadius: 1 }} />
+        <Skeleton
+          variant="rectangular"
+          width={80}
+          height={32}
+          sx={{ borderRadius: 1 }}
+        />
       </CardActions>
     </Card>
   );

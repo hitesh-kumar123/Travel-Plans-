@@ -94,8 +94,6 @@ exports.searchFlights = async (req, res) => {
       origin,
       destination,
       departureDate,
-      returnDate,
-      adults = 1,
       minBudget,
       maxBudget,
     } = req.body;
@@ -143,8 +141,6 @@ exports.searchHotels = async (req, res) => {
       location,
       checkIn,
       checkOut,
-      guests = 2,
-      rooms = 1,
       minBudget,
       maxBudget,
       minRating,

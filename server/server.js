@@ -21,7 +21,7 @@ app.set("trust proxy", 1);
 app.use(
   helmet({
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  })
+  }),
 );
 
 // Rate limiter - 100 requests per 15 min per IP
