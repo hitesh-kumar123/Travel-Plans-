@@ -628,6 +628,7 @@ const Home = () => {
             >
               Features
             </a>
+
             <Link
               to="/travel-checklist"
               style={{
@@ -639,6 +640,7 @@ const Home = () => {
             >
               Checklist
             </Link>
+
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
