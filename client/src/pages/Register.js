@@ -93,20 +93,25 @@ const Register = () => {
       }
     };
 
-    initializeGoogleSignIn();
-
-    const script = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]',
-    );
-    if (script) {
-      script.addEventListener("load", initializeGoogleSignIn);
-    }
-
-    return () => {
-      if (script) {
-        script.removeEventListener("load", initializeGoogleSignIn);
+    if (window.google) {
+      initializeGoogleSignIn();
+    } else {
+      let script = document.querySelector(
+        'script[src="https://accounts.google.com/gsi/client"]'
+      );
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://accounts.google.com/gsi/client";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
       }
-    };
+      script.addEventListener("load", initializeGoogleSignIn);
+
+      return () => {
+        script.removeEventListener("load", initializeGoogleSignIn);
+      };
+    }
   }, [activeStep, isMobile, dispatch]);
 
   const steps = ["Personal Information", "Account Setup", "Confirmation"];

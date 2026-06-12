@@ -18,7 +18,11 @@ const app = express();
 app.set("trust proxy", 1);
 
 // Security Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  })
+);
 
 // Rate limiter - 100 requests per 15 min per IP
 const limiter = rateLimit({
