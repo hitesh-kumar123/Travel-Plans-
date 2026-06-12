@@ -86,6 +86,10 @@ const BookingView = () => {
     VALID_AIRPORTS.includes(name.trim().toLowerCase());
 
   const [flightError, setFlightError] = useState("");
+  const [flightFilters, setFlightFilters] = useState({ minBudget: "", maxBudget: "" });
+const [hotelFilters, setHotelFilters] = useState({ minBudget: "", maxBudget: "", minRating: 0, amenities: [] });
+const activeFlightFilterCount = Object.values(flightFilters).filter(v => v !== "").length;
+const activeHotelFilterCount = Object.values(hotelFilters).filter(v => v !== "" && v !== 0 && !(Array.isArray(v) && v.length === 0)).length;
 
   const handleFlightSearch = (e) => {
     e.preventDefault();
