@@ -24,6 +24,10 @@ import {
   Tooltip,
   InputAdornment,
   Fade,
+  Checkbox,
+  FormControlLabel,
+  Switch,
+  Collapse,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -87,9 +91,8 @@ const CURRENCY_SYMBOLS = {
 const ExpensesView = () => {
   const dispatch = useDispatch();
 
-  const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
-    (state) => state.expenses,
-  );
+  const { expenses, loading, exchangeRates, baseCurrency, ratesFetchedAt } =
+    useSelector((state) => state.expenses);
   const { trips } = useSelector((state) => state.trips);
 
   const [activeTripId, setActiveTripId] = useState("");
@@ -109,12 +112,34 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
+  const [openGlobalOverride, setOpenGlobalOverride] = useState(false);
+  const [useGlobalOverrides, setUseGlobalOverrides] = useState(() => {
+    return localStorage.getItem("useGlobalOverrides") === "true";
+  });
+  const [globalCustomRates, setGlobalCustomRates] = useState(() => {
+    const cached = localStorage.getItem("globalCustomRates");
+    return cached ? JSON.parse(cached) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem("useGlobalOverrides", useGlobalOverrides);
+  }, [useGlobalOverrides]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "globalCustomRates",
+      JSON.stringify(globalCustomRates),
+    );
+  }, [globalCustomRates]);
+
   const [form, setForm] = useState({
     amount: "",
     category: "Food",
     description: "",
     date: new Date().toISOString().split("T")[0],
     currency: "INR",
+    isRateOverridden: false,
+    exchangeRate: "",
   });
 
   useEffect(() => {
@@ -141,10 +166,53 @@ const ExpensesView = () => {
     dispatch(fetchCurrencyRates(selectedBase));
   }, [dispatch, selectedBase]);
 
+  // Get standard fetched exchange rate from any currency to current baseCurrency
+  const getRateToBase = (currency) => {
+    if (currency === baseCurrency) return 1;
+    if (!exchangeRates || Object.keys(exchangeRates).length === 0) return 1;
+
+    let amountInINR;
+    if (currency === "INR") {
+      amountInINR = 1;
+    } else {
+      const rateToINR = exchangeRates[currency];
+      if (!rateToINR) return 1;
+      amountInINR = 1 / rateToINR;
+    }
+
+    if (baseCurrency === "INR") return amountInINR;
+    const rateToBase = exchangeRates[baseCurrency];
+    if (!rateToBase) return 1;
+    return amountInINR * rateToBase;
+  };
+
   // Converts any amount from its stored currency to the user's baseCurrency.
-  // Uses INR as a pivot: amount → INR → baseCurrency
-  const toBase = (amount, currency) => {
+  // Supports individual transaction override, global overrides, and standard fetched rates.
+  const toBase = (expenseOrAmount, optCurrency) => {
+    let amount, currency, exchangeRate, isRateOverridden;
+    if (typeof expenseOrAmount === "object" && expenseOrAmount !== null) {
+      amount = expenseOrAmount.amount;
+      currency = expenseOrAmount.currency;
+      exchangeRate = expenseOrAmount.exchangeRate;
+      isRateOverridden = expenseOrAmount.isRateOverridden;
+    } else {
+      amount = expenseOrAmount;
+      currency = optCurrency;
+    }
+
     if (currency === baseCurrency) return amount;
+
+    // Case 1: Transaction-specific override
+    if (isRateOverridden && exchangeRate) {
+      return (amount * exchangeRate).toFixed(2);
+    }
+
+    // Case 2: Global manual rate override
+    if (useGlobalOverrides && globalCustomRates[currency] !== undefined) {
+      return (amount * globalCustomRates[currency]).toFixed(2);
+    }
+
+    // Case 3: Standard fetched rates (using INR as pivot)
     if (!exchangeRates || Object.keys(exchangeRates).length === 0)
       return amount;
 
@@ -166,10 +234,7 @@ const ExpensesView = () => {
   const currencySymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
 
   const totalSpent = expenses
-    ? expenses.reduce(
-        (acc, e) => acc + parseFloat(toBase(e.amount, e.currency)),
-        0,
-      )
+    ? expenses.reduce((acc, e) => acc + parseFloat(toBase(e)), 0)
     : 0;
 
   const activeTrip = trips?.find((t) => t._id === activeTripId);
@@ -192,10 +257,11 @@ const ExpensesView = () => {
       })
     : [];
 
-  // Calculate chart data from filtered/unfiltered list dynamically to be accurate
+  // Calculate chart data from filtered/unfiltered list dynamically to be accurate (converted to baseCurrency)
   const categoryTotals = {};
   filteredExpenses.forEach((e) => {
-    categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+    categoryTotals[e.category] =
+      (categoryTotals[e.category] || 0) + parseFloat(toBase(e));
   });
 
   const chartData = Object.keys(categoryTotals).map((cat) => ({
@@ -233,6 +299,9 @@ const ExpensesView = () => {
         ...form,
         trip: activeTripId,
         amount: parsed,
+        exchangeRate: form.isRateOverridden
+          ? parseFloat(form.exchangeRate)
+          : undefined,
       }),
     );
     setOpen(false);
@@ -242,6 +311,8 @@ const ExpensesView = () => {
       description: "",
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
+      isRateOverridden: false,
+      exchangeRate: "",
     });
     setAmountError("");
     setTimeout(() => {
@@ -259,6 +330,8 @@ const ExpensesView = () => {
       description: "",
       date: new Date().toISOString().split("T")[0],
       currency: "INR",
+      isRateOverridden: false,
+      exchangeRate: "",
     });
   };
 
@@ -322,8 +395,27 @@ const ExpensesView = () => {
     handleExportMenuClose();
   };
   const dialogAmount = parseFloat(form.amount) || 0;
-  const isOverBudgetDialog = budget > 0 && totalSpent + dialogAmount > budget;
-  const overBudgetBy = totalSpent + dialogAmount - budget;
+  const dialogAmountConverted =
+    parseFloat(
+      toBase({
+        amount: dialogAmount,
+        currency: form.currency,
+        exchangeRate: form.isRateOverridden
+          ? parseFloat(form.exchangeRate)
+          : undefined,
+        isRateOverridden: form.isRateOverridden,
+      }),
+    ) || 0;
+  const isOverBudgetDialog =
+    budget > 0 && totalSpent + dialogAmountConverted > budget;
+  const overBudgetBy = totalSpent + dialogAmountConverted - budget;
+
+  const formattedTimestamp = ratesFetchedAt
+    ? new Date(ratesFetchedAt).toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : "Not available";
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, margin: "0 auto" }}>
@@ -405,23 +497,153 @@ const ExpensesView = () => {
       </Box>
 
       {/* Base Currency Selector */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-        <Typography variant="body2" color="text.secondary">
-          Display totals in:
-        </Typography>
-        <TextField
-          select
-          size="small"
-          value={selectedBase}
-          onChange={(e) => setSelectedBase(e.target.value)}
-          sx={{ width: 120 }}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
         >
-          {CURRENCIES.map((c) => (
-            <MenuItem key={c} value={c}>
-              {CURRENCY_SYMBOLS[c]} {c}
-            </MenuItem>
-          ))}
-        </TextField>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              flexWrap: "wrap",
+            }}
+          >
+            <Typography variant="body2" color="text.secondary" fontWeight={600}>
+              Display currency:
+            </Typography>
+            <TextField
+              select
+              size="small"
+              value={selectedBase}
+              onChange={(e) => setSelectedBase(e.target.value)}
+              sx={{
+                width: 120,
+                "& .MuiOutlinedInput-root": { borderRadius: 3 },
+              }}
+            >
+              {CURRENCIES.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {CURRENCY_SYMBOLS[c]} {c}
+                </MenuItem>
+              ))}
+            </TextField>
+            {ratesFetchedAt && (
+              <Chip
+                icon={<InfoIcon style={{ fontSize: 16 }} />}
+                label={`Rates updated: ${formattedTimestamp}`}
+                size="small"
+                variant="outlined"
+                sx={{
+                  borderRadius: 2,
+                  fontSize: "0.75rem",
+                  color: "text.secondary",
+                  borderColor: "rgba(63, 81, 181, 0.2)",
+                  bgcolor: "rgba(63, 81, 181, 0.03)",
+                  px: 0.5,
+                }}
+              />
+            )}
+          </Box>
+
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setOpenGlobalOverride(!openGlobalOverride)}
+            color={useGlobalOverrides ? "warning" : "primary"}
+            sx={{ borderRadius: 3, fontWeight: 600 }}
+          >
+            {useGlobalOverrides
+              ? "✏️ Custom Rates Active"
+              : "🔧 Override Rates Globally"}
+          </Button>
+        </Box>
+
+        <Collapse in={openGlobalOverride}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mt: 1.5,
+              borderRadius: 3,
+              border: "1px dashed",
+              borderColor: useGlobalOverrides ? "warning.main" : "grey.300",
+              bgcolor: useGlobalOverrides
+                ? "rgba(255, 167, 38, 0.05)"
+                : "grey.50",
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              fontWeight={700}
+              sx={{ mb: 1, display: "flex", alignItems: "center", gap: 1 }}
+            >
+              ⚙️ Global Exchange Rate Overrides
+            </Typography>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              display="block"
+              sx={{ mb: 2 }}
+            >
+              Customize global rates for your session. These rates will override
+              official rates for all calculations in Expense Explorer.
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={useGlobalOverrides}
+                  onChange={(e) => setUseGlobalOverrides(e.target.checked)}
+                />
+              }
+              label={
+                <Typography variant="body2" fontWeight={600}>
+                  Enable global custom rates
+                </Typography>
+              }
+              sx={{ mb: useGlobalOverrides ? 2 : 0 }}
+            />
+
+            {useGlobalOverrides && (
+              <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                {CURRENCIES.filter((c) => c !== baseCurrency).map((c) => {
+                  const fetchedRate = getRateToBase(c);
+                  const currentCustomVal =
+                    globalCustomRates[c] !== undefined
+                      ? globalCustomRates[c]
+                      : fetchedRate.toFixed(4);
+                  return (
+                    <Grid item xs={6} sm={3} key={c}>
+                      <TextField
+                        size="small"
+                        label={`1 ${c} in ${baseCurrency}`}
+                        type="number"
+                        value={currentCustomVal}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setGlobalCustomRates((prev) => ({
+                            ...prev,
+                            [c]: val !== "" ? parseFloat(val) : fetchedRate,
+                          }));
+                        }}
+                        slotProps={{
+                          htmlInput: { min: 0.0001, step: 0.0001 },
+                          input: { style: { borderRadius: 8 } },
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            )}
+          </Paper>
+        </Collapse>
       </Box>
 
       {/* Trip Selector */}
@@ -859,23 +1081,57 @@ const ExpensesView = () => {
                           {expense.description || "—"}
                         </TableCell>
                         <TableCell align="right" sx={{ fontWeight: 700 }}>
-                          {CURRENCY_SYMBOLS[expense.currency] ||
-                            expense.currency}
-                          {expense.amount.toLocaleString()}
-                          {expense.currency !== baseCurrency && (
-                            <Typography
-                              variant="caption"
-                              display="block"
-                              color="text.secondary"
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                justifyContent: "flex-end",
+                              }}
                             >
-                              ≈ {currencySymbol}
-                              {parseFloat(
-                                toBase(expense.amount, expense.currency),
-                              ).toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              })}
-                            </Typography>
-                          )}
+                              <Typography variant="body2" fontWeight={700}>
+                                {CURRENCY_SYMBOLS[expense.currency] ||
+                                  expense.currency}
+                                {expense.amount.toLocaleString()}
+                              </Typography>
+                              {expense.currency !== baseCurrency && (
+                                <Chip
+                                  label={`≈ ${currencySymbol}${parseFloat(toBase(expense)).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                                  size="small"
+                                  color="secondary"
+                                  variant="outlined"
+                                  sx={{
+                                    height: 20,
+                                    fontSize: "0.7rem",
+                                    fontWeight: 600,
+                                    borderColor: "rgba(156, 39, 176, 0.3)",
+                                    bgcolor: "rgba(156, 39, 176, 0.04)",
+                                  }}
+                                />
+                              )}
+                            </Box>
+                            {expense.isRateOverridden && (
+                              <Typography
+                                variant="caption"
+                                color="warning.main"
+                                sx={{
+                                  display: "block",
+                                  fontSize: "0.65rem",
+                                  mt: 0.25,
+                                }}
+                              >
+                                Rate overridden: 1 {expense.currency} ={" "}
+                                {expense.exchangeRate} {baseCurrency}
+                              </Typography>
+                            )}
+                          </Box>
                         </TableCell>
                         <TableCell align="center" sx={{ py: 1.5 }}>
                           <Tooltip title="Delete Expense">
@@ -989,7 +1245,7 @@ const ExpensesView = () => {
                       </Pie>
                       <ReTooltip
                         formatter={(value) => [
-                          `₹${value.toLocaleString()}`,
+                          `${currencySymbol}${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
                           "",
                         ]}
                       />
@@ -1124,8 +1380,19 @@ const ExpensesView = () => {
                     variant="caption"
                     sx={{ display: "block", mt: 0.5 }}
                   >
-                    This transaction of ₹{dialogAmount.toLocaleString()} will
-                    put you <strong>₹{overBudgetBy.toLocaleString()}</strong>{" "}
+                    This transaction of{" "}
+                    {CURRENCY_SYMBOLS[form.currency] || form.currency}
+                    {dialogAmount.toLocaleString()} (≈ {currencySymbol}
+                    {dialogAmountConverted.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}
+                    ) will put you{" "}
+                    <strong>
+                      {currencySymbol}
+                      {overBudgetBy.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
+                    </strong>{" "}
                     over your trip budget limit.
                   </Typography>
                 </Box>
@@ -1155,7 +1422,12 @@ const ExpensesView = () => {
                   label="Currency"
                   value={form.currency}
                   onChange={(e) =>
-                    setForm({ ...form, currency: e.target.value })
+                    setForm({
+                      ...form,
+                      currency: e.target.value,
+                      isRateOverridden: false,
+                      exchangeRate: "",
+                    })
                   }
                   slotProps={{ input: { style: { borderRadius: 12 } } }}
                 >
@@ -1167,6 +1439,86 @@ const ExpensesView = () => {
                 </TextField>
               </Grid>
             </Grid>
+
+            {form.currency !== baseCurrency && dialogAmount > 0 && (
+              <Box
+                sx={{
+                  p: 1.5,
+                  borderRadius: 2,
+                  bgcolor: "rgba(156, 39, 176, 0.04)",
+                  border: "1px solid rgba(156, 39, 176, 0.1)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="secondary.main"
+                  fontWeight={600}
+                >
+                  Conversion Preview:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="secondary.main"
+                  fontWeight={700}
+                >
+                  ≈ {currencySymbol}
+                  {dialogAmountConverted.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  {baseCurrency}
+                </Typography>
+              </Box>
+            )}
+
+            {form.currency !== baseCurrency && (
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={form.isRateOverridden || false}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setForm({
+                          ...form,
+                          isRateOverridden: checked,
+                          exchangeRate: checked
+                            ? getRateToBase(form.currency).toFixed(4)
+                            : "",
+                        });
+                      }}
+                      size="small"
+                    />
+                  }
+                  label={
+                    <Typography variant="body2" color="text.secondary">
+                      Override exchange rate for this transaction
+                    </Typography>
+                  }
+                />
+
+                <Collapse in={form.isRateOverridden}>
+                  <Box sx={{ mt: 1 }}>
+                    <TextField
+                      fullWidth
+                      label={`Custom Exchange Rate (1 ${form.currency} = ? ${baseCurrency})`}
+                      type="number"
+                      value={form.exchangeRate}
+                      onChange={(e) =>
+                        setForm({ ...form, exchangeRate: e.target.value })
+                      }
+                      slotProps={{
+                        htmlInput: { min: 0.0001, step: 0.0001 },
+                        input: { style: { borderRadius: 12 } },
+                      }}
+                      helperText={`Leave blank or enter custom rate. Default fetched rate is ~${getRateToBase(form.currency).toFixed(4)}`}
+                    />
+                  </Box>
+                </Collapse>
+              </Box>
+            )}
 
             <TextField
               fullWidth

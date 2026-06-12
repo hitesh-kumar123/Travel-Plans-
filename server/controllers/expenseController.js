@@ -18,7 +18,16 @@ exports.getAllUserExpenses = async (req, res) => {
 // Create a new expense
 exports.createExpense = async (req, res) => {
   try {
-    const { trip, amount, currency, category, description, date } = req.body;
+    const {
+      trip,
+      amount,
+      currency,
+      category,
+      description,
+      date,
+      exchangeRate,
+      isRateOverridden,
+    } = req.body;
 
     // Validate amount: must be a positive number
     const parsedAmount = parseFloat(amount);
@@ -46,6 +55,10 @@ exports.createExpense = async (req, res) => {
       category,
       description,
       date: date || Date.now(),
+      exchangeRate:
+        exchangeRate !== undefined ? parseFloat(exchangeRate) : undefined,
+      isRateOverridden:
+        isRateOverridden !== undefined ? Boolean(isRateOverridden) : false,
     });
 
     const expense = await newExpense.save();
@@ -120,7 +133,15 @@ exports.updateExpense = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    const { amount, currency, category, description, date } = req.body;
+    const {
+      amount,
+      currency,
+      category,
+      description,
+      date,
+      exchangeRate,
+      isRateOverridden,
+    } = req.body;
 
     // Validate amount if provided: must be a positive number
     if (amount !== undefined) {
@@ -139,6 +160,10 @@ exports.updateExpense = async (req, res) => {
     if (category) expenseFields.category = category;
     if (description) expenseFields.description = description;
     if (date) expenseFields.date = date;
+    if (exchangeRate !== undefined)
+      expenseFields.exchangeRate = parseFloat(exchangeRate);
+    if (isRateOverridden !== undefined)
+      expenseFields.isRateOverridden = Boolean(isRateOverridden);
 
     expense = await Expense.findByIdAndUpdate(
       req.params.id,

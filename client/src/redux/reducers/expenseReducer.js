@@ -20,6 +20,7 @@ const initialState = {
   error: null,
   exchangeRates: {},
   baseCurrency: "INR",
+  ratesFetchedAt: null,
 };
 
 export default function expenseReducer(state = initialState, action) {
@@ -95,6 +96,7 @@ export default function expenseReducer(state = initialState, action) {
         ...state,
         baseCurrency: action.payload.base,
         exchangeRates: action.payload.rates,
+        ratesFetchedAt: action.payload.fetchedAt,
       };
     default:
       return state;

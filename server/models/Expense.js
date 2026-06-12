@@ -38,6 +38,13 @@ const ExpenseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  exchangeRate: {
+    type: Number,
+  },
+  isRateOverridden: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Expense", ExpenseSchema);

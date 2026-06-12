@@ -109,7 +109,11 @@ export const fetchCurrencyRates =
       const res = await getCurrencyRates("INR");
       dispatch({
         type: GET_CURRENCY_RATES,
-        payload: { base: targetCurrency, rates: res.data.rates },
+        payload: {
+          base: targetCurrency,
+          rates: res.data.rates,
+          fetchedAt: res.data.fetchedAt,
+        },
       });
     } catch (err) {
       dispatch({

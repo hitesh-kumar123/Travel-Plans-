@@ -6,8 +6,8 @@ const auth = require("../middleware/auth");
 router.get("/rates", auth, async (req, res) => {
   try {
     const base = req.query.base || "USD";
-    const rates = await getExchangeRates(base);
-    res.json({ base, rates });
+    const { rates, fetchedAt } = await getExchangeRates(base);
+    res.json({ base, rates, fetchedAt });
   } catch (_err) {
     res.status(500).json({ msg: "Failed to fetch exchange rates" });
   }
