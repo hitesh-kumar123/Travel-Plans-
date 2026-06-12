@@ -1,7 +1,6 @@
 const Expense = require("../models/Expense");
 const Trip = require("../models/Trip");
 
-
 // Get all expenses for a user (across all trips) - for analytics
 exports.getAllUserExpenses = async (req, res) => {
   try {

@@ -1,4 +1,3 @@
-
 const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");

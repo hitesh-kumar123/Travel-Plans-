@@ -90,13 +90,8 @@ const mockHotels = [
 // Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
-    const {
-      origin,
-      destination,
-      departureDate,
-      minBudget,
-      maxBudget,
-    } = req.body;
+    const { origin, destination, departureDate, minBudget, maxBudget } =
+      req.body;
 
     if (!origin || !destination || !departureDate) {
       return res.status(400).json({
