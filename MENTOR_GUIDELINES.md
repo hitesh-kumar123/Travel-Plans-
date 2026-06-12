@@ -105,7 +105,6 @@ We are proud to have dedicated mentors guiding our contributors throughout GSSoC
 - **GitHub:** [@Mrigakshi-Rathore](https://github.com/Mrigakshi-Rathore)
 - **LinkedIn:** [Mrigakshi Rathore](https://www.linkedin.com/in/mrigakshi-rathore/)
 
-
 ---
 
 ### 🚀 Project Admin

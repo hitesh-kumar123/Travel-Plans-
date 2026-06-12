@@ -181,6 +181,8 @@ const BookingView = () => {
               <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
                 <Grid xs={12} sm={6} md={2.4}>
                   <TextField
+                    id="flight-origin"
+                    name="origin"
                     fullWidth
                     label="From (City/Airport)"
                     placeholder="e.g. Delhi"
@@ -194,6 +196,8 @@ const BookingView = () => {
                 <Grid xs={12} sm={6} md={2.4}>
                   <TextField
                     fullWidth
+                    id="flight-destination"
+                    name="destination"
                     label="To (City/Airport)"
                     placeholder="e.g. Mumbai"
                     value={flightForm.destination}
@@ -208,6 +212,8 @@ const BookingView = () => {
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField
+                    id="departure-date"
+                    name="departureDate"
                     fullWidth
                     type="date"
                     label="Departure"
@@ -233,6 +239,8 @@ const BookingView = () => {
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField
+                    id="return-date"
+                    name="returnDate"
                     fullWidth
                     type="date"
                     label="Return (optional)"
@@ -324,6 +332,8 @@ const BookingView = () => {
                       </Typography>
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <TextField
+                          id="flight-min-budget"
+                          name="minBudget"
                           fullWidth
                           size="small"
                           label="Min ($)"
@@ -338,6 +348,8 @@ const BookingView = () => {
                           }
                         />
                         <TextField
+                          id="flight-max-budget"
+                          name="maxBudget"
                           fullWidth
                           size="small"
                           label="Max ($)"
@@ -365,6 +377,8 @@ const BookingView = () => {
               <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
                 <Grid xs={12} sm={6} md={2.4}>
                   <TextField
+                    id="hotel-location"
+                    name="location"
                     fullWidth
                     label="Destination / City"
                     placeholder="e.g. Goa"
@@ -377,6 +391,8 @@ const BookingView = () => {
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField
+                    id="check-in-date"
+                    name="checkIn"
                     fullWidth
                     type="date"
                     label="Check-in"
@@ -399,6 +415,8 @@ const BookingView = () => {
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField
+                    id="check-out-date"
+                    name="checkOut"
                     fullWidth
                     type="date"
                     label="Check-out"
@@ -421,6 +439,8 @@ const BookingView = () => {
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField
+                    id="hotel-guests"
+                    name="guests"
                     fullWidth
                     select
                     label="Guests"
@@ -506,6 +526,8 @@ const BookingView = () => {
                       </Typography>
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <TextField
+                          id="hotel-min-budget"
+                          name="minBudget"
                           fullWidth
                           size="small"
                           label="Min ($)"
@@ -520,6 +542,8 @@ const BookingView = () => {
                           }
                         />
                         <TextField
+                          id="hotel-max-budget"
+                          name="maxBudget"
                           fullWidth
                           size="small"
                           label="Max ($)"
@@ -746,7 +770,7 @@ const BookingView = () => {
           <Typography variant="h6" fontWeight={700} mb={2}>
             {hotels.length} Hotel{hotels.length !== 1 ? "s" : ""} Found
           </Typography>
-          <Grid container spacing={3}>
+          <Grid container spacing={{ xs: 2, md: 3 }}>
             {hotels.map((hotel) => (
               <Grid xs={12} md={6} lg={4} key={hotel.id}>
                 <Card
@@ -773,8 +797,12 @@ const BookingView = () => {
                       sx={{ fontSize: 64, color: "primary.main", opacity: 0.4 }}
                     />
                   </Box>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight={700}>
+                  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                    <Typography
+                      variant="h6"
+                      fontWeight={700}
+                      sx={{ wordBreak: "break-word" }}
+                    >
                       {hotel.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mb={1}>
@@ -822,6 +850,8 @@ const BookingView = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: 1,
                       }}
                     >
                       <Box>

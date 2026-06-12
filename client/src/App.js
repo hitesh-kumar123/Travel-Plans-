@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -20,7 +21,11 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
+import ScrollButtons from "./components/ScrollButtons";
+import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
+import About from "./pages/About"; // <-- ADD THIS IMPORT
+import TravelChecklist from "./components/TravelChecklist";
 
 function App() {
   useEffect(() => {
@@ -32,6 +37,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
+          <ScrollToTop />
           <div className="App">
             <Routes>
               {/* Protected Dashboard */}
@@ -43,24 +49,26 @@ function App() {
                   </PrivateRoute>
                 }
               />
-
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/travel-checklist" element={<TravelChecklist />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
-
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
+              />
               {/* Fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ScrollButtons />
           </div>
         </Router>
       </ThemeProvider>

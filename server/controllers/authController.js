@@ -7,6 +7,10 @@ const {
   getOtpEmailTemplate,
 } = require("../utils/emailTemplates");
 
+// google signup
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 // Register a new user
 exports.register = async (req, res, next) => {
   try {
@@ -79,13 +83,18 @@ exports.login = async (req, res, next) => {
     }
 
     // Check if user exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Check password (upgrade legacy plaintext hashes on successful login)
+    let isMatch;
+    try {
+      isMatch = await user.verifyPassword(password, { upgradeLegacy: true });
+    } catch (err) {
+      return next(err);
+    }
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
@@ -97,7 +106,7 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           token,
           user: { id: user.id, name: user.name, email: user.email },
@@ -109,29 +118,97 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// google signup
+
+exports.googleAuth = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: "Credential is required!!" });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload.email;
+    const name = payload.name;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        authProvider: "google",
+        isVerified: true,
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        user: { id: user.id },
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "5d" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          user: { id: user.id, name: user.name, email: user.email },
+        });
+      },
+    );
+  } catch (e) {
+    console.log(e);
+
+    return res.status(500).json({
+      Sucess: false,
+      Message: "Google Authentication failed",
+    });
+  }
+};
 // Get user profile
 exports.getProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id).select(
+      "name email date isVerified",
+    );
     res.json(user);
   } catch (err) {
     next(err);
   }
 };
 
-// Update user profile
+// Update user profile (name only)
+// Email changes must use the dedicated OTP flow: POST /request-email-change → POST /verify-email-change
 exports.updateProfile = async (req, res, next) => {
   try {
-    const { name, email } = req.body;
-    const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
+    const { name } = req.body;
+
+    if (!name || name.trim().length < 2) {
+      return res
+        .status(400)
+        .json({ msg: "Name must be at least 2 characters" });
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(name.trim())) {
+      return res
+        .status(400)
+        .json({ msg: "Name can only contain letters and spaces" });
+    }
+
+    const updateFields = {
+      name: name.trim().replace(/\s+/g, " "),
+    };
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { $set: updateFields },
-      { new: true },
-    ).select("-password");
+      { new: true, runValidators: true },
+    ).select("name email date isVerified");
 
     res.json(user);
   } catch (err) {
@@ -143,8 +220,13 @@ exports.updateProfile = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const user = await User.findById(req.user.id);
-    const isMatch = await user.comparePassword(currentPassword);
+    const user = await User.findById(req.user.id).select("+password");
+    let isMatch;
+    try {
+      isMatch = await user.verifyPassword(currentPassword);
+    } catch (err) {
+      return next(err);
+    }
     if (!isMatch) {
       return res.status(400).json({ msg: "Current password is incorrect" });
     }
@@ -227,7 +309,7 @@ exports.resetPassword = async (req, res, next) => {
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
-    });
+    }).select("+password");
 
     if (!user) {
       return res.status(400).json({ msg: "Invalid token" });
@@ -246,7 +328,7 @@ exports.resetPassword = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "5d" },
       (err, token) => {
-        if (err) throw err;
+        if (err) return next(err);
         res.json({
           msg: "Password reset successful",
           token,
@@ -355,9 +437,9 @@ exports.requestEmailChange = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      logEmailFailure("email change OTP", emailErr);
+      console.error("[authController] Email change OTP failure:", emailErr);
       return res.status(500).json({
-        msg: buildEmailFailureMessage("email change request"),
+        msg: "Failed to send email verification code. Please try again later.",
       });
     }
 

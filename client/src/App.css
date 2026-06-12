@@ -22,6 +22,11 @@ a {
 
 a:hover {
   color: #757de8;
+} /* Accessibility: Keyboard Focus Indicators */
+*:focus-visible {
+  outline: 3px solid #3f51b5;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Animation for page transitions */
@@ -127,18 +132,37 @@ a:hover {
 
 .p-4 {
   padding: 16px;
+} /* Glassmorphism Utility Classes */
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
 }
 
 /* Card hover effect */
+/* Enhanced Card Hover Effect */
 .hover-card {
   transition:
-    transform 0.3s ease-in-out,
-    box-shadow 0.3s ease-in-out;
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+  will-change: transform;
 }
 
 .hover-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .App {
@@ -177,5 +201,15 @@ a:hover {
   }
   to {
     transform: rotate(360deg);
+  }
+} /* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
