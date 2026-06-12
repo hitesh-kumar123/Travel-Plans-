@@ -111,7 +111,7 @@ const Register = () => {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (value && !passwordRegex.test(value)) {
         newErrors.password =
-          "Password must be at least 8 chars with atleast 1 uppercase, 1 lowercase, 1 number, and 1 special char";
+          "Password must be at least 8 chars with at least 1 uppercase, 1 lowercase, 1 number, and 1 special char";
       } else {
         newErrors.password = "";
       }
