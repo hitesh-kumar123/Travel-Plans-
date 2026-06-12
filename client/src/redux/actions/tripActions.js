@@ -15,7 +15,6 @@ export const getTrips = () => async (dispatch) => {
   dispatch({ type: SET_LOADING });
   try {
     const res = await api.get("/trips");
-
     dispatch({
       type: GET_TRIPS,
       payload: res.data,
@@ -33,7 +32,6 @@ export const getTrip = (id) => async (dispatch) => {
   dispatch({ type: SET_LOADING });
   try {
     const res = await api.get(`/trips/${id}`);
-
     dispatch({
       type: GET_TRIP,
       payload: res.data,
@@ -51,7 +49,6 @@ export const getTrip = (id) => async (dispatch) => {
 export const addTrip = (formData) => async (dispatch) => {
   try {
     const res = await api.post("/trips", formData);
-
     dispatch({
       type: ADD_TRIP,
       payload: res.data,
@@ -71,7 +68,6 @@ export const addTrip = (formData) => async (dispatch) => {
 export const updateTrip = (id, formData) => async (dispatch) => {
   try {
     const res = await api.put(`/trips/${id}`, formData);
-
     dispatch({
       type: UPDATE_TRIP,
       payload: res.data,
@@ -91,7 +87,6 @@ export const updateTrip = (id, formData) => async (dispatch) => {
 export const deleteTrip = (id) => async (dispatch) => {
   try {
     await api.delete(`/trips/${id}`);
-
     dispatch({
       type: DELETE_TRIP,
       payload: id,
@@ -112,4 +107,16 @@ export const setLoading = () => {
   return {
     type: SET_LOADING,
   };
+};
+
+// Generate shareable link
+export const shareTrip = (id) => async () => {
+  try {
+    const res = await api.post(`/trips/${id}/share`);
+    toast.success("Shareable link generated! 🔗");
+    return res.data.shareToken;
+  } catch (err) {
+    toast.error("Failed to generate share link");
+    return null;
+  }
 };

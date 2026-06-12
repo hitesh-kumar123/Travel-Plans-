@@ -2,9 +2,9 @@ name: Welcome Bot
 
 on:
   issues:
-    types: [opened]
+    types: [opened, assigned]
   pull_request_target:
-    types: [opened]
+    types: [opened, closed, assigned]
 
 jobs:
   welcome-message:
@@ -14,7 +14,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Welcome New Issue
-        if: github.event_name == 'issues'
+        if: github.event_name == 'issues' && github.event.action == 'opened'
         uses: actions/github-script@v7
         with:
           script: |
@@ -37,7 +37,7 @@ jobs:
             });
 
       - name: Welcome New Pull Request
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request_target' && github.event.action == 'opened'
         uses: actions/github-script@v7
         with:
           script: |
@@ -58,4 +58,46 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: prComment
+            });
+
+      - name: Pull Request Merged Message
+        if: github.event_name == 'pull_request_target' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prComment = `🎉 **Congratulations @${context.payload.pull_request.user.login}! Your pull request has been successfully merged!** 🚀
+            
+            Thank you so much for your valuable contribution to **Travel Planner**! We really appreciate the time, effort, and care you've put into making this project better.
+            
+            If you enjoyed your contribution experience and would like to stay connected and support the project:
+            - ⭐ **Star the repository** (Help us achieve our target of **100 Stars**!): [Travel-Plans-](https://github.com/hitesh-kumar123/Travel-Plans-)
+            - 👤 **Follow me on GitHub**: [@hitesh-kumar123](https://github.com/hitesh-kumar123)
+            - 💼 **Connect with me on LinkedIn**: [Hitesh Kumar](https://linkedin.com/in/hitesh-kumar-dev)
+            
+            Keep up the fantastic work, and we hope to see more of your contributions in the future! ✨`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: prComment
+            });
+
+      - name: Notify Assigned User
+        if: github.event.action == 'assigned'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const assignee = context.payload.assignee.login;
+            const comment = `👋 Hello @${assignee}!
+            
+            You have been assigned to this ${context.eventName === 'issues' ? 'issue' : 'pull request'}. 🚀
+            
+            Please review the details and feel free to ask any questions or share updates here. Happy coding! ✨`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
             });

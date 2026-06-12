@@ -11,6 +11,7 @@ const initialState = {
   forecast: null,
   loading: false,
   error: null,
+  fetchedAt: null,
 };
 
 export default function weatherReducer(state = initialState, action) {
@@ -19,22 +20,28 @@ export default function weatherReducer(state = initialState, action) {
       return {
         ...state,
         loading: true,
+        error: null,
       };
     case GET_CURRENT_WEATHER:
       return {
         ...state,
         currentWeather: action.payload,
         loading: false,
+        error: null,
+        fetchedAt: new Date().toISOString(),
       };
     case GET_FORECAST:
       return {
         ...state,
         forecast: action.payload,
         loading: false,
+        error: null,
       };
     case WEATHER_ERROR:
       return {
         ...state,
+        currentWeather: null,
+        forecast: null,
         error: action.payload,
         loading: false,
       };

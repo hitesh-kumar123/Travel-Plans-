@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/actions/authActions";
+import { register, googleLogin } from "../redux/actions/authActions";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Box,
   TextField,
@@ -17,7 +18,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Grid,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
@@ -26,12 +26,28 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CheckCircleOutlineIcon from "@mui/icons-material/TaskAlt";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import ArrowBackIcon from "@mui/icons-material/West";
-import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
+
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import PrimaryButton from "../components/PrimaryButton";
 
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-play the carousel every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % 3); // 3 is the number of images
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Carousel images mapping perfectly to the 3 registration steps
+  const carouselImages = [
+    "/images/carousel/mountain.png",
+    "/images/carousel/beach.png",
+    "/images/carousel/city.png",
+  ];
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -40,6 +56,13 @@ const Register = () => {
     confirmPassword: "",
     agreeTerms: false,
   });
+  const [fieldErrors, setFieldErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
@@ -66,7 +89,35 @@ const Register = () => {
       [name]: newValue,
     });
 
-    // Password match validation
+    const newErrors = { ...fieldErrors };
+    if (name === "firstName" || name === "lastName") {
+      if (value && (!/^[A-Za-z\s]+$/.test(value) || value.trim().length < 1)) {
+        newErrors[name] = "Name can only contain letters and spaces";
+      } else {
+        newErrors[name] = "";
+      }
+    } else if (name === "email") {
+      if (
+        value &&
+        !/^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+          value,
+        )
+      ) {
+        newErrors.email = "Please enter a valid email address";
+      } else {
+        newErrors.email = "";
+      }
+    } else if (name === "password") {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (value && !passwordRegex.test(value)) {
+        newErrors.password =
+          "Password must be at least 8 chars with atleast 1 uppercase, 1 lowercase, 1 number, and 1 special char";
+      } else {
+        newErrors.password = "";
+      }
+    }
+    setFieldErrors(newErrors);
+
     if (
       name === "confirmPassword" ||
       (name === "password" && formData.confirmPassword)
@@ -97,25 +148,41 @@ const Register = () => {
     e.preventDefault();
     if (activeStep === steps.length - 1) {
       const payload = {
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        name: `${formData.firstName.trim()} ${formData.lastName.trim()}`.replace(
+          /\s+/g,
+          " ",
+        ),
         email: formData.email,
         password: formData.password,
       };
-      dispatch(register(payload));
+      dispatch(register(payload, navigate));
     } else {
       handleNext();
     }
   };
 
+  const handleGoogleSuccess = (CredentialResponse) => {
+    dispatch(googleLogin(CredentialResponse, navigate));
+  };
+
   const isNextDisabled = () => {
     if (activeStep === 0) {
-      return !formData.firstName || !formData.lastName;
+      return (
+        !formData.firstName ||
+        formData.firstName.trim() === "" ||
+        !!fieldErrors.firstName ||
+        !formData.lastName ||
+        formData.lastName.trim() === "" ||
+        !!fieldErrors.lastName
+      );
     } else if (activeStep === 1) {
       return (
         !formData.email ||
+        !!fieldErrors.email ||
         !formData.password ||
+        !!fieldErrors.password ||
         !formData.confirmPassword ||
-        passwordError ||
+        !!passwordError ||
         !formData.agreeTerms
       );
     }
@@ -130,33 +197,33 @@ const Register = () => {
             <Typography variant="h6" sx={{ mb: 3 }}>
               Let's get to know you
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                  value={formData.firstName}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                />
-              </Grid>
-            </Grid>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+              <TextField
+                autoComplete="given-name"
+                name="firstName"
+                required
+                fullWidth
+                id="firstName"
+                label="First Name"
+                autoFocus
+                value={formData.firstName}
+                onChange={handleChange}
+                error={!!fieldErrors.firstName}
+                helperText={fieldErrors.firstName}
+              />
+              <TextField
+                required
+                fullWidth
+                id="lastName"
+                label="Last Name"
+                name="lastName"
+                autoComplete="family-name"
+                value={formData.lastName}
+                onChange={handleChange}
+                error={!!fieldErrors.lastName}
+                helperText={fieldErrors.lastName}
+              />
+            </Box>
           </>
         );
       case 1:
@@ -174,6 +241,8 @@ const Register = () => {
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
+              error={!!fieldErrors.email}
+              helperText={fieldErrors.email}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -186,22 +255,26 @@ const Register = () => {
               autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={toggleShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={toggleShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ mb: 2 }}
             />
@@ -220,17 +293,24 @@ const Register = () => {
               sx={{ mb: 2 }}
             />
             <FormControlLabel
+              sx={{
+                alignItems: "flex-start", // Shifts the alignment anchor to the top line
+                mt: 1.5,
+              }}
               control={
                 <Checkbox
                   checked={formData.agreeTerms}
                   onChange={handleChange}
                   name="agreeTerms"
                   color="primary"
-                  required
+                  sx={{
+                    paddingTop: 0,
+                    marginTop: "-2px",
+                  }}
                 />
               }
               label={
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
                   I agree to the{" "}
                   <Link
                     component={RouterLink}
@@ -248,7 +328,8 @@ const Register = () => {
                     sx={{ fontWeight: 600 }}
                   >
                     Privacy Policy
-                  </Link>
+                  </Link>{" "}
+                  *
                 </Typography>
               }
             />
@@ -294,74 +375,123 @@ const Register = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {/* Left side with image - shown only on desktop */}
+      {/* Left side with image carousel - shown only on desktop */}
       {!isMobile && (
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            position: "relative",
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "hidden",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
+            p: 2, // Add a subtle outer padding for a premium border effect
           }}
         >
+          {/* Inner container to hold the images with rounded corners */}
           <Box
             sx={{
               position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              backdropFilter: "blur(2px)",
-            }}
-          />
-          <Box
-            sx={{
-              position: "relative",
-              p: 6,
-              color: "white",
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: 16,
+              borderRadius: 4,
+              overflow: "hidden",
+              boxShadow: "0 24px 48px rgba(0,0,0,0.2)", // Deep shadow for depth
             }}
           >
+            {/* The 3 fading images */}
+            {carouselImages.map((img, index) => (
+              <Box
+                key={index}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${img})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: currentImageIndex === index ? 1 : 0,
+                  transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)", // Soft, premium transition
+                  zIndex: currentImageIndex === index ? 1 : 0,
+                }}
+              />
+            ))}
+
+            {/* Dark overlay for text legibility */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%)",
+                zIndex: 2,
+              }}
+            />
+          </Box>
+
+          {/* Text and Pagination overlay */}
+          <Box sx={{ position: "relative", zIndex: 3, p: 6, color: "white" }}>
             <Typography
               variant="h3"
               component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
+              sx={{
+                fontWeight: 800,
+                mb: 2,
+                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+              }}
             >
               Join PackGo
             </Typography>
-            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Create an account to start planning your next adventure
+            <Typography
+              variant="h5"
+              sx={{
+                mb: 4,
+                maxWidth: "80%",
+                fontWeight: 400,
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              Create an account to start planning your next breathtaking
+              adventure.
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "white",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor: "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
+
+            {/* Modern Pagination UI */}
+            <Box
+              sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}
+            >
+              {carouselImages.map((_, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: currentImageIndex === index ? 32 : 10,
+                    height: 10,
+                    bgcolor:
+                      currentImageIndex === index
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.4)",
+                    borderRadius: 5,
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    cursor: "pointer",
+                    "&:hover": {
+                      bgcolor:
+                        currentImageIndex === index
+                          ? "white"
+                          : "rgba(255, 255, 255, 0.7)",
+                    },
+                  }}
+                  onClick={() => setCurrentImageIndex(index)}
+                />
+              ))}
             </Box>
           </Box>
         </Box>
@@ -376,15 +506,43 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 4,
+          height: "100vh",
+          overflow: "auto",
         }}
       >
-        <Box
-          sx={{
-            maxWidth: 480,
-            width: "100%",
-          }}
-        >
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Box sx={{ maxWidth: 480, width: "100%" }}>
+          <Box sx={{ position: "relative", textAlign: "center", mb: 4 }}>
+            {/* Back to Home */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: { xs: 0, sm: -20, md: -50, lg: -80 },
+                top: 0,
+              }}
+            >
+              <Link
+                component={RouterLink}
+                to="/"
+                variant="body2"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  backgroundColor: "background.paper",
+                  textDecoration: "none",
+                  transition: "0.2s ease",
+                  "&:hover": { backgroundColor: "action.hover" },
+                }}
+              >
+                <ArrowBackIcon sx={{ mr: 0.5, fontSize: 18 }} />
+              </Link>
+            </Box>
+
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Create Account
             </Typography>
@@ -413,20 +571,21 @@ const Register = () => {
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 4 }}>{getStepContent(activeStep)}</Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  startIcon={<ArrowBackIcon />}
-                  sx={{ visibility: activeStep === 0 ? "hidden" : "visible" }}
-                >
-                  Back
-                </Button>
-                <Button
+              <Box sx={{ display: "flex", gap: 2 }}>
+                {activeStep > 0 && (
+                  <Button
+                    onClick={handleBack}
+                    startIcon={<ArrowBackIcon />}
+                    variant="outlined"
+                    sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
+                  >
+                    Back
+                  </Button>
+                )}
+                <PrimaryButton
                   type="submit"
-                  variant="contained"
-                  color="primary"
                   disabled={isNextDisabled()}
+                  sx={{ flex: 1, py: 1.5, borderRadius: 2, fontWeight: 600 }}
                   endIcon={
                     activeStep === steps.length - 1 ? (
                       <HowToRegIcon />
@@ -436,7 +595,7 @@ const Register = () => {
                   }
                 >
                   {activeStep === steps.length - 1 ? "Create Account" : "Next"}
-                </Button>
+                </PrimaryButton>
               </Box>
 
               {activeStep === 0 && (
@@ -448,42 +607,41 @@ const Register = () => {
                   </Divider>
 
                   <Box
-                    sx={{ display: "flex", justifyContent: "center", gap: 2 }}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
                   >
-                    <Button
-                      variant="outlined"
-                      startIcon={<GoogleIcon />}
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        flexGrow: 1,
-                        color: "#DB4437",
-                        borderColor: "#DB4437",
-                        "&:hover": {
-                          borderColor: "#DB4437",
-                          backgroundColor: "rgba(219, 68, 55, 0.1)",
-                        },
-                      }}
-                    >
-                      Google
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<FacebookIcon />}
-                      sx={{
-                        borderRadius: 2,
-                        py: 1,
-                        flexGrow: 1,
-                        color: "#4267B2",
-                        borderColor: "#4267B2",
-                        "&:hover": {
-                          borderColor: "#4267B2",
-                          backgroundColor: "rgba(66, 103, 178, 0.1)",
-                        },
-                      }}
-                    >
-                      Facebook
-                    </Button>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <GoogleLogin
+                        theme="outlined"
+                        width={isMobile ? 360 : 500}
+                        shape="pill"
+                        text="continue_with"
+                        size="large"
+                        sx={{
+                          borderRadius: 2,
+                          py: 1,
+
+                          color: "#3f51b5",
+                          borderColor: "#3f51b5",
+                          "&:hover": {
+                            backgroundColor: "rgba(66,133,244,0.08)",
+                            borderColor: "#3f51b5",
+                          },
+                          "&:active": {
+                            backgroundColor: "#3f51b5",
+                            color: "#fff",
+                            transform: "scale(0.98)",
+                          },
+                        }}
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.log("Google Login failed")}
+                        useOneTap
+                      />
+                    </Box>
                   </Box>
                 </>
               )}

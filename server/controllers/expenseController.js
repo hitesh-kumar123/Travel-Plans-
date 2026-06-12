@@ -20,6 +20,14 @@ exports.createExpense = async (req, res) => {
   try {
     const { trip, amount, currency, category, description, date } = req.body;
 
+    // Validate amount: must be a positive number
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      return res
+        .status(400)
+        .json({ msg: "Amount must be a positive number greater than zero." });
+    }
+
     // Check if trip exists and belongs to user
     const tripExists = await Trip.findOne({
       _id: trip,
@@ -33,7 +41,7 @@ exports.createExpense = async (req, res) => {
     const newExpense = new Expense({
       user: req.user.id,
       trip,
-      amount,
+      amount: parsedAmount,
       currency,
       category,
       description,
@@ -114,9 +122,19 @@ exports.updateExpense = async (req, res) => {
 
     const { amount, currency, category, description, date } = req.body;
 
+    // Validate amount if provided: must be a positive number
+    if (amount !== undefined) {
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        return res
+          .status(400)
+          .json({ msg: "Amount must be a positive number greater than zero." });
+      }
+    }
+
     // Build expense object
     const expenseFields = {};
-    if (amount) expenseFields.amount = amount;
+    if (amount !== undefined) expenseFields.amount = parseFloat(amount);
     if (currency) expenseFields.currency = currency;
     if (category) expenseFields.category = category;
     if (description) expenseFields.description = description;
@@ -179,15 +197,24 @@ exports.getExpenseSummary = async (req, res) => {
     }
 
     const summary = await Expense.aggregate([
-      { $match: { trip: new mongoose.Types.ObjectId(tripId) } },
+      { $match: { trip: tripExists._id } },
       {
         $group: {
-          _id: "$category",
+          _id: { category: "$category", currency: "$currency" },
           totalAmount: { $sum: "$amount" },
           count: { $sum: 1 },
         },
       },
-      { $sort: { totalAmount: -1 } },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id.category",
+          currency: "$_id.currency",
+          totalAmount: 1,
+          count: 1,
+        },
+      },
+      { $sort: { category: 1, totalAmount: -1 } },
     ]);
 
     res.json(summary);

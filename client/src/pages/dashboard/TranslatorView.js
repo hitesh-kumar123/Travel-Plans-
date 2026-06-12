@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -17,6 +17,9 @@ import {
 import TranslateIcon from "@mui/icons-material/Translate";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import MicIcon from "@mui/icons-material/Mic";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import StopIcon from "@mui/icons-material/Stop";
 import { translateText } from "../../redux/actions/translatorActions";
 
 const LANGUAGES = [
@@ -52,11 +55,54 @@ const TranslatorView = () => {
   const [sourceLang, setSourceLang] = useState("auto");
   const [targetLang, setTargetLang] = useState("hi");
   const [copied, setCopied] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const [detectedLang, setDetectedLang] = useState("");
+  const recognitionRef = useRef(null);
 
   const { translation, loading, error } = useSelector(
     (state) => state.translator,
   );
   const translatedText = translation?.translatedText || "";
+
+  // speech recognition setup
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = sourceLang === "auto" ? "" : sourceLang;
+    recognition.onresult = (e) => {
+      let transcript = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        transcript += e.results[i][0].transcript;
+      }
+      setText(transcript);
+      if (e.results[0]) setDetectedLang(e.results[0][0].lang || "");
+    };
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+    recognitionRef.current = recognition;
+  }, [sourceLang]);
+
+  // auto-translate when speech ends
+  useEffect(() => {
+    if (!isListening && text.trim()) {
+      dispatch(
+        translateText({
+          text,
+          sourceLanguage: sourceLang,
+          targetLanguage: targetLang,
+        }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isListening]);
 
   const handleTranslate = () => {
     if (text.trim()) {
@@ -87,8 +133,36 @@ const TranslatorView = () => {
     }
   };
 
+  const handleVoiceInput = () => {
+    if (!recognitionRef.current) return;
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setText("");
+      setDetectedLang("");
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const handleSpeakTranslation = () => {
+    if (!translatedText) return;
+    const utterance = new SpeechSynthesisUtterance(translatedText);
+    utterance.lang = targetLang;
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
-    <Box sx={{ p: 3 }}>
+    <Grid
+      container
+      direction="column"
+      sx={{
+        p: { xs: 2, md: 3 },
+        maxWidth: 1180,
+        mx: "auto",
+      }}
+    >
       <Typography variant="h4" fontWeight={700} mb={0.5}>
         Live Translator
       </Typography>
@@ -129,9 +203,16 @@ const TranslatorView = () => {
         </Box>
       </Paper>
 
-      {/* Translation Box */}
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} md={5}>
+      <Grid
+        container
+        spacing={{ xs: 2, md: 2.5 }}
+        sx={{
+          alignItems: "stretch",
+          justifyContent: "center",
+          flexWrap: { xs: "wrap", md: "nowrap" },
+        }}
+      >
+        <Grid item xs={12} md={5.5}>
           <Paper
             elevation={0}
             sx={{
@@ -139,7 +220,7 @@ const TranslatorView = () => {
               borderRadius: 3,
               border: "1px solid",
               borderColor: "divider",
-              height: "100%",
+              height: { xs: "auto", md: "100%" },
             }}
           >
             <TextField
@@ -166,13 +247,51 @@ const TranslatorView = () => {
               onChange={(e) => setText(e.target.value)}
               sx={{ bgcolor: "grey.50", borderRadius: 2 }}
             />
+            {detectedLang && (
+              <Typography
+                variant="caption"
+                sx={{ mt: 0.5, display: "block", color: "text.secondary" }}
+              >
+                🌐 Detected: <strong>{detectedLang}</strong>
+              </Typography>
+            )}
+            {speechSupported && (
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={isListening ? <StopIcon /> : <MicIcon />}
+                onClick={handleVoiceInput}
+                sx={{
+                  mt: 2,
+                  height: 48,
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  textTransform: "none",
+                  borderColor: isListening ? "error.main" : "primary.main",
+                  color: isListening ? "error.main" : "primary.main",
+                  bgcolor: isListening ? "error.50" : "transparent",
+                  animation: isListening
+                    ? "pulse 1.2s ease-in-out infinite"
+                    : "none",
+                  "@keyframes pulse": {
+                    "0%, 100%": { opacity: 1 },
+                    "50%": { opacity: 0.6 },
+                  },
+                  "&:hover": {
+                    bgcolor: isListening ? "error.50" : "primary.50",
+                  },
+                }}
+              >
+                {isListening ? "Listening… (tap to stop)" : "Speak & Translate"}
+              </Button>
+            )}
             <Button
               variant="contained"
               fullWidth
               startIcon={<TranslateIcon />}
               onClick={handleTranslate}
               disabled={loading || !text.trim()}
-              sx={{ mt: 2, height: 48, borderRadius: 3, fontWeight: 700 }}
+              sx={{ mt: 1.5, height: 48, borderRadius: 3, fontWeight: 700 }}
             >
               {loading ? (
                 <CircularProgress size={20} color="inherit" />
@@ -184,7 +303,17 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Swap Button */}
-        <Grid item xs={12} md={2} sx={{ textAlign: "center" }}>
+        <Grid
+          item
+          xs={12}
+          md={1}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            py: { xs: 0.5, md: 0 },
+          }}
+        >
           <Tooltip title="Swap languages">
             <span>
               <IconButton
@@ -196,8 +325,15 @@ const TranslatorView = () => {
                   background:
                     "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
                   color: "white",
+                  transform: {
+                    xs: "rotate(90deg)",
+                    md: "rotate(0deg)",
+                  },
                   "&:hover": {
-                    transform: "rotate(180deg)",
+                    transform: {
+                      xs: "rotate(270deg)",
+                      md: "rotate(180deg)",
+                    },
                     transition: "transform 0.4s",
                   },
                   "&:disabled": { bgcolor: "grey.300", color: "grey.500" },
@@ -210,7 +346,7 @@ const TranslatorView = () => {
         </Grid>
 
         {/* Right Panel */}
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={5.5}>
           <Paper
             elevation={0}
             sx={{
@@ -218,7 +354,7 @@ const TranslatorView = () => {
               borderRadius: 3,
               border: "1px solid",
               borderColor: "primary.light",
-              height: "100%",
+              height: { xs: "auto", md: "100%" },
               background: "linear-gradient(135deg, #1976D2 0%, #0d47a1 100%)",
               color: "white",
             }}
@@ -296,10 +432,38 @@ const TranslatorView = () => {
               )}
             </Box>
 
+            <Button
+              variant="contained"
+              fullWidth
+              startIcon={<VolumeUpIcon />}
+              onClick={handleSpeakTranslation}
+              disabled={!translatedText}
+              sx={{
+                mt: 2,
+                height: 48,
+                borderRadius: 3,
+                fontWeight: 700,
+                textTransform: "none",
+                bgcolor: "white",
+                color: "primary.main",
+                "&:hover": { bgcolor: "grey.100" },
+                "&.Mui-disabled": {
+                  bgcolor: "rgba(255,255,255,0.3)",
+                  color: "rgba(255,255,255,0.5)",
+                },
+              }}
+            >
+              Listen to Translation
+            </Button>
+
             {copied && (
               <Typography
                 variant="caption"
-                sx={{ color: "rgba(255,255,255,0.8)", mt: 1, display: "block" }}
+                sx={{
+                  color: "rgba(255,255,255,0.8)",
+                  mt: 1,
+                  display: "block",
+                }}
               >
                 ✓ Copied to clipboard!
               </Typography>
@@ -360,7 +524,7 @@ const TranslatorView = () => {
           ))}
         </Grid>
       </Paper>
-    </Box>
+    </Grid>
   );
 };
 
