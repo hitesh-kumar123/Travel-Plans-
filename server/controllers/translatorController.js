@@ -38,8 +38,6 @@ exports.translateText = async (req, res) => {
   try {
     const { text, sourceLanguage, targetLanguage } = req.body;
 
-    supportedLanguages.includes(targetLanguage);
-
     const sanitizedText = typeof text === "string" ? text.trim() : "";
     if (!sanitizedText || !targetLanguage) {
       return res.status(400).json({

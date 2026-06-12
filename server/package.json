@@ -23,6 +23,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.2",
     "express-validator": "^7.3.2",
+    "google-auth-library": "^10.6.2",
     "google-translate-api-x": "^10.7.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",

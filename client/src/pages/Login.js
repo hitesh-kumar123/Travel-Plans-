@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/actions/authActions";
+import { googleLogin, login } from "../redux/actions/authActions";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Box,
   TextField,
@@ -18,9 +19,8 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import FacebookIcon from "@mui/icons-material/Facebook";
+
 import LoginIcon from "@mui/icons-material/Login";
-import { FaXTwitter } from "react-icons/fa6";
 import PrimaryButton from "../components/PrimaryButton";
 
 const Login = () => {
@@ -46,50 +46,6 @@ const Login = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
-
-  const handleGoogleCallback = (response) => {
-    // Google Sign-In disabled in this commit since googleLogin action
-    // is not present in authActions.js in the current repo.
-    // Keep this handler to avoid runtime errors.
-    console.log("Google callback received", response);
-  };
-
-  useEffect(() => {
-    const initializeGoogleSignIn = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id:
-            "643113382684-q82ot662op6kq7fnc1brg3ivclq3pmvk.apps.googleusercontent.com",
-          callback: handleGoogleCallback,
-        });
-
-        const googleBtn = document.getElementById("google-signin-btn");
-        if (googleBtn) {
-          window.google.accounts.id.renderButton(googleBtn, {
-            theme: "outline",
-            size: "large",
-            text: "signin_with",
-            width: isMobile ? 280 : 360,
-          });
-        }
-      }
-    };
-
-    initializeGoogleSignIn();
-
-    const script = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]',
-    );
-    if (script) {
-      script.addEventListener("load", initializeGoogleSignIn);
-    }
-
-    return () => {
-      if (script) {
-        script.removeEventListener("load", initializeGoogleSignIn);
-      }
-    };
-  }, [isMobile, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -160,6 +116,10 @@ const Login = () => {
     if (validateForm()) {
       dispatch(login(formData, navigate));
     }
+  };
+
+  const handleGoogleSuccess = (CredentialResponse) => {
+    dispatch(googleLogin(CredentialResponse, navigate));
   };
 
   return (
@@ -347,35 +307,33 @@ const Login = () => {
                   mb: 3,
                 }}
               >
-                <div id="google-signin-btn" />
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <IconButton
-                    disabled
+                  <GoogleLogin
+                    theme="outlined"
+                    width={isMobile ? 360 : 500}
+                    shape="pill"
+                    text="continue_with"
+                    size="large"
                     sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
                       borderRadius: 2,
-                      p: 1.5,
-                      color: "#4267B2",
-                      opacity: 0.5,
+                      py: 1,
+
+                      color: "#3f51b5",
+                      borderColor: "#3f51b5",
+                      "&:hover": {
+                        backgroundColor: "rgba(66,133,244,0.08)",
+                        borderColor: "#3f51b5",
+                      },
+                      "&:active": {
+                        backgroundColor: "#3f51b5",
+                        color: "#fff",
+                        transform: "scale(0.98)",
+                      },
                     }}
-                  >
-                    <FacebookIcon />
-                  </IconButton>
-                  <IconButton
-                    disabled
-                    aria-label="Sign in with X"
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      p: 1.5,
-                      color: "text.primary",
-                      opacity: 0.5,
-                    }}
-                  >
-                    <FaXTwitter />
-                  </IconButton>
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => console.log("Google Login failed")}
+                    useOneTap
+                  />
                 </Box>
               </Box>
             </form>

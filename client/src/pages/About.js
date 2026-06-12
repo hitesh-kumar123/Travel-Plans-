@@ -1,6 +1,7 @@
 // src/pages/About.js
 import React from "react";
 import { Link } from "react-router-dom";
+import ScrollLink from "../components/ScrollLink";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import "./Home.css"; // reuse same styles
 
@@ -158,9 +159,9 @@ const About = () => {
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
-            <Link to="/" className="wander-footer-logo">
+            <ScrollLink to="/" className="wander-footer-logo">
               Pack<span>Go</span>
-            </Link>
+            </ScrollLink>
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
@@ -175,15 +176,15 @@ const About = () => {
             </div>
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <Link to="/about">About</Link>
-              <Link to="/careers">Careers</Link>
-              <Link to="/contact">Contact</Link>
+              <ScrollLink to="/about">About</ScrollLink>
+              <ScrollLink to="/careers">Careers</ScrollLink>
+              <ScrollLink to="/contact">Contact</ScrollLink>
             </div>
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <Link to="/help">Help Center</Link>
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/terms">Terms & Conditions</Link>
+              <ScrollLink to="/help">Help Center</ScrollLink>
+              <ScrollLink to="/privacy">Privacy Policy</ScrollLink>
+              <ScrollLink to="/terms">Terms & Conditions</ScrollLink>
             </div>
           </div>
         </div>

@@ -4,6 +4,14 @@ const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
 
+/**
+ * Escape special regex metacharacters in a string so it can be safely
+ * interpolated into a RegExp without altering the intended pattern.
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Create new trip
 exports.createTrip = async (req, res) => {
   try {
@@ -25,12 +33,16 @@ exports.createTrip = async (req, res) => {
         .json({ msg: "Trip start date cannot be in the past" });
     }
 
+    if (budget !== undefined && budget < 0) {
+      return res.status(400).json({ msg: "Budget cannot be negative" });
+    }
+
     // Default images
     let images = [];
     if (destination) {
       // Find destination in DB by name case-insensitively
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${destination}$`, "i") },
+        name: { $regex: new RegExp(`^${escapeRegExp(destination)}$`, "i") },
       });
       if (dest && dest.images && dest.images.length > 0) {
         images = dest.images;
@@ -110,12 +122,35 @@ exports.updateTrip = async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    const updateData = { ...req.body, updatedAt: Date.now() };
+    if (req.body.budget !== undefined && req.body.budget < 0) {
+      return res.status(400).json({ msg: "Budget cannot be negative" });
+    }
+
+    const allowedFields = [
+      "destination",
+      "startDate",
+      "endDate",
+      "description",
+      "budget",
+      "status",
+      "activities",
+      "accommodation",
+      "transportation",
+    ];
+
+    const updateData = { updatedAt: Date.now() };
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
     // Update images if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
       const dest = await Destination.findOne({
-        name: { $regex: new RegExp(`^${updateData.destination}$`, "i") },
+        name: {
+          $regex: new RegExp(`^${escapeRegExp(updateData.destination)}$`, "i"),
+        },
       });
       if (dest && dest.images && dest.images.length > 0) {
         updateData.images = dest.images;
