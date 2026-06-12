@@ -1395,3 +1395,41 @@ SEARCH SECTION
     height: 52px !important;
   }
 }
+
+/* FAQ */
+
+.wander-faq {
+  padding: 6rem 3rem;
+  background: #f7f4ef;
+}
+
+.faq-list {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.faq-card {
+  background: #f3f5fb;
+  padding: 28px;
+  border-radius: 22px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.faq-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.faq-body {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.faq-arrow {
+  font-size: 32px;
+}

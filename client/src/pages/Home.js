@@ -7,6 +7,8 @@ import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import gsap from "gsap";
+
 import {
   RiMapPin2Fill,
   RiCalendarLine,
@@ -340,6 +342,27 @@ const STATS = [
   { big: "180+", desc: "Countries covered" },
 ];
 
+const FAQS = [
+  {
+    q: "How do I create a trip?",
+    a: "Choose destination, dates and travellers.",
+  },
+
+  {
+    q: "Can I track expenses during a trip?",
+    a: "Yes. Expenses can be tracked.",
+  },
+
+  {
+    q: "How does weather work?",
+    a: "Weather updates appear automatically.",
+  },
+
+  {
+    q: "Is my data secure?",
+    a: "All trip information stays protected.",
+  },
+];
 /* ══════════════════════════════════════════════════════════════ */
 /*  COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
@@ -372,6 +395,65 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }, []);
+
+  /* FAQ Animation */
+  useEffect(() => {
+    const cards = document.querySelectorAll(".faq-card");
+
+    cards.forEach((card) => {
+      const body = card.querySelector(".faq-body");
+
+      const arrow = card.querySelector(".faq-arrow");
+
+      gsap.set(body, {
+        height: 0,
+        opacity: 0,
+      });
+
+      const open = () => {
+        cards.forEach((other) => {
+          if (other !== card) {
+            gsap.to(other.querySelector(".faq-body"), {
+              height: 0,
+              opacity: 0,
+              duration: 0.3,
+            });
+
+            gsap.to(other.querySelector(".faq-arrow"), {
+              rotate: 0,
+            });
+          }
+        });
+
+        gsap.to(body, {
+          height: "auto",
+          opacity: 1,
+          duration: 0.5,
+          ease: "power3.out",
+        });
+
+        gsap.to(arrow, {
+          rotate: 180,
+        });
+      };
+
+      const close = () => {
+        gsap.to(body, {
+          height: 0,
+          opacity: 0,
+          duration: 0.35,
+        });
+
+        gsap.to(arrow, {
+          rotate: 0,
+        });
+      };
+
+      card.addEventListener("mouseenter", open);
+
+      card.addEventListener("mouseleave", close);
+    });
   }, []);
 
   useEffect(() => {
@@ -918,6 +1000,30 @@ const Home = () => {
             <div key={i} className="wander-stat-box">
               <div className="wander-stat-big">{s.big}</div>
               <div className="wander-stat-desc">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ TESTIMONIAL ═══ */}
+      <section className="wander-testi-section" id="wander-testi">
+        {/* existing testimonial content */}
+      </section>
+
+      {/* ═══ FAQ ═══ */}
+      <section className="wander-faq">
+        <div className="faq-list">
+          {FAQS.map((item, index) => (
+            <div key={index} className="faq-card">
+              <div className="faq-head">
+                <h3>{item.q}</h3>
+
+                <span className="faq-arrow">⌄</span>
+              </div>
+
+              <div className="faq-body">
+                <p>{item.a}</p>
+              </div>
             </div>
           ))}
         </div>
