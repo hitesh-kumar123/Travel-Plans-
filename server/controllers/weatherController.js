@@ -18,6 +18,9 @@ exports.getCurrentWeather = async (req, res) => {
       humidity: response.data.main.humidity,
       windSpeed: response.data.wind.speed,
       timestamp: response.data.dt,
+
+      // Weather provider information
+      provider: "OpenWeather",
     };
 
     res.json(weatherData);

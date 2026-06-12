@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ScrollLink from "../components/ScrollLink";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
@@ -402,6 +403,7 @@ const Home = () => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("wander-dest-section");
   const checkInRef = useRef(null);
 
   useEffect(() => {
@@ -456,6 +458,35 @@ const Home = () => {
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  useEffect(() => {
+    const sections = [
+      "wander-dest-section",
+      "wander-features",
+      "wander-testimonials",
+    ];
+
+    const handleActiveSection = () => {
+      const scrollPosition = window.scrollY + 150;
+
+      sections.forEach((sectionId) => {
+        const section = document.getElementById(sectionId);
+
+        if (
+          section &&
+          scrollPosition >= section.offsetTop &&
+          scrollPosition < section.offsetTop + section.offsetHeight
+        ) {
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleActiveSection);
+
+    return () => {
+      window.removeEventListener("scroll", handleActiveSection);
+    };
   }, []);
 
   const handleAddTrip = (dest) => {
@@ -519,13 +550,38 @@ const Home = () => {
 
         <ul className="wander-nav-links">
           <li>
-            <a href="#wander-dest-section">Destinations</a>
+            <a
+              href="#wander-dest-section"
+              className={
+                activeSection === "wander-dest-section"
+                  ? "wander-nav-active"
+                  : ""
+              }
+            >
+              Destinations
+            </a>
           </li>
           <li>
-            <a href="#wander-features">Features</a>
+            <a
+              href="#wander-features"
+              className={
+                activeSection === "wander-features" ? "wander-nav-active" : ""
+              }
+            >
+              Features
+            </a>
           </li>
           <li>
-            <a href="#wander-testimonials">Experiences</a>
+            <a
+              href="#wander-testimonials"
+              className={
+                activeSection === "wander-testimonials"
+                  ? "wander-nav-active"
+                  : ""
+              }
+            >
+              Experiences
+            </a>
           </li>
           <li>
             <Link to="/travel-checklist">Checklist</Link>
@@ -1101,9 +1157,9 @@ const Home = () => {
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
-            <Link to="/" className="wander-footer-logo">
+            <ScrollLink to="/" className="wander-footer-logo">
               Pack<span>Go</span>
-            </Link>
+            </ScrollLink>
             <p>
               Discover breathtaking destinations, curated travel experiences,
               and unforgettable journeys with PackGo Travel.
@@ -1121,17 +1177,17 @@ const Home = () => {
 
             <div className="wander-footer-col">
               <h4>Company</h4>
-              <Link to="/about">About</Link>
-              <Link to="/careers">Careers</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/travel-checklist">Travel Checklist</Link>
+              <ScrollLink to="/about">About</ScrollLink>
+              <ScrollLink to="/careers">Careers</ScrollLink>
+              <ScrollLink to="/contact">Contact</ScrollLink>
+              <ScrollLink to="/travel-checklist">Travel Checklist</ScrollLink>
             </div>
 
             <div className="wander-footer-col">
               <h4>Support</h4>
-              <Link to="/help">Help Center</Link>
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/terms">Terms & Conditions</Link>
+              <ScrollLink to="/help">Help Center</ScrollLink>
+              <ScrollLink to="/privacy">Privacy Policy</ScrollLink>
+              <ScrollLink to="/terms">Terms & Conditions</ScrollLink>
             </div>
           </div>
         </div>

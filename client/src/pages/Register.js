@@ -32,6 +32,22 @@ import PrimaryButton from "../components/PrimaryButton";
 
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-play the carousel every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % 3); // 3 is the number of images
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Carousel images mapping perfectly to the 3 registration steps
+  const carouselImages = [
+    "/images/carousel/mountain.png",
+    "/images/carousel/beach.png",
+    "/images/carousel/city.png",
+  ];
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -359,74 +375,123 @@ const Register = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {/* Left side with image - shown only on desktop */}
+      {/* Left side with image carousel - shown only on desktop */}
       {!isMobile && (
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070&auto=format&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
             position: "sticky",
             top: 0,
             height: "100vh",
-            alignSelf: "flex-start",
+            overflow: "hidden",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
+            p: 2, // Add a subtle outer padding for a premium border effect
           }}
         >
+          {/* Inner container to hold the images with rounded corners */}
           <Box
             sx={{
               position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              backdropFilter: "blur(2px)",
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: 16,
+              borderRadius: 4,
+              overflow: "hidden",
+              boxShadow: "0 24px 48px rgba(0,0,0,0.2)", // Deep shadow for depth
             }}
-          />
-          <Box sx={{ position: "relative", p: 6, color: "white" }}>
+          >
+            {/* The 3 fading images */}
+            {carouselImages.map((img, index) => (
+              <Box
+                key={index}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${img})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: currentImageIndex === index ? 1 : 0,
+                  transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)", // Soft, premium transition
+                  zIndex: currentImageIndex === index ? 1 : 0,
+                }}
+              />
+            ))}
+
+            {/* Dark overlay for text legibility */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%)",
+                zIndex: 2,
+              }}
+            />
+          </Box>
+
+          {/* Text and Pagination overlay */}
+          <Box sx={{ position: "relative", zIndex: 3, p: 6, color: "white" }}>
             <Typography
               variant="h3"
               component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
+              sx={{
+                fontWeight: 800,
+                mb: 2,
+                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+              }}
             >
               Join PackGo
             </Typography>
-            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Create an account to start planning your next adventure
+            <Typography
+              variant="h5"
+              sx={{
+                mb: 4,
+                maxWidth: "80%",
+                fontWeight: 400,
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              Create an account to start planning your next breathtaking
+              adventure.
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor:
-                    activeStep === 0 ? "white" : "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor:
-                    activeStep === 1 ? "white" : "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  bgcolor:
-                    activeStep === 2 ? "white" : "rgba(255, 255, 255, 0.5)",
-                  borderRadius: "50%",
-                }}
-              />
+
+            {/* Modern Pagination UI */}
+            <Box
+              sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}
+            >
+              {carouselImages.map((_, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: currentImageIndex === index ? 32 : 10,
+                    height: 10,
+                    bgcolor:
+                      currentImageIndex === index
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.4)",
+                    borderRadius: 5,
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    cursor: "pointer",
+                    "&:hover": {
+                      bgcolor:
+                        currentImageIndex === index
+                          ? "white"
+                          : "rgba(255, 255, 255, 0.7)",
+                    },
+                  }}
+                  onClick={() => setCurrentImageIndex(index)}
+                />
+              ))}
             </Box>
           </Box>
         </Box>
