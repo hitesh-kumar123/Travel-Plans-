@@ -23,6 +23,15 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
 import PrimaryButton from "../components/PrimaryButton";
 
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+const sliderImages = [
+  "https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?fm=jpg&q=60&w=3000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?fm=jpg&q=60&w=3000&auto=format&fit=crop",
+];
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -40,6 +49,26 @@ const Login = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [currentSlide]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + sliderImages.length) % sliderImages.length,
+    );
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -130,50 +159,122 @@ const Login = () => {
         backgroundColor: theme.palette.background.default,
       }}
     >
+      {/* slider */}
       {!isMobile && (
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            position: "sticky",
-            top: 0,
+            position: "relative",
             height: "100vh",
-            alignSelf: "flex-start",
+            overflow: "hidden",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
+            alignItems: "flex-end",
           }}
         >
+          <IconButton
+            onClick={prevSlide}
+            sx={{
+              position: "absolute",
+              left: 20,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              bgcolor: "rgba(255,255,255,.15)",
+              backdropFilter: "blur(10px)",
+              color: "white",
+              width: 52,
+              height: 52,
+              transition: ".3s",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,.3)",
+                transform: "translateY(-50%) scale(1.08)",
+              },
+            }}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+          {sliderImages.map((img, index) => (
+            <Box
+              key={index}
+              sx={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `url(${img})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: currentSlide === index ? 1 : 0,
+                transition: "opacity 1s ease-in-out",
+              }}
+            />
+          ))}
+
+          <IconButton
+            onClick={nextSlide}
+            sx={{
+              position: "absolute",
+              right: 20,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              bgcolor: "rgba(255,255,255,.15)",
+              backdropFilter: "blur(10px)",
+              color: "white",
+              width: 52,
+              height: 52,
+              transition: ".3s",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,.3)",
+                transform: "translateY(-50%) scale(1.08)",
+              },
+            }}
+          >
+            <ChevronRightIcon />
+          </IconButton>
+
           <Box
             sx={{
               position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              backdropFilter: "blur(2px)",
+              inset: 0,
+              background: "linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.55))",
             }}
           />
-          <Box sx={{ position: "relative", p: 6, color: "white" }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
-            >
+
+          <Box
+            sx={{
+              position: "relative",
+              p: 6,
+              color: "#fff",
+              zIndex: 2,
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
               PackGo
             </Typography>
-            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
+
+            <Typography variant="h5" sx={{ maxWidth: "80%", mb: 3 }}>
               Your ultimate companion for discovering and planning your dream
               adventures
             </Typography>
+
+            <Box sx={{ display: "flex", gap: 1 }}>
+              {sliderImages.map((_, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: currentSlide === index ? 24 : 8,
+                    height: 8,
+                    borderRadius: 10,
+                    bgcolor:
+                      currentSlide === index ? "#fff" : "rgba(255,255,255,0.5)",
+                    transition: "0.4s",
+                  }}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
       )}
-
+      {/* sign in form */}
       <Box
         sx={{
           flex: 1,
@@ -197,10 +298,12 @@ const Login = () => {
           <Paper
             elevation={isMobile ? 1 : 0}
             sx={{
-              p: 4,
-              borderRadius: 4,
-              border: !isMobile ? "1px solid" : "none",
-              borderColor: "divider",
+              p: 5,
+              borderRadius: 5,
+              backdropFilter: "blur(20px)",
+              background: "rgba(255,255,255,0.8)",
+              border: "1px solid rgba(255,255,255,0.4)",
+              boxShadow: "0 20px 60px rgba(15,23,42,0.12)",
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -286,7 +389,17 @@ const Login = () => {
                 fullWidth
                 size="large"
                 disabled={isSignInDisabled()}
-                sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }}
+                sx={{
+                  py: 1.5,
+                  borderRadius: 2,
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  boxShadow: "0 10px 30px rgba(59,130,246,.3)",
+                  transition: "0.3s",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                  },
+                }}
                 endIcon={<LoginIcon />}
               >
                 Sign In
