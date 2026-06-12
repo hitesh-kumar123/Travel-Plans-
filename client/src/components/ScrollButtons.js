@@ -59,14 +59,14 @@ export default function ScrollButtons() {
     >
       <Fade in={showTop} timeout={300} unmountOnExit>
         <Tooltip title="Scroll to top" placement="left">
-          <Fab size="small" onClick={scrollTop} sx={fabSx}>
+          <Fab size="small" onClick={scrollTop} sx={fabSx} aria-label="Scroll to top">
             <KeyboardArrowUpIcon />
           </Fab>
         </Tooltip>
       </Fade>
       <Fade in={showBottom} timeout={300} unmountOnExit>
         <Tooltip title="Scroll to bottom" placement="left">
-          <Fab size="small" onClick={scrollBottom} sx={fabSx}>
+          <Fab size="small" onClick={scrollBottom} sx={fabSx} aria-label="Scroll to bottom">
             <KeyboardArrowDownIcon />
           </Fab>
         </Tooltip>
