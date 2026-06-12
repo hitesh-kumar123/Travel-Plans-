@@ -714,6 +714,7 @@ const Home = () => {
             >
               Checklist
             </Link>
+
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
