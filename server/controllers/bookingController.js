@@ -11,9 +11,30 @@ exports.searchFlights = async (req, res) => {
       adults = 1,
     } = req.body;
 
-    if (!origin || !destination || !departureDate) {
+   if (!origin || !destination || !departureDate) {
       return res.status(400).json({
         msg: "Please provide origin, destination, and departure date",
+      });
+    }
+
+    const VALID_AIRPORTS = [
+      "delhi", "mumbai", "bangalore", "bengaluru", "chennai", "kolkata",
+      "hyderabad", "pune", "ahmedabad", "jaipur", "goa", "lucknow",
+      "new york", "london", "dubai", "singapore", "paris", "tokyo",
+      "sydney", "los angeles", "chicago", "toronto", "frankfurt",
+    ];
+
+    const isValid = (name) => VALID_AIRPORTS.includes(name.trim().toLowerCase());
+
+    if (!isValid(origin)) {
+      return res.status(400).json({
+        msg: `Invalid airport/city: "${origin}". Please enter a valid city or airport.`,
+      });
+    }
+
+    if (!isValid(destination)) {
+      return res.status(400).json({
+        msg: `Invalid airport/city: "${destination}". Please enter a valid city or airport.`,
       });
     }
 
@@ -181,3 +202,4 @@ exports.bookHotel = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+

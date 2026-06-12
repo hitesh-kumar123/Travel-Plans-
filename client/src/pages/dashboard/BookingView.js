@@ -57,8 +57,30 @@ const BookingView = () => {
     rooms: 1,
   });
 
+  const VALID_AIRPORTS = [
+    "delhi", "mumbai", "bangalore", "bengaluru", "chennai", "kolkata",
+    "hyderabad", "pune", "ahmedabad", "jaipur", "goa", "lucknow",
+    "new york", "london", "dubai", "singapore", "paris", "tokyo",
+    "sydney", "los angeles", "chicago", "toronto", "frankfurt",
+    // add more as needed
+  ];
+
+  const isValidAirport = (name) =>
+    VALID_AIRPORTS.includes(name.trim().toLowerCase());
+
+  const [flightError, setFlightError] = useState("");
+
   const handleFlightSearch = (e) => {
     e.preventDefault();
+    if (!isValidAirport(flightForm.origin)) {
+      setFlightError(`"${flightForm.origin}" is not a valid city/airport.`);
+      return;
+    }
+    if (!isValidAirport(flightForm.destination)) {
+      setFlightError(`"${flightForm.destination}" is not a valid city/airport.`);
+      return;
+    }
+    setFlightError("");
     dispatch(searchFlights(flightForm));
   };
 
@@ -121,6 +143,7 @@ const BookingView = () => {
                     }
                     required
                   />
+                  
                 </Grid>
                 <Grid item xs={12} sm={6} md={2.4}>
                   <TextField
@@ -181,6 +204,13 @@ const BookingView = () => {
                     {loading ? <CircularProgress size={20} /> : "Search"}
                   </Button>
                 </Grid>
+                {flightError && (
+                  <Grid item xs={12}>
+                    <Typography color="error" variant="body2">
+                      ⚠️ {flightError}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </Box>
           )}
