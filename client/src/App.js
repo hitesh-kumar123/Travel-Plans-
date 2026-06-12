@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import Contact from "./pages/contact"; // ✅ ADDED
 import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
+import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import ReviewsPage from "./pages/Reviews";
@@ -37,6 +38,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
+          <ScrollToTop />
           <div className="App">
             <Routes>
               {/* Protected Dashboard */}

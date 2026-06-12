@@ -32,6 +32,7 @@ export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get("/auth/profile");
 
+    console.log("loadUser response:", res);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -78,7 +79,6 @@ export const login = (userData, navigate) => async (dispatch) => {
 export const register = (userData, navigate) => async (dispatch) => {
   try {
     await api.post("/auth/register", userData);
-
     toast.success("Account created successfully! Please log in.");
     navigate("/login");
   } catch (error) {
@@ -90,6 +90,35 @@ export const register = (userData, navigate) => async (dispatch) => {
     toast.error(msg);
   }
 };
+
+//  for google login
+export const googleLogin =
+  (CredentialResponse, navigate) => async (dispatch) => {
+    try {
+      dispatch({ type: "AUTH_START" });
+      const res = await api.post("/auth/google", {
+        credential: CredentialResponse.credential,
+      });
+
+      dispatch({
+        type: "AUTH_SUCESS",
+        payload: res.data,
+      });
+
+      // Set token to local storage
+      localStorage.setItem("token", res.data.token);
+
+      dispatch(loadUser());
+      toast.success("Welcome back! 🎉");
+
+      navigate("/dashboard");
+    } catch (e) {
+      dispatch({
+        type: "AUTH_FAIL",
+        payload: e.rensponse?.data?.message || e.message,
+      });
+    }
+  };
 
 // Logout User
 export const logout = () => (dispatch) => {
