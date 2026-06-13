@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTwitter, FaGithub } from "react-icons/fa";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
@@ -1194,6 +1194,13 @@ const Home = () => {
 
             <a href="/" aria-label="Twitter">
               <FaTwitter />
+            </a>
+            <a
+              href="https://github.com/hitesh-kumar123/Travel-Plans-"
+              aria-label="Github"
+              target="_blank"
+            >
+              <FaGithub />
             </a>
           </div>
         </div>
