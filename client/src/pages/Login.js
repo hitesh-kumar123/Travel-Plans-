@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { googleLogin, login } from "../redux/actions/authActions";
@@ -405,50 +405,7 @@ const Login = () => {
                 Sign In
               </PrimaryButton>
 
-              <Divider sx={{ my: 3 }}>
-                <Typography variant="body2" color="text.secondary">
-                  OR
-                </Typography>
-              </Divider>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 2,
-                  mb: 3,
-                }}
-              >
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <GoogleLogin
-                    theme="outlined"
-                    width={isMobile ? 360 : 500}
-                    shape="pill"
-                    text="continue_with"
-                    size="large"
-                    sx={{
-                      borderRadius: 2,
-                      py: 1,
-
-                      color: "#3f51b5",
-                      borderColor: "#3f51b5",
-                      "&:hover": {
-                        backgroundColor: "rgba(66,133,244,0.08)",
-                        borderColor: "#3f51b5",
-                      },
-                      "&:active": {
-                        backgroundColor: "#3f51b5",
-                        color: "#fff",
-                        transform: "scale(0.98)",
-                      },
-                    }}
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => console.log("Google Login failed")}
-                    useOneTap
-                  />
-                </Box>
-              </Box>
+              <GoogleAuthSection onSuccess={handleGoogleSuccess} />
             </form>
           </Paper>
 
