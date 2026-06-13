@@ -43,7 +43,7 @@ function App() {
               {/* Protected Dashboard */}
               <Route
                 path="/dashboard/*"
-                element={
+                element = {
                   <PrivateRoute>
                     <Dashboard />
                   </PrivateRoute>
@@ -65,7 +65,7 @@ function App() {
                 path="/reset-password/:token"
                 element={<ResetPassword />}
               />
-              {/* Fallback */}
+              {/* Fallback Catch-All Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ScrollButtons />

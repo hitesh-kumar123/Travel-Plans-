@@ -490,7 +490,7 @@ const Home = () => {
 
   const handleAddTrip = (dest) => {
     // Save to recently viewed regardless of auth status
-    addRecentlyViewed(dest); // ← MOVE THIS to the top, before the auth check
+    addRecentlyViewed(dest); 
 
     if (!isAuthenticated) {
       navigate("/login");
@@ -884,8 +884,6 @@ const Home = () => {
         </form>
       </div>
 
-      {/* ═══ DESTINATIONS ═══ */}
-
       {/* ═══ RECENTLY VIEWED ═══ */}
       <div
         style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}
@@ -900,6 +898,7 @@ const Home = () => {
         />
       </div>
 
+      {/* ═══ DESTINATIONS GRID ═══ */}
       <section className="wander-section" id="wander-dest-section">
         <div className="wander-section-header">
           <div>
@@ -921,7 +920,6 @@ const Home = () => {
 
         {/* Editorial 4-card grid */}
         <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
           {editorialDests[0] ? (
             <div
               className="wander-dest-card tall"
@@ -1105,7 +1103,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Right Side Metrics Box Grid (Remains unshifted) */}
         <div className="wander-stats-grid">
           {STATS.map((s, i) => (
             <div key={i} className="wander-stat-box">
@@ -1140,7 +1137,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
@@ -1183,18 +1180,19 @@ const Home = () => {
           <div className="wander-footer-copy">
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
+          {/* Changed <a> links to <Link> routing paths to prevent page refreshes */}
           <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook">
+            <Link to="/not-found" aria-label="Facebook">
               <FaFacebook />
-            </a>
+            </Link>
 
-            <a href="/" aria-label="Instagram">
+            <Link to="/not-found" aria-label="Instagram">
               <FaInstagram />
-            </a>
+            </Link>
 
-            <a href="/" aria-label="Twitter">
+            <Link to="/not-found" aria-label="Twitter">
               <FaTwitter />
-            </a>
+            </Link>
           </div>
         </div>
       </footer>
