@@ -75,10 +75,29 @@ const BookingView = () => {
   });
 
   const VALID_AIRPORTS = [
-    "delhi", "mumbai", "bangalore", "bengaluru", "chennai", "kolkata",
-    "hyderabad", "pune", "ahmedabad", "jaipur", "goa", "lucknow",
-    "new york", "london", "dubai", "singapore", "paris", "tokyo",
-    "sydney", "los angeles", "chicago", "toronto", "frankfurt",
+    "delhi",
+    "mumbai",
+    "bangalore",
+    "bengaluru",
+    "chennai",
+    "kolkata",
+    "hyderabad",
+    "pune",
+    "ahmedabad",
+    "jaipur",
+    "goa",
+    "lucknow",
+    "new york",
+    "london",
+    "dubai",
+    "singapore",
+    "paris",
+    "tokyo",
+    "sydney",
+    "los angeles",
+    "chicago",
+    "toronto",
+    "frankfurt",
     // add more as needed
   ];
 
@@ -86,10 +105,22 @@ const BookingView = () => {
     VALID_AIRPORTS.includes(name.trim().toLowerCase());
 
   const [flightError, setFlightError] = useState("");
-  const [flightFilters, setFlightFilters] = useState({ minBudget: "", maxBudget: "" });
-const [hotelFilters, setHotelFilters] = useState({ minBudget: "", maxBudget: "", minRating: 0, amenities: [] });
-const activeFlightFilterCount = Object.values(flightFilters).filter(v => v !== "").length;
-const activeHotelFilterCount = Object.values(hotelFilters).filter(v => v !== "" && v !== 0 && !(Array.isArray(v) && v.length === 0)).length;
+  const [flightFilters, setFlightFilters] = useState({
+    minBudget: "",
+    maxBudget: "",
+  });
+  const [hotelFilters, setHotelFilters] = useState({
+    minBudget: "",
+    maxBudget: "",
+    minRating: 0,
+    amenities: [],
+  });
+  const activeFlightFilterCount = Object.values(flightFilters).filter(
+    (v) => v !== "",
+  ).length;
+  const activeHotelFilterCount = Object.values(hotelFilters).filter(
+    (v) => v !== "" && v !== 0 && !(Array.isArray(v) && v.length === 0),
+  ).length;
 
   const handleFlightSearch = (e) => {
     e.preventDefault();
@@ -98,7 +129,9 @@ const activeHotelFilterCount = Object.values(hotelFilters).filter(v => v !== "" 
       return;
     }
     if (!isValidAirport(flightForm.destination)) {
-      setFlightError(`"${flightForm.destination}" is not a valid city/airport.`);
+      setFlightError(
+        `"${flightForm.destination}" is not a valid city/airport.`,
+      );
       return;
     }
     setFlightError("");
@@ -191,7 +224,6 @@ const activeHotelFilterCount = Object.values(hotelFilters).filter(v => v !== "" 
                     }
                     required
                   />
-                  
                 </Grid>
                 <Grid xs={12} sm={6} md={2.4}>
                   <TextField
