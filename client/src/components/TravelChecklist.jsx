@@ -127,6 +127,7 @@ export default function TravelChecklist() {
             padding: "24px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
             border: "1px solid #e2e8f0",
+            marginTop: "40px",
           }}
         >
           <form
