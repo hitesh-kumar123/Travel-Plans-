@@ -210,31 +210,31 @@ const ExpensesView = () => {
   }));
 
   const handleAmountChange = (e) => {
-  const value = e.target.value;
-  if (value === "") {
-    setForm({ ...form, amount: "" });
+    const value = e.target.value;
+    if (value === "") {
+      setForm({ ...form, amount: "" });
+      setAmountError("");
+      return;
+    }
+
+    const parsedValue = parseFloat(value);
+
+    if (parsedValue < 0) {
+      setAmountError("Amount must be a positive number.");
+      return;
+    }
+    if (parsedValue === 0) {
+      setAmountError("Amount must be greater than zero.");
+      setForm({ ...form, amount: value });
+      return;
+    }
+    if (isNaN(parsedValue)) {
+      setAmountError("Please enter a valid number.");
+      return;
+    }
+    setForm({ ...form, amount: value });
     setAmountError("");
-    return;
-  }
-
-  const parsedValue = parseFloat(value);
-
-  if (parsedValue < 0) {
-    setAmountError("Amount must be a positive number.");
-    return; 
-  } 
-  if (parsedValue === 0) {
-    setAmountError("Amount must be greater than zero.");
-    setForm({ ...form, amount: value }); 
-    return;
-  }
-  if (isNaN(parsedValue)) {
-    setAmountError("Please enter a valid number.");
-    return;
-  }
-  setForm({ ...form, amount: value });
-  setAmountError("");
-};
+  };
 
   const handleEditClick = (expense) => {
     setEditingExpenseId(expense._id);
