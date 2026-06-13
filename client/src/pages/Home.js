@@ -1199,6 +1199,7 @@ const Home = () => {
               href="https://github.com/hitesh-kumar123/Travel-Plans-"
               aria-label="Github"
               target="_blank"
+              rel="noreferrer"
             >
               <FaGithub />
             </a>
