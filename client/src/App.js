@@ -26,6 +26,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
+import TermsConditions from "./pages/TermsConditions";
+import BudgetEstimatorPage from "./pages/BudgetEstimatorPage";
 
 function App() {
   useEffect(() => {
@@ -57,6 +59,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<TermsConditions />} />
+              <Route path="/budget-estimator" element={<BudgetEstimatorPage />} />
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
