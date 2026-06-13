@@ -178,6 +178,30 @@ const TripDetail = () => {
 
   const handleEditTrip = (e) => {
     e.preventDefault();
+
+    if (
+      editForm.startDate &&
+      editForm.endDate &&
+      new Date(editForm.endDate) < new Date(editForm.startDate)
+    ) {
+      toast.error("End date cannot be earlier than start date");
+
+      setEditForm({
+        destination: currentTrip.destination || "",
+        startDate: currentTrip.startDate
+          ? new Date(currentTrip.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: currentTrip.endDate
+          ? new Date(currentTrip.endDate).toISOString().split("T")[0]
+          : "",
+        description: currentTrip.description || "",
+        budget: currentTrip.budget || 0,
+        status: currentTrip.status || "planned",
+      });
+
+      return;
+    }
+
     dispatch(updateTrip(id, editForm));
     setEditOpen(false);
   };
