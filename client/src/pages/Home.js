@@ -490,7 +490,7 @@ const Home = () => {
 
   const handleAddTrip = (dest) => {
     // Save to recently viewed regardless of auth status
-    addRecentlyViewed(dest); 
+    addRecentlyViewed(dest);
 
     if (!isAuthenticated) {
       navigate("/login");

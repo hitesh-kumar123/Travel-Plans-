@@ -64,7 +64,12 @@ const NotFound = () => {
               animation: `${floatAnimation} 4s ease-in-out infinite`,
             }}
           >
-            <MapIcon sx={{ fontSize: { xs: 100, md: 130 }, color: theme.palette.primary.main }} />
+            <MapIcon
+              sx={{
+                fontSize: { xs: 100, md: 130 },
+                color: theme.palette.primary.main,
+              }}
+            />
             <Typography
               variant="h3"
               component="span"
@@ -120,7 +125,8 @@ const NotFound = () => {
               lineHeight: 1.6,
             }}
           >
-            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Let's get you back on track!
+            The page you are looking for might have been removed, had its name
+            changed, or is temporarily unavailable. Let's get you back on track!
           </Typography>
 
           <Box

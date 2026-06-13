@@ -43,7 +43,7 @@ function App() {
               {/* Protected Dashboard */}
               <Route
                 path="/dashboard/*"
-                element = {
+                element={
                   <PrivateRoute>
                     <Dashboard />
                   </PrivateRoute>
