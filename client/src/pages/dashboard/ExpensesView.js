@@ -111,6 +111,7 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -293,11 +294,21 @@ const ExpensesView = () => {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteExpense(id));
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    dispatch(deleteExpense(deleteTarget));
+    setDeleteTarget(null);
     setTimeout(() => {
       dispatch(getExpenses(activeTripId));
       dispatch(getExpenseSummary(activeTripId));
     }, 300);
+  };
+
+  const cancelDelete = () => {
+    setDeleteTarget(null);
   };
 
   const handleExportCSV = () => {
@@ -1277,6 +1288,30 @@ const ExpensesView = () => {
           >
             {editingExpenseId ? "Save Changes" : "Confirm & Save"}
           </PrimaryButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
+        <DialogTitle>Delete Expense</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this expense? This action cannot be
+          undone.
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5, gap: 1 }}>
+          <Button
+            onClick={cancelDelete}
+            sx={{ fontWeight: 600, color: "text.secondary" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            sx={{ borderRadius: 2.5, fontWeight: 600 }}
+          >
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
