@@ -24,9 +24,8 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import HotelIcon from "@mui/icons-material/Hotel";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { createTrip } from "../redux/actions/tripActions";
-import { createExpense } from "../redux/actions/expenseActions";
-
+import { addTrip } from '../redux/actions/tripActions';
+import { addExpense } from '../redux/actions/expenseActions';
 /**
  * QuickCreateDropdown
  *
@@ -168,7 +167,7 @@ const QuickCreateDropdown = ({ trips = [] }) => {
     setLoading(true);
     try {
       await dispatch(
-        createTrip({
+        addTrip({
           destination: tripForm.destination.trim(),
           startDate: tripForm.startDate,
           endDate: tripForm.endDate,
@@ -220,7 +219,7 @@ const QuickCreateDropdown = ({ trips = [] }) => {
     setLoading(true);
     try {
       await dispatch(
-        createExpense({
+        addExpense({
           trip: expenseForm.tripId,
           amount: Number(expenseForm.amount),
           category: expenseForm.category,
