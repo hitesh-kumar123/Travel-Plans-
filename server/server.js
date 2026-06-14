@@ -9,14 +9,19 @@ const passport = require("passport");
 
 const errorHandler = require("./middleware/errorHandler");
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from repo root .env (so server can be started from /server)
+dotenv.config({ path: require("path").resolve(__dirname, "../.env") });
+dotenv.config({ path: require("path").resolve(__dirname, "./.env") });
 
 // Passport config
 require("./config/passport");
 
 // Initialize express app
 const app = express();
+
+// When running behind a proxy (like Render), trust the proxy so express
+// and express-rate-limit can use the X-Forwarded-* headers correctly.
+app.set("trust proxy", 1);
 
 // Security Middleware
 app.use(helmet());
@@ -32,31 +37,48 @@ const limiter = rateLimit({
 
 app.use("/api/auth", limiter);
 
-// Allowed frontend origins
-const allowedOrigins = ["http://localhost:3000"];
+// Core Middleware
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5000",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5000",
+];
 
+const frontendUrls = [];
 if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
+  frontendUrls.push(
+    ...process.env.FRONTEND_URL.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean),
+  );
+}
+if (process.env.FRONTEND_URLS) {
+  frontendUrls.push(
+    ...process.env.FRONTEND_URLS.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean),
+  );
+}
+allowedOrigins.push(...frontendUrls);
+
+function isOriginAllowed(origin) {
+  if (!origin) return true;
+  return allowedOrigins.includes(origin);
 }
 
 // CORS Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin
-      if (!origin) return callback(null, true);
-
-      if (
-        allowedOrigins.includes(origin) ||
-        process.env.NODE_ENV !== "production"
-      ) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
-
-      return callback(new Error("Not allowed by CORS"));
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  })
+  }),
 );
 
 // Body parser
@@ -76,12 +98,11 @@ app.use(
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
-  })
+  }),
 );
 
 // Passport Middleware
 app.use(passport.initialize());
-
 app.use(passport.session());
 
 // Import routes
@@ -94,15 +115,23 @@ const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
 const packingRoutes = require("./routes/packing");
 
+
+
+
+
+
 // Use routes
 app.use("/api/auth", authRoutes);
+
 app.use("/api/trips", tripRoutes);
 app.use("/api/weather", weatherRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/translator", translatorRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
+
 app.use("/api/packing", packingRoutes);
+
 
 // Base route
 app.get("/", (req, res) => {
@@ -120,7 +149,15 @@ app.get("/health", (req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-// MongoDB Connection
+// Validate required env vars early
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI is missing — set it in server/.env before using auth.");
+}
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is missing — login and register will fail.");
+}
+
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -137,3 +174,4 @@ mongoose
     console.error("Could not connect to MongoDB:", err.message);
     process.exit(1);
   });
+

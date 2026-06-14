@@ -93,6 +93,7 @@ const WeatherView = () => {
         >
           <TextField
             fullWidth
+            autoFocus
             placeholder="Enter city name (e.g. Goa, Mumbai, London)"
             variant="outlined"
             value={location}
@@ -105,6 +106,7 @@ const WeatherView = () => {
               ),
             }}
           />
+
           <Button
             type="submit"
             variant="contained"
@@ -165,14 +167,7 @@ const WeatherView = () => {
                 flexShrink: 0,
               }}
             >
-              <Typography
-                variant="subtitle1"
-                fontWeight={800}
-                sx={{
-                  lineHeight: 1,
-                  mt: "-1px",
-                }}
-              >
+              <Typography variant="subtitle1" fontWeight={800} sx={{ mt: "-1px" }}>
                 !
               </Typography>
             </Box>
@@ -253,11 +248,7 @@ const WeatherView = () => {
                     </>
                   ) : (
                     <>
-                      <Typography
-                        variant="h6"
-                        fontWeight={600}
-                        sx={{ opacity: 0.9 }}
-                      >
+                      <Typography variant="h6" fontWeight={600} sx={{ opacity: 0.9 }}>
                         {currentWeather.location}, {currentWeather.country}
                       </Typography>
                       <Typography variant="h2" fontWeight={800} sx={{ my: 1 }}>
@@ -372,10 +363,23 @@ const WeatherView = () => {
                   </Box>
                 </Grid>
               </Grid>
+
+              {/* Weather metadata */}
+              {!loading && (
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="caption" display="block" sx={{ opacity: 0.9 }}>
+                    Source: {currentWeather?.provider || "OpenWeather"}
+                  </Typography>
+                  <Typography variant="caption" display="block" sx={{ opacity: 0.9 }}>
+                    Last Updated:{" "}
+                    {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
+                  </Typography>
+                </Box>
+              )}
             </Paper>
           </Grid>
 
-          {/* Travel Tips / Skeletons */}
+          {/* Travel Tips */}
           <Grid item xs={12} md={6}>
             <Paper
               elevation={0}
@@ -436,17 +440,15 @@ const WeatherView = () => {
                           ? "🧥 Pack a light jacket — it can get cool, especially in the evening."
                           : "🧣 It's cold! Carry warm layers, gloves, and a heavy jacket."}
                   </Typography>
+
                   {currentWeather.description?.toLowerCase().includes("rain") && (
-                    <Typography color="text.secondary">
-                      ☔ Don't forget your umbrella!
-                    </Typography>
+                    <Typography color="text.secondary">☔ Don't forget your umbrella!</Typography>
                   )}
+
                   <Box sx={{ mt: "auto", pt: 3 }}>
                     <Typography variant="caption" color="text.disabled">
                       Last updated:{" "}
-                      {fetchedAt
-                        ? new Date(fetchedAt).toLocaleTimeString()
-                        : "—"}
+                      {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
                     </Typography>
 
                     <Box mt={1}>
@@ -468,17 +470,13 @@ const WeatherView = () => {
         </Grid>
       )}
 
-
-
-
-
-
       {/* 5-Day Forecast */}
       {(forecastList.length > 0 || loading) && (
         <Box>
           <Typography variant="h6" fontWeight={700} mb={2}>
             5-Day Forecast — {forecast?.location}
           </Typography>
+
           <Grid container spacing={2}>
             {loading ? (
               Array.from({ length: 5 }).map((_, idx) => (
@@ -527,49 +525,46 @@ const WeatherView = () => {
                 .map((day, idx) => (
                   <Grid item xs={6} sm={4} md={2.4} key={idx}>
                     <Paper
-                    elevation={0}
-                    sx={{
-                      p: 2.5,
-                      borderRadius: 3,
-                      textAlign: "center",
-                      border: "1px solid",
-                      borderColor: "divider",
-                      transition: "transform 0.2s",
-                      "&:hover": {
-                        transform: "translateY(-3px)",
-                        boxShadow: 3,
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                    >
-                      {new Date(day.date).toLocaleDateString("en-IN", {
-                        weekday: "short",
-                        day: "2-digit",
-                        month: "short",
-                      })}
-                    </Typography>
-                    <Typography sx={{ fontSize: 36, my: 1 }}>
-                      {getWeatherIcon(day.description)}
-                    </Typography>
-                    <Typography variant="h6" fontWeight={700}>
-                      {Math.round(day.temperature)}°C
-                    </Typography>
-                    <Typography
-                      variant="caption"
+                      elevation={0}
                       sx={{
-                        textTransform: "capitalize",
-                        color: "text.secondary",
+                        p: 2.5,
+                        borderRadius: 3,
+                        textAlign: "center",
+                        border: "1px solid",
+                        borderColor: "divider",
+                        transition: "transform 0.2s",
+                        "&:hover": {
+                          transform: "translateY(-3px)",
+                          boxShadow: 3,
+                        },
                       }}
                     >
-                      {day.description}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              ))}
+                      <Typography variant="caption" color="text.secondary" display="block">
+                        {new Date(day.date).toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "2-digit",
+                          month: "short",
+                        })}
+                      </Typography>
+                      <Typography sx={{ fontSize: 36, my: 1 }}>
+                        {getWeatherIcon(day.description)}
+                      </Typography>
+                      <Typography variant="h6" fontWeight={700}>
+                        {Math.round(day.temperature)}°C
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          textTransform: "capitalize",
+                          color: "text.secondary",
+                        }}
+                      >
+                        {day.description}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                ))
+            )}
           </Grid>
         </Box>
       )}
@@ -600,3 +595,4 @@ const WeatherView = () => {
 };
 
 export default WeatherView;
+

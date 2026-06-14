@@ -1,27 +1,26 @@
-<div align="center">
+<div style="text-align:center;">
 
 # ✈️ PackGo — Smart Travel Planner
 
-<img src="assets/landing_page.png" alt="PackGo Landing Page" width="100%" style="border-radius: 12px;" />
-
-<br />
+<br/>
 
 [![MERN Stack](https://img.shields.io/badge/Stack-MERN-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/cloud/atlas)
 [![Material UI](https://img.shields.io/badge/MUI-v6-007FFF?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](CONTRIBUTING.md)
-[![GSSoC](https://img.shields.io/badge/GSSoC-2026-orange?style=for-the-badge)](https://gssoc.girlscript.tech/)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/DebasmitaBose0/Travel-Plans-/ci.yml?branch=main&style=for-the-badge&label=Build%20Check)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
+[![Security Scan](https://img.shields.io/badge/Security-Audit--Audit-brightgreen?style=for-the-badge&logo=github-actions)](https://github.com/DebasmitaBose0/Travel-Plans-/actions)
 
-<br />
+<br>
+
+<img src="assets/new-landing-page.png" alt="PackGo Landing Page" width="100%" />
 
 > **Plan trips. Track expenses. Check weather. Translate languages. Book flights & hotels.**  
 > All in one beautiful, full-stack travel companion.
 
-<br />
+<br>
 
-[🚀 Live Demo](#-live-demo) · [📖 Docs](#-api-endpoints) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
+[🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
 </div>
 
@@ -42,9 +41,11 @@
 - [🎨 Design Highlights](#-design-highlights)
 - [🔮 Future Enhancements](#-future-enhancements)
 - [🤝 Contributing](#-contributing)
+- [🌟 Contributors](#-contributors)
 - [📄 License](#-license)
 - [👥 Mentors](#-mentors)
 - [👤 Author](#-author)
+- [🙌 Thanks to Contributors](#-thanks-to-contributors)
 
 ---
 
@@ -60,21 +61,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### 🏠 Landing Page & Dashboard
 
-|               Landing Page               |             Dashboard              |
-| :--------------------------------------: | :--------------------------------: |
-| ![Landing Page](assets/landing_page.png) | ![Dashboard](assets/dashboard.png) |
+|                 Landing Page                 |               Dashboard                |
+| :------------------------------------------: | :------------------------------------: |
+| ![Landing Page](assets/new-landing-page.png) | ![Dashboard](assets/new-dashboard.png) |
 
 ### 🗺️ Trip Detail & Expense Tracker
 
-|              Trip Detail               |                Expense Tracker                 |
-| :------------------------------------: | :--------------------------------------------: |
-| ![Trip Detail](assets/trip_detail.png) | ![Expense Tracker](assets/expense_tracker.png) |
-
-### 🌤️ Weather Forecast & Live Translator
-
-|                 Weather Forecast                 |                Live Translator                 |
-| :----------------------------------------------: | :--------------------------------------------: |
-| ![Weather Forecast](assets/weather_forecast.png) | ![Live Translator](assets/live_translator.png) |
+|            Trip Detail            |            Destinations            |
+| :-------------------------------: | :--------------------------------: |
+| ![Trip Detail](assets/photo1.png) | ![Destinations](assets/photo1.png) |
 
 ---
 
@@ -132,6 +127,15 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 - Quick action cards for navigation
 - Upcoming trip cards with status badges
 
+### 🕐 Recently Viewed Destinations
+
+- Tracks the last **5 destinations** you explored on the home page
+- Persists across page refreshes using **localStorage**
+- Horizontally scrollable cards with destination image, name, and location
+- One-click to jump back to a destination
+- **Clear all** button to reset history
+- No duplicates — revisiting a destination moves it to the top
+
 ---
 
 ## 🛠️ Tech Stack
@@ -151,6 +155,36 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ### Backend
 
+## Backend Environment Setup
+
+Create a `.env` file inside the `server` directory before running the backend locally.
+
+Example:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/travel-plan
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+```
+
+Make sure MongoDB is running locally before starting the backend server.
+
+On macOS (Homebrew):
+
+```bash
+brew services start mongodb-community
+```
+
+Then start the backend:
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Without a valid `MONGO_URI`, authentication-related endpoints such as forgot password may fail due to database connection timeouts.
+
 | Technology                 | Version | Purpose                               |
 | -------------------------- | ------- | ------------------------------------- |
 | **Node.js**                | 18+     | JavaScript runtime                    |
@@ -168,7 +202,7 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 
 ## 📁 Project Structure
 
-```
+```bash
 travel-planner/
 ├── assets/                          # README screenshots
 │   ├── landing_page.png
@@ -257,20 +291,70 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/hitesh-kumar123/Travel-Plans-.git
-cd travel-planner
+cd Travel-Plans-
 ```
 
 ### 2. Install Dependencies
 
+> ⚠️ **Important:**  
+> This repository uses separate frontend (`client`) and backend (`server`) environments.
+>
+> Running commands like:
+>
+> ```bash
+> npm run dev
+> ```
+>
+> from the root directory will result in a missing script error.
+>
+> Please install dependencies and run scripts separately inside the `client` and `server` directories.
+
+````bash
+
+### Important
+
+Run commands from the appropriate project directory.
+
+Backend:
+
 ```bash
+cd server
+npm install
+npm run dev
+````
+
+Frontend:
+
+```bash
+cd client
+npm install
+npm start
+```
+
+Running commands from the wrong directory may result in missing files or package.json errors.
+
+### ⚠️ Important
+
+Do not run installation or start commands from the repository root directory.
+
+Install dependencies separately inside:
+
+- `server/`
+- `client/`
+
+Running commands from the root directory may result in missing script errors.
+
 # Install backend dependencies
+
 cd server
 npm install
 
 # Install frontend dependencies
+
 cd ../client
 npm install
-```
+
+````
 
 ### 3. Configure Environment Variables
 
@@ -278,7 +362,8 @@ Copy the example file and fill in your values:
 
 ```bash
 cp .env.example server/.env
-```
+Copy-Item .env.example server\.env
+````
 
 Open `server/.env` and update:
 
@@ -339,6 +424,28 @@ Then open your browser at **[http://localhost:3000](http://localhost:3000)** �
 
 ---
 
+## Troubleshooting
+
+### MongoDB Connection Error
+
+If you see:
+
+```text
+The uri parameter to openUri() must be a string, got undefined
+```
+
+Make sure your `.env` file exists and contains a valid MongoDB connection string.
+
+### package.json Not Found
+
+If npm reports:
+
+```text
+Could not read package.json
+```
+
+Verify that you are running commands from the correct project directory (`server/` or `client/`).
+
 ## 📡 API Endpoints
 
 Base URL: `http://localhost:5000/api`
@@ -352,9 +459,6 @@ Base URL: `http://localhost:5000/api`
 | `GET`  | `/auth/profile`              | Get current user profile                         |  ✅  |
 | `PUT`  | `/auth/profile`              | Update user profile                              |  ✅  |
 | `PUT`  | `/auth/change-password`      | Change password                                  |  ✅  |
-| `POST` | `/auth/verify-otp`           | Verify registration/login 6-digit OTP code       |  ❌  |
-| `POST` | `/auth/resend-otp`           | Request a new registration/login OTP code        |  ❌  |
-| `POST` | `/auth/otp-status`           | Query active registration/login countdown state  |  ❌  |
 | `POST` | `/auth/request-email-change` | Initiate profile email update                    |  ✅  |
 | `POST` | `/auth/verify-email-change`  | Confirm and execute pending profile email change |  ✅  |
 | `POST` | `/auth/discard-email-change` | Cancel and discard pending profile email change  |  ✅  |
@@ -538,8 +642,12 @@ Please read our:
 # 2. Clone your fork
 git clone https://github.com/<your-username>/Travel-Plans-.git
 
-# 3. Create a feature branch
+git fetch upstream
+git pull upstream main
+
+# 3. Create a feature branchP
 git checkout -b feature/your-amazing-feature
+
 
 # 4. Make your changes and commit
 git add .
@@ -550,6 +658,32 @@ git push origin feature/your-amazing-feature
 ```
 
 > **Good First Issues** are labelled [`good first issue`](../../issues?q=label%3A%22good+first+issue%22) — a great place to start! 🌱
+
+---
+
+## 💖 Contributors
+
+Thanks to all the amazing people who contribute to **Travel-Plans** 🚀
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=hitesh-kumar123/Travel-Plans-" alt="Contributors"/>
+  </a>
+</p>
+
+<br>
+
+## ⭐ Project Support
+
+<p align="center">
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/stargazers">
+    <img src="https://img.shields.io/github/stars/hitesh-kumar123/Travel-Plans-?style=social" alt="Stars">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/hitesh-kumar123/Travel-Plans-/network/members">
+    <img src="https://img.shields.io/github/forks/hitesh-kumar123/Travel-Plans-?style=social" alt="Forks">
+  </a>
+</p>
 
 ---
 
@@ -577,6 +711,8 @@ We are incredibly grateful to our mentors for their valuable support and code re
 **Hitesh Kumar**
 
 [![GitHub](https://img.shields.io/badge/GitHub-hitesh--kumar123-181717?style=for-the-badge&logo=github)](https://github.com/hitesh-kumar123/Travel-Plans-)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Hitesh--Kumar-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/hitesh-kumar-dev/)
 
 ---
 

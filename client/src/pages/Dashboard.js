@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import {
-  Routes,
-  Route,
-  useNavigate,
-  Link,
-  useLocation,
-} from "react-router-dom";
+// client/src/pages/Dashboard.js
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate, Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
@@ -26,6 +21,7 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
+
 import ExploreIcon from "@mui/icons-material/Explore";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -37,11 +33,11 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
+import ShieldIcon from "@mui/icons-material/Shield";
 
 import { logout, loadUser } from "../redux/actions/authActions";
 
 // Views
-
 import DashboardHome from "./dashboard/DashboardHome";
 import TripsView from "./dashboard/TripsView";
 import ExpensesView from "./dashboard/ExpensesView";
@@ -51,6 +47,8 @@ import BookingView from "./dashboard/BookingView";
 import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
+import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
+import NotFound from "./NotFound";
 
 const drawerWidth = 280;
 
@@ -58,33 +56,30 @@ const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
   // If we came from Google OAuth redirect with a token in the URL,
-  // persist it so PrivateRoute/JWT-protected APIs can work.
-  React.useEffect(() => {
+  // persist it so JWT-protected APIs can work.
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
 
     if (tokenFromUrl) {
       localStorage.setItem("token", tokenFromUrl);
 
-      // Trigger a user reload immediately after token is stored.
-      // This avoids race conditions with `App` initial `loadUser()`.
+      // Reload user immediately after token is stored.
       dispatch(loadUser());
 
-      // Clean the URL so token isn't kept in browser address bar.
+      // Remove token from the URL.
       params.delete("token");
       const newQuery = params.toString();
       const newUrl = `${window.location.pathname}${newQuery ? `?${newQuery}` : ""}`;
       window.history.replaceState({}, document.title, newUrl);
     }
-  }, []);
-
-
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  }, [dispatch]);
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -96,6 +91,8 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+  const notifications = [];
+
   const menuItems = [
     { text: "Dashboard", path: "", icon: <DashboardIcon /> },
     { text: "My Trips", path: "trips", icon: <ExploreIcon /> },
@@ -104,6 +101,7 @@ const Dashboard = () => {
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
     { text: "Packing", path: "packing", icon: <LuggageIcon /> },
+    { text: "Safety & Culture", path: "culture-safety", icon: <ShieldIcon /> },
   ];
 
   const isActive = (path) => {
@@ -150,7 +148,7 @@ const Dashboard = () => {
             PackGo
           </Typography>
         </Box>
-      </Box>
+
       <Divider />
 
       {/* User Info */}
@@ -182,6 +180,7 @@ const Dashboard = () => {
           >
             {user?.name?.[0]?.toUpperCase() || "U"}
           </Avatar>
+
           <Box sx={{ flex: 1, overflow: "hidden" }}>
             <Typography
               variant="subtitle2"
@@ -194,8 +193,8 @@ const Dashboard = () => {
               {user?.email || ""}
             </Typography>
           </Box>
-        </Box>
       </Box>
+
       <Divider />
 
       {/* Nav Items */}
@@ -229,11 +228,11 @@ const Dashboard = () => {
                 </ListItemIcon>
 
                 <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
+                  primary={
+                    <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                      {item.text}
+                    </Typography>
+                  }
                 />
               </ListItemButton>
             </Tooltip>
@@ -242,6 +241,7 @@ const Dashboard = () => {
       </List>
 
       <Divider />
+
       <List sx={{ px: 1, pb: 1 }}>
         <ListItem disablePadding>
           <ListItemButton
@@ -256,8 +256,11 @@ const Dashboard = () => {
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{ fontWeight: 600, fontSize: "0.9rem" }}
+              primary={
+                <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                  Logout
+                </Typography>
+              }
             />
           </ListItemButton>
         </ListItem>
@@ -283,6 +286,7 @@ const Dashboard = () => {
         >
           {drawer}
         </Drawer>
+
         <Drawer
           variant="permanent"
           sx={{
@@ -326,15 +330,18 @@ const Dashboard = () => {
             >
               <MenuIcon />
             </IconButton>
+
             <Box sx={{ flexGrow: 1 }} />
+
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Tooltip title="Notifications">
                 <IconButton size="large" color="inherit">
-                  <Badge badgeContent={0} color="error">
+                  <Badge badgeContent={notifications.length} color="error">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="Profile">
                 <IconButton size="large" onClick={handleMenu} color="inherit">
                   <Avatar
@@ -351,6 +358,7 @@ const Dashboard = () => {
                   </Avatar>
                 </IconButton>
               </Tooltip>
+
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -367,7 +375,9 @@ const Dashboard = () => {
                   </ListItemIcon>
                   Profile
                 </MenuItem>
+
                 <Divider />
+
                 <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
                   <ListItemIcon>
                     <LogoutIcon fontSize="small" sx={{ color: "error.main" }} />
@@ -390,9 +400,13 @@ const Dashboard = () => {
             <Route path="bookings" element={<BookingView />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="packing" element={<PackingView />} />
+            <Route
+              path="culture-safety"
+              element={<CultureSafetyAlerts />}
+            />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Box>
-      </Box>
     </Box>
   );
 };

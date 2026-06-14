@@ -197,15 +197,24 @@ exports.getExpenseSummary = async (req, res) => {
     }
 
     const summary = await Expense.aggregate([
-      { $match: { trip: new mongoose.Types.ObjectId(tripId) } },
+      { $match: { trip: tripExists._id } },
       {
         $group: {
-          _id: "$category",
+          _id: { category: "$category", currency: "$currency" },
           totalAmount: { $sum: "$amount" },
           count: { $sum: 1 },
         },
       },
-      { $sort: { totalAmount: -1 } },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id.category",
+          currency: "$_id.currency",
+          totalAmount: 1,
+          count: 1,
+        },
+      },
+      { $sort: { category: 1, totalAmount: -1 } },
     ]);
 
     res.json(summary);
