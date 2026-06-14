@@ -106,17 +106,33 @@ const Dashboard = () => {
   };
 
   const drawer = (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Logo */}
-      <Box
-        sx={{
-          p: 2.5,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+  <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    {/* Logo */}
+    <Box
+      sx={{
+        p: 2.5,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* 🚀 FIXED: Wrapped with React Router Link to enable redirection & hand cursor on hover */}
+      <Link 
+        to="/dashboard" 
+        style={{ textDecoration: "none" }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+        <Box 
+          sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 1.5,
+            cursor: "pointer", // Forces hand symbol on hover
+            transition: "opacity 0.2s ease-in-out",
+            "&:hover": {
+              opacity: 0.85,    // Subtle fade effect so users know it's clickable
+            }
+          }}
+        >
           <Box
             sx={{
               width: 38,
@@ -143,8 +159,9 @@ const Dashboard = () => {
             PackGo
           </Typography>
         </Box>
-      </Box>
-      <Divider />
+      </Link>
+    </Box>
+    <Divider />
 
       {/* User Info */}
       <Box sx={{ p: 2.5 }}>
