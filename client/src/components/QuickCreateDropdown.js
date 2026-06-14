@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   Fab,
   SpeedDial,
@@ -15,17 +15,17 @@ import {
   Typography,
   Snackbar,
   Alert,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import HotelIcon from '@mui/icons-material/Hotel';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { createTrip } from '../redux/actions/tripActions';
-import { createExpense } from '../redux/actions/expenseActions';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import HotelIcon from "@mui/icons-material/Hotel";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createTrip } from "../redux/actions/tripActions";
+import { createExpense } from "../redux/actions/expenseActions";
 
 /**
  * QuickCreateDropdown
@@ -46,12 +46,12 @@ import { createExpense } from '../redux/actions/expenseActions';
  *   trips  {Array}  – current user trips (used to pre-populate expense trip select)
  */
 const EXPENSE_CATEGORIES = [
-  'Food',
-  'Transport',
-  'Accommodation',
-  'Activities',
-  'Shopping',
-  'Other',
+  "Food",
+  "Transport",
+  "Accommodation",
+  "Activities",
+  "Shopping",
+  "Other",
 ];
 
 const QuickCreateDropdown = ({ trips = [] }) => {
@@ -65,24 +65,28 @@ const QuickCreateDropdown = ({ trips = [] }) => {
   const [modal, setModal] = useState(null);
 
   // Snackbar feedback
-  const [snack, setSnack] = useState({ open: false, message: '', severity: 'success' });
+  const [snack, setSnack] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   // Trip form state
   const [tripForm, setTripForm] = useState({
-    destination: '',
-    startDate: '',
-    endDate: '',
-    budget: '',
-    description: '',
+    destination: "",
+    startDate: "",
+    endDate: "",
+    budget: "",
+    description: "",
   });
 
   // Expense form state
   const [expenseForm, setExpenseForm] = useState({
-    tripId: '',
-    amount: '',
-    category: 'Food',
-    description: '',
-    date: new Date().toISOString().split('T')[0],
+    tripId: "",
+    amount: "",
+    category: "Food",
+    description: "",
+    date: new Date().toISOString().split("T")[0],
   });
 
   // Loading / error states
@@ -112,13 +116,19 @@ const QuickCreateDropdown = ({ trips = [] }) => {
 
   const closeModal = () => {
     setModal(null);
-    setTripForm({ destination: '', startDate: '', endDate: '', budget: '', description: '' });
+    setTripForm({
+      destination: "",
+      startDate: "",
+      endDate: "",
+      budget: "",
+      description: "",
+    });
     setExpenseForm({
-      tripId: '',
-      amount: '',
-      category: 'Food',
-      description: '',
-      date: new Date().toISOString().split('T')[0],
+      tripId: "",
+      amount: "",
+      category: "Food",
+      description: "",
+      date: new Date().toISOString().split("T")[0],
     });
     setErrors({});
   };
@@ -126,26 +136,34 @@ const QuickCreateDropdown = ({ trips = [] }) => {
   // ─── Keyboard handler for modal (Escape closes) ──────────────────────────
 
   const handleModalKeyDown = (e) => {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === "Escape") closeModal();
   };
 
   // ─── Trip form ────────────────────────────────────────────────────────────
 
   const validateTrip = () => {
     const errs = {};
-    if (!tripForm.destination.trim()) errs.destination = 'Destination is required';
-    if (!tripForm.startDate) errs.startDate = 'Start date is required';
-    if (!tripForm.endDate) errs.endDate = 'End date is required';
-    if (tripForm.startDate && tripForm.endDate && tripForm.startDate > tripForm.endDate)
-      errs.endDate = 'End date must be after start date';
+    if (!tripForm.destination.trim())
+      errs.destination = "Destination is required";
+    if (!tripForm.startDate) errs.startDate = "Start date is required";
+    if (!tripForm.endDate) errs.endDate = "End date is required";
+    if (
+      tripForm.startDate &&
+      tripForm.endDate &&
+      tripForm.startDate > tripForm.endDate
+    )
+      errs.endDate = "End date must be after start date";
     if (tripForm.budget && isNaN(Number(tripForm.budget)))
-      errs.budget = 'Budget must be a number';
+      errs.budget = "Budget must be a number";
     return errs;
   };
 
   const handleTripSubmit = async () => {
     const errs = validateTrip();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -156,13 +174,21 @@ const QuickCreateDropdown = ({ trips = [] }) => {
           endDate: tripForm.endDate,
           budget: tripForm.budget ? Number(tripForm.budget) : undefined,
           description: tripForm.description.trim(),
-          status: 'Planned',
-        })
+          status: "Planned",
+        }),
       );
-      setSnack({ open: true, message: 'Trip created successfully!', severity: 'success' });
+      setSnack({
+        open: true,
+        message: "Trip created successfully!",
+        severity: "success",
+      });
       closeModal();
     } catch (err) {
-      setSnack({ open: true, message: err?.message || 'Failed to create trip', severity: 'error' });
+      setSnack({
+        open: true,
+        message: err?.message || "Failed to create trip",
+        severity: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -172,16 +198,24 @@ const QuickCreateDropdown = ({ trips = [] }) => {
 
   const validateExpense = () => {
     const errs = {};
-    if (!expenseForm.tripId) errs.tripId = 'Please select a trip';
-    if (!expenseForm.amount || isNaN(Number(expenseForm.amount)) || Number(expenseForm.amount) <= 0)
-      errs.amount = 'Valid amount is required';
-    if (!expenseForm.description.trim()) errs.description = 'Description is required';
+    if (!expenseForm.tripId) errs.tripId = "Please select a trip";
+    if (
+      !expenseForm.amount ||
+      isNaN(Number(expenseForm.amount)) ||
+      Number(expenseForm.amount) <= 0
+    )
+      errs.amount = "Valid amount is required";
+    if (!expenseForm.description.trim())
+      errs.description = "Description is required";
     return errs;
   };
 
   const handleExpenseSubmit = async () => {
     const errs = validateExpense();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -192,12 +226,20 @@ const QuickCreateDropdown = ({ trips = [] }) => {
           category: expenseForm.category,
           description: expenseForm.description.trim(),
           date: expenseForm.date,
-        })
+        }),
       );
-      setSnack({ open: true, message: 'Expense added successfully!', severity: 'success' });
+      setSnack({
+        open: true,
+        message: "Expense added successfully!",
+        severity: "success",
+      });
       closeModal();
     } catch (err) {
-      setSnack({ open: true, message: err?.message || 'Failed to add expense', severity: 'error' });
+      setSnack({
+        open: true,
+        message: err?.message || "Failed to add expense",
+        severity: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -208,36 +250,36 @@ const QuickCreateDropdown = ({ trips = [] }) => {
   const actions = [
     {
       icon: <FlightTakeoffIcon />,
-      name: 'New Trip',
-      key: 'trip',
-      action: () => openModal('trip'),
+      name: "New Trip",
+      key: "trip",
+      action: () => openModal("trip"),
     },
     {
       icon: <AttachMoneyIcon />,
-      name: 'New Expense',
-      key: 'expense',
-      action: () => openModal('expense'),
+      name: "New Expense",
+      key: "expense",
+      action: () => openModal("expense"),
     },
     {
       icon: <ChecklistIcon />,
-      name: 'Packing List',
-      key: 'packing',
+      name: "Packing List",
+      key: "packing",
       action: () => {
         setDialOpen(false);
         if (trips.length > 0) {
           navigate(`/dashboard/trips/${trips[0]._id}?tab=packing`);
         } else {
-          navigate('/dashboard/trips');
+          navigate("/dashboard/trips");
         }
       },
     },
     {
       icon: <HotelIcon />,
-      name: 'New Booking',
-      key: 'booking',
+      name: "New Booking",
+      key: "booking",
       action: () => {
         setDialOpen(false);
-        navigate('/dashboard/booking');
+        navigate("/dashboard/booking");
       },
     },
   ];
@@ -250,13 +292,13 @@ const QuickCreateDropdown = ({ trips = [] }) => {
       <SpeedDial
         ariaLabel="Quick Create actions"
         sx={{
-          position: 'fixed',
+          position: "fixed",
           bottom: 32,
           right: 32,
           zIndex: 1300,
-          '& .MuiFab-primary': {
-            bgcolor: 'primary.main',
-            '&:hover': { bgcolor: 'primary.dark' },
+          "& .MuiFab-primary": {
+            bgcolor: "primary.main",
+            "&:hover": { bgcolor: "primary.dark" },
           },
         }}
         icon={<SpeedDialIcon icon={<AddIcon />} openIcon={<CloseIcon />} />}
@@ -264,7 +306,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
         onOpen={handleDialOpen}
         onClose={handleDialClose}
         FabProps={{
-          'aria-label': dialOpen ? 'Close quick create menu' : 'Open quick create menu',
+          "aria-label": dialOpen
+            ? "Close quick create menu"
+            : "Open quick create menu",
         }}
       >
         {actions.map((action) => (
@@ -275,7 +319,7 @@ const QuickCreateDropdown = ({ trips = [] }) => {
             tooltipOpen
             onClick={action.action}
             FabProps={{
-              'aria-label': action.name,
+              "aria-label": action.name,
               tabIndex: dialOpen ? 0 : -1,
             }}
           />
@@ -284,7 +328,7 @@ const QuickCreateDropdown = ({ trips = [] }) => {
 
       {/* ── New Trip Modal ── */}
       <Dialog
-        open={modal === 'trip'}
+        open={modal === "trip"}
         onClose={closeModal}
         onKeyDown={handleModalKeyDown}
         maxWidth="sm"
@@ -304,7 +348,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
               inputRef={firstFieldRef}
               label="Destination *"
               value={tripForm.destination}
-              onChange={(e) => setTripForm({ ...tripForm, destination: e.target.value })}
+              onChange={(e) =>
+                setTripForm({ ...tripForm, destination: e.target.value })
+              }
               error={!!errors.destination}
               helperText={errors.destination}
               fullWidth
@@ -315,7 +361,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
                 label="Start Date *"
                 type="date"
                 value={tripForm.startDate}
-                onChange={(e) => setTripForm({ ...tripForm, startDate: e.target.value })}
+                onChange={(e) =>
+                  setTripForm({ ...tripForm, startDate: e.target.value })
+                }
                 error={!!errors.startDate}
                 helperText={errors.startDate}
                 InputLabelProps={{ shrink: true }}
@@ -325,7 +373,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
                 label="End Date *"
                 type="date"
                 value={tripForm.endDate}
-                onChange={(e) => setTripForm({ ...tripForm, endDate: e.target.value })}
+                onChange={(e) =>
+                  setTripForm({ ...tripForm, endDate: e.target.value })
+                }
                 error={!!errors.endDate}
                 helperText={errors.endDate}
                 InputLabelProps={{ shrink: true }}
@@ -336,7 +386,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
               label="Budget (₹)"
               type="number"
               value={tripForm.budget}
-              onChange={(e) => setTripForm({ ...tripForm, budget: e.target.value })}
+              onChange={(e) =>
+                setTripForm({ ...tripForm, budget: e.target.value })
+              }
               error={!!errors.budget}
               helperText={errors.budget}
               fullWidth
@@ -345,7 +397,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
             <TextField
               label="Description"
               value={tripForm.description}
-              onChange={(e) => setTripForm({ ...tripForm, description: e.target.value })}
+              onChange={(e) =>
+                setTripForm({ ...tripForm, description: e.target.value })
+              }
               multiline
               rows={2}
               fullWidth
@@ -354,21 +408,23 @@ const QuickCreateDropdown = ({ trips = [] }) => {
         </DialogContent>
 
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={closeModal} disabled={loading}>Cancel</Button>
+          <Button onClick={closeModal} disabled={loading}>
+            Cancel
+          </Button>
           <Button
             variant="contained"
             onClick={handleTripSubmit}
             disabled={loading}
             startIcon={<FlightTakeoffIcon />}
           >
-            {loading ? 'Creating…' : 'Create Trip'}
+            {loading ? "Creating…" : "Create Trip"}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* ── New Expense Modal ── */}
       <Dialog
-        open={modal === 'expense'}
+        open={modal === "expense"}
         onClose={closeModal}
         onKeyDown={handleModalKeyDown}
         maxWidth="sm"
@@ -389,9 +445,14 @@ const QuickCreateDropdown = ({ trips = [] }) => {
               select
               label="Trip *"
               value={expenseForm.tripId}
-              onChange={(e) => setExpenseForm({ ...expenseForm, tripId: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, tripId: e.target.value })
+              }
               error={!!errors.tripId}
-              helperText={errors.tripId || (trips.length === 0 ? 'No trips found — create one first' : '')}
+              helperText={
+                errors.tripId ||
+                (trips.length === 0 ? "No trips found — create one first" : "")
+              }
               fullWidth
               disabled={trips.length === 0}
             >
@@ -407,21 +468,27 @@ const QuickCreateDropdown = ({ trips = [] }) => {
                 label="Amount (₹) *"
                 type="number"
                 value={expenseForm.amount}
-                onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
+                onChange={(e) =>
+                  setExpenseForm({ ...expenseForm, amount: e.target.value })
+                }
                 error={!!errors.amount}
                 helperText={errors.amount}
                 fullWidth
-                inputProps={{ min: 0.01, step: '0.01' }}
+                inputProps={{ min: 0.01, step: "0.01" }}
               />
               <TextField
                 select
                 label="Category"
                 value={expenseForm.category}
-                onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
+                onChange={(e) =>
+                  setExpenseForm({ ...expenseForm, category: e.target.value })
+                }
                 fullWidth
               >
                 {EXPENSE_CATEGORIES.map((c) => (
-                  <MenuItem key={c} value={c}>{c}</MenuItem>
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
                 ))}
               </TextField>
             </Box>
@@ -429,7 +496,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
             <TextField
               label="Description *"
               value={expenseForm.description}
-              onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, description: e.target.value })
+              }
               error={!!errors.description}
               helperText={errors.description}
               fullWidth
@@ -439,7 +508,9 @@ const QuickCreateDropdown = ({ trips = [] }) => {
               label="Date"
               type="date"
               value={expenseForm.date}
-              onChange={(e) => setExpenseForm({ ...expenseForm, date: e.target.value })}
+              onChange={(e) =>
+                setExpenseForm({ ...expenseForm, date: e.target.value })
+              }
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
@@ -447,14 +518,16 @@ const QuickCreateDropdown = ({ trips = [] }) => {
         </DialogContent>
 
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={closeModal} disabled={loading}>Cancel</Button>
+          <Button onClick={closeModal} disabled={loading}>
+            Cancel
+          </Button>
           <Button
             variant="contained"
             onClick={handleExpenseSubmit}
             disabled={loading || trips.length === 0}
             startIcon={<AttachMoneyIcon />}
           >
-            {loading ? 'Adding…' : 'Add Expense'}
+            {loading ? "Adding…" : "Add Expense"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -464,13 +537,13 @@ const QuickCreateDropdown = ({ trips = [] }) => {
         open={snack.open}
         autoHideDuration={3500}
         onClose={() => setSnack({ ...snack, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           severity={snack.severity}
           onClose={() => setSnack({ ...snack, open: false })}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snack.message}
         </Alert>

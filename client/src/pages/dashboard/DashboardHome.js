@@ -10,8 +10,8 @@
 //
 // ─── Original file content begins below ──────────────────────────────────────
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Grid,
@@ -21,12 +21,12 @@ import {
   Chip,
   LinearProgress,
   Button,
-} from '@mui/material';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+} from "@mui/material";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {
   BarChart,
   Bar,
@@ -35,13 +35,13 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
-import { fetchTrips } from '../../redux/actions/tripActions';
-import { fetchExpenses } from '../../redux/actions/expenseActions';
-import { useNavigate } from 'react-router-dom';
+} from "recharts";
+import { fetchTrips } from "../../redux/actions/tripActions";
+import { fetchExpenses } from "../../redux/actions/expenseActions";
+import { useNavigate } from "react-router-dom";
 
 // ─── NEW: import the Quick Create component ───────────────────────────────────
-import QuickCreateDropdown from '../../components/QuickCreateDropdown';
+import QuickCreateDropdown from "../../components/QuickCreateDropdown";
 
 const DashboardHome = () => {
   const dispatch = useDispatch();
@@ -58,13 +58,13 @@ const DashboardHome = () => {
 
   // ── Analytics helpers ──────────────────────────────────────────────────────
   const totalTrips = trips.length;
-  const completedTrips = trips.filter((t) => t.status === 'Completed').length;
-  const plannedTrips = trips.filter((t) => t.status === 'Planned').length;
+  const completedTrips = trips.filter((t) => t.status === "Completed").length;
+  const plannedTrips = trips.filter((t) => t.status === "Planned").length;
   const totalBudget = trips.reduce((s, t) => s + (t.budget || 0), 0);
   const totalSpent = expenses.reduce((s, e) => s + (e.amount || 0), 0);
 
   const upcomingTrips = trips
-    .filter((t) => t.status === 'Planned')
+    .filter((t) => t.status === "Planned")
     .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
     .slice(0, 3);
 
@@ -72,19 +72,25 @@ const DashboardHome = () => {
   const monthlyData = Array.from({ length: 6 }, (_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - i));
-    const label = d.toLocaleString('default', { month: 'short' });
+    const label = d.toLocaleString("default", { month: "short" });
     const count = trips.filter((t) => {
       const td = new Date(t.startDate);
-      return td.getMonth() === d.getMonth() && td.getFullYear() === d.getFullYear();
+      return (
+        td.getMonth() === d.getMonth() && td.getFullYear() === d.getFullYear()
+      );
     }).length;
     return { month: label, trips: count };
   });
 
   // ── Stat card helper ───────────────────────────────────────────────────────
   const StatCard = ({ title, value, icon, color, subtitle }) => (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: "100%" }}>
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
           <Box>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               {title}
@@ -103,8 +109,8 @@ const DashboardHome = () => {
               p: 1.5,
               borderRadius: 2,
               bgcolor: `${color}15`,
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
             }}
           >
             {React.cloneElement(icon, { sx: { color, fontSize: 28 } })}
@@ -119,7 +125,7 @@ const DashboardHome = () => {
     <Box sx={{ p: 3 }}>
       {/* Greeting */}
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Welcome back, {user?.name?.split(' ')[0] || 'Traveller'} ✈️
+        Welcome back, {user?.name?.split(" ")[0] || "Traveller"} ✈️
       </Typography>
       <Typography variant="body2" color="text.secondary" mb={3}>
         Here's an overview of your travel activity.
@@ -166,7 +172,12 @@ const DashboardHome = () => {
       {totalBudget > 0 && (
         <Card sx={{ mb: 3 }}>
           <CardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              mb={1}
+            >
               <Typography variant="subtitle1" fontWeight="bold">
                 Budget Utilisation
               </Typography>
@@ -177,11 +188,16 @@ const DashboardHome = () => {
             <LinearProgress
               variant="determinate"
               value={Math.min((totalSpent / totalBudget) * 100, 100)}
-              color={totalSpent > totalBudget ? 'error' : 'primary'}
+              color={totalSpent > totalBudget ? "error" : "primary"}
               sx={{ height: 8, borderRadius: 4 }}
             />
             {totalSpent > totalBudget && (
-              <Typography variant="caption" color="error" mt={0.5} display="block">
+              <Typography
+                variant="caption"
+                color="error"
+                mt={0.5}
+                display="block"
+              >
                 Over budget by ₹{(totalSpent - totalBudget).toLocaleString()}
               </Typography>
             )}
@@ -215,7 +231,7 @@ const DashboardHome = () => {
 
         {/* Upcoming trips */}
         <Grid item xs={12} md={5}>
-          <Card sx={{ height: '100%' }}>
+          <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="subtitle1" fontWeight="bold" mb={2}>
                 Upcoming Trips
@@ -229,14 +245,16 @@ const DashboardHome = () => {
                   py={4}
                   gap={1}
                 >
-                  <FlightTakeoffIcon sx={{ fontSize: 40, color: 'text.disabled' }} />
+                  <FlightTakeoffIcon
+                    sx={{ fontSize: 40, color: "text.disabled" }}
+                  />
                   <Typography variant="body2" color="text.secondary">
                     No upcoming trips
                   </Typography>
                   <Button
                     size="small"
                     variant="outlined"
-                    onClick={() => navigate('/dashboard/trips')}
+                    onClick={() => navigate("/dashboard/trips")}
                   >
                     Plan a trip
                   </Button>
@@ -246,15 +264,15 @@ const DashboardHome = () => {
                   <Box
                     key={trip._id}
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                       p: 1.5,
                       mb: 1,
                       borderRadius: 2,
-                      bgcolor: 'action.hover',
-                      cursor: 'pointer',
-                      '&:hover': { bgcolor: 'action.selected' },
+                      bgcolor: "action.hover",
+                      cursor: "pointer",
+                      "&:hover": { bgcolor: "action.selected" },
                     }}
                     onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
                   >
@@ -263,7 +281,7 @@ const DashboardHome = () => {
                         {trip.destination}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {new Date(trip.startDate).toLocaleDateString()} –{' '}
+                        {new Date(trip.startDate).toLocaleDateString()} –{" "}
                         {new Date(trip.endDate).toLocaleDateString()}
                       </Typography>
                     </Box>
