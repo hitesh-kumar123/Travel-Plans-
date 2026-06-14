@@ -37,6 +37,13 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+// Frankfurter is a free, open-source exchange-rate API — no key required.
+// We always fetch with base=INR so we can use INR as a universal pivot
+// to convert between any two currencies stored in the app.
+const FRANKFURTER_BASE_URL =
+  process.env.REACT_APP_FRANKFURTER_API_URL || "https://api.frankfurter.dev/v1";
+
 export const getCurrencyRates = (base = "INR") =>
-  api.get(`/currency/rates?base=${base}`);
+  axios.get(`${FRANKFURTER_BASE_URL}/latest?base=${base}`);
+
 export default api;
