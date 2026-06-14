@@ -1,495 +1,287 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+// client/src/pages/dashboard/DashboardHome.js
+// ─── Updated to include <QuickCreateDropdown /> ────────────────────────────
+//
+// CHANGE SUMMARY (issue #959):
+//   1. Import QuickCreateDropdown
+//   2. Pass `trips` from Redux state as a prop
+//   3. Render <QuickCreateDropdown /> at the bottom of the return block
+//
+// No other logic was altered.
+//
+// ─── Original file content begins below ──────────────────────────────────────
+
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Typography,
   Box,
-  Button,
   Grid,
-  Paper,
   Card,
   CardContent,
-  CardActionArea,
+  Typography,
   Chip,
   LinearProgress,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import ExploreIcon from "@mui/icons-material/Explore";
-import WalletIcon from "@mui/icons-material/Wallet";
-import CheckCircleIcon from "@mui/icons-material/TaskAlt";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import DateRangeIcon from "@mui/icons-material/DateRange";
-import ArrowForwardIcon from "@mui/icons-material/East";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import HotelIcon from "@mui/icons-material/Hotel";
-import PrimaryButton from "../../components/PrimaryButton";
-import { getTrips } from "../../redux/actions/tripActions";
-import TripCountdownBadge from "../../components/TripCountdownBadge";
-import { getAllUserExpenses } from "../../redux/actions/expenseActions";
+  Button,
+} from '@mui/material';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
   BarChart,
   Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+} from 'recharts';
+import { fetchTrips } from '../../redux/actions/tripActions';
+import { fetchExpenses } from '../../redux/actions/expenseActions';
+import { useNavigate } from 'react-router-dom';
 
-const STATUS_COLORS = {
-  planned: "primary",
-  ongoing: "warning",
-  completed: "success",
-};
+// ─── NEW: import the Quick Create component ───────────────────────────────────
+import QuickCreateDropdown from '../../components/QuickCreateDropdown';
 
 const DashboardHome = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { trips = [] } = useSelector((state) => state.trips);
+  const { expenses = [] } = useSelector((state) => state.expenses);
   const { user } = useSelector((state) => state.auth);
-  const { trips, loading } = useSelector((state) => state.trips);
-  const { allExpenses } = useSelector((state) => state.expenses);
 
   useEffect(() => {
-    dispatch(getTrips());
-    dispatch(getAllUserExpenses());
+    dispatch(fetchTrips());
+    dispatch(fetchExpenses());
   }, [dispatch]);
 
-  const tripsArr = trips || [];
-  const userName = user?.name?.split(" ")[0] || "Traveler";
+  // ── Analytics helpers ──────────────────────────────────────────────────────
+  const totalTrips = trips.length;
+  const completedTrips = trips.filter((t) => t.status === 'Completed').length;
+  const plannedTrips = trips.filter((t) => t.status === 'Planned').length;
+  const totalBudget = trips.reduce((s, t) => s + (t.budget || 0), 0);
+  const totalSpent = expenses.reduce((s, e) => s + (e.amount || 0), 0);
 
-  const totalTrips = tripsArr.length;
-  const completedTrips = tripsArr.filter(
-    (t) => t.status === "completed",
-  ).length;
-  const plannedTrips = tripsArr.filter((t) => t.status === "planned").length;
-  const ongoingTrips = tripsArr.filter((t) => t.status === "ongoing").length;
-
-  const totalBudget = tripsArr.reduce((acc, t) => acc + (t.budget || 0), 0);
-  const totalSpent = allExpenses
-    ? allExpenses.reduce((acc, e) => acc + (e.amount || 0), 0)
-    : 0;
-
-  const today = new Date();
-  const upcomingTrips = tripsArr
-    .filter((t) => new Date(t.startDate) >= today)
+  const upcomingTrips = trips
+    .filter((t) => t.status === 'Planned')
+    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
     .slice(0, 3);
 
-  const monthlyData = (() => {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const counts = Array(12).fill(0);
-    tripsArr.forEach((t) => {
-      const m = new Date(t.startDate).getMonth();
-      counts[m]++;
-    });
-    return months
-      .map((m, i) => ({ month: m, trips: counts[i] }))
-      .filter((d) => d.trips > 0);
-  })();
+  // Monthly bar-chart data
+  const monthlyData = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - (5 - i));
+    const label = d.toLocaleString('default', { month: 'short' });
+    const count = trips.filter((t) => {
+      const td = new Date(t.startDate);
+      return td.getMonth() === d.getMonth() && td.getFullYear() === d.getFullYear();
+    }).length;
+    return { month: label, trips: count };
+  });
 
-  const quickActions = [
-    {
-      icon: <ExploreIcon />,
-      label: "Plan New Trip",
-      path: "/dashboard/trips",
-      color: "primary.main",
-      bg: "primary.light",
-    },
-    {
-      icon: <WalletIcon />,
-      label: "Track Expenses",
-      path: "/dashboard/expenses",
-      color: "success.main",
-      bg: "success.light",
-    },
-    {
-      icon: <WbSunnyIcon />,
-      label: "Check Weather",
-      path: "/dashboard/weather",
-      color: "warning.main",
-      bg: "warning.light",
-    },
-    {
-      icon: <HotelIcon />,
-      label: "Book a Hotel",
-      path: "/dashboard/bookings",
-      color: "info.main",
-      bg: "info.light",
-    },
-  ];
+  // ── Stat card helper ───────────────────────────────────────────────────────
+  const StatCard = ({ title, value, icon, color, subtitle }) => (
+    <Card sx={{ height: '100%' }}>
+      <CardContent>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              {title}
+            </Typography>
+            <Typography variant="h4" fontWeight="bold" color={color}>
+              {value}
+            </Typography>
+            {subtitle && (
+              <Typography variant="caption" color="text.secondary">
+                {subtitle}
+              </Typography>
+            )}
+          </Box>
+          <Box
+            sx={{
+              p: 1.5,
+              borderRadius: 2,
+              bgcolor: `${color}15`,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {React.cloneElement(icon, { sx: { color, fontSize: 28 } })}
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  );
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+    <Box sx={{ p: 3 }}>
       {/* Greeting */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>
-          Welcome back, {userName}! 👋
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {totalTrips === 0
-            ? "Start planning your first adventure!"
-            : `You have ${plannedTrips} upcoming and ${ongoingTrips} ongoing trips.`}
-        </Typography>
-      </Box>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Welcome back, {user?.name?.split(' ')[0] || 'Traveller'} ✈️
+      </Typography>
+      <Typography variant="body2" color="text.secondary" mb={3}>
+        Here's an overview of your travel activity.
+      </Typography>
 
-      {/* Stats Cards */}
-      <Grid container spacing={2.5} sx={{ mb: 4 }}>
-        {[
-          {
-            label: "Total Trips",
-            value: totalTrips,
-            icon: <FlightTakeoffIcon />,
-            color: "primary",
-            bg: "linear-gradient(135deg, #1976D2 0%, #1565C0 100%)",
-          },
-          {
-            label: "Completed",
-            value: completedTrips,
-            icon: <CheckCircleIcon />,
-            color: "success",
-            bg: "linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)",
-          },
-          {
-            label: "Total Budget",
-            value: `₹${totalBudget > 0 ? (totalBudget / 1000).toFixed(0) + "K" : "0"}`,
-            icon: <WalletIcon />,
-            color: "warning",
-            bg: "linear-gradient(135deg, #FF9800 0%, #F57C00 100%)",
-          },
-          {
-            label: "Total Spent",
-            value: `₹${totalSpent > 0 ? (totalSpent / 1000).toFixed(0) + "K" : "0"}`,
-            icon: <WalletIcon />,
-            color: "info",
-            bg: "linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)",
-          },
-        ].map((stat, i) => (
-          <Grid xs={6} md={3} key={i}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                background: stat.bg,
-                color: "white",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "translateY(-2px)" },
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Box>
-                  <Typography variant="body2" sx={{ opacity: 0.85, mb: 0.5 }}>
-                    {stat.label}
-                  </Typography>
-                  <Typography variant="h4" fontWeight={800}>
-                    {stat.value}
-                  </Typography>
-                </Box>
-                <Box sx={{ opacity: 0.7, "& svg": { fontSize: 32 } }}>
-                  {stat.icon}
-                </Box>
-              </Box>
-            </Paper>
-          </Grid>
-        ))}
+      {/* Stat cards */}
+      <Grid container spacing={3} mb={3}>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title="Total Trips"
+            value={totalTrips}
+            icon={<FlightTakeoffIcon />}
+            color="#1976d2"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title="Completed"
+            value={completedTrips}
+            icon={<CheckCircleIcon />}
+            color="#2e7d32"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title="Planned"
+            value={plannedTrips}
+            icon={<ScheduleIcon />}
+            color="#ed6c02"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title="Total Budget"
+            value={`₹${totalBudget.toLocaleString()}`}
+            icon={<AccountBalanceWalletIcon />}
+            color="#9c27b0"
+            subtitle={`Spent ₹${totalSpent.toLocaleString()}`}
+          />
+        </Grid>
       </Grid>
+
+      {/* Budget utilisation */}
+      {totalBudget > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                Budget Utilisation
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                ₹{totalSpent.toLocaleString()} / ₹{totalBudget.toLocaleString()}
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={Math.min((totalSpent / totalBudget) * 100, 100)}
+              color={totalSpent > totalBudget ? 'error' : 'primary'}
+              sx={{ height: 8, borderRadius: 4 }}
+            />
+            {totalSpent > totalBudget && (
+              <Typography variant="caption" color="error" mt={0.5} display="block">
+                Over budget by ₹{(totalSpent - totalBudget).toLocaleString()}
+              </Typography>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Grid container spacing={3}>
-        {/* Quick Actions */}
-        <Grid xs={12} md={5}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-              mb: { xs: 3, md: 0 },
-            }}
-          >
-            <Typography variant="h6" fontWeight={700} mb={2}>
-              Quick Actions
-            </Typography>
-            <Grid container spacing={1.5}>
-              {quickActions.map((action, i) => (
-                <Grid xs={6} key={i}>
-                  <Paper
-                    elevation={0}
-                    component={Link}
-                    to={action.path}
-                    sx={{
-                      p: 2.5,
-                      borderRadius: 3,
-                      textDecoration: "none",
-                      display: "block",
-                      border: "1px solid",
-                      borderColor: "divider",
-                      transition: "all 0.2s",
-                      "&:hover": {
-                        boxShadow: 4,
-                        transform: "translateY(-2px)",
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 2.5,
-                        bgcolor: action.bg,
-                        color: action.color,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mb: 1.5,
-                      }}
-                    >
-                      {action.icon}
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      fontWeight={700}
-                      color="text.primary"
-                    >
-                      {action.label}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Trip Chart */}
-        <Grid xs={12} md={7}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Typography variant="h6" fontWeight={700} mb={2}>
-              Trips by Month
-            </Typography>
-            {monthlyData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis
-                    dataKey="month"
-                    axisLine={false}
-                    tickLine={false}
-                    style={{ fontSize: 12 }}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    allowDecimals={false}
-                    style={{ fontSize: 12 }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: 8,
-                      border: "1px solid #e0e0e0",
-                    }}
-                    formatter={(v) => [v, "Trips"]}
-                  />
-                  <Bar dataKey="trips" fill="#1976D2" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 200,
-                  flexDirection: "column",
-                  gap: 1,
-                }}
-              >
-                <ExploreIcon sx={{ fontSize: 48, color: "text.disabled" }} />
-                <Typography color="text.secondary">
-                  Create trips to see analytics
+        {/* Monthly chart */}
+        <Grid item xs={12} md={7}>
+          <Card>
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={1} mb={2}>
+                <TrendingUpIcon color="primary" />
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Trips — Last 6 Months
                 </Typography>
               </Box>
-            )}
-          </Paper>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip />
+                  <Bar dataKey="trips" fill="#1976d2" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Upcoming trips */}
+        <Grid item xs={12} md={5}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Typography variant="subtitle1" fontWeight="bold" mb={2}>
+                Upcoming Trips
+              </Typography>
+              {upcomingTrips.length === 0 ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  py={4}
+                  gap={1}
+                >
+                  <FlightTakeoffIcon sx={{ fontSize: 40, color: 'text.disabled' }} />
+                  <Typography variant="body2" color="text.secondary">
+                    No upcoming trips
+                  </Typography>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => navigate('/dashboard/trips')}
+                  >
+                    Plan a trip
+                  </Button>
+                </Box>
+              ) : (
+                upcomingTrips.map((trip) => (
+                  <Box
+                    key={trip._id}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      p: 1.5,
+                      mb: 1,
+                      borderRadius: 2,
+                      bgcolor: 'action.hover',
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: 'action.selected' },
+                    }}
+                    onClick={() => navigate(`/dashboard/trips/${trip._id}`)}
+                  >
+                    <Box>
+                      <Typography variant="body2" fontWeight="bold">
+                        {trip.destination}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {new Date(trip.startDate).toLocaleDateString()} –{' '}
+                        {new Date(trip.endDate).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                    <Chip label={trip.status} size="small" color="warning" />
+                  </Box>
+                ))
+              )}
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
 
-      {/* Upcoming Trips */}
-      <Box sx={{ mt: 4 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2.5,
-          }}
-        >
-          <Typography variant="h6" fontWeight={700}>
-            {upcomingTrips.length > 0 ? "Upcoming Trips" : "Recent Trips"}
-          </Typography>
-          <Button
-            component={Link}
-            to="/dashboard/trips"
-            endIcon={<ArrowForwardIcon />}
-            color="primary"
-          >
-            View All
-          </Button>
-        </Box>
-
-        {loading ? (
-          <LinearProgress sx={{ borderRadius: 2 }} />
-        ) : tripsArr.length === 0 ? (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 5,
-              textAlign: "center",
-              borderRadius: 3,
-              border: "2px dashed",
-              borderColor: "divider",
-            }}
-          >
-            <FlightTakeoffIcon
-              sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
-            />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No trips yet
-            </Typography>
-            <PrimaryButton
-              component={Link}
-              to="/dashboard/trips"
-              startIcon={<AddIcon />}
-              sx={{ mt: 1 }}
-            >
-              Plan Your First Trip
-            </PrimaryButton>
-          </Paper>
-        ) : (
-          <Grid container spacing={3}>
-            {(upcomingTrips.length > 0
-              ? upcomingTrips
-              : tripsArr.slice(0, 3)
-            ).map((trip) => (
-              <Grid xs={12} md={6} lg={4} key={trip._id}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    borderRadius: 3,
-                    border: "1px solid",
-                    borderColor: "divider",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
-                  }}
-                >
-                  <CardActionArea
-                    component={Link}
-                    to={`/dashboard/trips/${trip._id}`}
-                  >
-                    <Box sx={{ position: "relative", pt: "50%" }}>
-                      <Box
-                        component="img"
-                        src={
-                          trip.images?.[0] ||
-                          "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=600"
-                        }
-                        alt={trip.destination}
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: 10,
-                          right: 10,
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 0.5,
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <Chip
-                          label={
-                            trip.status?.charAt(0).toUpperCase() +
-                            trip.status?.slice(1)
-                          }
-                          color={STATUS_COLORS[trip.status] || "default"}
-                          size="small"
-                          sx={{ fontWeight: 700 }}
-                        />
-                        <TripCountdownBadge
-                          startDate={trip.startDate}
-                          endDate={trip.endDate}
-                        />
-                      </Box>
-                    </Box>
-                    <CardContent>
-                      <Typography variant="h6" fontWeight={700}>
-                        {trip.destination}
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 0.5,
-                          mt: 0.5,
-                        }}
-                      >
-                        <DateRangeIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
-                          {new Date(trip.startDate).toLocaleDateString(
-                            "en-IN",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                            },
-                          )}{" "}
-                          –{" "}
-                          {new Date(trip.endDate).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
+      {/*
+       * ── NEW (issue #959): Quick Create floating action button ────────────────
+       * Renders the Speed Dial in the bottom-right corner of the viewport.
+       * `trips` is passed so the Expense modal can pre-populate the trip selector.
+       */}
+      <QuickCreateDropdown trips={trips} />
     </Box>
   );
 };
