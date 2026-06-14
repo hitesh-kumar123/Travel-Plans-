@@ -106,62 +106,59 @@ const Dashboard = () => {
   };
 
   const drawer = (
-  <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-    {/* Logo */}
-    <Box
-      sx={{
-        p: 2.5,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {/* 🚀 FIXED: Wrapped with React Router Link to enable redirection & hand cursor on hover */}
-      <Link 
-        to="/dashboard" 
-        style={{ textDecoration: "none" }}
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Logo */}
+      <Box
+        sx={{
+          p: 2.5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <Box 
-          sx={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: 1.5,
-            cursor: "pointer", // Forces hand symbol on hover
-            transition: "opacity 0.2s ease-in-out",
-            "&:hover": {
-              opacity: 0.85,    // Subtle fade effect so users know it's clickable
-            }
-          }}
-        >
+        {/* 🚀 FIXED: Wrapped with React Router Link to enable redirection & hand cursor on hover */}
+        <Link to="/dashboard" style={{ textDecoration: "none" }}>
           <Box
             sx={{
-              width: 38,
-              height: 38,
-              borderRadius: "10px",
-              background: "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              gap: 1.5,
+              cursor: "pointer", // Forces hand symbol on hover
+              transition: "opacity 0.2s ease-in-out",
+              "&:hover": {
+                opacity: 0.85, // Subtle fade effect so users know it's clickable
+              },
             }}
           >
-            <ExploreIcon sx={{ color: "white", fontSize: 22 }} />
+            <Box
+              sx={{
+                width: 38,
+                height: 38,
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #1976D2 0%, #00BCD4 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ExploreIcon sx={{ color: "white", fontSize: 22 }} />
+            </Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 900,
+                background: "linear-gradient(45deg, #1976D2 30%, #00BCD4 90%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              PackGo
+            </Typography>
           </Box>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 900,
-              background: "linear-gradient(45deg, #1976D2 30%, #00BCD4 90%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            PackGo
-          </Typography>
-        </Box>
-      </Link>
-    </Box>
-    <Divider />
+        </Link>
+      </Box>
+      <Divider />
 
       {/* User Info */}
       <Box sx={{ p: 2.5 }}>
