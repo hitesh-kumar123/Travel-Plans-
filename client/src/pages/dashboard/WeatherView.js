@@ -10,6 +10,7 @@ import {
   InputAdornment,
   CircularProgress,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AirIcon from "@mui/icons-material/Air";
@@ -207,8 +208,8 @@ const WeatherView = () => {
         </Paper>
       )}
 
-      {/* Current Weather */}
-      {currentWeather && (
+      {/* Current Weather / Skeletons */}
+      {(currentWeather || loading) && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={6}>
             <Paper
@@ -229,52 +230,144 @@ const WeatherView = () => {
                 }}
               >
                 <Box>
-                  <Typography
-                    variant="h6"
-                    fontWeight={600}
-                    sx={{ opacity: 0.9 }}
-                  >
-                    {currentWeather.location}, {currentWeather.country}
-                  </Typography>
-                  <Typography variant="h2" fontWeight={800} sx={{ my: 1 }}>
-                    {Math.round(currentWeather.temperature)}°C
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ textTransform: "capitalize", opacity: 0.9 }}
-                  >
-                    {currentWeather.description}
-                  </Typography>
+                  {loading ? (
+                    <>
+                      <Skeleton
+                        variant="text"
+                        width="70%"
+                        height={28}
+                        sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                      />
+                      <Skeleton
+                        variant="text"
+                        width="55%"
+                        height={46}
+                        sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                      />
+                      <Skeleton
+                        variant="text"
+                        width="90%"
+                        height={22}
+                        sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{ opacity: 0.9 }}
+                      >
+                        {currentWeather.location}, {currentWeather.country}
+                      </Typography>
+                      <Typography variant="h2" fontWeight={800} sx={{ my: 1 }}>
+                        {Math.round(currentWeather.temperature)}°C
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ textTransform: "capitalize", opacity: 0.9 }}
+                      >
+                        {currentWeather.description}
+                      </Typography>
+                    </>
+                  )}
                 </Box>
-                <Typography sx={{ fontSize: 72 }}>
-                  {getWeatherIcon(currentWeather.description)}
-                </Typography>
+
+                {loading ? (
+                  <Skeleton
+                    variant="circular"
+                    width={74}
+                    height={74}
+                    sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                  />
+                ) : (
+                  <Typography sx={{ fontSize: 72 }}>
+                    {getWeatherIcon(currentWeather.description)}
+                  </Typography>
+                )}
               </Box>
+
               <Divider sx={{ my: 2.5, borderColor: "rgba(255,255,255,0.3)" }} />
+
               <Grid container spacing={2}>
                 <Grid item xs={4}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <OpacityIcon sx={{ fontSize: 18, opacity: 0.8 }} />
+                    {loading ? (
+                      <Skeleton
+                        variant="circular"
+                        width={18}
+                        height={18}
+                        sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                      />
+                    ) : (
+                      <OpacityIcon sx={{ fontSize: 18, opacity: 0.8 }} />
+                    )}
                     <Box>
                       <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                        Humidity
+                        {loading ? (
+                          <Skeleton
+                            variant="text"
+                            width={80}
+                            height={16}
+                            sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                          />
+                        ) : (
+                          "Humidity"
+                        )}
                       </Typography>
-                      <Typography variant="body2" fontWeight={700}>
-                        {currentWeather.humidity}%
-                      </Typography>
+                      {loading ? (
+                        <Skeleton
+                          variant="text"
+                          width={75}
+                          height={20}
+                          sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                        />
+                      ) : (
+                        <Typography variant="body2" fontWeight={700}>
+                          {currentWeather.humidity}%
+                        </Typography>
+                      )}
                     </Box>
                   </Box>
                 </Grid>
+
                 <Grid item xs={4}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <AirIcon sx={{ fontSize: 18, opacity: 0.8 }} />
+                    {loading ? (
+                      <Skeleton
+                        variant="circular"
+                        width={18}
+                        height={18}
+                        sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                      />
+                    ) : (
+                      <AirIcon sx={{ fontSize: 18, opacity: 0.8 }} />
+                    )}
                     <Box>
                       <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                        Wind
+                        {loading ? (
+                          <Skeleton
+                            variant="text"
+                            width={60}
+                            height={16}
+                            sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                          />
+                        ) : (
+                          "Wind"
+                        )}
                       </Typography>
-                      <Typography variant="body2" fontWeight={700}>
-                        {currentWeather.windSpeed} m/s
-                      </Typography>
+                      {loading ? (
+                        <Skeleton
+                          variant="text"
+                          width={110}
+                          height={20}
+                          sx={{ bgcolor: "rgba(255,255,255,0.35)" }}
+                        />
+                      ) : (
+                        <Typography variant="body2" fontWeight={700}>
+                          {currentWeather.windSpeed} m/s
+                        </Typography>
+                      )}
                     </Box>
                   </Box>
                 </Grid>
@@ -282,7 +375,7 @@ const WeatherView = () => {
             </Paper>
           </Grid>
 
-          {/* Travel Tips */}
+          {/* Travel Tips / Skeletons */}
           <Grid item xs={12} md={6}>
             <Paper
               elevation={0}
@@ -294,61 +387,146 @@ const WeatherView = () => {
                 height: "100%",
               }}
             >
-              <Typography variant="h6" fontWeight={700} mb={2}>
-                🧳 Travel Tip
-              </Typography>
-              <Typography color="text.secondary" mb={2}>
-                {currentWeather.temperature > 30
-                  ? "🌞 It's hot! Pack light cotton clothes, sunscreen, and stay hydrated."
-                  : currentWeather.temperature > 20
-                    ? "😊 Great weather for exploring! Comfortable clothes recommended."
-                    : currentWeather.temperature > 10
-                      ? "🧥 Pack a light jacket — it can get cool, especially in the evening."
-                      : "🧣 It's cold! Carry warm layers, gloves, and a heavy jacket."}
-              </Typography>
-              {currentWeather.description?.toLowerCase().includes("rain") && (
-                <Typography color="text.secondary">
-                  ☔ Don't forget your umbrella!
-                </Typography>
-              )}
-              <Box sx={{ mt: "auto", pt: 3 }}>
-                {/* ✅ Real fetchedAt timestamp */}
-                <Typography variant="caption" color="text.disabled">
-                  Last updated:{" "}
-                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
-                </Typography>
+              {loading ? (
+                <>
+                  <Skeleton
+                    variant="text"
+                    width={140}
+                    height={28}
+                    sx={{ mb: 2, display: "block" }}
+                  />
+                  <Skeleton
+                    variant="text"
+                    width="95%"
+                    height={22}
+                    sx={{ mb: 2, display: "block" }}
+                  />
+                  <Skeleton
+                    variant="text"
+                    width="80%"
+                    height={18}
+                    sx={{ mb: 2, display: "block" }}
+                  />
+                  <Box sx={{ mt: "auto", pt: 3 }}>
+                    <Skeleton
+                      variant="text"
+                      width={160}
+                      height={16}
+                      sx={{ mb: 1, display: "block" }}
+                    />
+                    <Skeleton
+                      variant="rounded"
+                      width={140}
+                      height={36}
+                      sx={{ display: "block" }}
+                    />
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography variant="h6" fontWeight={700} mb={2}>
+                    🧳 Travel Tip
+                  </Typography>
+                  <Typography color="text.secondary" mb={2}>
+                    {currentWeather.temperature > 30
+                      ? "🌞 It's hot! Pack light cotton clothes, sunscreen, and stay hydrated."
+                      : currentWeather.temperature > 20
+                        ? "😊 Great weather for exploring! Comfortable clothes recommended."
+                        : currentWeather.temperature > 10
+                          ? "🧥 Pack a light jacket — it can get cool, especially in the evening."
+                          : "🧣 It's cold! Carry warm layers, gloves, and a heavy jacket."}
+                  </Typography>
+                  {currentWeather.description?.toLowerCase().includes("rain") && (
+                    <Typography color="text.secondary">
+                      ☔ Don't forget your umbrella!
+                    </Typography>
+                  )}
+                  <Box sx={{ mt: "auto", pt: 3 }}>
+                    <Typography variant="caption" color="text.disabled">
+                      Last updated:{" "}
+                      {fetchedAt
+                        ? new Date(fetchedAt).toLocaleTimeString()
+                        : "—"}
+                    </Typography>
 
-                {/* ✅ Manual refresh button */}
-                <Box mt={1}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={handleRefresh}
-                    disabled={loading}
-                    sx={{ borderRadius: 2 }}
-                  >
-                    {loading ? "Refreshing..." : "🔄 Refresh"}
-                  </Button>
-                </Box>
-              </Box>
+                    <Box mt={1}>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={handleRefresh}
+                        disabled={loading}
+                        sx={{ borderRadius: 2 }}
+                      >
+                        {loading ? "Refreshing..." : "🔄 Refresh"}
+                      </Button>
+                    </Box>
+                  </Box>
+                </>
+              )}
             </Paper>
           </Grid>
         </Grid>
       )}
 
+
+
+
+
+
       {/* 5-Day Forecast */}
-      {forecastList.length > 0 && (
+      {(forecastList.length > 0 || loading) && (
         <Box>
           <Typography variant="h6" fontWeight={700} mb={2}>
             5-Day Forecast — {forecast?.location}
           </Typography>
           <Grid container spacing={2}>
-            {forecastList
-              .filter((_, idx) => idx % 8 === 0)
-              .slice(0, 5)
-              .map((day, idx) => (
+            {loading ? (
+              Array.from({ length: 5 }).map((_, idx) => (
                 <Grid item xs={6} sm={4} md={2.4} key={idx}>
                   <Paper
+                    elevation={0}
+                    sx={{
+                      p: 2.5,
+                      borderRadius: 3,
+                      textAlign: "center",
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="85%"
+                      height={16}
+                      sx={{ display: "block", mx: "auto", mb: 1 }}
+                    />
+                    <Skeleton
+                      variant="circular"
+                      width={42}
+                      height={42}
+                      sx={{ display: "block", mx: "auto", mb: 1 }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width={60}
+                      height={24}
+                      sx={{ display: "block", mx: "auto", mb: 1 }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="90%"
+                      height={14}
+                      sx={{ display: "block", mx: "auto" }}
+                    />
+                  </Paper>
+                </Grid>
+              ))
+            ) : (
+              forecastList
+                .filter((_, idx) => idx % 8 === 0)
+                .slice(0, 5)
+                .map((day, idx) => (
+                  <Grid item xs={6} sm={4} md={2.4} key={idx}>
+                    <Paper
                     elevation={0}
                     sx={{
                       p: 2.5,
