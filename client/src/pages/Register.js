@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { register, googleLogin } from "../redux/actions/authActions";
@@ -29,6 +29,55 @@ import ArrowBackIcon from "@mui/icons-material/West";
 
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PrimaryButton from "../components/PrimaryButton";
+
+/**
+ * Renders the Google Sign-In button and surrounding OR divider.
+ * Uses a ResizeObserver to measure available container width so that
+ * the GoogleLogin iframe never overflows its parent on any viewport.
+ */
+const GoogleAuthSection = ({ onSuccess }) => {
+  const containerRef = useRef(null);
+  const [buttonWidth, setButtonWidth] = useState(null);
+
+  const updateWidth = useCallback(() => {
+    if (containerRef.current) {
+      setButtonWidth(Math.floor(containerRef.current.clientWidth));
+    }
+  }, []);
+
+  useEffect(() => {
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [updateWidth]);
+
+  return (
+    <>
+      <Divider sx={{ my: 4 }}>
+        <Typography variant="body2" color="text.secondary">
+          OR
+        </Typography>
+      </Divider>
+
+      {/* Container measured so we can feed exact px width to GoogleLogin */}
+      <Box ref={containerRef} sx={{ width: "100%", overflow: "hidden" }}>
+        {buttonWidth !== null && (
+          <GoogleLogin
+            theme="outlined"
+            width={buttonWidth}
+            shape="pill"
+            text="continue_with"
+            size="large"
+            onSuccess={onSuccess}
+            onError={() => console.log("Google Login failed")}
+            useOneTap
+          />
+        )}
+      </Box>
+    </>
+  );
+};
 
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -111,7 +160,7 @@ const Register = () => {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (value && !passwordRegex.test(value)) {
         newErrors.password =
-          "Password must be at least 8 chars with atleast 1 uppercase, 1 lowercase, 1 number, and 1 special char";
+          "Password must be at least 8 chars with at least 1 uppercase, 1 lowercase, 1 number, and 1 special char";
       } else {
         newErrors.password = "";
       }
@@ -599,51 +648,7 @@ const Register = () => {
               </Box>
 
               {activeStep === 0 && (
-                <>
-                  <Divider sx={{ my: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      OR
-                    </Typography>
-                  </Divider>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: 2 }}>
-                      <GoogleLogin
-                        theme="outlined"
-                        width={isMobile ? 360 : 500}
-                        shape="pill"
-                        text="continue_with"
-                        size="large"
-                        sx={{
-                          borderRadius: 2,
-                          py: 1,
-
-                          color: "#3f51b5",
-                          borderColor: "#3f51b5",
-                          "&:hover": {
-                            backgroundColor: "rgba(66,133,244,0.08)",
-                            borderColor: "#3f51b5",
-                          },
-                          "&:active": {
-                            backgroundColor: "#3f51b5",
-                            color: "#fff",
-                            transform: "scale(0.98)",
-                          },
-                        }}
-                        onSuccess={handleGoogleSuccess}
-                        onError={() => console.log("Google Login failed")}
-                        useOneTap
-                      />
-                    </Box>
-                  </Box>
-                </>
+                <GoogleAuthSection onSuccess={handleGoogleSuccess} />
               )}
             </form>
           </Paper>

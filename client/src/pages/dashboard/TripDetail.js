@@ -279,7 +279,24 @@ const TripDetail = () => {
           </Tooltip>
           <Tooltip title="Edit Trip">
             <IconButton
-              onClick={() => setEditOpen(true)}
+              onClick={() => {
+                setEditForm({
+                  destination: currentTrip.destination || "",
+                  startDate: currentTrip.startDate
+                    ? new Date(currentTrip.startDate)
+                        .toISOString()
+                        .split("T")[0]
+                    : "",
+                  endDate: currentTrip.endDate
+                    ? new Date(currentTrip.endDate).toISOString().split("T")[0]
+                    : "",
+                  description: currentTrip.description || "",
+                  budget: currentTrip.budget || 0,
+                  status: currentTrip.status || "planned",
+                });
+
+                setEditOpen(true);
+              }}
               color="primary"
               sx={{ bgcolor: "primary.light" }}
             >
@@ -883,7 +900,12 @@ const TripDetail = () => {
                   fullWidth
                   type="date"
                   label="End Date"
-                  slotProps={{ inputLabel: { shrink: true } }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    htmlInput: {
+                      min: editForm.startDate,
+                    },
+                  }}
                   value={editForm.endDate || ""}
                   onChange={(e) =>
                     setEditForm({ ...editForm, endDate: e.target.value })
