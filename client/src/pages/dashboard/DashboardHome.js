@@ -36,8 +36,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { getTrips } from '../../redux/actions/tripActions';
-import { getExpenses } from '../../redux/actions/expenseActions';
+import { getTrips } from "../../redux/actions/tripActions";
+import { getExpenses } from "../../redux/actions/expenseActions";
 import { useNavigate } from "react-router-dom";
 
 // ─── NEW: import the Quick Create component ───────────────────────────────────

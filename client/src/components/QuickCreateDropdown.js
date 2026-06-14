@@ -24,8 +24,8 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import HotelIcon from "@mui/icons-material/Hotel";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addTrip } from '../redux/actions/tripActions';
-import { addExpense } from '../redux/actions/expenseActions';
+import { addTrip } from "../redux/actions/tripActions";
+import { addExpense } from "../redux/actions/expenseActions";
 /**
  * QuickCreateDropdown
  *
