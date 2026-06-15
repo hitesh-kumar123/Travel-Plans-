@@ -131,6 +131,13 @@ html {
   border-color: var(--coral);
 }
 
+@media (max-width: 768px) {
+  .wander-nav-log-in,
+  .wander-nav-create-account {
+    display: none;
+  }
+}
+
 .wander-nav-cta {
   background: var(--ocean);
   color: var(--white);
