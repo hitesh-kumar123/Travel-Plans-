@@ -116,9 +116,11 @@
   right: -5%;
   width: 60%;
   height: 140%;
-  background: radial-gradient(ellipse,
-      rgba(232, 115, 90, 0.12) 0%,
-      transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(232, 115, 90, 0.12) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 
@@ -147,7 +149,6 @@
 }
 
 @keyframes wander-pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -322,7 +323,10 @@
   grid-template-columns: 1fr 1fr 1fr auto;
   overflow: hidden;
   border: 1px solid rgba(26, 74, 107, 0.1);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* ⚡ ADDED: Better Focus State Management */
@@ -391,7 +395,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
   white-space: nowrap;
   font-family: "DM Sans", sans-serif;
 }
@@ -438,7 +444,9 @@
   color: var(--mist, #8e9aa4);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
   cursor: pointer;
   background: none;
   border-top: none;
@@ -458,7 +466,6 @@
 /* ══════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
-
   .wander-search-section,
   .wander-section {
     padding-left: 1.5rem;
@@ -527,7 +534,9 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s ease;
   background: #1a4a6b;
 }
 
@@ -564,9 +573,11 @@
 .wander-dest-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-      transparent 40%,
-      rgba(10, 25, 40, 0.9) 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(10, 25, 40, 0.9) 100%
+  );
 }
 
 .wander-dest-info {
@@ -616,7 +627,6 @@
 
 /* Tablets & Small Desktops */
 @media (max-width: 1024px) {
-
   .wander-search-section,
   .wander-section {
     padding-left: 1.5rem;
@@ -686,7 +696,6 @@
     font-size: 1.8rem;
   }
 }
-
 
 /* ═══ FEATURES ═══ */
 .wander-features-section {
@@ -863,9 +872,11 @@
   top: -50%;
   width: 50%;
   height: 200%;
-  background: radial-gradient(ellipse,
-      rgba(232, 115, 90, 0.2) 0%,
-      transparent 65%);
+  background: radial-gradient(
+    ellipse,
+    rgba(232, 115, 90, 0.2) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 

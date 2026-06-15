@@ -88,13 +88,8 @@ const mockHotels = [
 exports.searchFlights = async (req, res) => {
   try {
     // Removed 'returnDate' and 'adults' to resolve unused variable linting errors
-    const {
-      origin,
-      destination,
-      departureDate,
-      minBudget,
-      maxBudget,
-    } = req.body;
+    const { origin, destination, departureDate, minBudget, maxBudget } =
+      req.body;
 
     if (!origin || !destination || !departureDate) {
       return res.status(400).json({
