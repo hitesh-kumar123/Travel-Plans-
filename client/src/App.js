@@ -14,8 +14,11 @@ import "react-toastify/dist/ReactToastify.css";
 // Import components
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import LoginGoogleFix from "./pages/Login_google_fix";
+import Login from "./pages/Login.js";
+
+// Kept for potential OAuth redirect flows
+
+
 
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";

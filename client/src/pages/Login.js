@@ -1,4 +1,4 @@
-```javascript
+
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -461,4 +461,4 @@ const Login = () => {
 };
 
 export default Login;
-```
+
