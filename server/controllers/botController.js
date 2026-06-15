@@ -76,7 +76,7 @@ exports.getRecommendations = async (req, res) => {
   } catch (error) {
     console.error("BOT API ERROR:", error);
     res.status(500).json({ error: 'Failed to process recommendation' });
-  }
+  } 
 };
 
 exports.saveAiTrip = async (req, res) => {
