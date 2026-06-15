@@ -8,22 +8,22 @@
  * Payment verification statuses
  */
 const PAYMENT_STATUS = {
-  PENDING: 'pending',
-  PROCESSING: 'processing',
-  VERIFIED: 'verified',
-  FAILED: 'failed',
-  CANCELLED: 'cancelled'
+  PENDING: "pending",
+  PROCESSING: "processing",
+  VERIFIED: "verified",
+  FAILED: "failed",
+  CANCELLED: "cancelled",
 };
 
 /**
  * Booking statuses tied to payment verification
  */
 const BOOKING_STATUS = {
-  PENDING_PAYMENT: 'pending_payment',
-  PAYMENT_VERIFIED: 'payment_verified',
-  CONFIRMED: 'confirmed',
-  CANCELLED: 'cancelled',
-  REFUNDED: 'refunded'
+  PENDING_PAYMENT: "pending_payment",
+  PAYMENT_VERIFIED: "payment_verified",
+  CONFIRMED: "confirmed",
+  CANCELLED: "cancelled",
+  REFUNDED: "refunded",
 };
 
 /**
@@ -36,7 +36,7 @@ const bookingPaymentLinks = new Map();
  * Generates a unique payment transaction ID
  */
 const generatePaymentTransactionId = () => {
-  return 'PAY' + Date.now() + Math.random().toString(36).substr(2, 9);
+  return "PAY" + Date.now() + Math.random().toString(36).substr(2, 9);
 };
 
 /**
@@ -49,18 +49,25 @@ const generatePaymentTransactionId = () => {
  * @param {object} customerInfo - Customer payment information
  * @returns {object} Payment verification response with transaction ID
  */
-const initiatePaymentVerification = (bookingId, amount, currency, customerInfo) => {
+const initiatePaymentVerification = (
+  bookingId,
+  amount,
+  currency,
+  customerInfo,
+) => {
   // Validate payment details
   if (!bookingId || !amount || !currency) {
-    throw new Error('Missing required payment details: bookingId, amount, currency');
+    throw new Error(
+      "Missing required payment details: bookingId, amount, currency",
+    );
   }
 
   if (amount <= 0) {
-    throw new Error('Payment amount must be greater than zero');
+    throw new Error("Payment amount must be greater than zero");
   }
 
   if (!customerInfo || !customerInfo.email) {
-    throw new Error('Customer email is required for payment verification');
+    throw new Error("Customer email is required for payment verification");
   }
 
   // Generate unique transaction ID
@@ -78,7 +85,7 @@ const initiatePaymentVerification = (bookingId, amount, currency, customerInfo) 
     receiptUrl: null,
     webhookReceived: false,
     webhookReceivedAt: null,
-    error: null
+    error: null,
   };
 
   // Store payment record
@@ -90,7 +97,7 @@ const initiatePaymentVerification = (bookingId, amount, currency, customerInfo) 
     transactionId,
     paymentUrl: `/payment/checkout?transactionId=${transactionId}`,
     status: PAYMENT_STATUS.PENDING,
-    message: 'Payment verification initiated. Please complete payment.'
+    message: "Payment verification initiated. Please complete payment.",
   };
 };
 
@@ -105,14 +112,14 @@ const initiatePaymentVerification = (bookingId, amount, currency, customerInfo) 
 const verifyPaymentReceipt = (transactionId, receiptData) => {
   // Validate transaction exists
   if (!paymentRecords.has(transactionId)) {
-    throw new Error('Transaction ID not found: ' + transactionId);
+    throw new Error("Transaction ID not found: " + transactionId);
   }
 
   const paymentRecord = paymentRecords.get(transactionId);
 
   // Validate receipt data
   if (!receiptData || !receiptData.receiptId || !receiptData.amount) {
-    throw new Error('Invalid receipt data: missing receiptId or amount');
+    throw new Error("Invalid receipt data: missing receiptId or amount");
   }
 
   // Validate receipt amount matches payment amount
@@ -124,7 +131,10 @@ const verifyPaymentReceipt = (transactionId, receiptData) => {
   }
 
   // Validate receipt status
-  if (receiptData.status !== 'completed' && receiptData.status !== 'succeeded') {
+  if (
+    receiptData.status !== "completed" &&
+    receiptData.status !== "succeeded"
+  ) {
     const error = `Invalid receipt status: ${receiptData.status}`;
     paymentRecord.error = error;
     paymentRecord.status = PAYMENT_STATUS.FAILED;
@@ -155,7 +165,7 @@ const getPaymentStatus = (bookingId) => {
       status: PAYMENT_STATUS.PENDING,
       verified: false,
       transactionId: null,
-      message: 'No payment record found for this booking'
+      message: "No payment record found for this booking",
     };
   }
 
@@ -166,7 +176,7 @@ const getPaymentStatus = (bookingId) => {
       status: PAYMENT_STATUS.PENDING,
       verified: false,
       transactionId,
-      message: 'Payment record expired or not found'
+      message: "Payment record expired or not found",
     };
   }
 
@@ -179,7 +189,7 @@ const getPaymentStatus = (bookingId) => {
     receiptUrl: paymentRecord.receiptUrl,
     webhookReceived: paymentRecord.webhookReceived,
     initiatedAt: paymentRecord.initiatedAt,
-    error: paymentRecord.error
+    error: paymentRecord.error,
   };
 };
 
@@ -218,8 +228,8 @@ const reconcilePaymentWithBooking = (bookingId, bookingData) => {
     return {
       reconciled: false,
       status: bookingData.status,
-      issue: 'No payment record found for booking',
-      recommendation: 'Payment must be verified before booking confirmation'
+      issue: "No payment record found for booking",
+      recommendation: "Payment must be verified before booking confirmation",
     };
   }
 
@@ -230,7 +240,7 @@ const reconcilePaymentWithBooking = (bookingId, bookingData) => {
       status: bookingData.status,
       paymentStatus: paymentStatus.status,
       issue: `Payment not verified. Current status: ${paymentStatus.status}`,
-      recommendation: 'Booking cannot be confirmed until payment is verified'
+      recommendation: "Booking cannot be confirmed until payment is verified",
     };
   }
 
@@ -240,7 +250,7 @@ const reconcilePaymentWithBooking = (bookingId, bookingData) => {
       reconciled: false,
       status: bookingData.status,
       issue: `Price mismatch: booking amount ${bookingData.totalPrice} vs payment ${paymentStatus.amount}`,
-      recommendation: 'Amounts must match for reconciliation'
+      recommendation: "Amounts must match for reconciliation",
     };
   }
 
@@ -250,7 +260,7 @@ const reconcilePaymentWithBooking = (bookingId, bookingData) => {
     status: BOOKING_STATUS.CONFIRMED,
     transactionId: paymentStatus.transactionId,
     receiptUrl: paymentStatus.receiptUrl,
-    message: 'Payment verified and reconciled successfully'
+    message: "Payment verified and reconciled successfully",
   };
 };
 
@@ -266,17 +276,17 @@ const handlePaymentWebhook = (webhookData) => {
   if (!webhookData || !webhookData.transactionId) {
     return {
       success: false,
-      message: 'Invalid webhook data: missing transactionId'
+      message: "Invalid webhook data: missing transactionId",
     };
   }
 
   const { transactionId, receiptData, eventType } = webhookData;
 
   // Only process payment.completed events
-  if (eventType !== 'payment.completed' && eventType !== 'charge.succeeded') {
+  if (eventType !== "payment.completed" && eventType !== "charge.succeeded") {
     return {
       success: false,
-      message: `Unsupported event type: ${eventType}`
+      message: `Unsupported event type: ${eventType}`,
     };
   }
 
@@ -289,7 +299,7 @@ const handlePaymentWebhook = (webhookData) => {
         success: true,
         transactionId,
         status: PAYMENT_STATUS.VERIFIED,
-        message: 'Payment verified successfully from webhook'
+        message: "Payment verified successfully from webhook",
       };
     } else {
       const paymentRecord = paymentRecords.get(transactionId);
@@ -297,14 +307,14 @@ const handlePaymentWebhook = (webhookData) => {
         success: false,
         transactionId,
         status: PAYMENT_STATUS.FAILED,
-        message: paymentRecord.error
+        message: paymentRecord.error,
       };
     }
   } catch (error) {
     return {
       success: false,
       transactionId,
-      message: error.message
+      message: error.message,
     };
   }
 };
@@ -320,7 +330,7 @@ const handlePaymentWebhook = (webhookData) => {
 const finalizeBookingAfterPayment = (bookingId, bookingData) => {
   // Step 1: Verify payment status
   if (!isPaymentVerified(bookingId)) {
-    throw new Error('Booking cannot be confirmed: payment not verified');
+    throw new Error("Booking cannot be confirmed: payment not verified");
   }
 
   // Step 2: Reconcile payment with booking
@@ -340,7 +350,7 @@ const finalizeBookingAfterPayment = (bookingId, bookingData) => {
     totalPrice: bookingData.totalPrice,
     currency: bookingData.currency,
     confirmedAt: new Date(),
-    message: 'Booking confirmed after payment verification'
+    message: "Booking confirmed after payment verification",
   };
 };
 
@@ -360,5 +370,5 @@ module.exports = {
   handlePaymentWebhook,
 
   // Booking finalization
-  finalizeBookingAfterPayment
+  finalizeBookingAfterPayment,
 };

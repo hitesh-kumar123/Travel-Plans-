@@ -1,5 +1,5 @@
 // Payment verification module for secure payment processing
-const paymentVerification = require('../utils/paymentVerification');
+const paymentVerification = require("../utils/paymentVerification");
 
 // axios removed — not used in current mock implementation
 
@@ -93,13 +93,8 @@ const mockHotels = [
 // Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
-    const {
-      origin,
-      destination,
-      departureDate,
-      minBudget,
-      maxBudget,
-    } = req.body;
+    const { origin, destination, departureDate, minBudget, maxBudget } =
+      req.body;
 
     if (!origin || !destination || !departureDate) {
       return res.status(400).json({
@@ -237,7 +232,7 @@ exports.bookFlight = async (req, res) => {
       bookingId,
       totalPrice,
       "USD",
-      { email: customerEmail }
+      { email: customerEmail },
     );
 
     // Step 2: Return payment verification details along with booking
@@ -268,7 +263,15 @@ exports.bookFlight = async (req, res) => {
 // Book a hotel
 exports.bookHotel = async (req, res) => {
   try {
-    const { hotelId, roomType, guests, checkIn, checkOut, tripId, customerEmail } = req.body;
+    const {
+      hotelId,
+      roomType,
+      guests,
+      checkIn,
+      checkOut,
+      tripId,
+      customerEmail,
+    } = req.body;
 
     // Validate that all required fields are present
     if (!hotelId || !roomType || !guests || !checkIn || !checkOut || !tripId) {
@@ -316,7 +319,7 @@ exports.bookHotel = async (req, res) => {
       bookingId,
       calculatedPrice,
       "USD",
-      { email: customerEmail }
+      { email: customerEmail },
     );
 
     // Step 2: Return payment verification details along with booking
@@ -416,7 +419,7 @@ exports.confirmBookingAfterPayment = async (req, res) => {
 
     const finalizedBooking = paymentVerification.finalizeBookingAfterPayment(
       bookingId,
-      bookingData
+      bookingData,
     );
 
     res.json(finalizedBooking);
