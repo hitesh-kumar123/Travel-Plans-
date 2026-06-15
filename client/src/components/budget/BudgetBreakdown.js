@@ -1,5 +1,4 @@
 import React from "react";
-import ExpenseCard from "./ExpenseCard";
 import {
   Card,
   CardContent,

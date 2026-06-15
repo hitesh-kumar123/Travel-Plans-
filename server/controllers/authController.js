@@ -119,7 +119,6 @@ exports.login = async (req, res, next) => {
 };
 
 // google signup
-
 exports.googleAuth = async (req, res) => {
   try {
     const { credential } = req.body;
@@ -147,7 +146,8 @@ exports.googleAuth = async (req, res) => {
       });
     }
 
-    const token = jwt.sign(
+    // Removed the unused `const token =` assignment here
+    jwt.sign(
       {
         user: { id: user.id },
       },
@@ -170,6 +170,7 @@ exports.googleAuth = async (req, res) => {
     });
   }
 };
+
 // Get user profile
 exports.getProfile = async (req, res, next) => {
   try {

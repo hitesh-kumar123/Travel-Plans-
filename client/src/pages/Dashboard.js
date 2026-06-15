@@ -38,6 +38,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import ShieldIcon from "@mui/icons-material/Shield";
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 import { logout } from "../redux/actions/authActions";
 
@@ -52,6 +53,7 @@ import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
+import BotView from "./dashboard/BotView";
 import NotFound from "./NotFound";
 
 const mobileDrawerWidth = 240;
@@ -94,6 +96,7 @@ const Dashboard = () => {
     { text: "Expenses", path: "expenses", icon: <WalletIcon /> },
     { text: "Weather", path: "weather", icon: <WbSunnyIcon /> },
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
+    { text: "AI", path: "bot", icon: <SmartToyIcon /> },
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
     { text: "Packing", path: "packing", icon: <LuggageIcon /> },
     { text: "Safety & Culture", path: "culture-safety", icon: <ShieldIcon /> },
@@ -474,6 +477,7 @@ const Dashboard = () => {
             <Route path="expenses" element={<ExpensesView />} />
             <Route path="weather" element={<WeatherView />} />
             <Route path="translator" element={<TranslatorView />} />
+            <Route path="bot" element={<BotView />} />
             <Route path="bookings" element={<BookingView />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="packing" element={<PackingView />} />

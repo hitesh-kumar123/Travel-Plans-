@@ -82,6 +82,7 @@ const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
 const packingRoutes = require("./routes/packing");
 const currencyRoutes = require("./routes/currency");
+const botRoutes=require('./routes/botRoute')
 
 // Use routes
 app.use("/api/auth", authRoutes);
@@ -93,6 +94,7 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/packing", packingRoutes);
 app.use("/api/currency", currencyRoutes);
+app.use('/api/bot',botRoutes)
 
 // Base route
 app.get("/", (req, res) => {

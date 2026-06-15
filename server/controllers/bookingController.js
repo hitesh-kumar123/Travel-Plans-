@@ -1,6 +1,3 @@
-// axios removed — not used in current mock implementation
-
-// Mock data shared across search and booking endpoints
 const mockFlights = [
   {
     id: "fl-1",
@@ -90,12 +87,11 @@ const mockHotels = [
 // Search for flights with filters
 exports.searchFlights = async (req, res) => {
   try {
+    // Removed 'returnDate' and 'adults' to resolve unused variable linting errors
     const {
       origin,
       destination,
       departureDate,
-      returnDate,
-      adults = 1,
       minBudget,
       maxBudget,
     } = req.body;
@@ -139,12 +135,11 @@ exports.searchFlights = async (req, res) => {
 // Search for hotels with filters
 exports.searchHotels = async (req, res) => {
   try {
+    // Removed 'guests' and 'rooms' to resolve unused variable linting errors
     const {
       location,
       checkIn,
       checkOut,
-      guests = 2,
-      rooms = 1,
       minBudget,
       maxBudget,
       minRating,
