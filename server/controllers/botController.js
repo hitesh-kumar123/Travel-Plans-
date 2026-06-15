@@ -146,12 +146,10 @@ exports.saveAiTrip = async (req, res) => {
       await Expense.insertMany(expenseDocs);
     }
 
-    res
-      .status(201)
-      .json({
-        message: "Trip & Expenses automated successfully!",
-        tripId: savedTrip._id,
-      });
+    res.status(201).json({
+      message: "Trip & Expenses automated successfully!",
+      tripId: savedTrip._id,
+    });
   } catch (error) {
     console.error("Save Error:", error);
     res.status(500).json({ error: "Failed to automate trip saving." });
