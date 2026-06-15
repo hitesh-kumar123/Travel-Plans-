@@ -149,8 +149,7 @@ exports.googleAuth = async (req, res) => {
     // Removed the unused `const token =` assignment here
     jwt.sign(
       {
-        id: user._id,
-        email: user.email,
+        user: { id: user.id },
       },
       process.env.JWT_SECRET,
       { expiresIn: "5d" },

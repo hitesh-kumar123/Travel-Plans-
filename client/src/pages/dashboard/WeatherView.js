@@ -282,6 +282,27 @@ const WeatherView = () => {
                   </Box>
                 </Grid>
               </Grid>
+              {/* Weather metadata */}
+              <Box sx={{ mt: 3 }}>
+                {/* Weather API provider */}
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ opacity: 0.9 }}
+                >
+                  Source: {currentWeather?.provider || "OpenWeather"}
+                </Typography>
+
+                {/* Last successful weather fetch */}
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ opacity: 0.9 }}
+                >
+                  Last Updated:{" "}
+                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
+                </Typography>
+              </Box>
             </Paper>
           </Grid>
 
@@ -315,12 +336,6 @@ const WeatherView = () => {
                 </Typography>
               )}
               <Box sx={{ mt: "auto", pt: 3 }}>
-                {/* ✅ Real fetchedAt timestamp */}
-                <Typography variant="caption" color="text.disabled">
-                  Last updated:{" "}
-                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
-                </Typography>
-
                 {/* ✅ Manual refresh button */}
                 <Box mt={1}>
                   <Button
