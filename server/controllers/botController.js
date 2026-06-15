@@ -1,42 +1,74 @@
-const fs = require('fs');
-const path = require('path');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const Trip=require('../models/Trip')
-const Expense=require('../models/Expense')
+const fs = require("fs");
+const path = require("path");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Trip = require("../models/Trip");
+const Expense = require("../models/Expense");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 //load the uploaded JSON data
 const destinationsData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/india_destinations.json'), 'utf-8')
+  fs.readFileSync(
+    path.join(__dirname, "../data/india_destinations.json"),
+    "utf-8",
+  ),
 );
 
 const MOCK_FLIGHTS = [
-  { id: 'f1', carrier: 'IndiGo', price_inr: 5500, type: 'Non-stop' },
-  { id: 'f2', carrier: 'Air India', price_inr: 6200, type: 'Non-stop' },
-  { id: 'f3', carrier: 'Vistara', price_inr: 8500, type: '1 Stop' }
+  { id: "f1", carrier: "IndiGo", price_inr: 5500, type: "Non-stop" },
+  { id: "f2", carrier: "Air India", price_inr: 6200, type: "Non-stop" },
+  { id: "f3", carrier: "Vistara", price_inr: 8500, type: "1 Stop" },
 ];
 
 const MOCK_HOTELS = [
-  { id: 'h1', name: 'Taj City Centre', rating: 4.8, price_per_night_inr: 12000 },
-  { id: 'h2', name: 'Lemon Tree Premier', rating: 4.2, price_per_night_inr: 4500 },
-  { id: 'h3', name: 'Zostel Backpackers', rating: 4.5, price_per_night_inr: 800 }
+  {
+    id: "h1",
+    name: "Taj City Centre",
+    rating: 4.8,
+    price_per_night_inr: 12000,
+  },
+  {
+    id: "h2",
+    name: "Lemon Tree Premier",
+    rating: 4.2,
+    price_per_night_inr: 4500,
+  },
+  {
+    id: "h3",
+    name: "Zostel Backpackers",
+    rating: 4.5,
+    price_per_night_inr: 800,
+  },
 ];
 
 const mapCategory = (item) => {
   const lowerItem = item.toLowerCase();
-  if (lowerItem.includes('flight') || lowerItem.includes('auto') || lowerItem.includes('cab') || lowerItem.includes('train')) return 'transport';
-  if (lowerItem.includes('hotel') || lowerItem.includes('stay')) return 'accommodation';
-  if (lowerItem.includes('food') || lowerItem.includes('meal')) return 'food';
-  if (lowerItem.includes('ticket') || lowerItem.includes('entry') || lowerItem.includes('pass')) return 'activities';
-  return 'other';
+  if (
+    lowerItem.includes("flight") ||
+    lowerItem.includes("auto") ||
+    lowerItem.includes("cab") ||
+    lowerItem.includes("train")
+  )
+    return "transport";
+  if (lowerItem.includes("hotel") || lowerItem.includes("stay"))
+    return "accommodation";
+  if (lowerItem.includes("food") || lowerItem.includes("meal")) return "food";
+  if (
+    lowerItem.includes("ticket") ||
+    lowerItem.includes("entry") ||
+    lowerItem.includes("pass")
+  )
+    return "activities";
+  return "other";
 };
 
 exports.getRecommendations = async (req, res) => {
   try {
     const { message, history } = req.body;
-    if (!message) return res.status(400).json({ error: 'Message is required' });
+    if (!message) return res.status(400).json({ error: "Message is required" });
 
-    const formattedHistory = history ? history.map(h => `${h.role.toUpperCase()}: ${h.text}`).join('\n') : '';
+    const formattedHistory = history
+      ? history.map((h) => `${h.role.toUpperCase()}: ${h.text}`).join("\n")
+      : "";
 
     const prompt = `
       You are PackGo's travel bot. 
@@ -68,20 +100,25 @@ exports.getRecommendations = async (req, res) => {
       }
     `;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
-    const cleanJson = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
-    
+    const cleanJson = result.response
+      .text()
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
     res.status(200).json(JSON.parse(cleanJson));
   } catch (error) {
     console.error("BOT API ERROR:", error);
-    res.status(500).json({ error: 'Failed to process recommendation' });
-  } 
+    res.status(500).json({ error: "Failed to process recommendation" });
+  }
 };
 
 exports.saveAiTrip = async (req, res) => {
   try {
-    const { destination, flight, hotel, expenses, total_estimated_cost } = req.body;
+    const { destination, flight, hotel, expenses, total_estimated_cost } =
+      req.body;
 
     //Automate Trip Creation
     const newTrip = new Trip({
@@ -89,29 +126,34 @@ exports.saveAiTrip = async (req, res) => {
       destination: destination.city,
       description: `AI Planned trip to ${destination.name}`,
       budget: total_estimated_cost,
-      status: 'planned',
-      accommodation: { name: hotel?.name || 'Pending' },
-      transportation: { type: 'Flight', details: flight?.carrier || 'Pending' }
+      status: "planned",
+      accommodation: { name: hotel?.name || "Pending" },
+      transportation: { type: "Flight", details: flight?.carrier || "Pending" },
     });
     const savedTrip = await newTrip.save();
 
     //Automate Expense Logging
     if (expenses && expenses.length > 0) {
-      const expenseDocs = expenses.map(exp => ({    
+      const expenseDocs = expenses.map((exp) => ({
         user: req.user.id,
         trip: savedTrip._id,
         amount: exp.cost,
-        currency: 'INR',
+        currency: "INR",
         category: mapCategory(exp.item),
         description: exp.item,
-        date: new Date() // Sets to today, user can edit later
+        date: new Date(), // Sets to today, user can edit later
       }));
       await Expense.insertMany(expenseDocs);
     }
 
-    res.status(201).json({ message: 'Trip & Expenses automated successfully!', tripId: savedTrip._id });
+    res
+      .status(201)
+      .json({
+        message: "Trip & Expenses automated successfully!",
+        tripId: savedTrip._id,
+      });
   } catch (error) {
-    console.error('Save Error:', error);
-    res.status(500).json({ error: 'Failed to automate trip saving.' });
+    console.error("Save Error:", error);
+    res.status(500).json({ error: "Failed to automate trip saving." });
   }
 };
