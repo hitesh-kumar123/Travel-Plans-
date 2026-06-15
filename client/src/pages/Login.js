@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +21,7 @@ import {
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LoginIcon from "@mui/icons-material/Login";
@@ -58,10 +58,10 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
 
     if (name === "email") {
       if (
@@ -98,7 +98,7 @@ const Login = () => {
   };
 
   const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
   const validateForm = () => {
@@ -144,19 +144,16 @@ const Login = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      dispatch(login(formData));
+      dispatch(login(formData, navigate));
     }
   };
 
+  // Redirect-based Google sign-in (backend handles OAuth)
   const handleGoogleLogin = () => {
-    const apiBase =
-      process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-
+    const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
     const url = apiBase.replace(/\/api$/, "") + "/api/auth/google";
     window.location.assign(url);
   };
-
-
 
   return (
     <Box
@@ -199,11 +196,7 @@ const Login = () => {
               color: "white",
             }}
           >
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
-            >
+            <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 2 }}>
               PackGo
             </Typography>
 
@@ -221,7 +214,6 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
-
               <Box
                 sx={{
                   width: 12,
@@ -230,7 +222,6 @@ const Login = () => {
                   borderRadius: "50%",
                 }}
               />
-
               <Box
                 sx={{
                   width: 12,
@@ -240,7 +231,6 @@ const Login = () => {
                 }}
               />
             </Box>
-          </Box>
         </Box>
       )}
 
@@ -254,12 +244,7 @@ const Login = () => {
           p: 4,
         }}
       >
-        <Box
-          sx={{
-            maxWidth: 480,
-            width: "100%",
-          }}
-        >
+        <Box sx={{ maxWidth: 480, width: "100%" }}>
           <Box sx={{ textAlign: "center", mb: 5 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
               Welcome Back
@@ -317,11 +302,7 @@ const Login = () => {
                         onClick={toggleShowPassword}
                         edge="end"
                       >
-                        {showPassword ? (
-                          <VisibilityOffIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -348,11 +329,7 @@ const Login = () => {
                   label="Remember me"
                 />
 
-                <Link
-                  component={RouterLink}
-                  to="/forgot-password"
-                  variant="body2"
-                >
+                <Link component={RouterLink} to="/forgot-password" variant="body2">
                   Forgot password?
                 </Link>
               </Box>
@@ -431,7 +408,6 @@ const Login = () => {
                     <TwitterIcon />
                   </IconButton>
                 </Box>
-              </Box>
             </form>
           </Paper>
 
@@ -448,17 +424,14 @@ const Login = () => {
               </Link>
             </Typography>
           </Box>
-        </Box>
 
         <Box sx={{ mt: "auto", textAlign: "center", pt: 4 }}>
           <Typography variant="body2" color="text.secondary">
             © {new Date().getFullYear()} PackGo. All rights reserved.
           </Typography>
         </Box>
-      </Box>
     </Box>
   );
 };
 
 export default Login;
-

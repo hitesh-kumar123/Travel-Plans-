@@ -8,15 +8,13 @@ assignees: ""
 
 ## 📌 Linked Issue
 
-<!-- Link to the issue this PR addresses (e.g. "Closes #123" or "Related to #456") -->
+<!-- Use "Closes #123" to auto-close the issue when PR is merged -->
 
-- [ ] Connected to #issue_number
+Closes #issue_number
 
 ---
 
 ## 🛠 Changes Made
-
-<!-- Bullet-point summary of your changes -->
 
 - Added: [Description]
 - Fixed: [Description]
@@ -26,8 +24,6 @@ assignees: ""
 
 ## 🧪 Testing
 
-<!-- How did you verify your changes? -->
-
 - [ ] Ran unit tests (`npm test`)
 - [ ] Tested manually (describe below):
   - Test case 1: [Steps + Expected Result]
@@ -36,8 +32,6 @@ assignees: ""
 ---
 
 ## 📸 UI Changes (if applicable)
-
-<!-- Before/after screenshots or GIFs -->
 
 | Before  | After   |
 | ------- | ------- |
@@ -55,7 +49,7 @@ assignees: ""
 ## ✅ Checklist
 
 - [ ] Created a new branch for PR
-- [ ] Have stared the repository
+- [ ] Have starred the repository ⭐
 - [ ] Follows [JavaScript Styleguide](CONTRIBUTING.md#javascript-styleguide)
 - [ ] No console warnings/errors
 - [ ] Commit messages follow [Git Guidelines](CONTRIBUTING.md#git-commit-messages)

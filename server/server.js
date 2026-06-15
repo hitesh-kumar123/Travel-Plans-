@@ -10,7 +10,9 @@ const passport = require("passport");
 const errorHandler = require("./middleware/errorHandler");
 
 // Load environment variables
-dotenv.config();
+// Load repo root `.env` so server can be started from `server/`.
+dotenv.config({ path: require("path").resolve(__dirname, "../.env") });
+dotenv.config({ path: require("path").resolve(__dirname, "./.env") });
 
 // Passport config
 require("./config/passport");

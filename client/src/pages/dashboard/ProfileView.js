@@ -20,8 +20,6 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import SaveIcon from "@mui/icons-material/Save";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import WarningIcon from "@mui/icons-material/Warning";
 import EmailIcon from "@mui/icons-material/Email";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
@@ -409,7 +407,7 @@ const ProfileView = () => {
 
       <Grid container spacing={3}>
         {/* Left: Avatar + Stats */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Paper
             elevation={0}
             sx={{
@@ -436,58 +434,14 @@ const ProfileView = () => {
             <Typography variant="h6" fontWeight={700}>
               {user?.name || "Traveler"}
             </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              mb={user?.isVerified ? 1 : 2}
-            >
+            <Typography variant="body2" color="text.secondary" mb={2}>
               {user?.email}
             </Typography>
 
-            {user?.isVerified ? (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  bgcolor: "rgba(72, 187, 120, 0.1)",
-                  color: "#2f855a",
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 2,
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  mb: 3,
-                }}
-              >
-                <CheckCircleIcon sx={{ fontSize: 14 }} />
-                Email Verified
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  bgcolor: "rgba(237, 137, 54, 0.1)",
-                  color: "#c05621",
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 2,
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  mb: 3,
-                }}
-              >
-                <WarningIcon sx={{ fontSize: 14 }} />
-                Unverified Account
-              </Box>
-            )}
-
             <Divider sx={{ mb: 3 }} />
 
-            <Grid container spacing={2} textAlign="center">
-              <Grid item xs={4}>
+            <Grid container spacing={2} sx={{ textAlign: "center" }}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="primary.main">
                   {totalTrips}
                 </Typography>
@@ -495,7 +449,7 @@ const ProfileView = () => {
                   Total Trips
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="success.main">
                   {completedTrips}
                 </Typography>
@@ -503,7 +457,7 @@ const ProfileView = () => {
                   Completed
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid xs={4}>
                 <Typography variant="h5" fontWeight={800} color="info.main">
                   {plannedTrips}
                 </Typography>
@@ -523,7 +477,7 @@ const ProfileView = () => {
         </Grid>
 
         {/* Right: Edit Forms */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           {/* Profile Info */}
           <Paper
             elevation={0}
@@ -590,7 +544,7 @@ const ProfileView = () => {
 
             <Box component="form" onSubmit={handleProfileSave}>
               <Grid container spacing={2.5}>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Full Name"
@@ -601,7 +555,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Email Address"
@@ -613,7 +567,7 @@ const ProfileView = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -663,7 +617,7 @@ const ProfileView = () => {
 
             <Box component="form" onSubmit={handlePasswordChange}>
               <Grid container spacing={2.5}>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <TextField
                     fullWidth
                     label="Current Password"
@@ -675,7 +629,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="New Password"
@@ -687,7 +641,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Confirm New Password"
@@ -699,7 +653,7 @@ const ProfileView = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={12}>
                   <Button
                     type="submit"
                     variant="outlined"

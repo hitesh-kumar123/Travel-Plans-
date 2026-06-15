@@ -1,14 +1,25 @@
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import {
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  REGISTER_FAIL,
+  USER_LOADED,
+  AUTH_ERROR,
+  LOGOUT,
+} from "../types/authTypes";
 
-// Action Types
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-export const LOGIN_FAIL = "LOGIN_FAIL";
-export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
-export const REGISTER_FAIL = "REGISTER_FAIL";
-export const USER_LOADED = "USER_LOADED";
-export const AUTH_ERROR = "AUTH_ERROR";
-export const LOGOUT = "LOGOUT";
+function getAuthErrorMessage(error, fallback) {
+  if (error.response?.data?.msg) {
+    return error.response.data.msg;
+  }
+
+  if (!error.response) {
+    return "Cannot reach the server. Start the backend with: cd server && npm run dev";
+  }
+
+  return fallback;
+}
 
 // Load User
 export const loadUser = () => async (dispatch) => {
@@ -21,6 +32,7 @@ export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get("/auth/profile");
 
+    console.log("loadUser response:", res);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -37,30 +49,24 @@ export const login = (userData, navigate) => async (dispatch) => {
   try {
     const res = await api.post("/auth/login", userData);
 
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data, // res.data will contain the token
-    });
-
-    // Set token to local storage
     localStorage.setItem("token", res.data.token);
 
-    dispatch(loadUser());
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+
+    dispatch({
+      type: USER_LOADED,
+      payload: res.data.user,
+    });
+
     toast.success("Welcome back! 🎉");
-  } catch (error) {
-    const data = error.response?.data;
-    if (data?.unverified) {
-      toast.warning(data.msg);
-      navigate("/verify-otp", {
-        state: {
-          email: data.email,
-          blocked: data.blocked || false,
-          blockedUntil: data.blockedUntil || null,
-        },
-      });
-      return;
+    if (navigate) {
+      navigate("/dashboard");
     }
-    const msg = data?.msg || "Login failed";
+  } catch (error) {
+    const msg = getAuthErrorMessage(error, "Login failed");
     dispatch({
       type: LOGIN_FAIL,
       payload: msg,
@@ -73,15 +79,10 @@ export const login = (userData, navigate) => async (dispatch) => {
 export const register = (userData, navigate) => async (dispatch) => {
   try {
     await api.post("/auth/register", userData);
-
-    // Note: We do not dispatch REGISTER_SUCCESS or loadUser here since the user
-    // is unverified and cannot be logged in yet.
-    toast.success(
-      "Account created! A verification code was sent to your email. 🚀",
-    );
-    navigate("/verify-otp", { state: { email: userData.email } });
+    toast.success("Account created successfully! Please log in.");
+    navigate("/login");
   } catch (error) {
-    const msg = error.response?.data?.msg || "Registration failed";
+    const msg = getAuthErrorMessage(error, "Registration failed");
     dispatch({
       type: REGISTER_FAIL,
       payload: msg,
@@ -90,26 +91,34 @@ export const register = (userData, navigate) => async (dispatch) => {
   }
 };
 
-// Verify OTP
-export const verifyOtp = (email, otp, navigate) => async (dispatch) => {
-  try {
-    const res = await api.post("/auth/verify-otp", { email, otp });
+//  for google login
+export const googleLogin =
+  (CredentialResponse, navigate) => async (dispatch) => {
+    try {
+      dispatch({ type: "AUTH_START" });
+      const res = await api.post("/auth/google", {
+        credential: CredentialResponse.credential,
+      });
 
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data, // res.data contains token and user
-    });
+      dispatch({
+        type: "AUTH_SUCESS",
+        payload: res.data,
+      });
 
-    localStorage.setItem("token", res.data.token);
-    dispatch(loadUser());
-    toast.success("Email verified successfully! Welcome to PackGo! 🚀");
-    navigate("/dashboard");
-  } catch (error) {
-    const msg = error.response?.data?.msg || "Verification failed";
-    toast.error(msg);
-    throw error;
-  }
-};
+      // Set token to local storage
+      localStorage.setItem("token", res.data.token);
+
+      dispatch(loadUser());
+      toast.success("Welcome back! 🎉");
+
+      navigate("/dashboard");
+    } catch (e) {
+      dispatch({
+        type: "AUTH_FAIL",
+        payload: e.rensponse?.data?.message || e.message,
+      });
+    }
+  };
 
 // Logout User
 export const logout = () => (dispatch) => {

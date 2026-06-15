@@ -92,16 +92,19 @@ const WeatherView = () => {
         >
           <TextField
             fullWidth
+            autoFocus
             placeholder="Enter city name (e.g. Goa, Mumbai, London)"
             variant="outlined"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
           <Button
@@ -210,7 +213,7 @@ const WeatherView = () => {
       {/* Current Weather */}
       {currentWeather && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <Paper
               elevation={0}
               sx={{
@@ -252,7 +255,7 @@ const WeatherView = () => {
               </Box>
               <Divider sx={{ my: 2.5, borderColor: "rgba(255,255,255,0.3)" }} />
               <Grid container spacing={2}>
-                <Grid item xs={4}>
+                <Grid xs={4}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <OpacityIcon sx={{ fontSize: 18, opacity: 0.8 }} />
                     <Box>
@@ -265,7 +268,7 @@ const WeatherView = () => {
                     </Box>
                   </Box>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid xs={4}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <AirIcon sx={{ fontSize: 18, opacity: 0.8 }} />
                     <Box>
@@ -279,11 +282,32 @@ const WeatherView = () => {
                   </Box>
                 </Grid>
               </Grid>
+              {/* Weather metadata */}
+              <Box sx={{ mt: 3 }}>
+                {/* Weather API provider */}
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ opacity: 0.9 }}
+                >
+                  Source: {currentWeather?.provider || "OpenWeather"}
+                </Typography>
+
+                {/* Last successful weather fetch */}
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ opacity: 0.9 }}
+                >
+                  Last Updated:{" "}
+                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
+                </Typography>
+              </Box>
             </Paper>
           </Grid>
 
           {/* Travel Tips */}
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <Paper
               elevation={0}
               sx={{
@@ -312,12 +336,6 @@ const WeatherView = () => {
                 </Typography>
               )}
               <Box sx={{ mt: "auto", pt: 3 }}>
-                {/* ✅ Real fetchedAt timestamp */}
-                <Typography variant="caption" color="text.disabled">
-                  Last updated:{" "}
-                  {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
-                </Typography>
-
                 {/* ✅ Manual refresh button */}
                 <Box mt={1}>
                   <Button
@@ -347,7 +365,7 @@ const WeatherView = () => {
               .filter((_, idx) => idx % 8 === 0)
               .slice(0, 5)
               .map((day, idx) => (
-                <Grid item xs={6} sm={4} md={2.4} key={idx}>
+                <Grid xs={6} sm={4} md={2.4} key={idx}>
                   <Paper
                     elevation={0}
                     sx={{

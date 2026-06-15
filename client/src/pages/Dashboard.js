@@ -51,6 +51,7 @@ import BookingView from "./dashboard/BookingView";
 import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
+import NotFound from "./NotFound";
 
 const drawerWidth = 280;
 
@@ -390,6 +391,7 @@ const Dashboard = () => {
             <Route path="bookings" element={<BookingView />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="packing" element={<PackingView />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Box>
       </Box>

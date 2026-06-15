@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const passport = require("passport");
@@ -54,21 +55,6 @@ router.post("/forgot-password", authController.forgotPassword);
 // @access  Public
 router.put("/reset-password/:token", authController.resetPassword);
 
-// @route   POST api/auth/verify-otp
-// @desc    Verify email with OTP
-// @access  Public
-router.post("/verify-otp", authController.verifyOtp);
-
-// @route   POST api/auth/resend-otp
-// @desc    Resend email verification OTP
-// @access  Public
-router.post("/resend-otp", authController.resendOtp);
-
-// @route   POST api/auth/otp-status
-// @desc    Get remaining OTP expiration and cooldown times
-// @access  Public
-router.post("/otp-status", authController.getOtpStatus);
-
 // ==============================
 // Google OAuth
 // ==============================
@@ -107,6 +93,7 @@ router.get("/google/callback", (req, res, next) => {
           return redirectToLoginWithReason(res, "jwt_secret_missing");
         }
 
+        // Keep payload format consistent with the rest of the app
         const payload = { user: { id: user.id } };
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
           expiresIn: "5d",
@@ -121,7 +108,5 @@ router.get("/google/callback", (req, res, next) => {
   )(req, res, next);
 });
 
-
 module.exports = router;
-
 

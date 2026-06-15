@@ -21,9 +21,10 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowForwardIcon from "@mui/icons-material/East";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
-
 import HotelIcon from "@mui/icons-material/Hotel";
+import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips } from "../../redux/actions/tripActions";
+import TripCountdownBadge from "../../components/TripCountdownBadge";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
 import {
   BarChart,
@@ -55,7 +56,6 @@ const DashboardHome = () => {
   const tripsArr = trips || [];
   const userName = user?.name?.split(" ")[0] || "Traveler";
 
-  // Stats
   const totalTrips = tripsArr.length;
   const completedTrips = tripsArr.filter(
     (t) => t.status === "completed",
@@ -68,13 +68,11 @@ const DashboardHome = () => {
     ? allExpenses.reduce((acc, e) => acc + (e.amount || 0), 0)
     : 0;
 
-  // Upcoming trips
   const today = new Date();
   const upcomingTrips = tripsArr
     .filter((t) => new Date(t.startDate) >= today)
     .slice(0, 3);
 
-  // Monthly trip chart data from trips
   const monthlyData = (() => {
     const months = [
       "Jan",
@@ -177,7 +175,7 @@ const DashboardHome = () => {
             bg: "linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)",
           },
         ].map((stat, i) => (
-          <Grid item xs={6} md={3} key={i}>
+          <Grid xs={6} md={3} key={i}>
             <Paper
               elevation={0}
               sx={{
@@ -215,7 +213,7 @@ const DashboardHome = () => {
 
       <Grid container spacing={3}>
         {/* Quick Actions */}
-        <Grid item xs={12} md={5}>
+        <Grid xs={12} md={5}>
           <Paper
             elevation={0}
             sx={{
@@ -231,7 +229,7 @@ const DashboardHome = () => {
             </Typography>
             <Grid container spacing={1.5}>
               {quickActions.map((action, i) => (
-                <Grid item xs={6} key={i}>
+                <Grid xs={6} key={i}>
                   <Paper
                     elevation={0}
                     component={Link}
@@ -280,7 +278,7 @@ const DashboardHome = () => {
         </Grid>
 
         {/* Trip Chart */}
-        <Grid item xs={12} md={7}>
+        <Grid xs={12} md={7}>
           <Paper
             elevation={0}
             sx={{
@@ -382,15 +380,14 @@ const DashboardHome = () => {
             <Typography variant="h6" color="text.secondary" gutterBottom>
               No trips yet
             </Typography>
-            <Button
+            <PrimaryButton
               component={Link}
               to="/dashboard/trips"
-              variant="contained"
               startIcon={<AddIcon />}
               sx={{ mt: 1 }}
             >
               Plan Your First Trip
-            </Button>
+            </PrimaryButton>
           </Paper>
         ) : (
           <Grid container spacing={3}>
@@ -398,7 +395,7 @@ const DashboardHome = () => {
               ? upcomingTrips
               : tripsArr.slice(0, 3)
             ).map((trip) => (
-              <Grid item xs={12} md={6} lg={4} key={trip._id}>
+              <Grid xs={12} md={6} lg={4} key={trip._id}>
                 <Card
                   elevation={0}
                   sx={{
@@ -430,7 +427,17 @@ const DashboardHome = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.5,
+                          alignItems: "flex-end",
+                        }}
+                      >
                         <Chip
                           label={
                             trip.status?.charAt(0).toUpperCase() +
@@ -439,6 +446,10 @@ const DashboardHome = () => {
                           color={STATUS_COLORS[trip.status] || "default"}
                           size="small"
                           sx={{ fontWeight: 700 }}
+                        />
+                        <TripCountdownBadge
+                          startDate={trip.startDate}
+                          endDate={trip.endDate}
                         />
                       </Box>
                     </Box>
@@ -458,7 +469,10 @@ const DashboardHome = () => {
                         <Typography variant="body2" color="text.secondary">
                           {new Date(trip.startDate).toLocaleDateString(
                             "en-IN",
-                            { day: "2-digit", month: "short" },
+                            {
+                              day: "2-digit",
+                              month: "short",
+                            },
                           )}{" "}
                           –{" "}
                           {new Date(trip.endDate).toLocaleDateString("en-IN", {
