@@ -81,9 +81,15 @@ const TripsView = () => {
     if (!formData.destination || !formData.startDate || !formData.endDate)
       return;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (new Date(formData.startDate) < today) {
+    // Compare date strings (YYYY-MM-DD) to avoid UTC vs. local timezone mismatch.
+    // new Date("YYYY-MM-DD") is parsed as UTC midnight, so we must not mix it
+    // with a local-midnight Date object — instead compare the strings directly.
+    const todayStr = [
+      new Date().getFullYear(),
+      String(new Date().getMonth() + 1).padStart(2, "0"),
+      String(new Date().getDate()).padStart(2, "0"),
+    ].join("-");
+    if (formData.startDate < todayStr) {
       alert("Trip start date cannot be in the past!");
       return;
     }
@@ -209,7 +215,14 @@ const TripsView = () => {
                   type="date"
                   slotProps={{
                     inputLabel: { shrink: true },
-                    htmlInput: { min: new Date().toISOString().split("T")[0] },
+                    htmlInput: {
+                      // Build YYYY-MM-DD from local date parts to avoid UTC offset issues
+                      min: [
+                        new Date().getFullYear(),
+                        String(new Date().getMonth() + 1).padStart(2, "0"),
+                        String(new Date().getDate()).padStart(2, "0"),
+                      ].join("-"),
+                    },
                   }}
                   value={formData.startDate}
                   onChange={handleChange}
@@ -226,7 +239,11 @@ const TripsView = () => {
                     htmlInput: {
                       min:
                         formData.startDate ||
-                        new Date().toISOString().split("T")[0],
+                        [
+                          new Date().getFullYear(),
+                          String(new Date().getMonth() + 1).padStart(2, "0"),
+                          String(new Date().getDate()).padStart(2, "0"),
+                        ].join("-"),
                     },
                   }}
                   value={formData.endDate}

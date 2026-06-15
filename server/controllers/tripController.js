@@ -27,10 +27,22 @@ exports.createTrip = async (req, res) => {
       transportation,
     } = req.body;
 
-    if (startDate && new Date(startDate) < new Date().setHours(0, 0, 0, 0)) {
-      return res
-        .status(400)
-        .json({ msg: "Trip start date cannot be in the past" });
+    // Compare YYYY-MM-DD strings to avoid UTC vs. server-local timezone mismatch.
+    // new Date("YYYY-MM-DD") is parsed as UTC midnight; mixing it with a
+    // server-local midnight Date would cause off-by-one-day errors for dates
+    // near midnight in any timezone offset from UTC.
+    if (startDate) {
+      const now = new Date();
+      const todayStr = [
+        now.getUTCFullYear(),
+        String(now.getUTCMonth() + 1).padStart(2, "0"),
+        String(now.getUTCDate()).padStart(2, "0"),
+      ].join("-");
+      if (startDate < todayStr) {
+        return res
+          .status(400)
+          .json({ msg: "Trip start date cannot be in the past" });
+      }
     }
 
     if (budget !== undefined && budget < 0) {
