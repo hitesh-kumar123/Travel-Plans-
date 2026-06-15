@@ -22,7 +22,7 @@ module.exports = function (req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log("meddleware");
     console.log("decoded: ", decoded);
-    req.user = decoded;
+    req.user = decoded.user;
     console.log(req.user);
     next();
   } catch (err) {
