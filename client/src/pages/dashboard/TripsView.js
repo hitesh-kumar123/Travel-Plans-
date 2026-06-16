@@ -83,7 +83,8 @@ const TripsView = () => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (new Date(formData.startDate) < today) {
+    const startDateParsed = new Date(formData.startDate.replace(/-/g, "/"));
+    if (startDateParsed < today) {
       alert("Trip start date cannot be in the past!");
       return;
     }

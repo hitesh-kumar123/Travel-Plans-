@@ -27,7 +27,16 @@ exports.createTrip = async (req, res) => {
       transportation,
     } = req.body;
 
-    if (startDate && new Date(startDate) < new Date().setHours(0, 0, 0, 0)) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const limit = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+
+    const parsedStartDate =
+      startDate && typeof startDate === "string"
+        ? startDate.replace(/-/g, "/")
+        : startDate;
+
+    if (startDate && new Date(parsedStartDate) < limit) {
       return res
         .status(400)
         .json({ msg: "Trip start date cannot be in the past" });
