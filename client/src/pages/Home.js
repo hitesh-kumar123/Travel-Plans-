@@ -10,38 +10,6 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 
-/* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
-const REVIEWS = [
-  {
-    stars: "★★★★★",
-    quote: `"PackGo turned our anniversary trip into something we'll tell grandkids about. Every single detail was perfect — from the sunrise hike in Santorini to the candlelit dinner by the Aegean."`,
-    avatar: "PS",
-    name: "Priya Sharma",
-    loc: "Mumbai, India",
-  },
-  {
-    stars: "★★★★★",
-    quote: `"I was hesitant to plan solo travel but PackGo made it seamless. Kyoto in cherry blossom season was a dream — every ryokan, every temple, perfectly curated."`,
-    avatar: "AR",
-    name: "Arjun Rao",
-    loc: "Bengaluru, India",
-  },
-  {
-    stars: "★★★★★",
-    quote: `"The itinerary balance was spot on. Plenty of structured, unique experiences mixed with enough free time to explore hidden backalleys on our own."`,
-    avatar: "MK",
-    name: "Meera Kapoor",
-    loc: "Delhi, India",
-  },
-  {
-    stars: "★★★★★",
-    quote: `"24/7 support came through when our domestic flight got delayed. They rebooked our connections before we even landed. Absolute lifesavers!"`,
-    avatar: "JM",
-    name: "John Martin",
-    loc: "London, UK",
-  },
-];
-
 /* ── SVG SCENES ─────────────────────────────────────────────── */
 const SceneIceland = () => (
   <svg
@@ -361,11 +329,62 @@ const FEATURES = [
   },
 ];
 
-const STATS = [
-  { big: "2.4K+", desc: "Destinations available" },
-  { big: "98%", desc: "Customer satisfaction" },
-  { big: "14yr", desc: "Of travel expertise" },
-  { big: "180+", desc: "Countries covered" },
+/* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
+const REVIEWS_DATA = [
+  {
+    id: 1,
+    stars: "★★★★★",
+    quote:
+      "PackGo turned our anniversary trip into something we'll tell grandkids about. Every single detail was perfect — from the sunrise hike in Santorini to the candlelit dinner by the Aegean.",
+    authorInitial: "PS",
+    authorName: "Priya Sharma",
+    authorLoc: "Mumbai, India",
+  },
+  {
+    id: 2,
+    stars: "★★★★★",
+    quote:
+      "The best travel planning platform I've ever used. Unforgettable memories and flawless logistics. They handled everything from flights to local hidden gem tours seamlessly.",
+    authorInitial: "SJ",
+    authorName: "Sarah J.",
+    authorLoc: "London, UK",
+  },
+  {
+    id: 3,
+    stars: "★★★★☆",
+    quote:
+      "Found hidden gems I wouldn't have discovered otherwise. Highly recommend to any traveler looking for an authentic local experience without the stress of planning.",
+    authorInitial: "AR",
+    authorName: "Alex R.",
+    authorLoc: "Sydney, AUS",
+  },
+  {
+    id: 4,
+    stars: "★★★★★",
+    quote:
+      "An absolutely breathtaking experience in Iceland. The Northern Lights tour was timed perfectly, and the accommodations were incredibly cozy and well-located.",
+    authorInitial: "MT",
+    authorName: "Marcus T.",
+    authorLoc: "New York, USA",
+  },
+  {
+    id: 5,
+    stars: "★★★★★",
+    quote:
+      "I've backpacked through Asia before, but PackGo elevated the experience. Their curated itinerary for Angkor Wat was mind-blowing and kept us away from the heavy crowds.",
+    authorInitial: "LC",
+    authorName: "Liam C.",
+    authorLoc: "Toronto, CAN",
+  },
+  {
+    id: 6,
+    stars: "★★★★☆",
+    quote:
+      "Great service and fantastic support. We had a minor hiccup with our hotel booking in Paris, but the PackGo 24/7 team resolved it within minutes. Truly reliable.",
+    authorInitial: "EK",
+    authorName: "Elena K.",
+    authorLoc: "Berlin, GER",
+  },
 ];
 
 /* ── SVG Search Icon ── */
@@ -386,13 +405,14 @@ const SearchIcon = () => (
 const SEARCH_HISTORY_KEY = "recentDestinationSearches";
 
 /* ══════════════════════════════════════════════════════════════ */
-/*  COMPONENT                                                      */
+/* COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
 
+  // --- Search and Page States ---
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
@@ -404,6 +424,35 @@ const Home = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("wander-dest-section");
   const checkInRef = useRef(null);
+
+  // --- Carousel State ---
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? REVIEWS_DATA.length - 1 : prev - 1,
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentSlide((prev) =>
+      prev === REVIEWS_DATA.length - 1 ? 0 : prev + 1,
+    );
+  };
+
+  // 👇 Carousel Auto-Play Effect 👇
+  useEffect(() => {
+    // Automatically move to the next slide every 5 seconds (5000ms)
+    const autoPlayTimer = setInterval(() => {
+      setCurrentSlide((prev) =>
+        prev === REVIEWS_DATA.length - 1 ? 0 : prev + 1,
+      );
+    }, 5000);
+
+    // This cleanup function clears the timer if the user manually clicks an arrow,
+    // ensuring the 5-second countdown restarts smoothly from their interaction.
+    return () => clearInterval(autoPlayTimer);
+  }, [currentSlide]);
 
   useEffect(() => {
     try {
@@ -455,9 +504,9 @@ const Home = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   useEffect(() => {
     const sections = [
       "wander-dest-section",
@@ -489,8 +538,7 @@ const Home = () => {
   }, []);
 
   const handleAddTrip = (dest) => {
-    // Save to recently viewed regardless of auth status
-    addRecentlyViewed(dest); // ← MOVE THIS to the top, before the auth check
+    addRecentlyViewed(dest);
 
     if (!isAuthenticated) {
       navigate("/login");
@@ -523,7 +571,6 @@ const Home = () => {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* Filter destinations based on "Where to" search input */
   const filteredDestinations = where.trim()
     ? (Array.isArray(destinations) ? destinations : []).filter(
         (d) =>
@@ -536,7 +583,6 @@ const Home = () => {
       ? destinations
       : [];
 
-  /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
 
   return (
@@ -598,22 +644,16 @@ const Home = () => {
           </Link>
         ) : (
           <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-            }}
+            style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
           >
             <Link to="/login">
               <button className="wander-nav-log-in">Log In</button>
             </Link>
-
             <Link to="/register">
               <button className="wander-nav-create-account">
                 Create Free Account
               </button>
             </Link>
-
             <Link to="/register">
               <button className="wander-nav-cta">Book Now</button>
             </Link>
@@ -652,6 +692,8 @@ const Home = () => {
             </svg>
           )}
         </button>
+
+        {/* Mobile menu dropdown... */}
         {mobileOpen && (
           <div
             style={{
@@ -669,84 +711,18 @@ const Home = () => {
               zIndex: 1001,
             }}
           >
-            <a
-              href="#wander-dest-section"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
+            <a href="#wander-dest-section" onClick={() => setMobileOpen(false)}>
               Destinations
             </a>
-            <a
-              href="#wander-testimonials"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
+            <a href="#wander-testimonials" onClick={() => setMobileOpen(false)}>
               Experiences
             </a>
-            <a
-              href="#wander-features"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
+            <a href="#wander-features" onClick={() => setMobileOpen(false)}>
               Features
             </a>
-            <Link
-              to="/travel-checklist"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
+            <Link to="/travel-checklist" onClick={() => setMobileOpen(false)}>
               Checklist
             </Link>
-            {isAuthenticated ? (
-              <Link
-                to="/dashboard"
-                style={{
-                  color: "var(--coral)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Dashboard →
-              </Link>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  style={{ color: "var(--ocean)", textDecoration: "none" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  style={{
-                    color: "var(--coral)",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Sign Up Free →
-                </Link>
-              </>
-            )}
           </div>
         )}
       </nav>
@@ -772,11 +748,9 @@ const Home = () => {
                 Explore Destinations
               </button>
             </a>
-
             <Link to="/budget-estimator">
               <button className="wander-btn-ghost">Budget Estimator</button>
             </Link>
-
             <Link to={isAuthenticated ? "/dashboard" : "/register"}>
               <button className="wander-btn-ghost">
                 {isAuthenticated ? "Dashboard →" : "Start Free"}
@@ -784,8 +758,6 @@ const Home = () => {
             </Link>
           </div>
         </div>
-
-        {/* Hero Visual */}
         <div className="wander-hero-visual">
           <div className="wander-hero-card-main">
             <SceneIceland />
@@ -814,14 +786,10 @@ const Home = () => {
               value={where}
               onChange={(e) => {
                 setWhere(e.target.value);
-                if (recentSearches.length > 0) {
-                  setShowRecentSearches(true);
-                }
+                if (recentSearches.length > 0) setShowRecentSearches(true);
               }}
               onFocus={() => {
-                if (recentSearches.length > 0) {
-                  setShowRecentSearches(true);
-                }
+                if (recentSearches.length > 0) setShowRecentSearches(true);
               }}
             />
             {showRecentSearches && recentSearches.length > 0 && (
@@ -844,7 +812,6 @@ const Home = () => {
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Check In</div>
-
             <div style={{ position: "relative" }}>
               <input
                 ref={checkInRef}
@@ -855,7 +822,6 @@ const Home = () => {
                 onClick={() => checkInRef.current?.showPicker()}
                 style={{ paddingRight: "35px" }}
               />
-
               <span
                 style={{
                   position: "absolute",
@@ -884,8 +850,6 @@ const Home = () => {
         </form>
       </div>
 
-      {/* ═══ DESTINATIONS ═══ */}
-
       {/* ═══ RECENTLY VIEWED ═══ */}
       <div
         style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}
@@ -900,6 +864,7 @@ const Home = () => {
         />
       </div>
 
+      {/* ═══ DESTINATIONS ═══ */}
       <section className="wander-section" id="wander-dest-section">
         <div className="wander-section-header">
           <div>
@@ -908,9 +873,7 @@ const Home = () => {
               {loading
                 ? "Loading destinations…"
                 : where.trim()
-                  ? `${filteredDestinations.length} destination${
-                      filteredDestinations.length !== 1 ? "s" : ""
-                    } found`
+                  ? `${filteredDestinations.length} destination${filteredDestinations.length !== 1 ? "s" : ""} found`
                   : "Destinations that steal hearts"}
             </div>
           </div>
@@ -919,9 +882,7 @@ const Home = () => {
           </Link>
         </div>
 
-        {/* Editorial 4-card grid */}
         <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
           {editorialDests[0] ? (
             <div
               className="wander-dest-card tall"
@@ -985,7 +946,6 @@ const Home = () => {
             </div>
           )}
 
-          {/* Small cards */}
           {[
             {
               svgScene: <SceneAngkor />,
@@ -1078,41 +1038,96 @@ const Home = () => {
       </section>
       <FAQSection />
 
-      {/* ═══ TESTIMONIAL ═══ */}
+      {/* ═══ TESTIMONIAL (LEFT) & STATS (RIGHT) ═══ */}
       <section className="wander-testi-section" id="wander-testimonials">
-        <div>
-          <div className="wander-testi-label">Traveller Stories</div>
-          <div className="wander-testi-heading">
+        {/* Left Side: Headers and Horizontal Carousel */}
+        <div className="wander-testi-content">
+          <h4 className="wander-testi-label">Traveller Stories</h4>
+          <h2 className="wander-testi-heading">
             Journeys that changed everything
-          </div>
+          </h2>
 
-          <div className="wander-testi-quote-container">
-            <div className="wander-testi-quote-track">
-              {REVIEWS.map((review, index) => (
-                <div className="wander-testi-card-slide" key={index}>
-                  <div className="wander-stars">{review.stars}</div>
-                  <p className="wander-testi-quote">{review.quote}</p>
-                  <div className="wander-testi-author">
-                    <div className="wander-author-avatar">{review.avatar}</div>
-                    <div>
-                      <div className="wander-author-name">{review.name}</div>
-                      <div className="wander-author-loc">{review.loc}</div>
+          <div
+            className="wander-testi-carousel-wrapper"
+            style={{ marginTop: "2.5rem" }}
+          >
+            {/* NEW: Main wrapper holds the arrows and the viewport */}
+            <div className="wander-testi-carousel-main">
+              <button
+                className="wander-carousel-btn prev"
+                onClick={handlePrev}
+                aria-label="Previous review"
+              >
+                ❮
+              </button>
+
+              {/* NEW: Viewport explicitly hides the overflowing slides with NO padding */}
+              <div className="wander-testi-carousel-viewport">
+                <div
+                  className="wander-testi-carousel-track"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                >
+                  {REVIEWS_DATA.map((review) => (
+                    <div className="wander-testi-card-slide" key={review.id}>
+                      <div className="wander-stars">{review.stars}</div>
+                      <p className="wander-testi-quote">"{review.quote}"</p>
+                      <div className="wander-testi-author">
+                        <div className="wander-author-avatar">
+                          {review.authorInitial}
+                        </div>
+                        <div>
+                          <div className="wander-author-name">
+                            {review.authorName}
+                          </div>
+                          <div className="wander-author-loc">
+                            {review.authorLoc}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+              </div>
+
+              <button
+                className="wander-carousel-btn next"
+                onClick={handleNext}
+                aria-label="Next review"
+              >
+                ❯
+              </button>
+            </div>
+
+            <div className="wander-carousel-pagination">
+              {REVIEWS_DATA.map((_, index) => (
+                <span
+                  key={index}
+                  className={`wander-pagination-dot ${currentSlide === index ? "active" : ""}`}
+                  onClick={() => setCurrentSlide(index)}
+                ></span>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Right Side Metrics Box Grid (Remains unshifted) */}
+        {/* Right Side: 4 Stats Grid (Restored!) */}
         <div className="wander-stats-grid">
-          {STATS.map((s, i) => (
-            <div key={i} className="wander-stat-box">
-              <div className="wander-stat-big">{s.big}</div>
-              <div className="wander-stat-desc">{s.desc}</div>
-            </div>
-          ))}
+          <div className="wander-stat-box">
+            <div className="wander-stat-big">2.4K+</div>
+            <div className="wander-stat-desc">Destinations available</div>
+          </div>
+          <div className="wander-stat-box">
+            <div className="wander-stat-big">98%</div>
+            <div className="wander-stat-desc">Customer satisfaction</div>
+          </div>
+          <div className="wander-stat-box">
+            <div className="wander-stat-big">14yr</div>
+            <div className="wander-stat-desc">Of travel expertise</div>
+          </div>
+          <div className="wander-stat-box">
+            <div className="wander-stat-big">180+</div>
+            <div className="wander-stat-desc">Countries covered</div>
+          </div>
         </div>
       </section>
 
@@ -1140,7 +1155,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
@@ -1187,11 +1202,9 @@ const Home = () => {
             <a href="/" aria-label="Facebook">
               <FaFacebook />
             </a>
-
             <a href="/" aria-label="Instagram">
               <FaInstagram />
             </a>
-
             <a href="/" aria-label="Twitter">
               <FaTwitter />
             </a>
