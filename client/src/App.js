@@ -60,7 +60,10 @@ function App() {
               {/* ✅ Contact Route Added */}
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<TermsConditions />} />
-              <Route path="/budget-estimator" element={<BudgetEstimatorPage />} />
+              <Route
+                path="/budget-estimator"
+                element={<BudgetEstimatorPage />}
+              />
               {/* Other Routes */}
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
