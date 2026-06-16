@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "prettier": "^3.8.3",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "eslint": "^8.57.1"
   }
 }
