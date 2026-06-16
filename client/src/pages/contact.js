@@ -99,13 +99,15 @@ const Contact = () => {
       <div
         style={{
           maxWidth: "1100px",
-          margin: "-36px auto 48px",
+          margin: "32px auto 48px",
           padding: "0 16px",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           gap: "24px",
           alignItems: "start",
           textAlign: "left",
+          position: "relative",
+          zIndex: 2,
         }}
       >
         {/* Contact Information */}
@@ -115,6 +117,9 @@ const Contact = () => {
             borderRadius: "16px",
             padding: "28px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <h2
@@ -148,7 +153,6 @@ const Contact = () => {
                   background: "#f8fafc",
                   borderRadius: "12px",
                   border: "1px solid #e8eef3",
-                  textAlign: "left",
                 }}
               >
                 <div
@@ -161,7 +165,6 @@ const Contact = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    marginTop: "2px",
                   }}
                 >
                   <Icon
@@ -172,25 +175,22 @@ const Contact = () => {
                   />
                 </div>
 
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div>
                   <h4
                     style={{
-                      margin: "0 0 2px",
+                      margin: "0 0 4px",
                       color: "#1a4a6b",
                       fontSize: "0.9rem",
-                      fontWeight: 600,
-                      textAlign: "left",
                     }}
                   >
                     {label}
                   </h4>
+
                   <p
                     style={{
                       margin: 0,
                       color: "#64748b",
                       fontSize: "0.9rem",
-                      lineHeight: 1.4,
-                      textAlign: "left",
                     }}
                   >
                     {value}
@@ -212,59 +212,29 @@ const Contact = () => {
             <h4
               style={{
                 color: "#1a4a6b",
-                margin: "0 0 14px",
-                fontSize: "0.95rem",
-                fontWeight: 700,
+                marginBottom: "14px",
               }}
             >
               Business Hours
             </h4>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-              }}
-            >
-              {businessHours.map(({ day, hours }, index) => (
-                <div
-                  key={day}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "6px 0",
-                    borderBottom:
-                      index < businessHours.length - 1
-                        ? "1px solid #e8eef3"
-                        : "none",
-                    fontSize: "0.875rem",
-                    textAlign: "left",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#1a4a6b",
-                      fontWeight: 500,
-                      textAlign: "left",
-                    }}
-                  >
-                    {day}
-                  </span>
-                  <span
-                    style={{
-                      color: "#64748b",
-                      textAlign: "right",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {hours}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {businessHours.map(({ day, hours }, index) => (
+              <div
+                key={day}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                  borderBottom:
+                    index !== businessHours.length - 1
+                      ? "1px solid #e8eef3"
+                      : "none",
+                }}
+              >
+                <span>{day}</span>
+                <span>{hours}</span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -275,6 +245,9 @@ const Contact = () => {
             borderRadius: "16px",
             padding: "28px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <h2
@@ -290,99 +263,46 @@ const Contact = () => {
             Send Us A Message
           </h2>
 
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: "16px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "6px",
-                  color: "#1a4a6b",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                }}
-              >
-                Name
-              </label>
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+            }}
+          >
+            {["name", "email", "subject"].map((field) => (
+              <div key={field} style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "6px",
+                    color: "#1a4a6b",
+                    fontWeight: 600,
+                  }}
+                >
+                  {field.charAt(0).toUpperCase() + field.slice(1)}
+                </label>
 
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Your Name"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 14px",
-                  border: "1px solid #d8e0e8",
-                  borderRadius: "10px",
-                  boxSizing: "border-box",
-                  fontSize: "0.95rem",
-                }}
-              />
-            </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "6px",
-                  color: "#1a4a6b",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                }}
-              >
-                Email
-              </label>
-
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Your Email"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 14px",
-                  border: "1px solid #d8e0e8",
-                  borderRadius: "10px",
-                  boxSizing: "border-box",
-                  fontSize: "0.95rem",
-                }}
-              />
-            </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "6px",
-                  color: "#1a4a6b",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                }}
-              >
-                Subject
-              </label>
-
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                placeholder="Subject"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px 14px",
-                  border: "1px solid #d8e0e8",
-                  borderRadius: "10px",
-                  boxSizing: "border-box",
-                  fontSize: "0.95rem",
-                }}
-              />
-            </div>
+                <input
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  required
+                  placeholder={`Your ${
+                    field.charAt(0).toUpperCase() + field.slice(1)
+                  }`}
+                  style={{
+                    width: "100%",
+                    padding: "12px 14px",
+                    border: "1px solid #d8e0e8",
+                    borderRadius: "10px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            ))}
 
             <div style={{ marginBottom: "18px" }}>
               <label
@@ -391,7 +311,6 @@ const Contact = () => {
                   marginBottom: "6px",
                   color: "#1a4a6b",
                   fontWeight: 600,
-                  fontSize: "0.9rem",
                 }}
               >
                 Message
@@ -402,8 +321,8 @@ const Contact = () => {
                 rows="5"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Tell us how we can help..."
                 required
+                placeholder="Tell us how we can help..."
                 style={{
                   width: "100%",
                   padding: "12px 14px",
@@ -411,8 +330,6 @@ const Contact = () => {
                   borderRadius: "10px",
                   resize: "vertical",
                   boxSizing: "border-box",
-                  fontSize: "0.95rem",
-                  lineHeight: 1.5,
                 }}
               />
             </div>
@@ -420,6 +337,7 @@ const Contact = () => {
             <button
               type="submit"
               style={{
+                marginTop: "auto",
                 width: "100%",
                 padding: "14px",
                 border: "none",
@@ -427,7 +345,7 @@ const Contact = () => {
                 background: "#ff6b57",
                 color: "#fff",
                 fontSize: "15px",
-                fontWeight: "600",
+                fontWeight: 600,
                 cursor: "pointer",
               }}
             >
