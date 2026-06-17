@@ -293,7 +293,7 @@ const TripsView = () => {
         ) : filteredTrips.length > 0 ? (
             <ShowMoreList
               items={filteredTrips}
-              initialCount={6}
+              initialCount={5}
               itemLabel="Trips"
               renderItem={(trip) => {
                 const days =
