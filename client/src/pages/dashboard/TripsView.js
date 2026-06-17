@@ -28,6 +28,8 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips, addTrip } from "../../redux/actions/tripActions";
 import api from "../../services/api";
 import ShowMoreList from "../../components/ShowMoreList";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -73,6 +75,17 @@ const TripsView = () => {
       setLoadingOpts(false);
     }
   };
+
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+  const tripsInitialCount = isMobile
+    ? 2
+    : isTablet
+      ? 4
+      : 6;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -293,7 +306,7 @@ const TripsView = () => {
         ) : filteredTrips.length > 0 ? (
             <ShowMoreList
               items={filteredTrips}
-              initialCount={5}
+              initialCount={tripsInitialCount}
               itemLabel="Trips"
               renderItem={(trip) => {
                 const days =

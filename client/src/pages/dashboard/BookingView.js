@@ -28,6 +28,9 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import ShowMoreList from "../../components/ShowMoreList";
 import {
   searchFlights,
   searchHotels,
@@ -73,7 +76,16 @@ const BookingView = () => {
     guests: 2,
     rooms: 1,
   });
+  const theme = useTheme();
 
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+  const hotelsInitialCount = isMobile
+    ? 2
+    : isTablet
+      ? 4
+      : 6;
   // Flight filters
   const [flightFilters, setFlightFilters] = useState({
     minBudget: "",
@@ -638,7 +650,11 @@ const BookingView = () => {
             {flights.length} Flight{flights.length !== 1 ? "s" : ""} Found
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {flights.map((flight) => (
+            <ShowMoreList
+              items={flights}
+              initialCount={2}
+              itemLabel="Flights"
+              renderItem={(flight) => (
               <Paper
                 key={flight.id}
                 elevation={0}
@@ -737,7 +753,8 @@ const BookingView = () => {
                   </Grid>
                 </Grid>
               </Paper>
-            ))}
+            )}
+          />
           </Box>
         </Box>
       )}
@@ -771,7 +788,11 @@ const BookingView = () => {
             {hotels.length} Hotel{hotels.length !== 1 ? "s" : ""} Found
           </Typography>
           <Grid container spacing={{ xs: 2, md: 3 }}>
-            {hotels.map((hotel) => (
+            <ShowMoreList
+              items={hotels}
+              initialCount={hotelsInitialCount}
+              itemLabel="Hotels"
+              renderItem={(hotel) => (
               <Grid xs={12} md={6} lg={4} key={hotel.id}>
                 <Card
                   elevation={0}
@@ -877,7 +898,8 @@ const BookingView = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            ))}
+            )}
+            />
           </Grid>
         </Box>
       )}

@@ -54,6 +54,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ShowMoreList from "../../components/ShowMoreList";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -783,18 +784,23 @@ const PackingView = () => {
           {/* ── Item List ────────────────────────────────────────────────────── */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {/* Unpacked items */}
-            {unpacked.map((item) => (
-              <Fade in key={item._id}>
-                <Box>
-                  <ItemRow
-                    item={item}
-                    isNew={newlyAdded === item.name}
-                    onToggle={() => handleToggle(item._id)}
-                    onDelete={() => handleDelete(item._id)}
-                  />
-                </Box>
-              </Fade>
-            ))}
+            <ShowMoreList
+              items={unpacked}
+              initialCount={3}
+              itemLabel="Items"
+              renderItem={(item) => (
+                <Fade in key={item._id}>
+                  <Box>
+                    <ItemRow
+                      item={item}
+                      isNew={newlyAdded === item.name}
+                      onToggle={() => handleToggle(item._id)}
+                      onDelete={() => handleDelete(item._id)}
+                    />
+                  </Box>
+                </Fade>
+              )}
+            />
 
             {/* Packed section divider + toggle */}
             {packedItems.length > 0 && (
