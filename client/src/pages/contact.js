@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const contactDetails = [
   {
@@ -71,6 +72,23 @@ const Contact = () => {
           padding: "clamp(56px, 8vw, 72px) 20px clamp(48px, 6vw, 64px)",
         }}
       >
+        <Link
+          to="/"
+          style={{
+            color: "#fff",
+            position: "absolute",
+            left: "20px",
+            top: "20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.opacity = "1")}
+          onMouseOut={(e) => (e.currentTarget.style.opacity = "0.9")}
+        >
+          <FaArrowLeft /> Back to Home
+        </Link>
+
         <h1
           style={{
             fontSize: "clamp(2rem, 5vw, 2.75rem)",
