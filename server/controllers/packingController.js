@@ -186,6 +186,9 @@ exports.clearAll = async (req, res) => {
       { $set: { items: [] } },
       { new: true },
     );
+    if (!list) {
+      return res.status(404).json({ message: "No packing list found for this trip" });
+    }
     res.json(list);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
