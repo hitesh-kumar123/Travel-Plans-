@@ -9,7 +9,7 @@ router.get("/rates", auth, async (req, res) => {
     const rates = await getExchangeRates(base);
     res.json({ base, rates });
   } catch (_err) {
-    res.status(500).json({ msg: "Failed to fetch exchange rates" });
+    console.error("Currency error:", _err.message); res.status(500).json({ msg: "Failed to fetch exchange rates", detail: _err.message });
   }
 });
 

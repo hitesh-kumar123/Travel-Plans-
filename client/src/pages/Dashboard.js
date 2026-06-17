@@ -52,6 +52,7 @@ import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
+import BudgetView from "./dashboard/BudgetView";
 import NotFound from "./NotFound";
 
 const mobileDrawerWidth = 240;
@@ -97,6 +98,7 @@ const Dashboard = () => {
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
     { text: "Packing", path: "packing", icon: <LuggageIcon /> },
     { text: "Safety & Culture", path: "culture-safety", icon: <ShieldIcon /> },
+    { text: "Budget Estimator", path: "budget", icon: <WalletIcon /> },
   ];
 
   const isActive = (path) => {
@@ -478,6 +480,7 @@ const Dashboard = () => {
             <Route path="profile" element={<ProfileView />} />
             <Route path="packing" element={<PackingView />} />
             <Route path="culture-safety" element={<CultureSafetyAlerts />} />
+            <Route path="budget" element={<BudgetView />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Box>
