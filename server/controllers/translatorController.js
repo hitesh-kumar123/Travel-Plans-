@@ -31,6 +31,12 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 const supportedLanguages = SUPPORTED_LANGUAGES.map((lang) => lang.code);
+
+const LANGUAGE_ALIASES = {
+  zh: "zh-CN",
+};
+
+const normalizeLanguageCode = (code) => LANGUAGE_ALIASES[code] || code;
 // @desc    Translate text
 // @route   POST /api/translator/translate
 // @access  Public
@@ -44,15 +50,20 @@ exports.translateText = async (req, res) => {
         msg: "Text and target language are required",
       });
     }
-    if (!supportedLanguages.includes(targetLanguage)) {
+    const normalizedTarget = normalizeLanguageCode(targetLanguage);
+    if (!supportedLanguages.includes(normalizedTarget)) {
       return res.status(400).json({
         msg: "Invalid target language code",
       });
     }
+    const normalizedSource =
+      sourceLanguage && sourceLanguage !== "auto"
+        ? normalizeLanguageCode(sourceLanguage)
+        : sourceLanguage;
     if (
-      sourceLanguage &&
-      sourceLanguage !== "auto" &&
-      !supportedLanguages.includes(sourceLanguage)
+      normalizedSource &&
+      normalizedSource !== "auto" &&
+      !supportedLanguages.includes(normalizedSource)
     ) {
       return res.status(400).json({
         msg: "Invalid source language code",
@@ -66,9 +77,9 @@ exports.translateText = async (req, res) => {
       });
     }
 
-    const options = { to: targetLanguage };
-    if (sourceLanguage && sourceLanguage !== "auto") {
-      options.from = sourceLanguage;
+    const options = { to: normalizedTarget };
+    if (normalizedSource && normalizedSource !== "auto") {
+      options.from = normalizedSource;
     }
 
     const result = await translate(sanitizedText, options);

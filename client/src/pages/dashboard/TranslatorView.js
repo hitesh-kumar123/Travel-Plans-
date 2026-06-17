@@ -32,7 +32,7 @@ const LANGUAGES = [
   { code: "it", name: "Italian 🇮🇹" },
   { code: "ja", name: "Japanese 🇯🇵" },
   { code: "ko", name: "Korean 🇰🇷" },
-  { code: "zh", name: "Chinese 🇨🇳" },
+  { code: "zh-CN", name: "Chinese 🇨🇳" },
   { code: "ar", name: "Arabic 🇸🇦" },
   { code: "pt", name: "Portuguese 🇵🇹" },
   { code: "ru", name: "Russian 🇷🇺" },

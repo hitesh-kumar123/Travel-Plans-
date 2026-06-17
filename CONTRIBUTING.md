@@ -32,7 +32,7 @@ Thank you for your interest in contributing to PackGo! We welcome contributions 
    git clone https://github.com/your-username/Travel-Plans-.git
 ```
 
-3. **Create a feature branch** — never commit to `main`:
+1. **Create a feature branch** — never commit to `main`:
 
 ```bash
    git checkout -b feat/your-feature-name
@@ -40,16 +40,16 @@ Thank you for your interest in contributing to PackGo! We welcome contributions 
    git checkout -b fix/your-bug-fix
 ```
 
-4. **Make your changes** following code style guidelines
-5. **Test your changes** locally before submitting
-6. **Commit your changes** using Conventional Commits format
-7. **Push your branch**:
+1. **Make your changes** following code style guidelines
+2. **Test your changes** locally before submitting
+3. **Commit your changes** using Conventional Commits format
+4. **Push your branch**:
 
 ```bash
    git push origin feat/your-feature-name
 ```
 
-8. **Open a Pull Request** against the `main` branch
+1. **Open a Pull Request** against the `main` branch
 
 ---
 
@@ -58,7 +58,7 @@ Thank you for your interest in contributing to PackGo! We welcome contributions 
 Keep your fork up-to-date with the main repository:
 
 ```bash
-git remote add upstream https://github.com/hitesh-kumar123/Travel-Plans-.git
+git remote add upstream  https://github.com/hitesh-kumar123/Travel-Plans-.git
 git fetch upstream
 git checkout main
 git merge upstream/main
@@ -119,6 +119,7 @@ Default `REACT_APP_API_URL=http://localhost:5000/api` works for local developmen
 
 We use [Conventional Commits](https://www.conventionalcommits.org/):
 
+
 | Prefix      | Use for               |
 | ----------- | --------------------- |
 | `feat:`     | New feature           |
@@ -128,6 +129,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 | `style:`    | Formatting only       |
 | `test:`     | Adding/fixing tests   |
 | `chore:`    | Build process changes |
+
 
 Example: `feat: add Google authentication to login page`
 
