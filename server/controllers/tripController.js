@@ -13,7 +13,7 @@ function escapeRegExp(string) {
 }
 
 // Create new trip
-exports.createTrip = async (req, res) => {
+exports.createTrip = async (req, res, next) => {
   try {
     const {
       destination,
@@ -31,6 +31,12 @@ exports.createTrip = async (req, res) => {
       return res
         .status(400)
         .json({ msg: "Trip start date cannot be in the past" });
+    }
+
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+      return res
+        .status(400)
+        .json({ msg: "End date cannot be earlier than start date" });
     }
 
     if (budget !== undefined && budget < 0) {
@@ -66,26 +72,24 @@ exports.createTrip = async (req, res) => {
     const trip = await newTrip.save();
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Get all trips for a user
-exports.getUserTrips = async (req, res) => {
+exports.getUserTrips = async (req, res, next) => {
   try {
     const trips = await Trip.find({ user: req.user.id }).sort({
       startDate: -1,
     });
     res.json(trips);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Get a specific trip
-exports.getTrip = async (req, res) => {
+exports.getTrip = async (req, res, next) => {
   try {
     const trip = await Trip.findById(req.params.id);
 
@@ -100,16 +104,15 @@ exports.getTrip = async (req, res) => {
 
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Update a trip
-exports.updateTrip = async (req, res) => {
+exports.updateTrip = async (req, res, next) => {
   try {
     let trip = await Trip.findById(req.params.id);
 
@@ -124,6 +127,20 @@ exports.updateTrip = async (req, res) => {
 
     if (req.body.budget !== undefined && req.body.budget < 0) {
       return res.status(400).json({ msg: "Budget cannot be negative" });
+    }
+
+    // Validate date range against the merged result of existing + incoming dates
+    const resolvedStart = req.body.startDate
+      ? new Date(req.body.startDate)
+      : trip.startDate;
+    const resolvedEnd = req.body.endDate
+      ? new Date(req.body.endDate)
+      : trip.endDate;
+
+    if (resolvedEnd < resolvedStart) {
+      return res
+        .status(400)
+        .json({ msg: "End date cannot be earlier than start date" });
     }
 
     const allowedFields = [
@@ -162,16 +179,15 @@ exports.updateTrip = async (req, res) => {
 
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Delete a trip
-exports.deleteTrip = async (req, res) => {
+exports.deleteTrip = async (req, res, next) => {
   try {
     const trip = await Trip.findById(req.params.id);
 
@@ -189,15 +205,15 @@ exports.deleteTrip = async (req, res) => {
     await trip.deleteOne();
     res.json({ msg: "Trip removed" });
   } catch (err) {
-    console.error(err.message);
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "Trip not found" });
     }
-    res.status(500).send("Server error");
+    next(err);
   }
 };
+
 // Generate shareable link for a trip
-exports.shareTrip = async (req, res) => {
+exports.shareTrip = async (req, res, next) => {
   try {
     const trip = await Trip.findById(req.params.id);
     if (!trip) return res.status(404).json({ msg: "Trip not found" });
@@ -211,13 +227,12 @@ exports.shareTrip = async (req, res) => {
 
     res.json({ shareToken: token });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // View shared trip (public, no auth needed)
-exports.getSharedTrip = async (req, res) => {
+exports.getSharedTrip = async (req, res, next) => {
   try {
     const trip = await Trip.findOne({ shareToken: req.params.token });
     if (!trip || !trip.shareEnabled)
@@ -225,13 +240,12 @@ exports.getSharedTrip = async (req, res) => {
 
     res.json(trip);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Enable/Disable trip sharing
-exports.toggleTripSharing = async (req, res) => {
+exports.toggleTripSharing = async (req, res, next) => {
   try {
     const trip = await Trip.findById(req.params.id);
 
@@ -255,7 +269,6 @@ exports.toggleTripSharing = async (req, res) => {
       shareEnabled: trip.shareEnabled,
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };

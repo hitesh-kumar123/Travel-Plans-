@@ -88,7 +88,7 @@ const mockHotels = [
 ];
 
 // Search for flights with filters
-exports.searchFlights = async (req, res) => {
+exports.searchFlights = async (req, res, next) => {
   try {
     const {
       origin,
@@ -131,13 +131,12 @@ exports.searchFlights = async (req, res) => {
 
     res.json({ flights: filteredFlights });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Search for hotels with filters
-exports.searchHotels = async (req, res) => {
+exports.searchHotels = async (req, res, next) => {
   try {
     const {
       location,
@@ -202,13 +201,12 @@ exports.searchHotels = async (req, res) => {
 
     res.json({ hotels: filteredHotels });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Book a flight
-exports.bookFlight = async (req, res) => {
+exports.bookFlight = async (req, res, next) => {
   try {
     const { flightId, passengers, tripId } = req.body;
 
@@ -235,13 +233,12 @@ exports.bookFlight = async (req, res) => {
 
     res.json(bookingConfirmation);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };
 
 // Book a hotel
-exports.bookHotel = async (req, res) => {
+exports.bookHotel = async (req, res, next) => {
   try {
     const { hotelId, roomType, guests, checkIn, checkOut, tripId } = req.body;
 
@@ -292,7 +289,6 @@ exports.bookHotel = async (req, res) => {
 
     res.json(bookingConfirmation);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    next(err);
   }
 };

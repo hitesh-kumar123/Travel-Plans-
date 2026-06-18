@@ -61,6 +61,7 @@ const TripSchema = new mongoose.Schema({
   shareToken: {
     type: String,
     default: null,
+    index: true,
   },
 
   shareEnabled: {
