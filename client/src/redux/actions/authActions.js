@@ -115,7 +115,7 @@ export const googleLogin =
     } catch (e) {
       dispatch({
         type: "AUTH_FAIL",
-        payload: e.rensponse?.data?.message || e.message,
+        payload: e.response?.data?.message || e.response?.data?.msg || e.message,
       });
     }
   };

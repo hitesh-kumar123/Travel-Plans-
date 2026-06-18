@@ -315,6 +315,14 @@ exports.resetPassword = async (req, res, next) => {
       return res.status(400).json({ msg: "Invalid token" });
     }
 
+    // Enforce the same password policy as registration
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+      return res.status(400).json({
+        msg: "Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      });
+    }
+
     // Set new password
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
