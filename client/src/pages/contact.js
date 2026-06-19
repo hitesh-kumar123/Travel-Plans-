@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
+import {
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaArrowLeft,
+} from "react-icons/fa";
 const contactDetails = [
   {
     icon: FaEnvelope,
@@ -71,6 +76,38 @@ const Contact = () => {
           padding: "clamp(56px, 8vw, 72px) 20px clamp(48px, 6vw, 64px)",
         }}
       >
+        <div
+          style={{
+            maxWidth: "600px",
+            margin: "0 auto 20px",
+            textAlign: "left",
+          }}
+        >
+          <Link
+            to="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              color: "#fff",
+              opacity: 0.85,
+              fontSize: "0.9rem",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = 1;
+              e.currentTarget.style.color = "#ff6b57";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = 0.85;
+              e.currentTarget.style.color = "#fff";
+            }}
+          >
+            <FaArrowLeft style={{ fontSize: "0.8rem" }} />
+            Back to Home
+          </Link>
+        </div>
         <h1
           style={{
             fontSize: "clamp(2rem, 5vw, 2.75rem)",
@@ -105,7 +142,7 @@ const Contact = () => {
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           gap: "24px",
           alignItems: "start",
-          textAlign: "left",
+          textAlign: "center",
         }}
       >
         {/* Contact Information */}
