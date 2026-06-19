@@ -32,7 +32,9 @@ async function getExchangeRates(baseCurrency = "USD") {
     cache[baseCurrency] = { rates: res.data.conversion_rates, fetchedAt: now };
     return cache[baseCurrency].rates;
   } catch (error) {
-    console.warn(`Failed to fetch exchange rates for ${baseCurrency}: ${error.message}. Using fallback rates.`);
+    console.warn(
+      `Failed to fetch exchange rates for ${baseCurrency}: ${error.message}. Using fallback rates.`,
+    );
     const baseToUSD = fallbackRatesUSD[baseCurrency] || 1;
     const derivedRates = {};
     for (const [currency, usdRate] of Object.entries(fallbackRatesUSD)) {
