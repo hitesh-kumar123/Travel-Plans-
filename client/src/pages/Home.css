@@ -148,6 +148,17 @@ html {
   background: var(--coral);
 }
 
+.wander-desktop-menu{
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.wander-desktop-menu-links{
+  display: flex;
+  gap: .75rem;
+}
+
 .wander-mobile-menu {
   display: none;
   background: none;
@@ -973,12 +984,16 @@ html {
 }
 
 /* ═══ RESPONSIVE ═══ */
-@media (max-width: 900px) {
+@media (max-width: 950px) {
   .wander-hero {
     grid-template-columns: 1fr;
     /* Mobile: increase top padding to clear mobile navbar */
     padding: 7rem 1.5rem 3rem 1.5rem;
     min-height: auto;
+  }
+
+  .wander-desktop-menu{
+    display: none;
   }
 
   .wander-hero-visual {
