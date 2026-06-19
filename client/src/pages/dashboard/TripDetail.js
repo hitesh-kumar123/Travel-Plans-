@@ -54,7 +54,9 @@ import {
   getExpenses,
   addExpense,
   deleteExpense,
+  fetchCurrencyRates,
 } from "../../redux/actions/expenseActions";
+import { currencyRates } from "../../utils/currencyData";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -77,7 +79,7 @@ const TripDetail = () => {
   const dispatch = useDispatch();
 
   const { currentTrip, loading } = useSelector((state) => state.trips);
-  const { expenses, loading: expLoading } = useSelector(
+  const { expenses, loading: expLoading, exchangeRates } = useSelector(
     (state) => state.expenses,
   );
 
@@ -109,6 +111,7 @@ const TripDetail = () => {
   useEffect(() => {
     dispatch(getTrip(id));
     dispatch(getExpenses(id));
+    dispatch(fetchCurrencyRates("INR"));
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -128,8 +131,18 @@ const TripDetail = () => {
     }
   }, [currentTrip]);
 
+  const toINR = (amount, currency) => {
+    if (currency === "INR") return amount;
+    const rates = (exchangeRates && Object.keys(exchangeRates).length > 0)
+      ? exchangeRates
+      : currencyRates;
+    const rateToINR = rates[currency];
+    if (!rateToINR) return amount;
+    return parseFloat((amount / rateToINR).toFixed(2));
+  };
+
   const totalSpent = expenses
-    ? expenses.reduce((acc, e) => acc + e.amount, 0)
+    ? expenses.reduce((acc, e) => acc + toINR(e.amount, e.currency || "INR"), 0)
     : 0;
   const budgetPercent =
     currentTrip?.budget > 0
@@ -656,7 +669,7 @@ const TripDetail = () => {
                     <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Note</TableCell>
                     <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      ₹
+                      Amount
                     </TableCell>
                     <TableCell />
                   </TableRow>
@@ -685,7 +698,23 @@ const TripDetail = () => {
                           {e.description || "-"}
                         </TableCell>
                         <TableCell align="right" sx={{ fontWeight: 600 }}>
-                          {e.amount.toLocaleString()}
+                          {e.currency && e.currency !== "INR" ? (
+                            <>
+                              {e.currency === "USD" ? "$" : e.currency === "EUR" ? "€" : e.currency === "GBP" ? "£" : e.currency} {e.amount.toLocaleString()}
+                              <Typography
+                                variant="caption"
+                                display="block"
+                                color="text.secondary"
+                                sx={{ fontSize: "0.7rem", fontWeight: 400 }}
+                              >
+                                ≈ ₹{toINR(e.amount, e.currency).toLocaleString(undefined, {
+                                  maximumFractionDigits: 2,
+                                })}
+                              </Typography>
+                            </>
+                          ) : (
+                            `₹${e.amount.toLocaleString()}`
+                          )}
                         </TableCell>
                         <TableCell align="right">
                           <IconButton
