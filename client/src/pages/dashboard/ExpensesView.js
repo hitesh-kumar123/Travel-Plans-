@@ -149,9 +149,10 @@ const ExpensesView = () => {
   // Uses INR as a pivot: amount → INR → baseCurrency
   const toBase = (amount, currency) => {
     if (currency === baseCurrency) return amount;
-    const rates = (exchangeRates && Object.keys(exchangeRates).length > 0)
-      ? exchangeRates
-      : currencyRates;
+    const rates =
+      exchangeRates && Object.keys(exchangeRates).length > 0
+        ? exchangeRates
+        : currencyRates;
 
     let amountInINR;
     if (currency === "INR") {

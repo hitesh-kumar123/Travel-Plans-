@@ -25,7 +25,10 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips } from "../../redux/actions/tripActions";
 import TripCountdownBadge from "../../components/TripCountdownBadge";
-import { getAllUserExpenses, fetchCurrencyRates } from "../../redux/actions/expenseActions";
+import {
+  getAllUserExpenses,
+  fetchCurrencyRates,
+} from "../../redux/actions/expenseActions";
 import { currencyRates } from "../../utils/currencyData";
 import {
   BarChart,
@@ -68,16 +71,20 @@ const DashboardHome = () => {
   const totalBudget = tripsArr.reduce((acc, t) => acc + (t.budget || 0), 0);
   const toINR = (amount, currency) => {
     if (currency === "INR") return amount;
-    const rates = (exchangeRates && Object.keys(exchangeRates).length > 0)
-      ? exchangeRates
-      : currencyRates;
+    const rates =
+      exchangeRates && Object.keys(exchangeRates).length > 0
+        ? exchangeRates
+        : currencyRates;
     const rateToINR = rates[currency];
     if (!rateToINR) return amount;
     return parseFloat((amount / rateToINR).toFixed(2));
   };
 
   const totalSpent = allExpenses
-    ? allExpenses.reduce((acc, e) => acc + toINR(e.amount || 0, e.currency || "INR"), 0)
+    ? allExpenses.reduce(
+        (acc, e) => acc + toINR(e.amount || 0, e.currency || "INR"),
+        0,
+      )
     : 0;
 
   const today = new Date();

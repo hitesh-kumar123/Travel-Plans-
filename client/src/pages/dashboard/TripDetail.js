@@ -79,9 +79,11 @@ const TripDetail = () => {
   const dispatch = useDispatch();
 
   const { currentTrip, loading } = useSelector((state) => state.trips);
-  const { expenses, loading: expLoading, exchangeRates } = useSelector(
-    (state) => state.expenses,
-  );
+  const {
+    expenses,
+    loading: expLoading,
+    exchangeRates,
+  } = useSelector((state) => state.expenses);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [expenseOpen, setExpenseOpen] = useState(false);
@@ -133,9 +135,10 @@ const TripDetail = () => {
 
   const toINR = (amount, currency) => {
     if (currency === "INR") return amount;
-    const rates = (exchangeRates && Object.keys(exchangeRates).length > 0)
-      ? exchangeRates
-      : currencyRates;
+    const rates =
+      exchangeRates && Object.keys(exchangeRates).length > 0
+        ? exchangeRates
+        : currencyRates;
     const rateToINR = rates[currency];
     if (!rateToINR) return amount;
     return parseFloat((amount / rateToINR).toFixed(2));
@@ -700,16 +703,27 @@ const TripDetail = () => {
                         <TableCell align="right" sx={{ fontWeight: 600 }}>
                           {e.currency && e.currency !== "INR" ? (
                             <>
-                              {e.currency === "USD" ? "$" : e.currency === "EUR" ? "€" : e.currency === "GBP" ? "£" : e.currency} {e.amount.toLocaleString()}
+                              {e.currency === "USD"
+                                ? "$"
+                                : e.currency === "EUR"
+                                  ? "€"
+                                  : e.currency === "GBP"
+                                    ? "£"
+                                    : e.currency}{" "}
+                              {e.amount.toLocaleString()}
                               <Typography
                                 variant="caption"
                                 display="block"
                                 color="text.secondary"
                                 sx={{ fontSize: "0.7rem", fontWeight: 400 }}
                               >
-                                ≈ ₹{toINR(e.amount, e.currency).toLocaleString(undefined, {
-                                  maximumFractionDigits: 2,
-                                })}
+                                ≈ ₹
+                                {toINR(e.amount, e.currency).toLocaleString(
+                                  undefined,
+                                  {
+                                    maximumFractionDigits: 2,
+                                  },
+                                )}
                               </Typography>
                             </>
                           ) : (
