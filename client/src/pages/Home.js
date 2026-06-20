@@ -926,7 +926,7 @@ const Home = () => {
           {editorialDests[0] ? (
             <div
               className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
+              onClick={() => navigate(`/destinations/${editorialDests[0]._id}`)}
             >
               <div className="wander-dest-card-img">
                 {editorialDests[0].images?.[0] ? (
@@ -1013,7 +1013,7 @@ const Home = () => {
                 key={idx}
                 className="wander-dest-card"
                 style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
+                onClick={() => dest && navigate(`/destinations/${dest._id}`)}
               >
                 <div className="wander-dest-card-img">
                   {dest?.images?.[0] ? (

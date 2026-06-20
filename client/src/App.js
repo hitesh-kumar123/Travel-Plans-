@@ -26,6 +26,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
+import DestinationDetail from "./pages/DestinationDetail";
 
 function App() {
   useEffect(() => {
@@ -52,6 +53,7 @@ function App() {
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/destinations/:id" element={<DestinationDetail />} />
               <Route path="/travel-checklist" element={<TravelChecklist />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
