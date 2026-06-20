@@ -1,13 +1,13 @@
 /* WeatherTooltip.css — styled to match the wander-* design system
    (Playfair Display for emphasis, DM Sans for body text) */
- 
+
 .wander-weather-wrap {
   position: absolute;
   top: 1rem;
   right: 1rem;
   z-index: 5;
 }
- 
+
 .wander-weather-icon {
   width: 36px;
   height: 36px;
@@ -21,14 +21,16 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
- 
+
 .wander-weather-icon:hover {
   background: rgba(10, 25, 40, 0.7);
   transform: scale(1.08);
 }
- 
+
 .wander-weather-dot {
   width: 8px;
   height: 8px;
@@ -36,7 +38,7 @@
   background: rgba(255, 255, 255, 0.6);
   animation: wander-weather-pulse 1s infinite ease-in-out;
 }
- 
+
 @keyframes wander-weather-pulse {
   0%,
   100% {
@@ -46,7 +48,7 @@
     opacity: 1;
   }
 }
- 
+
 .wander-weather-popover {
   position: absolute;
   top: 44px;
@@ -59,7 +61,7 @@
   animation: wander-weather-fade 0.2s ease-out;
   color: #1a1a1a;
 }
- 
+
 @keyframes wander-weather-fade {
   from {
     opacity: 0;
@@ -70,7 +72,7 @@
     transform: translateY(0) scale(1);
   }
 }
- 
+
 .wander-weather-popover-temp {
   display: flex;
   align-items: center;
@@ -80,14 +82,14 @@
   font-weight: 700;
   color: #1a4a6b;
 }
- 
+
 .wander-weather-popover-label {
   font-family: "DM Sans", sans-serif;
   font-size: 0.8rem;
   color: #555;
   margin: 0.15rem 0 0.5rem;
 }
- 
+
 .wander-weather-popover-best {
   font-family: "DM Sans", sans-serif;
   font-size: 0.75rem;
@@ -96,11 +98,11 @@
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding-top: 0.5rem;
 }
- 
+
 .wander-weather-popover-best strong {
   color: #1a4a6b;
 }
- 
+
 @media (max-width: 480px) {
   .wander-weather-popover {
     width: 170px;

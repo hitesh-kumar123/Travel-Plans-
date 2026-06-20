@@ -109,11 +109,7 @@ export default function WeatherTooltip({ lat, lon, bestTimeToVisit }) {
         aria-label="Show weather details"
         type="button"
       >
-        {loading ? (
-          <span className="wander-weather-dot" />
-        ) : (
-          <Icon size={20} />
-        )}
+        {loading ? <span className="wander-weather-dot" /> : <Icon size={20} />}
       </button>
 
       {open && !loading && weather && (

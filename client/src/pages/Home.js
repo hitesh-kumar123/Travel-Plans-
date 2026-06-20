@@ -952,7 +952,9 @@ const Home = () => {
                 <WeatherTooltip
                   lat={editorialDests[0]?.coordinates?.lat ?? 36.3932}
                   lon={editorialDests[0]?.coordinates?.lon ?? 25.4615}
-                  bestTimeToVisit={editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"}
+                  bestTimeToVisit={
+                    editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"
+                  }
                 />
                 <div className="wander-dest-tag">Trending</div>
                 <div className="wander-dest-info">
@@ -984,7 +986,9 @@ const Home = () => {
                 <WeatherTooltip
                   lat={editorialDests[0]?.coordinates?.lat ?? 36.3932}
                   lon={editorialDests[0]?.coordinates?.lon ?? 25.4615}
-                  bestTimeToVisit={editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"}
+                  bestTimeToVisit={
+                    editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"
+                  }
                 />
                 <div className="wander-dest-tag">Trending</div>
                 <div className="wander-dest-info">
@@ -1000,12 +1004,12 @@ const Home = () => {
           {/* Small cards */}
           {[
             {
-               svgScene: <SceneAngkor />,
-               fallbackName: "Angkor Wat",
-               fallbackLoc: "Cambodia • From ₹65,000",
-               bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
-               coords: { lat: 13.4125, lon: 103.867 },
-               bestTime: "Nov - Mar",
+              svgScene: <SceneAngkor />,
+              fallbackName: "Angkor Wat",
+              fallbackLoc: "Cambodia • From ₹65,000",
+              bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
+              coords: { lat: 13.4125, lon: 103.867 },
+              bestTime: "Nov - Mar",
             },
             {
               svgScene: <SceneBali />,
