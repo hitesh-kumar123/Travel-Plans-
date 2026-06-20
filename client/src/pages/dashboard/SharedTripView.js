@@ -53,9 +53,17 @@ const SharedTripView = () => {
       </Box>
     );
 
-  const tripImage =
-    trip?.images?.[0] ||
-    "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200";
+  const [activeImage, setActiveImage] = useState("");
+
+  useEffect(() => {
+    if (trip && trip.images && trip.images.length > 0) {
+      setActiveImage(trip.images[0]);
+    } else {
+      setActiveImage(
+        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200",
+      );
+    }
+  }, [trip]);
   const daysCount =
     trip.startDate && trip.endDate
       ? Math.ceil(
@@ -120,7 +128,10 @@ const SharedTripView = () => {
       >
         <Box
           component="img"
-          src={tripImage}
+          src={
+            activeImage ||
+            "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200"
+          }
           alt={trip.destination}
           sx={{
             width: "100%",
@@ -171,6 +182,56 @@ const SharedTripView = () => {
           />
         </Box>
       </Box>
+
+      {/* Destination Image Gallery Thumbnails */}
+      {trip?.images && trip.images.length > 1 && (
+        <Box
+          className="no-print"
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            mb: 3,
+            overflowX: "auto",
+            py: 1,
+            "@media print": { display: "none" },
+            "&::-webkit-scrollbar": { height: 6 },
+            "&::-webkit-scrollbar-thumb": {
+              bgcolor: "rgba(0,0,0,0.15)",
+              borderRadius: 3,
+            },
+          }}
+        >
+          {trip.images.map((img, idx) => (
+            <Box
+              key={idx}
+              component="img"
+              src={img}
+              alt={`${trip.destination} thumbnail ${idx + 1}`}
+              onClick={() => setActiveImage(img)}
+              sx={{
+                width: 80,
+                height: 60,
+                borderRadius: 2,
+                objectFit: "cover",
+                cursor: "pointer",
+                border: "2px solid",
+                borderColor:
+                  activeImage === img ? "primary.main" : "transparent",
+                transition: "all 0.2s ease-in-out",
+                opacity: activeImage === img ? 1 : 0.7,
+                boxShadow:
+                  activeImage === img
+                    ? "0 4px 8px rgba(25, 118, 210, 0.25)"
+                    : "none",
+                "&:hover": {
+                  opacity: 1,
+                  transform: "scale(1.05)",
+                },
+              }}
+            />
+          ))}
+        </Box>
+      )}
       <Grid container spacing={2} sx={{ mb: 3 }} className="print-section">
         {[
           {
