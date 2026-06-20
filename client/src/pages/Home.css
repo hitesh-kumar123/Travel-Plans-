@@ -603,9 +603,10 @@ html {
 }
 
 .wander-dest-country {
+  font-family: "DM Sans", sans-serif;
+  letter-spacing: 0.5px;
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.65);
-  letter-spacing: 0.5px;
 }
 
 .wander-dest-tag {
