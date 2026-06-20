@@ -20,6 +20,17 @@ const SharedTripView = () => {
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeImage, setActiveImage] = useState("");
+
+  useEffect(() => {
+    if (trip && trip.images && trip.images.length > 0) {
+      setActiveImage(trip.images[0]);
+    } else {
+      setActiveImage(
+        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200",
+      );
+    }
+  }, [trip]);
 
   useEffect(() => {
     const fetchSharedTrip = async () => {
@@ -53,17 +64,6 @@ const SharedTripView = () => {
       </Box>
     );
 
-  const [activeImage, setActiveImage] = useState("");
-
-  useEffect(() => {
-    if (trip && trip.images && trip.images.length > 0) {
-      setActiveImage(trip.images[0]);
-    } else {
-      setActiveImage(
-        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?fit=crop&w=1200",
-      );
-    }
-  }, [trip]);
   const daysCount =
     trip.startDate && trip.endDate
       ? Math.ceil(
