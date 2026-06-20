@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
-import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
-import { addTrip } from "../redux/actions/tripActions";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
-import { addRecentlyViewed } from "../utils/recentlyViewed";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
