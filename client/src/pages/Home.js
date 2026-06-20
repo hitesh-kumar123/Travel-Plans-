@@ -388,8 +388,6 @@ const SEARCH_HISTORY_KEY = "recentDestinationSearches";
 /* ══════════════════════════════════════════════════════════════ */
 const Home = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((s) => s.auth);
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -485,29 +483,6 @@ const Home = () => {
       window.removeEventListener("scroll", handleActiveSection);
     };
   }, []);
-
-  const handleAddTrip = (dest) => {
-    // Save to recently viewed regardless of auth status
-    addRecentlyViewed(dest); // ← MOVE THIS to the top, before the auth check
-
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-
-    const today = new Date(),
-      next = new Date();
-    next.setDate(today.getDate() + 7);
-    dispatch(
-      addTrip({
-        destination: dest.name,
-        startDate: checkIn || today.toISOString().split("T")[0],
-        endDate: next.toISOString().split("T")[0],
-        description: `Trip to ${dest.city || dest.name}`,
-      }),
-    );
-    navigate("/dashboard/trips");
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
