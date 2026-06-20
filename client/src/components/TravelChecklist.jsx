@@ -68,7 +68,7 @@ export default function TravelChecklist() {
           style={{
             position: "absolute",
             left: "clamp(16px, 4vw, 32px)",
-            top: "50%",
+            top: "25%",
             transform: "translateY(-50%)",
             color: "#fff",
             textDecoration: "none",
@@ -112,7 +112,7 @@ export default function TravelChecklist() {
       <div
         style={{
           maxWidth: "800px",
-          margin: "-24px auto 48px",
+          margin: "24px auto 48px",
           padding: "0 16px",
           display: "flex",
           flexDirection: "column",
