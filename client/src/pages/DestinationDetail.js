@@ -69,11 +69,7 @@ const DestinationDetail = () => {
   const dispatch = useDispatch();
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const {
-    currentWeather,
-    forecast,
-    loading: weatherLoading,
-  } = useSelector((state) => state.weather);
+  const { currentWeather, forecast } = useSelector((state) => state.weather);
 
   const [destination, setDestination] = useState(null);
   const [loading, setLoading] = useState(true);
