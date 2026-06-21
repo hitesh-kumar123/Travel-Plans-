@@ -2,7 +2,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
 import "./Home.css"; // reuse same styles
 
 const About = () => {
@@ -200,7 +202,7 @@ const About = () => {
               <FaInstagram />
             </a>
             <a href="/" aria-label="Twitter">
-              <FaTwitter />
+              <FaXTwitter />
             </a>
           </div>
         </div>
