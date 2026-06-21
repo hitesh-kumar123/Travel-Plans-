@@ -543,84 +543,84 @@ const Home = () => {
   return (
     <div className="wander-page">
       {/* ═══ NAVBAR ═══ */}
-        <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
-          <Link to="/" className="wander-logo">
-            Pack<span>Go</span>
-          </Link>
+      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
+        <Link to="/" className="wander-logo">
+          Pack<span>Go</span>
+        </Link>
 
-          <div className="wander-desktop-menu">
-            <ul className="wander-nav-links">
+        <div className="wander-desktop-menu">
+          <ul className="wander-nav-links">
+            <li>
+              <a
+                href="#wander-dest-section"
+                className={
+                  activeSection === "wander-dest-section"
+                    ? "wander-nav-active"
+                    : ""
+                }
+              >
+                Destinations
+              </a>
+            </li>
+            <li>
+              <a
+                href="#wander-features"
+                className={
+                  activeSection === "wander-features" ? "wander-nav-active" : ""
+                }
+              >
+                Features
+              </a>
+            </li>
+            <li>
+              <a
+                href="#wander-testimonials"
+                className={
+                  activeSection === "wander-testimonials"
+                    ? "wander-nav-active"
+                    : ""
+                }
+              >
+                Experiences
+              </a>
+            </li>
+            <li>
+              <Link to="/travel-checklist">Checklist</Link>
+            </li>
+            {isAuthenticated && (
               <li>
-                <a
-                  href="#wander-dest-section"
-                  className={
-                    activeSection === "wander-dest-section"
-                      ? "wander-nav-active"
-                      : ""
-                  }
-                >
-                  Destinations
-                </a>
+                <Link to="/dashboard">Dashboard</Link>
               </li>
-              <li>
-                <a
-                  href="#wander-features"
-                  className={
-                    activeSection === "wander-features" ? "wander-nav-active" : ""
-                  }
-                >
-                  Features
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#wander-testimonials"
-                  className={
-                    activeSection === "wander-testimonials"
-                      ? "wander-nav-active"
-                      : ""
-                  }
-                >
-                  Experiences
-                </a>
-              </li>
-              <li>
-                <Link to="/travel-checklist">Checklist</Link>
-              </li>
-              {isAuthenticated && (
-                <li>
-                  <Link to="/dashboard">Dashboard</Link>
-                </li>
-              )}
-            </ul>
-
-            {isAuthenticated ? (
-              <Link to="/dashboard">
-                <button className="wander-nav-cta">My Dashboard</button>
-              </Link>
-            ) : (
-              <div className="wander-desktop-menu-links">
-                <Link to="/login">
-                  <button className="wander-nav-log-in">Log In</button>
-                </Link>
-
-                <Link to="/register">
-                  <button className="wander-nav-create-account">
-                    Create Free Account
-                  </button>
-                </Link>
-
-                <Link to="/register">
-                  <button className="wander-nav-cta">Book Now</button>
-                </Link>
-              </div>
             )}
-          </div>
+          </ul>
 
-          <button
-            className="wander-mobile-menu"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
+          {isAuthenticated ? (
+            <Link to="/dashboard">
+              <button className="wander-nav-cta">My Dashboard</button>
+            </Link>
+          ) : (
+            <div className="wander-desktop-menu-links">
+              <Link to="/login">
+                <button className="wander-nav-log-in">Log In</button>
+              </Link>
+
+              <Link to="/register">
+                <button className="wander-nav-create-account">
+                  Create Free Account
+                </button>
+              </Link>
+
+              <Link to="/register">
+                <button className="wander-nav-cta">Book Now</button>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <button
+          className="wander-mobile-menu"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
           {mobileOpen ? (
             <svg
               key="close-icon"
@@ -648,25 +648,24 @@ const Home = () => {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           )}
-          </button>
-          {mobileOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                background: "var(--white)",
-                borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-                boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
-                padding: "1rem 1.5rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                zIndex: 1001,
-              }}
-            >
-
+        </button>
+        {mobileOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "var(--white)",
+              borderBottom: "0.5px solid rgba(26,74,107,0.12)",
+              boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
+              padding: "1rem 1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              zIndex: 1001,
+            }}
+          >
             <a
               href="#wander-dest-section"
               style={{
