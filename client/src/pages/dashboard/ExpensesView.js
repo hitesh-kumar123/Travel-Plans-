@@ -110,7 +110,10 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
+  const [sortConfig, setSortConfig] = useState({
+    key: "date",
+    direction: "desc",
+  });
   const [form, setForm] = useState({
     amount: "",
     category: "Food",
@@ -197,24 +200,26 @@ const ExpensesView = () => {
     : [];
   // Sort the filtered expenses based on the current sortConfig state
   const sortedExpenses = [...filteredExpenses].sort((a, b) => {
-    if (sortConfig.key === 'amount') {
+    if (sortConfig.key === "amount") {
       const amountA = parseFloat(toBase(a.amount, a.currency));
       const amountB = parseFloat(toBase(b.amount, b.currency));
-      return sortConfig.direction === 'asc' ? amountA - amountB : amountB - amountA;
+      return sortConfig.direction === "asc"
+        ? amountA - amountB
+        : amountB - amountA;
     }
-    if (sortConfig.key === 'date') {
+    if (sortConfig.key === "date") {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
-      return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
+      return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
     }
     return 0;
   });
 
   // Handler to toggle sorting when headers are clicked
   const requestSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
     setSortConfig({ key, direction });
   };
@@ -845,12 +850,23 @@ const ExpensesView = () => {
             <TableContainer sx={{ maxHeight: 420 }}>
               <Table stickyHeader>
                 <TableHead>
-                <TableRow>
+                  <TableRow>
                     <TableCell
-                      onClick={() => requestSort('date')}
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2, cursor: "pointer", userSelect: "none" }}
+                      onClick={() => requestSort("date")}
+                      sx={{
+                        fontWeight: 700,
+                        color: "text.secondary",
+                        py: 2,
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
                     >
-                      Date {sortConfig.key === 'date' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
+                      Date{" "}
+                      {sortConfig.key === "date"
+                        ? sortConfig.direction === "asc"
+                          ? "↑"
+                          : "↓"
+                        : ""}
                     </TableCell>
                     <TableCell
                       sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
@@ -864,10 +880,21 @@ const ExpensesView = () => {
                     </TableCell>
                     <TableCell
                       align="right"
-                      onClick={() => requestSort('amount')}
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2, cursor: "pointer", userSelect: "none" }}
+                      onClick={() => requestSort("amount")}
+                      sx={{
+                        fontWeight: 700,
+                        color: "text.secondary",
+                        py: 2,
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
                     >
-                      Amount {sortConfig.key === 'amount' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
+                      Amount{" "}
+                      {sortConfig.key === "amount"
+                        ? sortConfig.direction === "asc"
+                          ? "↑"
+                          : "↓"
+                        : ""}
                     </TableCell>
                     <TableCell align="center" sx={{ py: 2 }} />
                   </TableRow>
