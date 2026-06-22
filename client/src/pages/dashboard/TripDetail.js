@@ -734,7 +734,7 @@ const TripDetail = () => {
                   >
                     <img
                       src={`${API_BASE_URL}${url}`}
-                      alt={`Trip photo ${idx + 1}`}
+                     alt={`Memory ${idx + 1}`}
                       loading="lazy"
                       style={{
                         borderRadius: 8,
