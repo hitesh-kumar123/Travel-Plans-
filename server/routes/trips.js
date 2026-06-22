@@ -1,3 +1,5 @@
+const upload = require('../middleware/upload');
+const { uploadTripImages, deleteTripImage } = require('../controllers/tripController');
 const express = require("express");
 const router = express.Router();
 const tripController = require("../controllers/tripController");
@@ -36,7 +38,8 @@ router.delete("/:id", auth, tripController.deleteTrip);
 // @route   POST api/trips/:id/share
 // @desc    Generate shareable link
 // @access  Private
-
+router.post('/:id/images', auth, upload.array('images', 5), uploadTripImages);
+router.delete('/:id/images', auth, deleteTripImage);
 router.post("/:id/share", auth, tripController.shareTrip);
 router.put("/:id/share-toggle", auth, tripController.toggleTripSharing);
 module.exports = router;
