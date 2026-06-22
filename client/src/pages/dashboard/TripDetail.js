@@ -726,7 +726,11 @@ const TripDetail = () => {
                 {images.map((url, idx) => (
                   <ImageListItem
                     key={idx}
-                    sx={{ position: "relative", borderRadius: 2, overflow: "hidden" }}
+                    sx={{
+                      position: "relative",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
                   >
                     <img
                       src={`${API_BASE_URL}${url}`}

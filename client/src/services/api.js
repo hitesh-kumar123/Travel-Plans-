@@ -47,7 +47,7 @@ export const getCurrencyRates = (base = "INR") =>
   axios.get(`${FRANKFURTER_BASE_URL}/latest?base=${base}`);
 export const uploadTripImages = (tripId, formData) =>
   api.post(`/trips/${tripId}/images`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 
 export const deleteTripImage = (tripId, imageUrl) =>
