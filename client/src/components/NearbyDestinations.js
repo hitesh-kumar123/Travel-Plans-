@@ -73,7 +73,9 @@ function DestinationCard({ destination, onPlanTrip }) {
         </Typography>
 
         {(destination.city || destination.state) && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}
+          >
             <LocationOnIcon sx={{ fontSize: 14, color: "text.secondary" }} />
             <Typography variant="caption" color="text.secondary" noWrap>
               {[destination.city, destination.state].filter(Boolean).join(", ")}
@@ -94,7 +96,10 @@ function DestinationCard({ destination, onPlanTrip }) {
           <Chip
             icon={
               <StarIcon
-                sx={{ fontSize: "14px !important", color: "#f59e0b !important" }}
+                sx={{
+                  fontSize: "14px !important",
+                  color: "#f59e0b !important",
+                }}
               />
             }
             label={destination.rating.toFixed(1)}
@@ -111,8 +116,15 @@ function DestinationCard({ destination, onPlanTrip }) {
           />
         )}
 
-        <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
-          <AttachMoneyIcon sx={{ fontSize: 12, verticalAlign: "middle", mr: 0.25 }} />
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          display="block"
+          mt={0.5}
+        >
+          <AttachMoneyIcon
+            sx={{ fontSize: 12, verticalAlign: "middle", mr: 0.25 }}
+          />
           {budgetLabel(destination.entrance_fee_inr)}
         </Typography>
 
@@ -146,7 +158,11 @@ function SkeletonRow() {
     <Grid container spacing={2}>
       {Array.from({ length: 4 }).map((_, i) => (
         <Grid item xs={12} sm={6} md={3} key={i}>
-          <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 2, mb: 1 }} />
+          <Skeleton
+            variant="rectangular"
+            height={140}
+            sx={{ borderRadius: 2, mb: 1 }}
+          />
           <Skeleton width="70%" height={20} />
           <Skeleton width="50%" height={16} />
           <Skeleton width="40%" height={16} />
@@ -296,7 +312,9 @@ const NearbyDestinations = () => {
             bgcolor: "grey.50",
           }}
         >
-          <MyLocationIcon sx={{ fontSize: 48, color: "text.disabled", mb: 1.5 }} />
+          <MyLocationIcon
+            sx={{ fontSize: 48, color: "text.disabled", mb: 1.5 }}
+          />
           <Typography variant="body1" color="text.secondary" gutterBottom>
             Discover travel destinations near you
           </Typography>
