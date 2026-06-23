@@ -2,13 +2,74 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap");
 
 /* ── CSS Variables ── */
-:root {
-  --sand: #f5efe0;
-  --ocean: #1a4a6b;
-  --coral: #e8735a;
-  --mist: #8bafc4;
-  --dark: #0f2d40;
-  --white: #fdfaf5;
+/* — Light Mode (Default Token Values) — */
+:root, [data-theme="light"] {
+  --sand:  #fdfaf5; /* Example: light cream background */
+  --ocean: #16384d; /* Dark navy text */
+  --coral: #e8694a;
+  --mist:  #FAF6EF;
+  --dark:  #1B3A57;
+  --white: #ffffff;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --text-muted: #4a5568;
+  --border: rgba(26, 74, 107, 0.16);
+  --placeholder: #a7b3bf;
+  --hero-strong: #0f2d40;
+  --hero-medium: #1a4a6b;
+  --hero-dark: #1e5a80;
+  --hero-accent: #f0a090;
+  --hero-accent-soft: rgba(232, 115, 90, 0.15);
+  --hero-accent-strong: rgba(232, 115, 90, 0.4);
+  --text-on-hero: rgba(253, 250, 245, 0.85);
+  --field-hover: rgba(26, 74, 107, 0.04);
+  --field-focus: rgba(26, 74, 107, 0.06);
+  --field-border: rgba(26, 74, 107, 0.35);
+  --shadow: 0 14px 48px rgba(15, 45, 64, 0.14);
+  --shadow-soft: 0 6px 16px rgba(15, 45, 64, 0.06);
+  --overlay-soft: rgba(255, 255, 255, 0.12);
+  --overlay-border: rgba(255, 255, 255, 0.2);
+  --ghost-border: rgba(255, 255, 255, 0.25);
+  --ghost-border-hover: rgba(255, 255, 255, 0.6);
+  --divider-soft: rgba(15, 45, 64, 0.12);
+  --input-bg: #ffffff;
+  --footer-bg: #0f2d40;
+  --cta-bg: #16384d;
+}
+
+/* — Dark Mode Overrides — */
+[data-theme="dark"] {
+  --sand:  #16384d;  /* Background becomes dark navy */
+  --ocean: #fdfaf5;  /* Text becomes light cream */
+  --coral: #ff8a6b;
+  --mist:  #2c5770;
+  --dark:  #fdfaf5;
+  --white: #0f2d40;
+  --surface: #16384d;
+  --surface-alt: #0f2d40;
+  --text-muted: #a9c1cd;
+  --border: rgba(255, 255, 255, 0.16);
+  --placeholder: #cfdcea;
+  --hero-strong: #0f2d40;
+  --hero-medium: #1a4a6b;
+  --hero-dark: #16384d;
+  --hero-accent: #f5c8b4;
+  --hero-accent-soft: rgba(255, 140, 96, 0.16);
+  --hero-accent-strong: rgba(255, 140, 96, 0.6);
+  --text-on-hero: rgba(253, 250, 245, 0.9);
+  --field-hover: rgba(255, 255, 255, 0.06);
+  --field-focus: rgba(255, 255, 255, 0.08);
+  --field-border: rgba(255, 255, 255, 0.18);
+  --shadow: 0 14px 48px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.25);
+  --overlay-soft: rgba(255, 255, 255, 0.12);
+  --overlay-border: rgba(255, 255, 255, 0.2);
+  --ghost-border: rgba(255, 255, 255, 0.25);
+  --ghost-border-hover: rgba(255, 255, 255, 0.6);
+  --divider-soft: rgba(255, 255, 255, 0.12);
+  --input-bg: #1b3a57;
+  --footer-bg: #0f2d40;
+  --cta-bg: #16384d;
 }
 
 /* ── Reset ── */
@@ -18,7 +79,7 @@
 
 .wander-page {
   font-family: "DM Sans", sans-serif;
-  background: var(--white);
+  background: var(--sand);
   color: var(--dark);
 }
 
@@ -32,9 +93,9 @@ html {
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 3rem;
-  background: rgba(253, 250, 245, 0.92);
+  background: var(--surface);
   backdrop-filter: blur(8px);
-  border-bottom: 0.5px solid rgba(26, 74, 107, 0.12);
+  border-bottom: 0.5px solid var(--border);
   position: sticky;
   width: 100%;
   left: 0;
@@ -47,7 +108,7 @@ html {
 
 .wander-nav-scrolled {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  background: rgba(253, 250, 245, 0.98);
+  background: var(--surface);
 }
 
 #wander-dest-section,
@@ -89,6 +150,29 @@ html {
   opacity: 1;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ocean);
+  padding: 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--field-hover);
+}
+
 .wander-nav-active {
   color: var(--ocean) !important;
   opacity: 1 !important;
@@ -99,7 +183,7 @@ html {
 
 .wander-nav-log-in {
   background: transparent;
-  border: 1px solid rgba(26, 74, 107, 0.2);
+  border: 1px solid var(--border);
   color: var(--ocean);
   padding: 0.75rem 1.2rem;
   border-radius: 999px;
@@ -111,12 +195,12 @@ html {
 .wander-nav-log-in:hover {
   background-color: var(--coral);
   border-color: var(--coral);
-  color: white;
+  color: var(--white);
 }
 
 .wander-nav-create-account {
   background: transparent;
-  border: 1px solid rgba(26, 74, 107, 0.2);
+  border: 1px solid var(--border);
   color: var(--ocean);
   padding: 0.75rem 1.2rem;
   border-radius: 999px;
@@ -127,8 +211,25 @@ html {
 
 .wander-nav-create-account:hover {
   background-color: var(--coral);
-  color: white;
+  color: var(--white);
   border-color: var(--coral);
+}
+
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ocean);
+  padding: 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--field-hover);
 }
 
 .wander-nav-cta {
@@ -159,7 +260,12 @@ html {
 /* ═══ HERO ═══ */
 .wander-hero {
   min-height: 88vh;
-  background: linear-gradient(145deg, #0f2d40 0%, #1a4a6b 50%, #1e5a80 100%);
+  background: linear-gradient(
+    145deg,
+    var(--hero-strong) 0%,
+    var(--hero-medium) 50%,
+    var(--hero-dark) 100%
+  );
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -195,9 +301,9 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(232, 115, 90, 0.15);
-  border: 0.5px solid rgba(232, 115, 90, 0.4);
-  color: #f0a090;
+  background: var(--hero-accent-soft);
+  border: 0.5px solid var(--hero-accent-strong);
+  color: var(--hero-accent);
   padding: 0.35rem 1rem;
   border-radius: 100px;
   font-size: 0.78rem;
@@ -237,11 +343,11 @@ html {
 
 .wander-hero h1 em {
   font-style: italic;
-  color: #f0a090;
+  color: var(--hero-accent);
 }
 
 .wander-hero p {
-  color: rgba(253, 250, 245, 0.65);
+  color: var(--text-on-hero);
   font-size: 1rem;
   line-height: 1.8;
   max-width: 420px;
@@ -259,7 +365,7 @@ html {
 /* ═══ BUTTONS ═══ */
 .wander-btn-primary {
   background: var(--coral);
-  color: white;
+  color: var(--white);
   border: none;
   padding: 0.9rem 2.2rem;
   border-radius: 100px;
@@ -280,8 +386,8 @@ html {
 
 .wander-btn-ghost {
   background: transparent;
-  color: rgba(253, 250, 245, 0.8);
-  border: 0.5px solid rgba(253, 250, 245, 0.25);
+  color: var(--text-on-hero);
+  border: 0.5px solid var(--ghost-border);
   padding: 0.9rem 2rem;
   border-radius: 100px;
   font-size: 0.9rem;
@@ -291,8 +397,8 @@ html {
 }
 
 .wander-btn-ghost:hover {
-  border-color: rgba(253, 250, 245, 0.6);
-  color: white;
+  border-color: var(--ghost-border-hover);
+  color: var(--white);
 }
 
 /* ═══ HERO VISUAL ═══ */
@@ -306,8 +412,8 @@ html {
   top: 0;
   right: 0;
   width: 88%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  background: var(--field-hover);
+  border: 0.5px solid var(--overlay-border);
   border-radius: 20px;
   overflow: hidden;
   height: 360px;
@@ -324,7 +430,7 @@ html {
   position: absolute;
   bottom: -1rem;
   left: -1.5rem;
-  background: var(--white);
+  background: var(--surface);
   border-radius: 14px;
   padding: 1rem 1.25rem;
   box-shadow: 0 8px 32px rgba(15, 45, 64, 0.18);
@@ -333,7 +439,7 @@ html {
 
 .wander-price-label {
   font-size: 0.72rem;
-  color: #0f2d40;
+  color: var(--dark);
   font-weight: 500;
   letter-spacing: 0.5px;
   margin-bottom: 0.2rem;
@@ -349,7 +455,7 @@ html {
 .wander-price-val span {
   font-size: 0.85rem;
   font-weight: 400;
-  color: #0f2d40;
+  color: var(--dark);
 }
 
 .wander-stat-tag {
@@ -359,7 +465,7 @@ html {
   background: var(--coral);
   border-radius: 12px;
   padding: 0.75rem 1rem;
-  color: white;
+  color: var(--white);
 }
 
 .wander-stat-num {
@@ -382,18 +488,18 @@ html {
 }
 
 .wander-search-bar {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 12px 48px rgba(15, 45, 64, 0.14);
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
   overflow: hidden;
-  border: 1.5px solid rgba(26, 74, 107, 0.4);
+  border: 1.5px solid var(--border);
 }
 
 .wander-sf {
   padding: 1.4rem 1.5rem;
-  border-right: 1px solid rgba(26, 74, 107, 0.3);
+  border-right: 1px solid var(--border);
 }
 
 .wander-recent-searches {
@@ -401,8 +507,8 @@ html {
   left: 1.5rem;
   right: 1.5rem;
   top: calc(100% + 0.5rem);
-  background: #ffffff;
-  border: 1px solid rgba(26, 74, 107, 0.12);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 16px 40px rgba(15, 45, 64, 0.14);
   max-height: 220px;
@@ -422,13 +528,13 @@ html {
 }
 
 .wander-recent-search-item:hover {
-  background: rgba(26, 74, 107, 0.05);
+  background: var(--field-hover);
 }
 
 .wander-sf-label {
   font-size: 0.7rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-bottom: 0.3rem;
@@ -453,13 +559,13 @@ html {
 }
 
 .wander-sf input::placeholder {
-  color: #b8c2cc;
+  color: var(--placeholder);
   font-weight: 400;
   opacity: 1;
 }
 
 .wander-page .wander-sf-val.placeholder {
-  color: #a7b3bf !important;
+  color: var(--placeholder) !important;
 }
 
 .wander-search-btn {
@@ -546,7 +652,7 @@ html {
   position: relative;
   cursor: pointer;
   transition: transform 0.3s;
-  background: #1a4a6b;
+  background: var(--surface-alt);
   display: flex;
   flex-direction: column;
 }
@@ -593,7 +699,7 @@ html {
 .wander-dest-name {
   font-family: "Playfair Display", serif;
   font-size: 1.3rem;
-  color: white;
+  color: var(--white);
   font-weight: 700;
   margin-bottom: 0.2rem;
 }
@@ -604,7 +710,7 @@ html {
 
 .wander-dest-country {
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0.5px;
 }
 
@@ -612,10 +718,10 @@ html {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: rgba(253, 250, 245, 0.15);
+  background: var(--overlay-soft);
   backdrop-filter: blur(4px);
-  border: 0.5px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  border: 0.5px solid var(--overlay-border);
+  color: var(--white);
   font-size: 0.7rem;
   padding: 0.3rem 0.7rem;
   border-radius: 100px;
@@ -638,7 +744,7 @@ html {
   background: var(--white);
   border-radius: 16px;
   padding: 2rem;
-  border: 0.5px solid rgba(26, 74, 107, 0.08);
+  border: 0.5px solid var(--border);
   transition: box-shadow 0.2s;
   display: flex;
   flex-direction: column;
@@ -657,7 +763,7 @@ html {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: rgba(26, 74, 107, 0.08);
+  background: var(--field-hover);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -784,7 +890,7 @@ html {
 /* ═══ CTA BANNER ═══ */
 .wander-cta-section {
   margin: 0 3rem 5rem;
-  background: var(--ocean);
+  background: var(--cta-bg);
   border-radius: 24px;
   padding: 4rem;
   display: flex;
@@ -794,6 +900,8 @@ html {
   overflow: hidden;
   gap: 2rem;
   flex-wrap: wrap;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .wander-cta-section::after {
@@ -814,12 +922,12 @@ html {
 .wander-cta-text h2 {
   font-family: "Playfair Display", serif;
   font-size: 2rem;
-  color: white;
+  color: #fdfaf5;
   margin-bottom: 0.75rem;
 }
 
 .wander-cta-text p {
-  color: rgba(253, 250, 245, 0.6);
+  color: rgba(253, 250, 245, 0.72);
   font-size: 0.9rem;
   font-weight: 300;
 }
@@ -834,13 +942,13 @@ html {
 
 /* ═══ FOOTER ═══ */
 .wander-footer {
-  background: var(--dark);
+   background: var(--footer-bg);
   color: rgba(253, 250, 245, 0.7);
   padding: 5rem 3rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 3.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border);
 }
 
 .wander-footer-top {
@@ -858,7 +966,7 @@ html {
 .wander-footer-logo {
   font-family: "Playfair Display", serif;
   font-size: 1.8rem;
-  color: var(--white);
+  color: #fdfaf5;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 1.2rem;
@@ -892,7 +1000,7 @@ html {
 }
 
 .wander-footer-col h4 {
-  color: var(--white);
+  color: #fdfaf5;
   font-size: 1.05rem;
   margin-bottom: 1.25rem;
   font-weight: 600;
@@ -930,7 +1038,7 @@ html {
 }
 
 .wander-footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border);
   padding-top: 2rem;
   /* padding-bottom: 0.05rem; */
   display: flex;
@@ -956,18 +1064,18 @@ html {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--field-hover);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(253, 250, 245, 0.8);
+  color: var(--text-on-hero);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
 .wander-footer-socials a:hover {
   background: var(--coral);
-  color: white;
+  color: var(--white);
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 4px 12px rgba(232, 115, 90, 0.3);
 }
@@ -1017,7 +1125,7 @@ html {
     right: 0;
     width: 1px;
     height: 64%;
-    background: rgba(15, 45, 64, 0.12);
+    background: var(--divider-soft);
   }
 
   .wander-search-btn {
@@ -1132,11 +1240,11 @@ html {
   align-items: center !important;
   justify-content: space-between !important;
   padding: 0 !important;
-  background: #ffffff !important;
+  background: var(--surface) !important;
   border-radius: 22px !important;
   overflow: hidden !important;
   width: 100% !important;
-  border: 1px solid rgba(15, 45, 64, 0.1) !important;
+  border: 1px solid var(--border) !important;
   box-shadow:
     0 12px 35px rgba(15, 45, 64, 0.12),
     0 4px 10px rgba(15, 45, 64, 0.06) !important;
@@ -1159,18 +1267,18 @@ html {
   justify-content: center !important;
   padding: 1rem 1.75rem !important;
   height: 84px !important;
-  border-right: 1px solid rgba(26, 74, 107, 0.35) !important;
+  border-right: 1px solid var(--field-border) !important;
   border-bottom: none !important;
   transition: all 0.25s ease;
   position: relative;
 }
 
 .wander-page .wander-sf:hover {
-  background: rgba(26, 74, 107, 0.04);
+  background: var(--field-hover);
 }
 
 .wander-page .wander-sf:focus-within {
-  background: rgba(26, 74, 107, 0.06);
+  background: var(--field-focus);
   box-shadow: inset 0 0 0 2px rgba(26, 74, 107, 0.15);
 }
 
@@ -1180,7 +1288,7 @@ html {
   font-weight: 700 !important;
   text-transform: uppercase !important;
   margin-bottom: 0.3rem !important;
-  color: #0f2d40 !important;
+  color: var(--text-muted) !important;
   letter-spacing: 1px !important;
 }
 
@@ -1224,7 +1332,7 @@ html {
   align-items: center !important;
   justify-content: center !important;
   gap: 0.5rem !important;
-  color: #0f2d40 !important;
+  color: var(--dark) !important;
 }
 
 /*  Viewport Breakpoints (Responsive Fixing Layouts) */
