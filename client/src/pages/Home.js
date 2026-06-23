@@ -12,7 +12,7 @@ import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import { useThemeMode } from "../context/ThemeContext";
 import { FaSun, FaMoon } from 'react-icons/fa'; 
-import { Button } from '@mui/material'; 
+
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
