@@ -11,8 +11,7 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import { useThemeMode } from "../context/ThemeContext";
-import { FaSun, FaMoon } from 'react-icons/fa'; 
-
+import { FaSun, FaMoon } from "react-icons/fa";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -597,40 +596,42 @@ const Home = () => {
           )}
         </ul>
 
-        <div className="navbar-actions" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-        
-        <button 
-          onClick={toggleColorMode} 
-          className="theme-toggle-btn"
-          aria-label="Toggle Theme"
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-            display: 'flex',
-            alignItems: 'center',
-            color: mode === 'dark' ? '#ff8a6b' : '#1B3A57', // Uses your brand colors
-            padding: '8px'
-          }}
+        <div
+          className="navbar-actions"
+          style={{ display: "flex", alignItems: "center", gap: "15px" }}
         >
-          {mode === 'dark' ? <FaSun /> : <FaMoon />}
-        </button>
-            
-              <Link to="/login">
-                <button className="wander-nav-log-in">Log In</button>
-              </Link>
+          <button
+            onClick={toggleColorMode}
+            className="theme-toggle-btn"
+            aria-label="Toggle Theme"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              display: "flex",
+              alignItems: "center",
+              color: mode === "dark" ? "#ff8a6b" : "#1B3A57", // Uses your brand colors
+              padding: "8px",
+            }}
+          >
+            {mode === "dark" ? <FaSun /> : <FaMoon />}
+          </button>
 
-              <Link to="/register">
-                <button className="wander-nav-create-account">
-                  Create Free Account
-                </button>
-              </Link>
+          <Link to="/login">
+            <button className="wander-nav-log-in">Log In</button>
+          </Link>
 
-              <Link to="/register">
-                <button className="wander-nav-cta">Book Now</button>
-              </Link>
-            </div>
+          <Link to="/register">
+            <button className="wander-nav-create-account">
+              Create Free Account
+            </button>
+          </Link>
+
+          <Link to="/register">
+            <button className="wander-nav-cta">Book Now</button>
+          </Link>
+        </div>
 
         {mobileOpen && (
           <div
@@ -863,7 +864,6 @@ const Home = () => {
           </button>
         </form>
       </div>
-      
 
       {/* ═══ DESTINATIONS ═══ */}
 

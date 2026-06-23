@@ -20,9 +20,7 @@ function getInitialMode() {
     return saved;
   }
 
-  const prefersDark = window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).matches;
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   return prefersDark ? "dark" : "light";
 }
 
@@ -32,7 +30,7 @@ export function ThemeModeProvider({ children }) {
   useEffect(() => {
     // 1. This updates the data-theme attribute for your custom vanilla CSS variables
     document.documentElement.setAttribute("data-theme", mode);
-    
+
     // 2. This updates a clean class fallback just in case any styles rely on .dark
     if (mode === "dark") {
       document.documentElement.classList.add("dark");
@@ -49,7 +47,7 @@ export function ThemeModeProvider({ children }) {
 
   const value = useMemo(
     () => ({ mode, toggleColorMode }),
-    [mode, toggleColorMode]
+    [mode, toggleColorMode],
   );
 
   return (

@@ -3,12 +3,13 @@
 
 /* ── CSS Variables ── */
 /* — Light Mode (Default Token Values) — */
-:root, [data-theme="light"] {
-  --sand:  #fdfaf5; /* Example: light cream background */
+:root,
+[data-theme="light"] {
+  --sand: #fdfaf5; /* Example: light cream background */
   --ocean: #16384d; /* Dark navy text */
   --coral: #e8694a;
-  --mist:  #FAF6EF;
-  --dark:  #1B3A57;
+  --mist: #faf6ef;
+  --dark: #1b3a57;
   --white: #ffffff;
   --surface: #ffffff;
   --surface-alt: #f8fafc;
@@ -39,11 +40,11 @@
 
 /* — Dark Mode Overrides — */
 [data-theme="dark"] {
-  --sand:  #16384d;  /* Background becomes dark navy */
-  --ocean: #fdfaf5;  /* Text becomes light cream */
+  --sand: #16384d; /* Background becomes dark navy */
+  --ocean: #fdfaf5; /* Text becomes light cream */
   --coral: #ff8a6b;
-  --mist:  #2c5770;
-  --dark:  #fdfaf5;
+  --mist: #2c5770;
+  --dark: #fdfaf5;
   --white: #0f2d40;
   --surface: #16384d;
   --surface-alt: #0f2d40;
@@ -942,7 +943,7 @@ html {
 
 /* ═══ FOOTER ═══ */
 .wander-footer {
-   background: var(--footer-bg);
+  background: var(--footer-bg);
   color: rgba(253, 250, 245, 0.7);
   padding: 5rem 3rem 2rem;
   display: flex;

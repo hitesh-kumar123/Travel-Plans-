@@ -67,10 +67,7 @@ function AppContent() {
             <Route path="/trip/share/:token" element={<SharedTripView />} />
             <Route path="/shared-trip/:token" element={<SharedTripView />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route
-              path="/reset-password/:token"
-              element={<ResetPassword />}
-            />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
