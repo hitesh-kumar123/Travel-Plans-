@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BudgetForecastView from "./dashboard/BudgetForecastView";
 import {
   Routes,
   Route,
@@ -38,6 +39,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import ShieldIcon from "@mui/icons-material/Shield";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp"; // ← CHANGE 1: new icon
 
 import { logout } from "../redux/actions/authActions";
 
@@ -92,6 +94,11 @@ const Dashboard = () => {
     { text: "Dashboard", path: "", icon: <DashboardIcon /> },
     { text: "My Trips", path: "trips", icon: <ExploreIcon /> },
     { text: "Expenses", path: "expenses", icon: <WalletIcon /> },
+    {
+      text: "Budget Forecast",
+      path: "budget-forecast",
+      icon: <TrendingUpIcon />,
+    }, // ← CHANGE 2: new nav item
     { text: "Weather", path: "weather", icon: <WbSunnyIcon /> },
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
     { text: "Bookings", path: "bookings", icon: <HotelIcon /> },
@@ -472,6 +479,11 @@ const Dashboard = () => {
             <Route path="trips" element={<TripsView />} />
             <Route path="trips/:id" element={<TripDetail />} />
             <Route path="expenses" element={<ExpensesView />} />
+            <Route
+              path="budget-forecast"
+              element={<BudgetForecastView />}
+            />{" "}
+            {/* ← CHANGE 3: new route */}
             <Route path="weather" element={<WeatherView />} />
             <Route path="translator" element={<TranslatorView />} />
             <Route path="bookings" element={<BookingView />} />
