@@ -8,6 +8,8 @@ import translatorReducer from "./reducers/translatorReducer";
 import bookingReducer from "./reducers/bookingReducer";
 import packingReducer from "./reducers/packingReducer";
 import budgetReducer from "./reducers/budgetReducer";
+import nearbyReducer from "./reducers/nearbyReducer";
+
 const rootReducer = combineReducers({
   auth: authReducer,
   trips: tripReducer,
@@ -17,6 +19,7 @@ const rootReducer = combineReducers({
   booking: bookingReducer,
   packing: packingReducer,
   budget: budgetReducer,
+  nearby: nearbyReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
