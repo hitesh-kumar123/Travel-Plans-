@@ -121,10 +121,10 @@ export default function BudgetForecastView() {
   const { loading, data, error } = useSelector((s) => s.budgetForecast);
   const [selectedTrip, setSelectedTrip] = useState("");
 
-  // Auto-select the first trip that has a budget and expenses
+  // ✅ correct — both values the callback reads are declared
   useEffect(() => {
     if (trips?.length && !selectedTrip) setSelectedTrip(trips[0]._id);
-  }, [trips]);
+  }, [trips, selectedTrip]); // ← add selectedTrip here
 
   useEffect(() => {
     if (selectedTrip) {
