@@ -29,8 +29,12 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.24.0",
+ feature/trip-image-upload
     "multer": "^2.2.0",
     "nodemailer": "^8.0.7",
+
+    "nodemailer": "^9.0.1",
+ main
     "react-qr-code": "^2.0.21",
     "streamifier": "^0.1.1",
     "uuid": "^14.0.0"

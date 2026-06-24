@@ -133,10 +133,23 @@ const DashboardHome = () => {
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       {/* Greeting */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 800,
+            mb: 0.5,
+            fontSize: { xs: "1.75rem", sm: "2rem", md: "2.25rem" },
+          }}
+        >
           Welcome back, {userName}! 👋
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            fontSize: { xs: "0.9rem", sm: "1rem" },
+          }}
+        >
           {totalTrips === 0
             ? "Start planning your first adventure!"
             : `You have ${plannedTrips} upcoming and ${ongoingTrips} ongoing trips.`}
@@ -175,34 +188,66 @@ const DashboardHome = () => {
             bg: "linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)",
           },
         ].map((stat, i) => (
-          <Grid xs={6} md={3} key={i}>
+          <Grid size={{ xs: 6, md: 3 }} key={i}>
             <Paper
               elevation={0}
               sx={{
-                p: 3,
+                p: { xs: 2, sm: 2.5, md: 3 },
                 borderRadius: 3,
                 background: stat.bg,
                 color: "white",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "translateY(-2px)" },
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                },
               }}
             >
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                 }}
               >
-                <Box>
-                  <Typography variant="body2" sx={{ opacity: 0.85, mb: 0.5 }}>
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography
+                    variant="body2"
+                    noWrap
+                    sx={{
+                      opacity: 0.9,
+                      fontWeight: 600,
+                      fontSize: { xs: "0.75rem", sm: "0.8rem", md: "0.875rem" },
+                      mb: 0.5,
+                    }}
+                  >
                     {stat.label}
                   </Typography>
-                  <Typography variant="h4" fontWeight={800}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: { xs: "1.25rem", sm: "1.5rem", md: "2rem" },
+                    }}
+                  >
                     {stat.value}
                   </Typography>
                 </Box>
-                <Box sx={{ opacity: 0.7, "& svg": { fontSize: 32 } }}>
+                <Box
+                  sx={{
+                    opacity: 0.85,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: "50%",
+                    p: { xs: 0.75, sm: 1, md: 1.25 },
+                    ml: 1,
+                    "& svg": {
+                      fontSize: { xs: 20, sm: 24, md: 28 },
+                    },
+                  }}
+                >
                   {stat.icon}
                 </Box>
               </Box>
@@ -213,7 +258,7 @@ const DashboardHome = () => {
 
       <Grid container spacing={3}>
         {/* Quick Actions */}
-        <Grid xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Paper
             elevation={0}
             sx={{
@@ -229,36 +274,42 @@ const DashboardHome = () => {
             </Typography>
             <Grid container spacing={1.5}>
               {quickActions.map((action, i) => (
-                <Grid xs={6} key={i}>
+                <Grid size={{ xs: 6 }} key={i}>
                   <Paper
                     elevation={0}
                     component={Link}
                     to={action.path}
                     sx={{
-                      p: 2.5,
+                      p: { xs: 2, sm: 2.5 },
                       borderRadius: 3,
                       textDecoration: "none",
-                      display: "block",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
                       border: "1px solid",
                       borderColor: "divider",
                       transition: "all 0.2s",
                       "&:hover": {
-                        boxShadow: 4,
-                        transform: "translateY(-2px)",
+                        boxShadow: 3,
+                        transform: "translateY(-4px)",
+                        borderColor: "primary.main",
                       },
                     }}
                   >
                     <Box
                       sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 2.5,
+                        width: { xs: 40, sm: 48 },
+                        height: { xs: 40, sm: 48 },
+                        borderRadius: "50%",
                         bgcolor: action.bg,
                         color: action.color,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         mb: 1.5,
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
                       }}
                     >
                       {action.icon}
@@ -267,6 +318,9 @@ const DashboardHome = () => {
                       variant="body2"
                       fontWeight={700}
                       color="text.primary"
+                      sx={{
+                        fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                      }}
                     >
                       {action.label}
                     </Typography>
@@ -278,7 +332,7 @@ const DashboardHome = () => {
         </Grid>
 
         {/* Trip Chart */}
-        <Grid xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Paper
             elevation={0}
             sx={{
@@ -395,7 +449,7 @@ const DashboardHome = () => {
               ? upcomingTrips
               : tripsArr.slice(0, 3)
             ).map((trip) => (
-              <Grid xs={12} md={6} lg={4} key={trip._id}>
+              <Grid size={{ xs: 12, md: 6, lg: 4 }} key={trip._id}>
                 <Card
                   elevation={0}
                   sx={{
