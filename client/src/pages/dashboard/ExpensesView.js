@@ -54,6 +54,7 @@ import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
 import * as XLSX from "xlsx";
 import Menu from "@mui/material/Menu";
+import { currencyRates } from "../../utils/currencyData";
 
 const EXPENSE_CATEGORIES = [
   "Accommodation",
@@ -149,20 +150,22 @@ const ExpensesView = () => {
   // (it is implicitly 1.0). We handle that case explicitly below.
   const toBase = (amount, currency) => {
     if (currency === baseCurrency) return amount;
-    if (!exchangeRates || Object.keys(exchangeRates).length === 0)
-      return amount;
+    const rates =
+      exchangeRates && Object.keys(exchangeRates).length > 0
+        ? exchangeRates
+        : currencyRates;
 
     let amountInINR;
     if (currency === "INR") {
       amountInINR = amount;
     } else {
-      const rateToINR = exchangeRates[currency];
+      const rateToINR = rates[currency];
       if (!rateToINR) return amount;
       amountInINR = amount / rateToINR;
     }
 
     if (baseCurrency === "INR") return amountInINR.toFixed(2);
-    const rateToBase = exchangeRates[baseCurrency];
+    const rateToBase = rates[baseCurrency];
     if (!rateToBase) return amount;
     return (amountInINR * rateToBase).toFixed(2);
   };
