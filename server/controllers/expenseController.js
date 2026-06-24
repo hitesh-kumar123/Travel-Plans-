@@ -84,22 +84,20 @@ exports.getTripExpenses = async (req, res) => {
 // Get expense by ID
 exports.getExpense = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
-    }
-
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     res.json(expense);
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -108,15 +106,13 @@ exports.getExpense = async (req, res) => {
 // Update expense
 exports.updateExpense = async (req, res) => {
   try {
-    let expense = await Expense.findById(req.params.id);
+    let expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
-    }
-
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     const { amount, currency, category, description, date } = req.body;
@@ -139,17 +135,21 @@ exports.updateExpense = async (req, res) => {
     if (description) expenseFields.description = description;
     if (date) expenseFields.date = date;
 
-    expense = await Expense.findByIdAndUpdate(
-      req.params.id,
+    expense = await Expense.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
       { $set: expenseFields },
       { new: true },
     );
+
+    if (!expense) {
+      return res.status(403).json({ message: "Access denied" });
+    }
 
     res.json(expense);
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -158,15 +158,13 @@ exports.updateExpense = async (req, res) => {
 // Delete expense
 exports.deleteExpense = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
-    }
-
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     await expense.deleteOne();
@@ -174,7 +172,7 @@ exports.deleteExpense = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }

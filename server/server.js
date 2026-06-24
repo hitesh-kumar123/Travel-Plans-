@@ -28,6 +28,17 @@ const limiter = rateLimit({
 });
 app.use("/api/auth", limiter);
 
+// Stricter rate limiter for login and registration attempts
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    message: "Too many login attempts, please try again after 15 minutes",
+  },
+});
+app.post("/api/auth/login", authLimiter);
+app.post("/api/auth/register", authLimiter);
+
 // Core Middleware
 const allowedOrigins = [
   "http://localhost:3000",
