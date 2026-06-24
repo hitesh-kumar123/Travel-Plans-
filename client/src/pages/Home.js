@@ -1041,8 +1041,17 @@ const Home = () => {
                     </div>
                     <div className="wander-dest-country">
                       {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
+                        ? `${
+                            [dest.city, dest.state]
+                              .filter(Boolean)
+                              .join(", ") || "India"
+                          } • ${
+                            dest.entrance_fee_inr === 0
+                              ? "Free Entry"
+                              : dest.entrance_fee_inr
+                                ? `₹${dest.entrance_fee_inr}`
+                                : "Explore"
+                          }`
                         : item.fallbackLoc}
                     </div>
                   </div>
