@@ -232,6 +232,7 @@ exports.bookFlight = async (req, res) => {
 };
 
 // Book a hotel
+// Book a hotel
 exports.bookHotel = async (req, res) => {
   try {
     const { hotelId, roomType, guests, checkIn, checkOut, tripId } = req.body;
@@ -241,6 +242,12 @@ exports.bookHotel = async (req, res) => {
       return res.status(400).json({
         msg: "Please provide all required booking details",
       });
+    }
+
+    // Look up the selected hotel to get its actual price
+    const selectedHotel = mockHotels.find((h) => h.id === hotelId);
+    if (!selectedHotel) {
+      return res.status(404).json({ msg: "Hotel not found" });
     }
 
     // 1. Validate Date Formatting Semantics (Fixes corrupted-date-string vulnerability)
@@ -263,15 +270,15 @@ exports.bookHotel = async (req, res) => {
       });
     }
 
-    // 3. Complete Safe Price Calculation
-    const PRICE_PER_NIGHT = 199.99;
+    // 3. Price Calculation using the selected hotel's actual nightly rate
     const calculatedPrice = parseFloat(
-      (PRICE_PER_NIGHT * totalNights).toFixed(2),
+      (selectedHotel.price * totalNights).toFixed(2),
     );
 
     const bookingConfirmation = {
       bookingId: "HB" + Math.floor(Math.random() * 10000000),
       hotelId,
+      hotelName: selectedHotel.name,
       roomType,
       checkIn,
       checkOut,
