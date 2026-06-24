@@ -1,3 +1,4 @@
+import TravelQuiz from "../components/TravelQuiz";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
@@ -558,6 +559,7 @@ const Home = () => {
                   : ""
               }
             >
+              <TravelQuiz />
               Destinations
             </a>
           </li>
