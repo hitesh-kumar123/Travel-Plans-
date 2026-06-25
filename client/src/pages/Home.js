@@ -10,6 +10,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import { useThemeMode } from "../context/ThemeContext";
+import { FaSun, FaMoon } from "react-icons/fa";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -539,6 +541,7 @@ const Home = () => {
 
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
+  const { mode, toggleColorMode } = useThemeMode();
 
   return (
     <div className="wander-page">
@@ -593,66 +596,43 @@ const Home = () => {
           )}
         </ul>
 
-        {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
-          </Link>
-        ) : (
-          <div
+        <div
+          className="navbar-actions"
+          style={{ display: "flex", alignItems: "center", gap: "15px" }}
+        >
+          <button
+            onClick={toggleColorMode}
+            className="theme-toggle-btn"
+            aria-label="Toggle Theme"
             style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1.2rem",
               display: "flex",
-              gap: "0.75rem",
               alignItems: "center",
+              color: mode === "dark" ? "#ff8a6b" : "#1B3A57", // Uses your brand colors
+              padding: "8px",
             }}
           >
-            <Link to="/login">
-              <button className="wander-nav-log-in">Log In</button>
-            </Link>
+            {mode === "dark" ? <FaSun /> : <FaMoon />}
+          </button>
 
-            <Link to="/register">
-              <button className="wander-nav-create-account">
-                Create Free Account
-              </button>
-            </Link>
+          <Link to="/login">
+            <button className="wander-nav-log-in">Log In</button>
+          </Link>
 
-            <Link to="/register">
-              <button className="wander-nav-cta">Book Now</button>
-            </Link>
-          </div>
-        )}
+          <Link to="/register">
+            <button className="wander-nav-create-account">
+              Create Free Account
+            </button>
+          </Link>
 
-        <button
-          className="wander-mobile-menu"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <svg
-              key="close-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg
-              key="menu-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
-        </button>
+          <Link to="/register">
+            <button className="wander-nav-cta">Book Now</button>
+          </Link>
+        </div>
+
         {mobileOpen && (
           <div
             style={{

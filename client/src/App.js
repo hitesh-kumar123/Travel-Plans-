@@ -1,11 +1,12 @@
 // src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import getTheme from "./theme";
+import { ThemeModeProvider, useThemeMode } from "./context/ThemeContext";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,51 +28,52 @@ import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
 
-function App() {
+function AppContent() {
+  const { mode } = useThemeMode();
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
 
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <ScrollToTop />
-          <div className="App">
-            <Routes>
-              {/* Protected Dashboard */}
-              <Route
-                path="/dashboard/*"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/travel-checklist" element={<TravelChecklist />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              {/* ✅ Contact Route Added */}
-              <Route path="/contact" element={<Contact />} />
-              {/* Other Routes */}
-              <Route path="/trip/share/:token" element={<SharedTripView />} />
-              <Route path="/shared-trip/:token" element={<SharedTripView />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
-                path="/reset-password/:token"
-                element={<ResetPassword />}
-              />
-              {/* Fallback */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ScrollButtons />
-          </div>
-        </Router>
-      </ThemeProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <ScrollToTop />
+        {/* 
+          💡 Note: If you notice any components inside App.css need raw variables, 
+          your ThemeModeProvider is already supplying `data-theme` to the <html> tag.
+        */}
+        <div className="App">
+          <Routes>
+            {/* Protected Dashboard */}
+            <Route
+              path="/dashboard/*"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/travel-checklist" element={<TravelChecklist />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/contact" element={<Contact />} />
+            {/* Other Routes */}
+            <Route path="/trip/share/:token" element={<SharedTripView />} />
+            <Route path="/shared-trip/:token" element={<SharedTripView />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            {/* Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <ScrollButtons />
+        </div>
+      </Router>
 
       <ToastContainer
         position="bottom-right"
@@ -81,6 +83,17 @@ function App() {
         closeOnClick
         pauseOnHover
       />
+    </ThemeProvider>
+  );
+}
+
+// Keep your main App component exactly how it is
+function App() {
+  return (
+    <Provider store={store}>
+      <ThemeModeProvider>
+        <AppContent />
+      </ThemeModeProvider>
     </Provider>
   );
 }
