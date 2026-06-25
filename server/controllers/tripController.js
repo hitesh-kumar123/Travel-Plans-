@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
@@ -11,6 +13,50 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// POST /api/trips/:id/images
+exports.uploadTripImages = async (req, res) => {
+  try {
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No images uploaded" });
+    }
+
+    const imageUrls = req.files.map(
+      (file) => `/uploads/trips/${file.filename}`,
+    );
+    trip.images.push(...imageUrls);
+    await trip.save();
+
+    res.status(200).json({ images: trip.images });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Image upload failed", error: err.message });
+  }
+};
+
+// DELETE /api/trips/:id/images
+exports.deleteTripImage = async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+
+    trip.images = trip.images.filter((img) => img !== imageUrl);
+    await trip.save();
+
+    const filePath = path.join(__dirname, "..", imageUrl);
+    fs.unlink(filePath, () => {});
+
+    res.status(200).json({ images: trip.images });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to delete image", error: err.message });
+  }
+};
 // Create new trip
 exports.createTrip = async (req, res) => {
   try {

@@ -20,6 +20,7 @@ app.set("trust proxy", 1);
 // Security Middleware
 app.use(helmet());
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Rate limiter - 100 requests per 15 min per IP
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
