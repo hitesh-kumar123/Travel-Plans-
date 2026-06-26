@@ -16,7 +16,11 @@ exports.register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
       return res.status(400).json({ msg: "Please provide all fields" });
     }
 
@@ -71,7 +75,7 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (typeof email !== "string" || typeof password !== "string") {
       return res.status(400).json({ msg: "Please provide email and password" });
     }
 
@@ -243,6 +247,9 @@ exports.changePassword = async (req, res, next) => {
 // Forgot Password
 exports.forgotPassword = async (req, res, next) => {
   try {
+    if (typeof req.body.email !== "string") {
+      return res.status(400).json({ msg: "Please enter a valid email" });
+    }
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
@@ -346,7 +353,7 @@ exports.requestEmailChange = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
+    if (typeof email !== "string" || !email) {
       return res
         .status(400)
         .json({ msg: "Please provide the new email address." });

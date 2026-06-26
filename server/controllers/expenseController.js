@@ -18,6 +18,9 @@ exports.getAllUserExpenses = async (req, res) => {
 exports.createExpense = async (req, res) => {
   try {
     const { trip, amount, currency, category, description, date } = req.body;
+    if (typeof trip !== "string") {
+      return res.status(400).json({ msg: "Invalid trip identifier" });
+    }
 
     // Validate amount: must be a positive number
     const parsedAmount = parseFloat(amount);
