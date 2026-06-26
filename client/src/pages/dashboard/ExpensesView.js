@@ -110,7 +110,10 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
-
+  const [sortConfig, setSortConfig] = useState({
+    key: "date",
+    direction: "desc",
+  });
   const [form, setForm] = useState({
     amount: "",
     category: "Food",
@@ -195,7 +198,31 @@ const ExpensesView = () => {
         return matchesSearch && matchesCategory;
       })
     : [];
+  // Sort the filtered expenses based on the current sortConfig state
+  const sortedExpenses = [...filteredExpenses].sort((a, b) => {
+    if (sortConfig.key === "amount") {
+      const amountA = parseFloat(toBase(a.amount, a.currency));
+      const amountB = parseFloat(toBase(b.amount, b.currency));
+      return sortConfig.direction === "asc"
+        ? amountA - amountB
+        : amountB - amountA;
+    }
+    if (sortConfig.key === "date") {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
+    }
+    return 0;
+  });
 
+  // Handler to toggle sorting when headers are clicked
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
   // Calculate chart data from filtered/unfiltered list dynamically to be accurate
   const categoryTotals = {};
   filteredExpenses.forEach((e) => {
@@ -825,9 +852,21 @@ const ExpensesView = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
+                      onClick={() => requestSort("date")}
+                      sx={{
+                        fontWeight: 700,
+                        color: "text.secondary",
+                        py: 2,
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
                     >
-                      Date
+                      Date{" "}
+                      {sortConfig.key === "date"
+                        ? sortConfig.direction === "asc"
+                          ? "↑"
+                          : "↓"
+                        : ""}
                     </TableCell>
                     <TableCell
                       sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
@@ -841,9 +880,21 @@ const ExpensesView = () => {
                     </TableCell>
                     <TableCell
                       align="right"
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
+                      onClick={() => requestSort("amount")}
+                      sx={{
+                        fontWeight: 700,
+                        color: "text.secondary",
+                        py: 2,
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
                     >
-                      Amount
+                      Amount{" "}
+                      {sortConfig.key === "amount"
+                        ? sortConfig.direction === "asc"
+                          ? "↑"
+                          : "↓"
+                        : ""}
                     </TableCell>
                     <TableCell align="center" sx={{ py: 2 }} />
                   </TableRow>
@@ -855,8 +906,8 @@ const ExpensesView = () => {
                         <CircularProgress size={32} />
                       </TableCell>
                     </TableRow>
-                  ) : filteredExpenses.length > 0 ? (
-                    filteredExpenses.map((expense) => (
+                  ) : sortedExpenses.length > 0 ? (
+                    sortedExpenses.map((expense) => (
                       <TableRow
                         key={expense._id}
                         hover
