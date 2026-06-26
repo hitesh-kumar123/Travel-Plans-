@@ -466,26 +466,56 @@ const TripsView = () => {
           <Grid item xs={12}>
             <Paper
               sx={{
-                p: { xs: 4, md: 6 },
+                p: { xs: 5, md: 8 },
                 textAlign: "center",
                 borderRadius: 4,
                 border: "2px dashed",
                 borderColor: "divider",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 320,
               }}
               elevation={0}
             >
-              <FlightTakeoffIcon
-                sx={{ fontSize: 56, color: "text.disabled", mb: 2 }}
-              />
-              <Typography variant="h6" color="text.primary" gutterBottom>
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  bgcolor: "rgba(63, 81, 181, 0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 3,
+                }}
+              >
+                <FlightTakeoffIcon
+                  sx={{ fontSize: 40, color: "primary.main", opacity: 0.7 }}
+                />
+              </Box>
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                color="text.primary"
+                gutterBottom
+              >
                 {filter === "all" ? "No trips yet!" : `No ${filter} trips`}
               </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                Create your first adventure.
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mb: 3, maxWidth: 360 }}
+              >
+                {filter === "all"
+                  ? "Create your first adventure."
+                  : `You don't have any ${filter} trips yet.`}
               </Typography>
               <PrimaryButton
                 startIcon={<AddIcon />}
                 onClick={() => setOpen(true)}
+                sx={{ borderRadius: 3, px: 4 }}
               >
                 Create Trip
               </PrimaryButton>
