@@ -31,12 +31,7 @@ router.get("/:id", auth, tripValidation.tripIdParam, tripController.getTrip);
 // @route   PUT api/trips/:id
 // @desc    Update a trip
 // @access  Private
-router.put(
-  "/:id",
-  auth,
-  tripValidation.updateTrip,
-  tripController.updateTrip,
-);
+router.put("/:id", auth, tripValidation.updateTrip, tripController.updateTrip);
 
 // @route   DELETE api/trips/:id
 // @desc    Delete a trip

@@ -225,9 +225,7 @@ const tripValidation = {
   ],
 
   updateTrip: [
-    param("id")
-      .custom(isValidObjectId)
-      .withMessage("Invalid trip ID format"),
+    param("id").custom(isValidObjectId).withMessage("Invalid trip ID format"),
     body("destination")
       .optional()
       .isString()
@@ -262,9 +260,7 @@ const tripValidation = {
   ],
 
   tripIdParam: [
-    param("id")
-      .custom(isValidObjectId)
-      .withMessage("Invalid trip ID format"),
+    param("id").custom(isValidObjectId).withMessage("Invalid trip ID format"),
     handleValidationErrors,
   ],
 
@@ -307,16 +303,17 @@ const expenseValidation = {
       .exists({ checkFalsy: true })
       .withMessage("Category is required")
       .isIn(EXPENSE_CATEGORIES)
-      .withMessage(
-        `Category must be one of: ${EXPENSE_CATEGORIES.join(", ")}`,
-      ),
+      .withMessage(`Category must be one of: ${EXPENSE_CATEGORIES.join(", ")}`),
     body("description")
       .optional()
       .isString()
       .trim()
       .isLength({ max: 500 })
       .withMessage("Description cannot exceed 500 characters"),
-    body("date").optional().isISO8601().withMessage("Date must be a valid date"),
+    body("date")
+      .optional()
+      .isISO8601()
+      .withMessage("Date must be a valid date"),
     handleValidationErrors,
   ],
 
@@ -340,16 +337,17 @@ const expenseValidation = {
     body("category")
       .optional()
       .isIn(EXPENSE_CATEGORIES)
-      .withMessage(
-        `Category must be one of: ${EXPENSE_CATEGORIES.join(", ")}`,
-      ),
+      .withMessage(`Category must be one of: ${EXPENSE_CATEGORIES.join(", ")}`),
     body("description")
       .optional()
       .isString()
       .trim()
       .isLength({ max: 500 })
       .withMessage("Description cannot exceed 500 characters"),
-    body("date").optional().isISO8601().withMessage("Date must be a valid date"),
+    body("date")
+      .optional()
+      .isISO8601()
+      .withMessage("Date must be a valid date"),
     handleValidationErrors,
   ],
 
@@ -523,9 +521,7 @@ const packingValidation = {
     body("category")
       .optional()
       .isIn(PACKING_CATEGORIES)
-      .withMessage(
-        `Category must be one of: ${PACKING_CATEGORIES.join(", ")}`,
-      ),
+      .withMessage(`Category must be one of: ${PACKING_CATEGORIES.join(", ")}`),
     handleValidationErrors,
   ],
 
@@ -547,9 +543,7 @@ const packingValidation = {
       .exists({ checkFalsy: true })
       .withMessage("Template name is required")
       .isIn(PACKING_TEMPLATES)
-      .withMessage(
-        `Template must be one of: ${PACKING_TEMPLATES.join(", ")}`,
-      ),
+      .withMessage(`Template must be one of: ${PACKING_TEMPLATES.join(", ")}`),
     handleValidationErrors,
   ],
 };
