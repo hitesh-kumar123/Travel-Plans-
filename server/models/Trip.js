@@ -9,6 +9,8 @@ const TripSchema = new mongoose.Schema({
   destination: {
     type: String,
     required: true,
+    trim: true,
+    maxlength: [200, "Destination cannot exceed 200 characters"],
   },
   images: [
     {
@@ -25,6 +27,8 @@ const TripSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    trim: true,
+    maxlength: [2000, "Description cannot exceed 2000 characters"],
   },
   budget: {
     type: Number,
@@ -38,23 +42,23 @@ const TripSchema = new mongoose.Schema({
   },
   activities: [
     {
-      name: String,
+      name: { type: String, trim: true, maxlength: 200 },
       date: Date,
-      location: String,
-      notes: String,
+      location: { type: String, trim: true, maxlength: 200 },
+      notes: { type: String, trim: true, maxlength: 1000 },
     },
   ],
   accommodation: {
-    name: String,
-    bookingRef: String,
+    name: { type: String, trim: true, maxlength: 200 },
+    bookingRef: { type: String, trim: true, maxlength: 100 },
     checkIn: Date,
     checkOut: Date,
-    address: String,
-    contactInfo: String,
+    address: { type: String, trim: true, maxlength: 500 },
+    contactInfo: { type: String, trim: true, maxlength: 200 },
   },
   transportation: {
-    type: String,
-    bookingRef: String,
+    type: { type: String, trim: true, maxlength: 100 },
+    bookingRef: { type: String, trim: true, maxlength: 100 },
     departureTime: Date,
     arrivalTime: Date,
   },

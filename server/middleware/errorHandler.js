@@ -9,6 +9,11 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ msg: messages.join(", ") });
   }
 
+  // Mongoose CastError (e.g. invalid ObjectId)
+  if (err.name === "CastError") {
+    return res.status(400).json({ msg: `Invalid ${err.path}: ${err.value}` });
+  }
+
   // Mongoose duplicate key
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
