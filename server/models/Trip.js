@@ -10,6 +10,10 @@ const TripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  coordinates: {
+    lat: { type: Number, default: null },
+    lon: { type: Number, default: null },
+  },
   images: [
     {
       type: String,
