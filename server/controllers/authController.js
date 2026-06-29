@@ -147,7 +147,7 @@ exports.googleAuth = async (req, res) => {
       });
     }
 
-    const token = jwt.sign(
+    jwt.sign(
       {
         user: { id: user.id },
       },

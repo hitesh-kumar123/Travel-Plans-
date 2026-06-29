@@ -9,6 +9,7 @@ import {
   EXPENSE_ERROR,
   SET_LOADING,
   GET_CURRENCY_RATES,
+  CURRENCY_RATES_LOADING,
 } from "../types/expenseTypes";
 
 // Get all user expenses (across all trips) — for dashboard analytics
@@ -123,10 +124,16 @@ export const updateExpense = (id, formData) => async (dispatch) => {
   }
 };
 
+// Fetch live exchange rates from Frankfurter (free, no API key required).
+// We always fetch with base=INR so every rate is "1 INR = X foreign currency".
+// The targetCurrency parameter tells the reducer which currency the user selected
+// so it can set baseCurrency in state, enabling the toBase() pivot math in the UI.
 export const fetchCurrencyRates =
   (targetCurrency = "INR") =>
   async (dispatch) => {
+    dispatch({ type: CURRENCY_RATES_LOADING });
     try {
+      // Frankfurter response shape: { amount, base, date, rates: { USD: 0.012, ... } }
       const res = await getCurrencyRates("INR");
       dispatch({
         type: GET_CURRENCY_RATES,

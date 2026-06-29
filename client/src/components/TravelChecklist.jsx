@@ -58,7 +58,6 @@ export default function TravelChecklist() {
         style={{
           background: "linear-gradient(135deg, #1a4a6b, #0f2f47)",
           color: "#fff",
-          padding: "clamp(32px, 5vw, 48px) 20px",
           textAlign: "center",
           position: "relative",
         }}
@@ -83,39 +82,29 @@ export default function TravelChecklist() {
           onMouseOver={(e) => (e.currentTarget.style.opacity = "1")}
           onMouseOut={(e) => (e.currentTarget.style.opacity = "0.9")}
         >
-          <FaArrowLeft /> Back to Home
+          <FaArrowLeft />
         </Link>
         <h1
           style={{
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
+            fontSize: "clamp(1.5rem, 3vw, 1.75rem)",
             margin: "0 0 8px",
             fontWeight: 700,
           }}
         >
           Travel Checklist Generator
         </h1>
-        <p
-          style={{
-            margin: 0,
-            opacity: 0.9,
-            fontSize: "clamp(0.9rem, 2.5vw, 1.05rem)",
-            maxWidth: "600px",
-            marginInline: "auto",
-          }}
-        >
-          Enter your destination to automatically generate a smart packing and
-          preparation checklist based on location and weather.
-        </p>
       </div>
 
       {/* Main Container */}
       <div
         style={{
           maxWidth: "800px",
+          height: "100vh",
           margin: "-24px auto 48px",
           padding: "0 16px",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           gap: "24px",
         }}
       >
@@ -129,6 +118,18 @@ export default function TravelChecklist() {
             border: "1px solid #e2e8f0",
           }}
         >
+          <p
+            style={{
+              margin: 0,
+              color: "#1a4a6b",
+              fontSize: "1.15rem",
+              fontWeight: 700,
+              maxWidth: "600px",
+              textAlign: "left",
+            }}
+          >
+            Enter your destination
+          </p>
           <form
             onSubmit={handleGenerate}
             style={{
