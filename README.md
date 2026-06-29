@@ -136,6 +136,13 @@ Whether you're planning a weekend getaway or a month-long adventure, PackGo keep
 - **Clear all** button to reset history
 - No duplicates — revisiting a destination moves it to the top
 
+### 🌦️ Destination Weather Tooltips
+
+- Hover (or tap) the weather icon on any destination card in the **Top Picks** grid to see live conditions
+- Real-time temperature and weather condition fetched via the **Open-Meteo API** (free, no API key required)
+- "Best time to visit" recommendation shown alongside, sourced from each destination's data
+- Refined card typography using **Playfair Display** (headings) + **DM Sans** (details) for a clearer visual hierarchy
+
 ---
 
 ## 🛠️ Tech Stack
@@ -186,7 +193,7 @@ npm run dev
 Without a valid `MONGO_URI`, authentication-related endpoints such as forgot password may fail due to database connection timeouts.
 
 | Technology                 | Version | Purpose                               |
-| -------------------------- | ------- | ------------------------------------- |
+| -------------------------- | ------- | -------------------------------------- |
 | **Node.js**                | 18+     | JavaScript runtime                    |
 | **Express.js**             | 4       | REST API server                       |
 | **MongoDB + Mongoose**     | Atlas   | NoSQL database with schema validation |
@@ -409,7 +416,7 @@ Then open your browser at **[http://localhost:3000](http://localhost:3000)** �
 ## 🔑 Environment Variables
 
 | Variable          | Required | Description                                                        |
-| ----------------- | :------: | ------------------------------------------------------------------ |
+| ----------------- | :------: | -------------------------------------------------------------------- |
 | `PORT`            |    ✅    | Port for the Express server (default: `5000`)                      |
 | `MONGO_URI`       |    ✅    | MongoDB connection string (local or Atlas)                         |
 | `JWT_SECRET`      |    ✅    | Secret key for signing JWT tokens (use a long random string)       |
@@ -453,7 +460,7 @@ Base URL: `http://localhost:5000/api`
 ### 🔐 Authentication
 
 | Method | Endpoint                     | Description                                      | Auth |
-| ------ | ---------------------------- | ------------------------------------------------ | :--: |
+| ------ | ------------------------------ | --------------------------------------------------- | :--: |
 | `POST` | `/auth/register`             | Register a new user                              |  ❌  |
 | `POST` | `/auth/login`                | Login and receive JWT token                      |  ❌  |
 | `GET`  | `/auth/profile`              | Get current user profile                         |  ✅  |
@@ -467,7 +474,7 @@ Base URL: `http://localhost:5000/api`
 ### 🗺️ Trips
 
 | Method   | Endpoint     | Description                          | Auth |
-| -------- | ------------ | ------------------------------------ | :--: |
+| -------- | ------------- | -------------------------------------- | :--: |
 | `POST`   | `/trips`     | Create a new trip                    |  ✅  |
 | `GET`    | `/trips`     | Get all trips for the logged-in user |  ✅  |
 | `GET`    | `/trips/:id` | Get a trip by ID                     |  ✅  |
@@ -477,7 +484,7 @@ Base URL: `http://localhost:5000/api`
 ### 💰 Expenses
 
 | Method   | Endpoint                    | Description                       | Auth |
-| -------- | --------------------------- | --------------------------------- | :--: |
+| -------- | ----------------------------- | ------------------------------------ | :--: |
 | `GET`    | `/expenses`                 | Get all user expenses (analytics) |  ✅  |
 | `POST`   | `/expenses`                 | Create a new expense              |  ✅  |
 | `GET`    | `/expenses/trip/:tripId`    | Get expenses for a specific trip  |  ✅  |
@@ -489,21 +496,21 @@ Base URL: `http://localhost:5000/api`
 ### 🌤️ Weather
 
 | Method | Endpoint                      | Description                | Auth |
-| ------ | ----------------------------- | -------------------------- | :--: |
+| ------ | -------------------------------- | ----------------------------- | :--: |
 | `GET`  | `/weather/current/:location`  | Current weather for a city |  ❌  |
 | `GET`  | `/weather/forecast/:location` | 5-day weather forecast     |  ❌  |
 
 ### 🌐 Translator
 
 | Method | Endpoint                | Description                      | Auth |
-| ------ | ----------------------- | -------------------------------- | :--: |
+| ------ | -------------------------- | ----------------------------------- | :--: |
 | `POST` | `/translator/translate` | Translate text between languages |  ❌  |
 | `GET`  | `/translator/languages` | Get list of supported languages  |  ❌  |
 
 ### 📍 Destinations
 
 | Method | Endpoint                  | Description                 | Auth |
-| ------ | ------------------------- | --------------------------- | :--: |
+| ------ | --------------------------- | ------------------------------ | :--: |
 | `GET`  | `/destinations`           | Get all destinations        |  ❌  |
 | `GET`  | `/destinations/search?q=` | Search destinations by name |  ❌  |
 | `GET`  | `/destinations/:id`       | Get destination by ID       |  ❌  |
@@ -511,7 +518,7 @@ Base URL: `http://localhost:5000/api`
 ### ✈️ Booking
 
 | Method | Endpoint                  | Description              | Auth |
-| ------ | ------------------------- | ------------------------ | :--: |
+| ------ | --------------------------- | --------------------------- | :--: |
 | `POST` | `/booking/flights/search` | Search available flights |  ✅  |
 | `POST` | `/booking/hotels/search`  | Search available hotels  |  ✅  |
 | `POST` | `/booking/flights/book`   | Book a flight            |  ✅  |
@@ -586,7 +593,7 @@ Base URL: `http://localhost:5000/api`
 ## 🔒 Security Features
 
 | Feature                | Implementation                                                                      |
-| ---------------------- | ----------------------------------------------------------------------------------- |
+| ------------------------ | -------------------------------------------------------------------------------------- |
 | **JWT Authentication** | Stateless tokens with 24h expiry and auto-refresh interceptors                      |
 | **Password Hashing**   | bcrypt with configurable salt rounds                                                |
 | **Security Headers**   | Helmet.js sets `X-Content-Type-Options`, `X-Frame-Options`, etc.                    |
