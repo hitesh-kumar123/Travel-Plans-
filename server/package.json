@@ -27,7 +27,7 @@
     "google-translate-api-x": "^10.7.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.24.0",
+    "mongoose": "^9.7.3",
     "nodemailer": "^9.0.1",
     "react-qr-code": "^2.0.21",
     "uuid": "^14.0.0"
