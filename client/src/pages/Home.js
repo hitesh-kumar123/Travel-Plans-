@@ -10,6 +10,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import TravellerSelector from "../components/TravellerSelector";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -398,7 +399,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
-  const [travellers, setTravellers] = useState("");
+  const [travellers, setTravellers] = useState({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -872,11 +877,9 @@ const Home = () => {
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Travellers</div>
-            <input
-              className="wander-sf-val"
-              placeholder="2 Adults, 1 Child"
-              value={travellers}
-              onChange={(e) => setTravellers(e.target.value)}
+            <TravellerSelector
+              travellers={travellers}
+              onChange={setTravellers}
             />
           </div>
           <button type="submit" className="wander-search-btn">
