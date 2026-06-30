@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const requireDb = require("../middleware/requireDb");
+const { authValidation } = require("../middleware/validators");
 
 // @route   POST api/auth/register
 // @desc    Register a user
@@ -28,12 +29,22 @@ router.put("/profile", auth, authController.updateProfile);
 // @route   PUT api/auth/change-password
 // @desc    Change password
 // @access  Private
-router.put("/change-password", auth, authController.changePassword);
+router.put(
+  "/change-password",
+  auth,
+  authValidation.changePassword,
+  authController.changePassword,
+);
 
 // @route   POST api/auth/request-email-change
 // @desc    Request email change OTP
 // @access  Private
-router.post("/request-email-change", auth, authController.requestEmailChange);
+router.post(
+  "/request-email-change",
+  auth,
+  authValidation.requestEmailChange,
+  authController.requestEmailChange,
+);
 
 // @route   POST api/auth/verify-email-change
 // @desc    Verify email change OTP
@@ -48,11 +59,21 @@ router.get("/email-change-status", auth, authController.getEmailChangeStatus);
 // @route   POST api/auth/forgot-password
 // @desc    Forgot password (send email)
 // @access  Public
-router.post("/forgot-password", requireDb, authController.forgotPassword);
+router.post(
+  "/forgot-password",
+  requireDb,
+  authValidation.forgotPassword,
+  authController.forgotPassword,
+);
 
 // @route   PUT api/auth/reset-password/:token
 // @desc    Reset password
 // @access  Public
-router.put("/reset-password/:token", requireDb, authController.resetPassword);
+router.put(
+  "/reset-password/:token",
+  requireDb,
+  authValidation.resetPassword,
+  authController.resetPassword,
+);
 
 module.exports = router;

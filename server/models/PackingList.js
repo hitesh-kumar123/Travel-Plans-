@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 
 const packingItemSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: [200, "Item name cannot exceed 200 characters"],
+    },
     category: {
       type: String,
       enum: [
