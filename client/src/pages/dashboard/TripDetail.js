@@ -55,6 +55,7 @@ import {
   addExpense,
   deleteExpense,
 } from "../../redux/actions/expenseActions";
+import WeatherWidget from "../../components/WeatherWidget";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -358,6 +359,11 @@ const TripDetail = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Smart Weather Widget — auto-loads forecast for this trip's destination */}
+      {currentTrip?.destination && (
+        <WeatherWidget destination={currentTrip.destination} />
+      )}
 
       <Grid container spacing={3}>
         {/* Left Column */}
