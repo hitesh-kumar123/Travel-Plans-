@@ -7,6 +7,7 @@ import {
   deletePackingItem,
   applyTemplate,
   clearPackingList,
+  generateSmartPackingList,
 } from "../../redux/actions/packingActions";
 import {
   Box,
@@ -42,6 +43,7 @@ import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import WorkIcon from "@mui/icons-material/Work";
 import ForestIcon from "@mui/icons-material/Forest";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -135,12 +137,12 @@ const TEMPLATES = [
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-const PackingView = () => {
+const PackingView = ({ tripId: propTripId }) => {
   const dispatch = useDispatch();
   const { loading, list, error } = useSelector((state) => state.packing);
   const { trips } = useSelector((state) => state.trips);
 
-  const [selectedTripId, setSelectedTripId] = useState("");
+  const [selectedTripId, setSelectedTripId] = useState(propTripId || "");
   const [itemName, setItemName] = useState("");
   const [itemCategory, setItemCategory] = useState("Other");
   const [filterCategory, setFilterCategory] = useState("All");
@@ -149,10 +151,12 @@ const PackingView = () => {
   const [newlyAdded, setNewlyAdded] = useState(null);
 
   useEffect(() => {
-    if (trips && trips.length > 0 && !selectedTripId) {
+    if (propTripId) {
+      setSelectedTripId(propTripId);
+    } else if (trips && trips.length > 0 && !selectedTripId) {
       setSelectedTripId(trips[0]._id);
     }
-  }, [trips, selectedTripId]);
+  }, [trips, selectedTripId, propTripId]);
 
   useEffect(() => {
     if (selectedTripId) {
@@ -298,46 +302,69 @@ const PackingView = () => {
           </Box>
         </Box>
 
-        {total > 0 && (
-          <Tooltip title="Clear entire list" TransitionComponent={Zoom}>
-            <IconButton
-              color="error"
-              size="small"
-              onClick={() => setConfirmClear(true)}
-              sx={{
-                border: "1px solid",
-                borderColor: "error.light",
-                flexShrink: 0,
-                "&:hover": {
-                  backgroundColor: "error.main",
-                  color: "#fff",
-                  borderColor: "error.main",
-                },
-              }}
-            >
-              <DeleteSweepIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {selectedTripId && (
+            <Tooltip title="Smart generate list based on weather" TransitionComponent={Zoom}>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                startIcon={<AutoAwesomeIcon />}
+                onClick={() => dispatch(generateSmartPackingList(selectedTripId))}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Smart Generate
+              </Button>
+            </Tooltip>
+          )}
+
+          {total > 0 && (
+            <Tooltip title="Clear entire list" TransitionComponent={Zoom}>
+              <IconButton
+                color="error"
+                size="small"
+                onClick={() => setConfirmClear(true)}
+                sx={{
+                  border: "1px solid",
+                  borderColor: "error.light",
+                  flexShrink: 0,
+                  "&:hover": {
+                    backgroundColor: "error.main",
+                    color: "#fff",
+                    borderColor: "error.main",
+                  },
+                }}
+              >
+                <DeleteSweepIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
       </Box>
 
       {/* ── Trip Selector ────────────────────────────────────────────────────── */}
-      <FormControl fullWidth size="medium" sx={{ mb: 4 }}>
-        <InputLabel id="trip-select-label">Active Travel Plan</InputLabel>
-        <Select
-          labelId="trip-select-label"
-          value={selectedTripId}
-          label="Active Travel Plan"
-          onChange={(e) => setSelectedTripId(e.target.value)}
-          sx={{ borderRadius: 3 }}
-        >
-          {trips.map((trip) => (
-            <MenuItem key={trip._id} value={trip._id} sx={{ py: 1.5 }}>
-              {trip.name || trip.destination || trip.title || "Unnamed Trip"}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {!propTripId && (
+        <FormControl fullWidth size="medium" sx={{ mb: 4 }}>
+          <InputLabel id="trip-select-label">Active Travel Plan</InputLabel>
+          <Select
+            labelId="trip-select-label"
+            value={selectedTripId}
+            label="Active Travel Plan"
+            onChange={(e) => setSelectedTripId(e.target.value)}
+            sx={{ borderRadius: 3 }}
+          >
+            {trips.map((trip) => (
+              <MenuItem key={trip._id} value={trip._id} sx={{ py: 1.5 }}>
+                {trip.name || trip.destination || trip.title || "Unnamed Trip"}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
 
       {/* ── Loading ──────────────────────────────────────────────────────────── */}
       {loading && !list && (

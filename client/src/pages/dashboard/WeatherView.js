@@ -31,8 +31,8 @@ const getWeatherIcon = (desc) => {
   return "🌤️";
 };
 
-const WeatherView = () => {
-  const [location, setLocation] = useState("");
+const WeatherView = ({ defaultLocation }) => {
+  const [location, setLocation] = useState(defaultLocation || "");
   const dispatch = useDispatch();
   const { currentWeather, forecast, loading, error, fetchedAt } = useSelector(
     (state) => state.weather,
@@ -42,11 +42,12 @@ const WeatherView = () => {
 
   // ✅ FIX: Re-fetch on every mount so data is never stale
   useEffect(() => {
-    if (currentWeather?.location) {
-      dispatch(getCurrentWeather(currentWeather.location));
-      dispatch(getForecast(currentWeather.location));
+    const locToFetch = defaultLocation || currentWeather?.location;
+    if (locToFetch) {
+      dispatch(getCurrentWeather(locToFetch));
+      dispatch(getForecast(locToFetch));
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, defaultLocation]);
 
   // ✅ Manual refresh handler
   const handleRefresh = useCallback(() => {
