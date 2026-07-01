@@ -38,6 +38,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import ShieldIcon from "@mui/icons-material/Shield";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 
 import { logout } from "../redux/actions/authActions";
 
@@ -52,6 +53,7 @@ import ProfileView from "./dashboard/ProfileView";
 import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
+import NearbyView from "./dashboard/NearbyView";
 import NotFound from "./NotFound";
 
 const mobileDrawerWidth = 240;
@@ -91,6 +93,7 @@ const Dashboard = () => {
   const menuItems = [
     { text: "Dashboard", path: "", icon: <DashboardIcon /> },
     { text: "My Trips", path: "trips", icon: <ExploreIcon /> },
+    { text: "Nearby Destinations", path: "nearby", icon: <MyLocationIcon /> },
     { text: "Expenses", path: "expenses", icon: <WalletIcon /> },
     { text: "Weather", path: "weather", icon: <WbSunnyIcon /> },
     { text: "Translator", path: "translator", icon: <TranslateIcon /> },
@@ -471,6 +474,7 @@ const Dashboard = () => {
             <Route path="/" element={<DashboardHome />} />
             <Route path="trips" element={<TripsView />} />
             <Route path="trips/:id" element={<TripDetail />} />
+            <Route path="nearby" element={<NearbyView />} />
             <Route path="expenses" element={<ExpensesView />} />
             <Route path="weather" element={<WeatherView />} />
             <Route path="translator" element={<TranslatorView />} />
