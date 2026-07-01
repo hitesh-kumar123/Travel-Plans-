@@ -16,6 +16,9 @@
   },
   "scripts": {
     "start": "node server/server.js",
+    "build": "cd client && npm run build",
+    "lint": "npm --prefix server run lint && npm --prefix client run lint",
+    "format:check": "npm --prefix server run format:check && npm --prefix client run format:check",
     "prepare": "husky"
   },
   "lint-staged": {
