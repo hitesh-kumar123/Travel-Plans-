@@ -1,11 +1,11 @@
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import QRCode from "react-qr-code";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import api from "../../services/api";
+import api, { uploadTripImages, deleteTripImage } from "../../services/api";
 import {
   Box,
   Typography,
@@ -31,11 +31,16 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
+  ImageList,
+  ImageListItem,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/West";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import FlightIcon from "@mui/icons-material/Flight";
 import HotelIcon from "@mui/icons-material/Hotel";
 import DateRangeIcon from "@mui/icons-material/DateRange";
@@ -56,6 +61,8 @@ import {
   deleteExpense,
 } from "../../redux/actions/expenseActions";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || "";
+
 const STATUS_COLORS = {
   planned: "primary",
   ongoing: "warning",
@@ -75,6 +82,8 @@ const TripDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { currentTrip, loading } = useSelector((state) => state.trips);
   const { expenses, loading: expLoading } = useSelector(
@@ -99,6 +108,12 @@ const TripDetail = () => {
 
   const [editForm, setEditForm] = useState({});
   const [shareEnabled, setShareEnabled] = useState(false);
+
+  // --- Trip photo gallery state ---
+  const fileInputRef = useRef(null);
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState(null);
 
   useEffect(() => {
     if (currentTrip) {
@@ -127,6 +142,44 @@ const TripDetail = () => {
       });
     }
   }, [currentTrip]);
+
+  // keep local gallery state synced with redux trip data
+  useEffect(() => {
+    if (currentTrip?.images) {
+      setImages(currentTrip.images);
+    }
+  }, [currentTrip]);
+
+  const handlePhotoSelect = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) handlePhotoUpload(files);
+  };
+
+  const handlePhotoUpload = async (files) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append("images", file));
+    setUploading(true);
+    try {
+      const res = await uploadTripImages(currentTrip._id, formData);
+      setImages(res.data.images);
+      toast.success("Photos uploaded!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handlePhotoDelete = async (imageUrl) => {
+    try {
+      const res = await deleteTripImage(currentTrip._id, imageUrl);
+      setImages(res.data.images);
+      toast.success("Photo removed");
+    } catch {
+      toast.error("Failed to remove photo");
+    }
+  };
 
   const totalSpent = expenses
     ? expenses.reduce((acc, e) => acc + e.amount, 0)
@@ -616,6 +669,100 @@ const TripDetail = () => {
               )}
             </Paper>
           )}
+
+          {/* Trip Photos Gallery */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              mb: 3,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight={700}>
+                Trip Photos
+              </Typography>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={
+                  uploading ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <AddPhotoAlternateIcon />
+                  )
+                }
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Add Photos"}
+              </Button>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                ref={fileInputRef}
+                onChange={handlePhotoSelect}
+              />
+            </Box>
+
+            {images.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                No photos yet. Add some memories from this trip!
+              </Typography>
+            ) : (
+              <ImageList cols={isMobile ? 2 : 3} gap={12}>
+                {images.map((url, idx) => (
+                  <ImageListItem
+                    key={idx}
+                    sx={{
+                      position: "relative",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={`${API_BASE_URL}${url}`}
+                      alt={`Memory ${idx + 1}`}
+                      loading="lazy"
+                      style={{
+                        borderRadius: 8,
+                        cursor: "pointer",
+                        height: 140,
+                        objectFit: "cover",
+                      }}
+                      onClick={() => setLightboxImage(url)}
+                    />
+                    <IconButton
+                      size="small"
+                      onClick={() => handlePhotoDelete(url)}
+                      sx={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        bgcolor: "rgba(0,0,0,0.6)",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "rgba(0,0,0,0.8)" },
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
+          </Paper>
         </Grid>
 
         {/* Right Column: Expenses */}
@@ -1010,6 +1157,19 @@ const TripDetail = () => {
             Copy Link
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Photo Lightbox */}
+      <Dialog
+        open={!!lightboxImage}
+        onClose={() => setLightboxImage(null)}
+        maxWidth="md"
+      >
+        <img
+          src={`${API_BASE_URL}${lightboxImage}`}
+          alt="Trip"
+          style={{ width: "100%", display: "block" }}
+        />
       </Dialog>
 
       {/* Budget Calculator Modal */}
