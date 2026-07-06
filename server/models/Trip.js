@@ -15,6 +15,11 @@ const TripSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  uploadedImages: [
+    {
+      type: String,
+    },
+  ],
   startDate: {
     type: Date,
     required: true,

@@ -31,6 +31,10 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
+  Tabs,
+  Tab,
+  ImageList,
+  ImageListItem,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/West";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,12 +47,15 @@ import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
 import {
   getTrip,
   updateTrip,
   deleteTrip,
   shareTrip,
+  uploadTripPhotos,
+  deleteTripPhoto,
 } from "../../redux/actions/tripActions";
 import {
   getExpenses,
@@ -160,6 +167,44 @@ const TripDetail = () => {
           )
         : 0,
     travelers: currentTrip?.travelers || 1,
+  };
+
+  const [tabValue, setTabValue] = useState(0);
+  const [uploading, setUploading] = useState(false);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const handleFileUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+
+    setUploading(true);
+    try {
+      await dispatch(uploadTripPhotos(id, formData));
+      toast.success("Photos uploaded successfully!");
+    } catch (err) {
+      // Error handled by redux action toast
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (imageUrl) => {
+    if (window.confirm("Are you sure you want to delete this photo?")) {
+      try {
+        await dispatch(deleteTripPhoto(id, imageUrl));
+        toast.success("Photo deleted successfully!");
+      } catch (err) {
+        // Error handled by action
+      }
+    }
   };
 
   const handleDeleteTrip = () => {
@@ -374,391 +419,593 @@ const TripDetail = () => {
         <WeatherWidget destination={currentTrip.destination} />
       )}
 
-      <Grid container spacing={3}>
-        {/* Left Column */}
-        <Grid xs={12} md={8}>
-          {/* Trip Info Cards */}
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid xs={6} sm={3}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <DateRangeIcon color="primary" />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  mt={0.5}
-                >
-                  Start Date
-                </Typography>
-                <Typography variant="body2" fontWeight={600}>
-                  {new Date(currentTrip.startDate).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid xs={6} sm={3}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <DateRangeIcon color="secondary" />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  mt={0.5}
-                >
-                  End Date
-                </Typography>
-                <Typography variant="body2" fontWeight={600}>
-                  {new Date(currentTrip.endDate).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid xs={6} sm={3}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <WalletIcon color="success" />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  mt={0.5}
-                >
-                  Budget
-                </Typography>
-                <Typography variant="body2" fontWeight={600}>
-                  ₹{(currentTrip.budget || 0).toLocaleString()}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid xs={6} sm={3}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <WalletIcon color="warning" />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  mt={0.5}
-                >
-                  Spent
-                </Typography>
-                <Typography variant="body2" fontWeight={600}>
-                  ₹{totalSpent.toLocaleString()}
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-          {/* Budget Progress */}
-          {currentTrip.budget > 0 && (
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                mb: 3,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
-              >
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Budget Utilization
-                </Typography>
-                <Typography
-                  variant="subtitle2"
-                  fontWeight={700}
-                  color={budgetPercent > 90 ? "error.main" : "success.main"}
-                >
-                  {actualBudgetPercent.toFixed(1)}%
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={budgetPercent}
-                color={
-                  isOverBudget
-                    ? "error"
-                    : actualBudgetPercent > 70
-                      ? "warning"
-                      : "success"
-                }
-                sx={{ height: 10, borderRadius: 5 }}
-              />
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  Spent: ₹{totalSpent.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Budget: ₹{(currentTrip.budget || 0).toLocaleString()}
-                </Typography>
-              </Box>
-              {isOverBudget && (
-                <Typography
-                  variant="body2"
-                  color="error.main"
-                  fontWeight={600}
-                  sx={{ mt: 1 }}
-                >
-                  ⚠ Budget Exceeded by ₹{overBudget.toLocaleString()}
-                </Typography>
-              )}
-            </Paper>
-          )}
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="trip tabs"
+        >
+          <Tab label="Overview" />
+          <Tab label="Gallery" />
+        </Tabs>
+      </Box>
 
-          {/* Description */}
-          {currentTrip.description && (
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                mb: 3,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <Typography variant="subtitle1" fontWeight={700} mb={1}>
-                About this Trip
-              </Typography>
-              <Typography color="text.secondary">
-                {currentTrip.description}
-              </Typography>
-            </Paper>
-          )}
-          {/* Accommodation */}
-          {currentTrip.accommodation?.name && (
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                mb: 3,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+      {tabValue === 0 && (
+        <Grid container spacing={3}>
+          {/* Left Column */}
+          <Grid xs={12} md={8}>
+            {/* Trip Info Cards */}
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+              <Grid xs={6} sm={3}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    textAlign: "center",
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <DateRangeIcon color="primary" />
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    color="text.secondary"
+                    mt={0.5}
+                  >
+                    Start Date
+                  </Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    {new Date(currentTrip.startDate).toLocaleDateString(
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      },
+                    )}
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid xs={6} sm={3}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    textAlign: "center",
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <DateRangeIcon color="secondary" />
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    color="text.secondary"
+                    mt={0.5}
+                  >
+                    End Date
+                  </Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    {new Date(currentTrip.endDate).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid xs={6} sm={3}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    textAlign: "center",
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <WalletIcon color="success" />
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    color="text.secondary"
+                    mt={0.5}
+                  >
+                    Budget
+                  </Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    ₹{(currentTrip.budget || 0).toLocaleString()}
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid xs={6} sm={3}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    textAlign: "center",
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <WalletIcon color="warning" />
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    color="text.secondary"
+                    mt={0.5}
+                  >
+                    Spent
+                  </Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    ₹{totalSpent.toLocaleString()}
+                  </Typography>
+                </Paper>
+              </Grid>
+            </Grid>
+
+            {/* Budget Progress */}
+            {currentTrip.budget > 0 && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
               >
-                <HotelIcon color="primary" />
-                <Typography variant="subtitle1" fontWeight={700}>
-                  Accommodation
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Budget Utilization
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={700}
+                    color={budgetPercent > 90 ? "error.main" : "success.main"}
+                  >
+                    {actualBudgetPercent.toFixed(1)}%
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={budgetPercent}
+                  color={
+                    isOverBudget
+                      ? "error"
+                      : actualBudgetPercent > 70
+                        ? "warning"
+                        : "success"
+                  }
+                  sx={{ height: 10, borderRadius: 5 }}
+                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mt: 1,
+                  }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Spent: ₹{totalSpent.toLocaleString()}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Budget: ₹{(currentTrip.budget || 0).toLocaleString()}
+                  </Typography>
+                </Box>
+                {isOverBudget && (
+                  <Typography
+                    variant="body2"
+                    color="error.main"
+                    fontWeight={600}
+                    sx={{ mt: 1 }}
+                  >
+                    ⚠ Budget Exceeded by ₹{overBudget.toLocaleString()}
+                  </Typography>
+                )}
+              </Paper>
+            )}
+
+            {/* Description */}
+            {currentTrip.description && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight={700} mb={1}>
+                  About this Trip
                 </Typography>
-              </Box>
-              <Typography fontWeight={600}>
-                {currentTrip.accommodation.name}
-              </Typography>
-              {currentTrip.accommodation.address && (
                 <Typography color="text.secondary">
-                  {currentTrip.accommodation.address}
+                  {currentTrip.description}
                 </Typography>
-              )}
-              {currentTrip.accommodation.bookingRef && (
-                <Chip
-                  label={`Ref: ${currentTrip.accommodation.bookingRef}`}
-                  size="small"
-                  sx={{ mt: 1 }}
+              </Paper>
+            )}
+
+            {/* Accommodation */}
+            {currentTrip.accommodation?.name && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+                >
+                  <HotelIcon color="primary" />
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    Accommodation
+                  </Typography>
+                </Box>
+                <Typography fontWeight={600}>
+                  {currentTrip.accommodation.name}
+                </Typography>
+                {currentTrip.accommodation.address && (
+                  <Typography color="text.secondary">
+                    {currentTrip.accommodation.address}
+                  </Typography>
+                )}
+                {currentTrip.accommodation.bookingRef && (
+                  <Chip
+                    label={`Ref: ${currentTrip.accommodation.bookingRef}`}
+                    size="small"
+                    sx={{ mt: 1 }}
+                  />
+                )}
+              </Paper>
+            )}
+
+            {/* Transportation */}
+            {currentTrip.transportation?.type && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+                >
+                  <FlightIcon color="info" />
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    Transportation
+                  </Typography>
+                </Box>
+                <Typography fontWeight={600}>
+                  {currentTrip.transportation.type}
+                </Typography>
+                {currentTrip.transportation.bookingRef && (
+                  <Chip
+                    label={`Ref: ${currentTrip.transportation.bookingRef}`}
+                    size="small"
+                    sx={{ mt: 1 }}
+                  />
+                )}
+              </Paper>
+            )}
+
+            {/* Budget Progress */}
+            {currentTrip.budget > 0 && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Budget Utilization
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={700}
+                    color={budgetPercent > 90 ? "error.main" : "success.main"}
+                  >
+                    {actualBudgetPercent.toFixed(1)}%
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={budgetPercent}
+                  color={
+                    isOverBudget
+                      ? "error"
+                      : actualBudgetPercent > 70
+                        ? "warning"
+                        : "success"
+                  }
+                  sx={{ height: 10, borderRadius: 5 }}
                 />
-              )}
-            </Paper>
-          )}
-          {/* Transportation */}
-          {currentTrip.transportation?.type && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mt: 1,
+                  }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Spent: ₹{totalSpent.toLocaleString()}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Budget: ₹{(currentTrip.budget || 0).toLocaleString()}
+                  </Typography>
+                </Box>
+                {isOverBudget && (
+                  <Typography
+                    variant="body2"
+                    color="error.main"
+                    fontWeight={600}
+                    sx={{ mt: 1 }}
+                  >
+                    ⚠ Budget Exceeded by ₹{overBudget.toLocaleString()}
+                  </Typography>
+                )}
+              </Paper>
+            )}
+          </Grid>
+
+          {/* Right Column: Expenses */}
+          <Grid xs={12} md={4}>
             <Paper
               elevation={0}
               sx={{
-                p: 3,
                 borderRadius: 3,
-                mb: 3,
                 border: "1px solid",
                 borderColor: "divider",
               }}
             >
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-              >
-                <FlightIcon color="info" />
-                <Typography variant="subtitle1" fontWeight={700}>
-                  Transportation
-                </Typography>
-              </Box>
-              <Typography fontWeight={600}>
-                {currentTrip.transportation.type}
-              </Typography>
-              {currentTrip.transportation.bookingRef && (
-                <Chip
-                  label={`Ref: ${currentTrip.transportation.bookingRef}`}
-                  size="small"
-                  sx={{ mt: 1 }}
-                />
-              )}
-            </Paper>
-          )}
-        </Grid>
-
-        {/* Right Column: Expenses */}
-        <Grid xs={12} md={4}>
-          <Paper
-            elevation={0}
-            sx={{
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Box
-              sx={{
-                p: 2.5,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="subtitle1" fontWeight={700}>
-                Expenses
-              </Typography>
-              <Button
-                size="small"
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setExpenseOpen(true)}
-              >
-                Add
-              </Button>
-            </Box>
-            <Divider />
-            <TableContainer sx={{ maxHeight: 400 }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow sx={{ bgcolor: "grey.50" }}>
-                    <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Note</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      ₹
-                    </TableCell>
-                    <TableCell />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {expLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={4} align="center">
-                        <CircularProgress size={20} />
-                      </TableCell>
-                    </TableRow>
-                  ) : expenses && expenses.length > 0 ? (
-                    expenses.map((e) => (
-                      <TableRow key={e._id} hover>
-                        <TableCell>
-                          <Chip label={e.category} size="small" />
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            maxWidth: 100,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {e.description || "-"}
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 600 }}>
-                          {e.amount.toLocaleString()}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => dispatch(deleteExpense(e._id))}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={4}
-                        align="center"
-                        sx={{ py: 3, color: "text.secondary" }}
-                      >
-                        No expenses yet
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            {expenses && expenses.length > 0 && (
-              <Box
                 sx={{
-                  p: 2,
-                  borderTop: "1px solid",
-                  borderColor: "divider",
+                  p: 2.5,
                   display: "flex",
                   justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <Typography variant="subtitle2" fontWeight={700}>
-                  Total
+                <Typography variant="subtitle1" fontWeight={700}>
+                  Expenses
                 </Typography>
-                <Typography
-                  variant="subtitle2"
-                  fontWeight={700}
-                  color="primary.main"
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setExpenseOpen(true)}
                 >
-                  ₹{totalSpent.toLocaleString()}
+                  Add
+                </Button>
+              </Box>
+              <Divider />
+              <TableContainer sx={{ maxHeight: 400 }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "grey.50" }}>
+                      <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Note</TableCell>
+                      <TableCell align="right" sx={{ fontWeight: 600 }}>
+                        ₹
+                      </TableCell>
+                      <TableCell />
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {expLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center">
+                          <CircularProgress size={20} />
+                        </TableCell>
+                      </TableRow>
+                    ) : expenses && expenses.length > 0 ? (
+                      expenses.map((e) => (
+                        <TableRow key={e._id} hover>
+                          <TableCell>
+                            <Chip label={e.category} size="small" />
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              maxWidth: 100,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {e.description || "-"}
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 600 }}>
+                            {e.amount.toLocaleString()}
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => dispatch(deleteExpense(e._id))}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={4}
+                          align="center"
+                          sx={{ py: 3, color: "text.secondary" }}
+                        >
+                          No expenses yet
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {expenses && expenses.length > 0 && (
+                <Box
+                  sx={{
+                    p: 2,
+                    borderTop: "1px solid",
+                    borderColor: "divider",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography variant="subtitle2" fontWeight={700}>
+                    Total
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={700}
+                    color="primary.main"
+                  >
+                    ₹{totalSpent.toLocaleString()}
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+      )}
+
+      {tabValue === 1 && (
+        <Box sx={{ mt: 3 }}>
+          <Box
+            sx={{
+              p: 4,
+              border: "2px dashed",
+              borderColor: "grey.400",
+              borderRadius: 3,
+              textAlign: "center",
+              bgcolor: "grey.50",
+              mb: 4,
+              cursor: "pointer",
+              position: "relative",
+            }}
+          >
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileUpload}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0,
+                cursor: "pointer",
+              }}
+              disabled={uploading}
+            />
+            {uploading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
+                <CircularProgress size={32} />
+                <Typography variant="body1" color="text.secondary">
+                  Uploading your memories...
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <CloudUploadIcon color="primary" sx={{ fontSize: 48 }} />
+                <Typography variant="h6">
+                  Drag and drop your photos here
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  or click to select files
                 </Typography>
               </Box>
             )}
-          </Paper>
-        </Grid>
-      </Grid>
+          </Box>
+
+          {currentTrip.uploadedImages &&
+          currentTrip.uploadedImages.length > 0 ? (
+            <ImageList variant="masonry" cols={3} gap={16}>
+              {currentTrip.uploadedImages.map((imgUrl, index) => (
+                <ImageListItem key={index} sx={{ position: "relative" }}>
+                  <img
+                    src={imgUrl}
+                    alt={`Trip Memory ${index + 1}`}
+                    loading="lazy"
+                    style={{ borderRadius: 8, width: "100%", display: "block" }}
+                  />
+                  <IconButton
+                    size="small"
+                    color="error"
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      bgcolor: "rgba(255, 255, 255, 0.8)",
+                      "&:hover": { bgcolor: "error.main", color: "white" },
+                    }}
+                    onClick={() => handleDeletePhoto(imgUrl)}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </ImageListItem>
+              ))}
+            </ImageList>
+          ) : (
+            <Box sx={{ textAlign: "center", py: 8 }}>
+              <Typography variant="h6" color="text.secondary">
+                No memories uploaded yet.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Upload some photos to relive your trip!
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
 
       {/* Delete Confirm Dialog */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
