@@ -132,9 +132,9 @@ const TripDetail = () => {
     ? expenses.reduce((acc, e) => acc + e.amount, 0)
     : 0;
   const budgetPercent =
-    currentTrip?.budget > 0
-      ? Math.min((totalSpent / currentTrip.budget) * 100, 100)
-      : 0;
+    currentTrip?.budget > 0 ? (totalSpent / currentTrip.budget) * 100 : 0;
+  const budgetProgressValue = Math.min(budgetPercent, 100);
+  const isOverBudget = budgetPercent > 100;
 
   const tripDataForBudget = {
     destination: currentTrip?.destination || currentTrip?.name || "",
@@ -498,11 +498,12 @@ const TripDetail = () => {
                   color={budgetPercent > 90 ? "error.main" : "success.main"}
                 >
                   {budgetPercent.toFixed(1)}%
+                  {isOverBudget && " (Over Budget)"}
                 </Typography>
               </Box>
               <LinearProgress
                 variant="determinate"
-                value={budgetPercent}
+                value={budgetProgressValue}
                 color={
                   budgetPercent > 90
                     ? "error"
@@ -510,13 +511,28 @@ const TripDetail = () => {
                       ? "warning"
                       : "success"
                 }
-                sx={{ height: 10, borderRadius: 5 }}
+                sx={{
+                  height: 10,
+                  borderRadius: 5,
+                  ...(isOverBudget && {
+                    "& .MuiLinearProgress-bar": {
+                      backgroundImage:
+                        "repeating-linear-gradient(45deg, rgba(255,255,255,0.3) 0, rgba(255,255,255,0.3) 6px, transparent 6px, transparent 12px)",
+                    },
+                  }),
+                }}
               />
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
               >
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  color={isOverBudget ? "error.main" : "text.secondary"}
+                  fontWeight={isOverBudget ? 700 : 400}
+                >
                   Spent: ₹{totalSpent.toLocaleString()}
+                  {isOverBudget &&
+                    ` (₹${(totalSpent - currentTrip.budget).toLocaleString()} over)`}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Budget: ₹{(currentTrip.budget || 0).toLocaleString()}
