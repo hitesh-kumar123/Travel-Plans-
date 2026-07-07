@@ -19,7 +19,10 @@ import SharedTripView from "./pages/dashboard/SharedTripView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
-import Contact from "./pages/contact"; // ✅ ADDED
+import Contact from "./pages/contact"; // 
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import HelpCenter from "./pages/HelpCenter";
 import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import ScrollToTop from "./components/ScrollToTop";
@@ -65,6 +68,9 @@ function App() {
                 path="/reset-password/:token"
                 element={<ResetPassword />}
               />
+              <Route path="/terms" element={<TermsConditions />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/help" element={<HelpCenter />} />
               {/* Fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
