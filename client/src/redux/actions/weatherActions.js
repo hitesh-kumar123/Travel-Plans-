@@ -7,16 +7,17 @@ import {
   SET_LOADING,
 } from "../types/weatherTypes";
 
-export const getCurrentWeather = (location) => async (dispatch) => {
+export const getCurrentWeather = (location, signal) => async (dispatch) => {
   dispatch({ type: SET_LOADING });
   try {
-    const res = await api.get(`/weather/current/${location}`);
+    const res = await api.get(`/weather/current/${location}`, { signal });
 
     dispatch({
       type: GET_CURRENT_WEATHER,
       payload: res.data,
     });
   } catch (err) {
+    if (err.code === "ERR_CANCELED" || err.name === "CanceledError") return;
     const msg = err.response?.data?.msg || "Error fetching current weather";
     dispatch({
       type: WEATHER_ERROR,
@@ -26,16 +27,17 @@ export const getCurrentWeather = (location) => async (dispatch) => {
   }
 };
 
-export const getForecast = (location) => async (dispatch) => {
+export const getForecast = (location, signal) => async (dispatch) => {
   dispatch({ type: SET_LOADING });
   try {
-    const res = await api.get(`/weather/forecast/${location}`);
+    const res = await api.get(`/weather/forecast/${location}`, { signal });
 
     dispatch({
       type: GET_FORECAST,
       payload: res.data,
     });
   } catch (err) {
+    if (err.code === "ERR_CANCELED" || err.name === "CanceledError") return;
     const msg = err.response?.data?.msg || "Error fetching forecast";
     dispatch({
       type: WEATHER_ERROR,
