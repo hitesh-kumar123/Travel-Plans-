@@ -90,3 +90,17 @@ export const clearPackingList = (tripId) => async (dispatch) => {
     });
   }
 };
+
+// Generate smart list based on weather
+export const generateSmartPackingList = (tripId) => async (dispatch) => {
+  dispatch({ type: PACKING_FETCH_REQUEST });
+  try {
+    const { data } = await api.post(`/packing/${tripId}/generate-smart`);
+    dispatch({ type: PACKING_UPDATE_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: PACKING_UPDATE_FAIL,
+      payload: err.response?.data?.message || err.message,
+    });
+  }
+};

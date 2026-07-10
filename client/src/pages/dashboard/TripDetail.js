@@ -31,6 +31,8 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/West";
 import EditIcon from "@mui/icons-material/Edit";
@@ -44,6 +46,8 @@ import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
+import PackingView from "./PackingView";
+import WeatherView from "./WeatherView";
 import {
   getTrip,
   updateTrip,
@@ -99,6 +103,7 @@ const TripDetail = () => {
 
   const [editForm, setEditForm] = useState({});
   const [shareEnabled, setShareEnabled] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     if (currentTrip) {
@@ -359,6 +364,16 @@ const TripDetail = () => {
         </Box>
       </Box>
 
+      {/* Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)}>
+          <Tab label="Overview" />
+          <Tab label="Weather" />
+          <Tab label="Packing List" />
+        </Tabs>
+      </Box>
+
+      {tabIndex === 0 && (
       <Grid container spacing={3}>
         {/* Left Column */}
         <Grid xs={12} md={8}>
@@ -737,6 +752,19 @@ const TripDetail = () => {
           </Paper>
         </Grid>
       </Grid>
+      )}
+
+      {tabIndex === 1 && (
+        <Box sx={{ minHeight: 400 }}>
+          <WeatherView defaultLocation={currentTrip.destination} />
+        </Box>
+      )}
+
+      {tabIndex === 2 && (
+        <Box sx={{ minHeight: 400 }}>
+          <PackingView tripId={id} />
+        </Box>
+      )}
 
       {/* Delete Confirm Dialog */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
