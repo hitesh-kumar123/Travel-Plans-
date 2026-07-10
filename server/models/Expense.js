@@ -13,11 +13,15 @@ const ExpenseSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: true,
+    required: [true, "Amount is required"],
+    min: [0, "Amount cannot be negative"],
   },
   currency: {
     type: String,
     default: "USD",
+    trim: true,
+    uppercase: true,
+    match: [/^[A-Z]{3}$/, "Currency must be a valid 3-letter ISO code"],
   },
   category: {
     type: String,
@@ -29,10 +33,12 @@ const ExpenseSchema = new mongoose.Schema({
       "Shopping",
       "Other",
     ],
-    required: true,
+    required: [true, "Category is required"],
   },
   description: {
     type: String,
+    trim: true,
+    maxlength: [500, "Description cannot exceed 500 characters"],
   },
   date: {
     type: Date,
