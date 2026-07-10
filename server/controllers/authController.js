@@ -300,15 +300,15 @@ exports.forgotPassword = async (req, res, next) => {
 // Reset Password
 exports.resetPassword = async (req, res, next) => {
   try {
-    // Get hashed token
+    // Get hashed token (trim token to handle copy-paste whitespace/newlines)
     const resetPasswordToken = crypto
       .createHash("sha256")
-      .update(req.params.token)
+      .update(req.params.token.trim())
       .digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
+      resetPasswordExpire: { $gt: new Date() },
     }).select("+password");
 
     if (!user) {
@@ -323,19 +323,14 @@ exports.resetPassword = async (req, res, next) => {
 
     // Create JWT token and log user in automatically (optional)
     const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) return next(err);
-        res.json({
-          msg: "Password reset successful",
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "5d",
+    });
+    res.json({
+      msg: "Password reset successful",
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (err) {
     next(err);
   }
