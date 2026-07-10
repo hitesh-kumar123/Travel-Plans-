@@ -6,6 +6,7 @@ import {
   BUDGET_ERROR,
 } from "../types/budgetTypes";
 import api from "../../services/api";
+import { queueOfflineAction } from "./offlineQueueActions";
 
 // ─── Sync action ─────────────────────────────────────────────────────────────
 // Updates form inputs in Redux so state persists across navigation.
@@ -21,6 +22,19 @@ export const resetBudget = () => ({ type: RESET_BUDGET });
 // In v1 the frontend calculates everything locally; this action is optional.
 export const fetchBudgetEstimate = (params) => async (dispatch) => {
   dispatch({ type: BUDGET_LOADING });
+
+  // Offline: queue the request instead of throwing a fetch error.
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    dispatch(
+      queueOfflineAction({
+        endpoint: "/budget/estimate",
+        method: "get",
+        payload: params,
+      })
+    );
+    return;
+  }
+
   try {
     const { data } = await api.get("/budget/estimate", { params });
     dispatch({ type: SET_BUDGET_RESULT, payload: data });
