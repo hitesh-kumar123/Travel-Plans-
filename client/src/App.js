@@ -32,6 +32,10 @@ import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
 import EmailVerification from "./pages/EmailVerification";
 
+if (process.env.NODE_ENV === "development") {
+  window.store = store;
+}
+
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
