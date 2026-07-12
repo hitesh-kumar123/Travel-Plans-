@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
+const PackingList = require("../models/PackingList");
 
 /**
  * Escape special regex metacharacters in a string so it can be safely
@@ -168,8 +169,9 @@ exports.deleteTrip = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    // Also delete all expenses for this trip
+    // Also delete all expenses and the packing list for this trip
     await Expense.deleteMany({ trip: req.params.id });
+    await PackingList.deleteOne({ trip: req.params.id });
     await trip.deleteOne();
     res.json({ msg: "Trip removed" });
   } catch (err) {
