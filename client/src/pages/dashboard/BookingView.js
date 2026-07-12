@@ -28,12 +28,24 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
+import ExploreIcon from "@mui/icons-material/Explore";
+import PlaceIcon from "@mui/icons-material/Place";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import CastleIcon from "@mui/icons-material/Castle";
+import MuseumIcon from "@mui/icons-material/Museum";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import MapIcon from "@mui/icons-material/Map";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import Menu from "@mui/material/Menu";
+import MenuItemMui from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ShowMoreList from "../../components/ShowMoreList";
 import {
   searchFlights,
   searchHotels,
+  searchPlaces,
 } from "../../redux/actions/bookingActions";
 
 const amenityIcons = {
@@ -54,9 +66,53 @@ const AMENITY_OPTIONS = [
   "Bar",
 ];
 
+const categoryIcons = {
+  SIGHTS: <PlaceIcon fontSize="small" />,
+  HISTORICAL: <AccountBalanceIcon fontSize="small" />,
+  BEACH_PARK: <BeachAccessIcon fontSize="small" />,
+  NIGHTLIFE: <CastleIcon fontSize="small" />,
+  RESTAURANT: <RestaurantIcon fontSize="small" />,
+  SHOPPING: <MuseumIcon fontSize="small" />,
+};
+
+const CATEGORY_LABELS = {
+  SIGHTS: "Sights",
+  HISTORICAL: "Historical",
+  BEACH_PARK: "Beach / Park",
+  NIGHTLIFE: "Nightlife",
+  RESTAURANT: "Restaurant",
+  SHOPPING: "Shopping",
+};
+
+const CATEGORY_OPTIONS = Object.keys(CATEGORY_LABELS);
+
+const formatTagLabel = (tag) =>
+  tag
+    .split("_")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const CATEGORY_IMAGES = {
+  SIGHTS:
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=60",
+  HISTORICAL:
+    "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=60",
+  BEACH_PARK:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=60",
+  NIGHTLIFE:
+    "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=60",
+  RESTAURANT:
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=60",
+  SHOPPING:
+    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=60",
+};
+
 const BookingView = () => {
   const dispatch = useDispatch();
-  const { flights, hotels, loading } = useSelector((state) => state.booking);
+  const { flights, hotels, places, loading } = useSelector(
+    (state) => state.booking,
+  );
 
   const [tab, setTab] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -76,6 +132,26 @@ const BookingView = () => {
     guests: 2,
     rooms: 1,
   });
+
+  const [placesForm, setPlacesForm] = useState({
+    destination: "",
+  });
+  const [placesSearched, setPlacesSearched] = useState(false);
+
+  // Anchor + place for the "Book Tickets" redirect-links dropdown
+  const [bookingMenu, setBookingMenu] = useState({
+    anchorEl: null,
+    place: null,
+  });
+  const openBookingMenu = (event, place) =>
+    setBookingMenu({ anchorEl: event.currentTarget, place });
+  const closeBookingMenu = () =>
+    setBookingMenu({ anchorEl: null, place: null });
+  const goToBookingLink = (url) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+    closeBookingMenu();
+  };
+
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -96,6 +172,13 @@ const BookingView = () => {
     amenities: [],
   });
 
+  // Places to Visit filters
+  const [placesFilters, setPlacesFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    categories: [],
+  });
+
   // Count active filters for badge
   const activeFlightFilterCount = [
     flightFilters.minBudget,
@@ -107,6 +190,12 @@ const BookingView = () => {
     hotelFilters.maxBudget,
     hotelFilters.minRating > 0 ? hotelFilters.minRating : null,
     ...hotelFilters.amenities,
+  ].filter(Boolean).length;
+
+  const activePlacesFilterCount = [
+    placesFilters.minPrice,
+    placesFilters.maxPrice,
+    ...placesFilters.categories,
   ].filter(Boolean).length;
 
   const handleFlightSearch = (e) => {
@@ -139,6 +228,25 @@ const BookingView = () => {
       minRating: 0,
       amenities: [],
     });
+  };
+
+  const handlePlacesSearch = (e) => {
+    e.preventDefault();
+    setPlacesSearched(true);
+    dispatch(searchPlaces({ ...placesForm, ...placesFilters }));
+  };
+
+  const handleCategoryToggle = (category) => {
+    setPlacesFilters((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter((c) => c !== category)
+        : [...prev.categories, category],
+    }));
+  };
+
+  const clearPlacesFilters = () => {
+    setPlacesFilters({ minPrice: "", maxPrice: "", categories: [] });
   };
 
   return (
@@ -178,6 +286,12 @@ const BookingView = () => {
             icon={<HotelIcon />}
             iconPosition="start"
             label="Hotels"
+            sx={{ fontWeight: 600 }}
+          />
+          <Tab
+            icon={<ExploreIcon />}
+            iconPosition="start"
+            label="Places to Visit"
             sx={{ fontWeight: 600 }}
           />
         </Tabs>
@@ -636,6 +750,169 @@ const BookingView = () => {
               </Collapse>
             </Box>
           )}
+
+          {/* ───── PLACES TO VISIT SEARCH ───── */}
+          {tab === 2 && (
+            <Box component="form" onSubmit={handlePlacesSearch}>
+              <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
+                <Grid xs={12} sm={7} md={8}>
+                  <TextField
+                    id="places-destination"
+                    name="destination"
+                    fullWidth
+                    label="Destination / City / Place"
+                    placeholder="e.g. Jaipur"
+                    value={placesForm.destination}
+                    onChange={(e) =>
+                      setPlacesForm({
+                        ...placesForm,
+                        destination: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12} sm={5} md={4}>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Badge
+                      badgeContent={activePlacesFilterCount}
+                      color="primary"
+                    >
+                      <Button
+                        variant={showFilters ? "contained" : "outlined"}
+                        size="large"
+                        onClick={() => setShowFilters(!showFilters)}
+                        sx={{ height: 56, borderRadius: 3, minWidth: 56 }}
+                      >
+                        <FilterListIcon />
+                      </Button>
+                    </Badge>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      size="large"
+                      startIcon={<SearchIcon />}
+                      disabled={loading}
+                      sx={{ height: 56, borderRadius: 3, fontWeight: 700 }}
+                    >
+                      {loading ? <CircularProgress size={20} /> : "Search"}
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* Places Filters Panel */}
+              <Collapse in={showFilters}>
+                <Box
+                  sx={{
+                    mt: 3,
+                    p: 2.5,
+                    bgcolor: "action.hover",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
+                    <Typography variant="subtitle1" fontWeight={700}>
+                      Filter Places
+                    </Typography>
+                    {activePlacesFilterCount > 0 && (
+                      <Button
+                        size="small"
+                        startIcon={<CloseIcon />}
+                        onClick={clearPlacesFilters}
+                        color="error"
+                      >
+                        Clear Filters
+                      </Button>
+                    )}
+                  </Box>
+                  <Grid container spacing={2}>
+                    {/* Price Range */}
+                    <Grid item xs={12} sm={5}>
+                      <Typography variant="body2" fontWeight={600} mb={1}>
+                        💰 Entry Fee Range (₹)
+                      </Typography>
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <TextField
+                          id="places-min-price"
+                          name="minPrice"
+                          fullWidth
+                          size="small"
+                          label="Min (₹)"
+                          type="number"
+                          inputProps={{ min: 0 }}
+                          value={placesFilters.minPrice}
+                          onChange={(e) =>
+                            setPlacesFilters({
+                              ...placesFilters,
+                              minPrice: e.target.value,
+                            })
+                          }
+                        />
+                        <TextField
+                          id="places-max-price"
+                          name="maxPrice"
+                          fullWidth
+                          size="small"
+                          label="Max (₹)"
+                          type="number"
+                          inputProps={{ min: 0 }}
+                          value={placesFilters.maxPrice}
+                          onChange={(e) =>
+                            setPlacesFilters({
+                              ...placesFilters,
+                              maxPrice: e.target.value,
+                            })
+                          }
+                        />
+                      </Box>
+                    </Grid>
+
+                    {/* Category */}
+                    <Grid item xs={12} sm={7}>
+                      <Typography variant="body2" fontWeight={600} mb={1}>
+                        🏛️ Category
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {CATEGORY_OPTIONS.map((category) => (
+                          <Chip
+                            key={category}
+                            label={CATEGORY_LABELS[category]}
+                            size="small"
+                            icon={categoryIcons[category] || null}
+                            onClick={() => handleCategoryToggle(category)}
+                            color={
+                              placesFilters.categories.includes(category)
+                                ? "primary"
+                                : "default"
+                            }
+                            variant={
+                              placesFilters.categories.includes(category)
+                                ? "filled"
+                                : "outlined"
+                            }
+                            sx={{
+                              cursor: "pointer",
+                              fontSize: "11px",
+                              height: 26,
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Collapse>
+            </Box>
+          )}
         </Box>
       </Paper>
 
@@ -930,7 +1207,328 @@ const BookingView = () => {
         </Paper>
       )}
 
-      {/* Empty State */}
+      {/* ───── PLACES TO VISIT RESULTS ───── */}
+      {tab === 2 && placesSearched && places && places.length > 0 && (
+        <Box>
+          <Typography variant="h6" fontWeight={700} mb={2}>
+            {places.length} Place{places.length !== 1 ? "s" : ""} Found
+          </Typography>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            sx={{ alignItems: "stretch" }}
+          >
+            <ShowMoreList
+              items={places}
+              initialCount={hotelsInitialCount}
+              itemLabel="Places"
+              renderItem={(place) => (
+                <Grid
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  key={place.id}
+                  sx={{ display: "flex" }}
+                >
+                  <Card
+                    elevation={0}
+                    sx={{
+                      borderRadius: 3,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      overflow: "hidden",
+                      "&:hover": { boxShadow: 4 },
+                      transition: "box-shadow 0.2s",
+                    }}
+                  >
+                    {/* Category default photo */}
+                    <Box
+                      sx={{ position: "relative", height: 160, flexShrink: 0 }}
+                    >
+                      <Box
+                        component="img"
+                        src={CATEGORY_IMAGES[place.category]}
+                        alt={CATEGORY_LABELS[place.category] || place.category}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
+                        }}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                      {/* Fallback if the photo fails to load */}
+                      <Box
+                        sx={{
+                          display: "none",
+                          height: "100%",
+                          width: "100%",
+                          bgcolor: "primary.light",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {categoryIcons[place.category] ? (
+                          React.cloneElement(categoryIcons[place.category], {
+                            sx: {
+                              fontSize: 64,
+                              color: "primary.main",
+                              opacity: 0.4,
+                            },
+                          })
+                        ) : (
+                          <PlaceIcon
+                            sx={{
+                              fontSize: 64,
+                              color: "primary.main",
+                              opacity: 0.4,
+                            }}
+                          />
+                        )}
+                      </Box>
+                      <Chip
+                        label={
+                          CATEGORY_LABELS[place.category] || place.category
+                        }
+                        size="small"
+                        icon={categoryIcons[place.category] || null}
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          fontSize: "11px",
+                          height: 24,
+                          fontWeight: 600,
+                          bgcolor: "background.paper",
+                          color: "primary.main",
+                          boxShadow: 1,
+                        }}
+                      />
+                    </Box>
+
+                    {/* Content — flex column so the price/button row can pin to the bottom */}
+                    <CardContent
+                      sx={{
+                        p: { xs: 2, sm: 2.5 },
+                        display: "flex",
+                        flexDirection: "column",
+                        flexGrow: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={800}
+                        textAlign="center"
+                        sx={{
+                          wordBreak: "break-word",
+                          lineHeight: 1.3,
+                          minHeight: "2.6em",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {place.name}
+                      </Typography>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={700}
+                        textAlign="center"
+                        mb={1.5}
+                      >
+                        Location : {place.city}
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 1,
+                          mb: 1.5,
+                        }}
+                      >
+                        <Typography variant="subtitle2" fontWeight={700}>
+                          Reviews :
+                        </Typography>
+                        <Rating
+                          value={(place.rank || 0) / 20}
+                          precision={0.1}
+                          size="small"
+                          readOnly
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          {place.rank || 0}/100
+                        </Typography>
+                      </Box>
+
+                      {place.tags && place.tags.length > 0 && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            justifyContent: "center",
+                            gap: 0.5,
+                            mb: 2,
+                          }}
+                        >
+                          {place.tags.slice(0, 3).map((tag) => (
+                            <Chip
+                              key={tag}
+                              label={formatTagLabel(tag)}
+                              size="small"
+                              sx={{ fontSize: "10px", height: 20 }}
+                            />
+                          ))}
+                        </Box>
+                      )}
+
+                      {/* Spacer keeps the price/button row pinned to the card's bottom edge */}
+                      <Box sx={{ flexGrow: 1 }} />
+
+                      <Divider sx={{ mb: 2 }} />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            fontWeight={800}
+                            color="primary.main"
+                          >
+                            {place.price === 0 ? "Free" : `$${place.price}`}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            est. entry fee
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", gap: 1 }}>
+                          {place.bookingLinks?.googleMaps && (
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              color="primary"
+                              title="View on map"
+                              onClick={() =>
+                                goToBookingLink(place.bookingLinks.googleMaps)
+                              }
+                              sx={{ borderRadius: 3, minWidth: 0, px: 1.25 }}
+                            >
+                              <MapIcon fontSize="small" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="contained"
+                            size="small"
+                            startIcon={<ConfirmationNumberIcon />}
+                            onClick={(e) => openBookingMenu(e, place)}
+                            sx={{ borderRadius: 3, whiteSpace: "nowrap" }}
+                          >
+                            Book Tickets
+                          </Button>
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
+            />
+          </Grid>
+
+          <Menu
+            anchorEl={bookingMenu.anchorEl}
+            open={Boolean(bookingMenu.anchorEl)}
+            onClose={closeBookingMenu}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+          >
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ px: 2, py: 0.5, display: "block" }}
+            >
+              Continue to book on:
+            </Typography>
+            {bookingMenu.place?.bookingLinks?.getYourGuide && (
+              <MenuItemMui
+                onClick={() =>
+                  goToBookingLink(bookingMenu.place.bookingLinks.getYourGuide)
+                }
+              >
+                GetYourGuide
+                <OpenInNewIcon
+                  fontSize="small"
+                  sx={{ ml: 1, color: "text.disabled" }}
+                />
+              </MenuItemMui>
+            )}
+            {bookingMenu.place?.bookingLinks?.viator && (
+              <MenuItemMui
+                onClick={() =>
+                  goToBookingLink(bookingMenu.place.bookingLinks.viator)
+                }
+              >
+                Viator
+                <OpenInNewIcon
+                  fontSize="small"
+                  sx={{ ml: 1, color: "text.disabled" }}
+                />
+              </MenuItemMui>
+            )}
+            {bookingMenu.place?.bookingLinks?.tripAdvisor && (
+              <MenuItemMui
+                onClick={() =>
+                  goToBookingLink(bookingMenu.place.bookingLinks.tripAdvisor)
+                }
+              >
+                Tripadvisor
+                <OpenInNewIcon
+                  fontSize="small"
+                  sx={{ ml: 1, color: "text.disabled" }}
+                />
+              </MenuItemMui>
+            )}
+          </Menu>
+        </Box>
+      )}
+
+      {tab === 2 &&
+        placesSearched &&
+        places &&
+        places.length === 0 &&
+        !loading && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              border: "2px dashed",
+              borderColor: "divider",
+            }}
+          >
+            <ExploreIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
+            <Typography variant="h6" color="text.secondary">
+              No places found matching your filters
+            </Typography>
+            <Typography variant="body2" color="text.disabled" mt={1}>
+              Try adjusting your category or price range
+            </Typography>
+          </Paper>
+        )}
+
       {tab === 0 &&
         (!flights || flights.length === 0) &&
         !loading &&
@@ -965,6 +1563,23 @@ const BookingView = () => {
           <HotelIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             Search for available hotels above
+          </Typography>
+        </Paper>
+      )}
+      {tab === 2 && !placesSearched && (
+        <Paper
+          elevation={0}
+          sx={{
+            p: 6,
+            textAlign: "center",
+            borderRadius: 3,
+            border: "2px dashed",
+            borderColor: "divider",
+          }}
+        >
+          <ExploreIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
+          <Typography variant="h6" color="text.secondary">
+            Search for places to visit above
           </Typography>
         </Paper>
       )}
