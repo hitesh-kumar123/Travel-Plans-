@@ -66,7 +66,6 @@ const AMENITY_OPTIONS = [
   "Bar",
 ];
 
-
 const categoryIcons = {
   SIGHTS: <PlaceIcon fontSize="small" />,
   HISTORICAL: <AccountBalanceIcon fontSize="small" />,
@@ -146,7 +145,8 @@ const BookingView = () => {
   });
   const openBookingMenu = (event, place) =>
     setBookingMenu({ anchorEl: event.currentTarget, place });
-  const closeBookingMenu = () => setBookingMenu({ anchorEl: null, place: null });
+  const closeBookingMenu = () =>
+    setBookingMenu({ anchorEl: null, place: null });
   const goToBookingLink = (url) => {
     window.open(url, "_blank", "noopener,noreferrer");
     closeBookingMenu();
@@ -1213,13 +1213,23 @@ const BookingView = () => {
           <Typography variant="h6" fontWeight={700} mb={2}>
             {places.length} Place{places.length !== 1 ? "s" : ""} Found
           </Typography>
-          <Grid container spacing={{ xs: 2, md: 3 }} sx={{ alignItems: "stretch" }}>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            sx={{ alignItems: "stretch" }}
+          >
             <ShowMoreList
               items={places}
               initialCount={hotelsInitialCount}
               itemLabel="Places"
               renderItem={(place) => (
-                <Grid xs={12} sm={6} lg={4} key={place.id} sx={{ display: "flex" }}>
+                <Grid
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  key={place.id}
+                  sx={{ display: "flex" }}
+                >
                   <Card
                     elevation={0}
                     sx={{
@@ -1235,7 +1245,9 @@ const BookingView = () => {
                     }}
                   >
                     {/* Category default photo */}
-                    <Box sx={{ position: "relative", height: 160, flexShrink: 0 }}>
+                    <Box
+                      sx={{ position: "relative", height: 160, flexShrink: 0 }}
+                    >
                       <Box
                         component="img"
                         src={CATEGORY_IMAGES[place.category]}
@@ -1264,16 +1276,26 @@ const BookingView = () => {
                       >
                         {categoryIcons[place.category] ? (
                           React.cloneElement(categoryIcons[place.category], {
-                            sx: { fontSize: 64, color: "primary.main", opacity: 0.4 },
+                            sx: {
+                              fontSize: 64,
+                              color: "primary.main",
+                              opacity: 0.4,
+                            },
                           })
                         ) : (
                           <PlaceIcon
-                            sx={{ fontSize: 64, color: "primary.main", opacity: 0.4 }}
+                            sx={{
+                              fontSize: 64,
+                              color: "primary.main",
+                              opacity: 0.4,
+                            }}
                           />
                         )}
                       </Box>
                       <Chip
-                        label={CATEGORY_LABELS[place.category] || place.category}
+                        label={
+                          CATEGORY_LABELS[place.category] || place.category
+                        }
                         size="small"
                         icon={categoryIcons[place.category] || null}
                         sx={{
@@ -1386,7 +1408,7 @@ const BookingView = () => {
                             fontWeight={800}
                             color="primary.main"
                           >
-                            {place.price === 0 ? "Free" : `INR ${place.price}`}
+                            {place.price === 0 ? "Free" : `$${place.price}`}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
                             est. entry fee
@@ -1482,26 +1504,30 @@ const BookingView = () => {
         </Box>
       )}
 
-      {tab === 2 && placesSearched && places && places.length === 0 && !loading && (
-        <Paper
-          elevation={0}
-          sx={{
-            p: 4,
-            textAlign: "center",
-            borderRadius: 3,
-            border: "2px dashed",
-            borderColor: "divider",
-          }}
-        >
-          <ExploreIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
-          <Typography variant="h6" color="text.secondary">
-            No places found matching your filters
-          </Typography>
-          <Typography variant="body2" color="text.disabled" mt={1}>
-            Try adjusting your category or price range
-          </Typography>
-        </Paper>
-      )}
+      {tab === 2 &&
+        placesSearched &&
+        places &&
+        places.length === 0 &&
+        !loading && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              border: "2px dashed",
+              borderColor: "divider",
+            }}
+          >
+            <ExploreIcon sx={{ fontSize: 56, color: "text.disabled", mb: 2 }} />
+            <Typography variant="h6" color="text.secondary">
+              No places found matching your filters
+            </Typography>
+            <Typography variant="body2" color="text.disabled" mt={1}>
+              Try adjusting your category or price range
+            </Typography>
+          </Paper>
+        )}
 
       {tab === 0 &&
         (!flights || flights.length === 0) &&
