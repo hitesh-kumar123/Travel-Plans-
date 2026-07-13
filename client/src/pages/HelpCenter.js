@@ -90,8 +90,8 @@ const HelpCenter = () => {
           }}
         >
           <p style={{ color: "var(--dark)", margin: 0 }}>
-            <strong>Need Help?</strong> Browse common topics below, or reach
-            out to our support team directly.
+            <strong>Need Help?</strong> Browse common topics below, or reach out
+            to our support team directly.
           </p>
         </motion.div>
 

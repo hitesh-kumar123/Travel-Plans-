@@ -101,8 +101,8 @@ const PrivacyPolicy = () => {
         >
           <p style={{ color: "var(--dark)", margin: 0 }}>
             <strong>Your Data, Your Control:</strong> We are committed to
-            protecting your personal information and being transparent about
-            how it's used.
+            protecting your personal information and being transparent about how
+            it's used.
           </p>
         </motion.div>
 
