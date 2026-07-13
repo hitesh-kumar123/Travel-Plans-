@@ -54,7 +54,24 @@ exports.register = async (req, res, next) => {
       password,
     });
 
+    // await user.save();
+    // Generate verification token
+    const verificationToken = user.getEmailVerificationToken();
+    console.log("Verification Token:", verificationToken);
+
+    // Save user with verification token
     await user.save();
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+
+    const verifyUrl = `${frontendUrl}/verify-email/${verificationToken}`;
+
+    // Send verification email
+    await sendEmail({
+      email: user.email,
+      subject: "Verify Your Email",
+      message: `Please verify your email by clicking the following link: ${verifyUrl}`,
+    });
 
     res.status(201).json({
       success: true,
@@ -98,21 +115,61 @@ exports.login = async (req, res, next) => {
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
+    //prevents unverified user
+    if (!user.isVerified) {
+      return res.status(403).json({
+        success: false,
+        msg: "Please verify your email before logging in.",
+      });
+    }
 
     // Create JWT token
     const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) return next(err);
-        res.json({
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "5d",
+    });
+    res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.verifyEmail = async (req, res, next) => {
+  try {
+    const token = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    console.log("Received Token:", req.params.token);
+    console.log("Hashed Token:", token);
+
+    const allUsers = await User.find({}, "email emailVerificationToken");
+    console.log(allUsers);
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        msg: "Verification link is invalid or expired.",
+      });
+    }
+
+    user.isVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpire = undefined;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      msg: "Email verified successfully.",
+    });
   } catch (err) {
     next(err);
   }
@@ -147,20 +204,13 @@ exports.googleAuth = async (req, res) => {
       });
     }
 
-    jwt.sign(
-      {
-        user: { id: user.id },
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET, {
+      expiresIn: "5d",
+    });
+    res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (e) {
     console.log(e);
 
@@ -300,15 +350,15 @@ exports.forgotPassword = async (req, res, next) => {
 // Reset Password
 exports.resetPassword = async (req, res, next) => {
   try {
-    // Get hashed token
+    // Get hashed token (trim token to handle copy-paste whitespace/newlines)
     const resetPasswordToken = crypto
       .createHash("sha256")
-      .update(req.params.token)
+      .update(req.params.token.trim())
       .digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
+      resetPasswordExpire: { $gt: new Date() },
     }).select("+password");
 
     if (!user) {
@@ -323,19 +373,14 @@ exports.resetPassword = async (req, res, next) => {
 
     // Create JWT token and log user in automatically (optional)
     const payload = { user: { id: user.id } };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "5d" },
-      (err, token) => {
-        if (err) return next(err);
-        res.json({
-          msg: "Password reset successful",
-          token,
-          user: { id: user.id, name: user.name, email: user.email },
-        });
-      },
-    );
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "5d",
+    });
+    res.json({
+      msg: "Password reset successful",
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (err) {
     next(err);
   }
@@ -581,4 +626,6 @@ exports.getEmailChangeStatus = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+
+  console.log(typeof exports.verifyEmail);
 };

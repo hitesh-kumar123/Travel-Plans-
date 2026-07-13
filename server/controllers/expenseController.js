@@ -4,10 +4,32 @@ const Trip = require("../models/Trip");
 // Get all expenses for a user (across all trips) - for analytics
 exports.getAllUserExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user.id })
-      .populate("trip", "destination startDate endDate")
-      .sort({ date: -1 });
-    res.json(expenses);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const [expenses, total] = await Promise.all([
+      Expense.find({ user: req.user.id })
+        .populate("trip", "destination startDate endDate")
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit),
+      Expense.countDocuments({ user: req.user.id }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: expenses,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -70,8 +92,28 @@ exports.getTripExpenses = async (req, res) => {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
 
-    const expenses = await Expense.find({ trip: tripId }).sort({ date: -1 });
-    res.json(expenses);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const [expenses, total] = await Promise.all([
+      Expense.find({ trip: tripId }).sort({ date: -1 }).skip(skip).limit(limit),
+      Expense.countDocuments({ trip: tripId }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: expenses,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {

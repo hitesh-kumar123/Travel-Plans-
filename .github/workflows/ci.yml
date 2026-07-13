@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
 
 jobs:
   client-checks:
@@ -14,26 +14,26 @@ jobs:
         working-directory: ./client
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './client/package-lock.json'
-        
-    - name: Install Dependencies
-      run: npm ci || npm install
-      
-    - name: Run Linter
-      run: npm run lint --if-present
-      
-    - name: Check Formatting
-      run: npm run format:check --if-present
-      
-    - name: Build
-      run: npm run build
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "./client/package-lock.json"
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Run Linter
+        run: npm run lint --if-present
+
+      - name: Check Formatting
+        run: npm run format:check --if-present
+
+      - name: Build
+        run: npm run build
 
   server-checks:
     runs-on: ubuntu-latest
@@ -42,20 +42,20 @@ jobs:
         working-directory: ./server
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './server/package-lock.json'
-        
-    - name: Install Dependencies
-      run: npm ci || npm install
-      
-    - name: Run Linter
-      run: npm run lint --if-present
-      
-    - name: Check Formatting
-      run: npm run format:check --if-present
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "./server/package-lock.json"
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Run Linter
+        run: npm run lint --if-present
+
+      - name: Check Formatting
+        run: npm run format:check --if-present
