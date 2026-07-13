@@ -19,16 +19,16 @@ jobs:
         with:
           script: |
             const issueComment = `👋 Hello @${context.payload.issue.user.login}!
-            
+
             Thank you for opening this issue and showing interest in contributing to **Travel Planner**! 🚀
-            
+
             A project maintainer will review your issue shortly. In the meantime, please make sure you have:
             - Checked if this issue already exists.
             - Provided a clear description and steps to reproduce (if it's a bug).
             - Read our [Contributing Guidelines](https://github.com/hitesh-kumar123/Travel-Plans-/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/hitesh-kumar123/Travel-Plans-/blob/main/CODE_OF_CONDUCT.md).
-            
+
             If you want to work on this issue, please wait to be assigned before starting your work. Happy Coding! ✨`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -42,17 +42,17 @@ jobs:
         with:
           script: |
             const prComment = `🎉 Hello @${context.payload.pull_request.user.login}!
-            
+
             Thank you for your fantastic contribution to **Travel Planner**! We really appreciate the time and effort you've put into this Pull Request. 🌟
-            
+
             Our automated CI pipeline is currently running checks on your code. Please ensure:
             - Your PR description is clear and links to any related issues.
             - You have followed the code style and formatting guidelines.
-            
+
             A maintainer will review your PR as soon as possible (usually within 24-48 hours). Please keep an eye out for any feedback or requested changes.
-            
+
             Thanks again for helping us make this project better! 🚀`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -66,16 +66,16 @@ jobs:
         with:
           script: |
             const prComment = `🎉 **Congratulations @${context.payload.pull_request.user.login}! Your pull request has been successfully merged!** 🚀
-            
+
             Thank you so much for your valuable contribution to **Travel Planner**! We really appreciate the time, effort, and care you've put into making this project better.
-            
+
             If you enjoyed your contribution experience and would like to stay connected and support the project:
             - ⭐ **Star the repository** (Help us achieve our target of **100 Stars**!): [Travel-Plans-](https://github.com/hitesh-kumar123/Travel-Plans-)
             - 👤 **Follow me on GitHub**: [@hitesh-kumar123](https://github.com/hitesh-kumar123)
             - 💼 **Connect with me on LinkedIn**: [Hitesh Kumar](https://linkedin.com/in/hitesh-kumar-dev)
-            
+
             Keep up the fantastic work, and we hope to see more of your contributions in the future! ✨`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -90,11 +90,11 @@ jobs:
           script: |
             const assignee = context.payload.assignee.login;
             const comment = `👋 Hello @${assignee}!
-            
+
             You have been assigned to this ${context.eventName === 'issues' ? 'issue' : 'pull request'}. 🚀
-            
+
             Please review the details and feel free to ask any questions or share updates here. Happy coding! ✨`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

@@ -26,6 +26,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
+import EmailVerification from "./pages/EmailVerification";
 
 function App() {
   useEffect(() => {
@@ -61,6 +62,10 @@ function App() {
               <Route path="/trip/share/:token" element={<SharedTripView />} />
               <Route path="/shared-trip/:token" element={<SharedTripView />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route
+                path="/verify-email/:token"
+                element={<EmailVerification />}
+              />
               <Route
                 path="/reset-password/:token"
                 element={<ResetPassword />}
