@@ -17,13 +17,21 @@ export default function TravelChecklist() {
     if (e) e.preventDefault();
     if (!destination.trim()) return;
 
-    let mockWeather = "sunny";
     const dest = destination.toLowerCase();
+    let mockWeather = "";
 
+    // 1. Check for specific destination keywords
     if (dest.includes("london")) {
       mockWeather = "cold rain";
     } else if (dest.includes("dubai")) {
       mockWeather = "hot";
+    } else if (dest.includes("antarctica") || dest.includes("arctic") || dest.includes("iceland")) {
+      mockWeather = "snowy & freezing";
+    } else {
+      // 2. Fallback to a random weather condition if no keywords match
+      const weatherConditions = ["sunny", "rainy", "cloudy", "windy", "partly cloudy"];
+      const randomIndex = Math.floor(Math.random() * weatherConditions.length);
+      mockWeather = weatherConditions[randomIndex];
     }
 
     setWeather(mockWeather);
