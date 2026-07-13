@@ -323,7 +323,8 @@ html {
 .wander-price-tag {
   position: absolute;
   bottom: -1rem;
-  left: -1.5rem;
+  right: 1.5rem;
+  left: auto;
   background: var(--white);
   border-radius: 14px;
   padding: 1rem 1.25rem;
@@ -355,7 +356,8 @@ html {
 .wander-stat-tag {
   position: absolute;
   top: 1.5rem;
-  left: -1rem;
+  right: 1.5rem;
+  left: auto;
   background: var(--coral);
   border-radius: 12px;
   padding: 0.75rem 1rem;
