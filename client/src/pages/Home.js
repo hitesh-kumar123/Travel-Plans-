@@ -10,6 +10,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import CityCarousel from "../components/CityCarousel";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -537,6 +538,23 @@ const Home = () => {
       ? destinations
       : [];
 
+  const groupedDestinations = Object.values(
+    filteredDestinations.reduce((groups, destination) => {
+      const city = destination.city || "Unknown";
+
+      if (!groups[city]) {
+        groups[city] = {
+          city,
+          attractions: [],
+        };
+      }
+
+      groups[city].attractions.push(destination);
+
+      return groups;
+    }, {}),
+  );
+
   /* First 4 destinations for the editorial grid; fallback if DB has fewer */
   const editorialDests = filteredDestinations.slice(0, 4);
 
@@ -921,136 +939,7 @@ const Home = () => {
         </div>
 
         {/* Editorial 4-card grid */}
-        <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
-          {editorialDests[0] ? (
-            <div
-              className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
-            >
-              <div className="wander-dest-card-img">
-                {editorialDests[0].images?.[0] ? (
-                  <img
-                    src={editorialDests[0].images[0]}
-                    alt={editorialDests[0].name}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <SceneSantorini />
-                )}
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">
-                    {editorialDests[0].name || "Santorini"}
-                  </div>
-                  <div className="wander-dest-country">
-                    {[editorialDests[0].city, editorialDests[0].state]
-                      .filter(Boolean)
-                      .join(", ") || "Greece"}{" "}
-                    •{" "}
-                    {editorialDests[0].entrance_fee_inr === 0
-                      ? "Free Entry"
-                      : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div
-              className="wander-dest-card tall"
-              style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
-            >
-              <div className="wander-dest-card-img">
-                <SceneSantorini />
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">Santorini</div>
-                  <div className="wander-dest-country">
-                    Greece • From ₹1,20,000
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Small cards */}
-          {[
-            {
-              svgScene: <SceneAngkor />,
-              fallbackName: "Angkor Wat",
-              fallbackLoc: "Cambodia • From ₹65,000",
-              bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
-            },
-            {
-              svgScene: <SceneBali />,
-              fallbackName: "Ubud, Bali",
-              fallbackLoc: "Indonesia • From ₹55,000",
-              bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
-            },
-            {
-              svgScene: <SceneSahara />,
-              fallbackName: "Sahara Desert",
-              fallbackLoc: "Morocco • From ₹95,000",
-              bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
-            },
-          ].map((item, idx) => {
-            const dest = editorialDests[idx + 1];
-            return (
-              <div
-                key={idx}
-                className="wander-dest-card"
-                style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
-              >
-                <div className="wander-dest-card-img">
-                  {dest?.images?.[0] ? (
-                    <img
-                      src={dest.images[0]}
-                      alt={dest.name}
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    item.svgScene
-                  )}
-                  <div className="wander-dest-overlay" />
-                  <div className="wander-dest-info">
-                    <div className="wander-dest-name">
-                      {dest?.name || item.fallbackName}
-                    </div>
-                    <div className="wander-dest-country">
-                      {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
-                        : item.fallbackLoc}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <CityCarousel cities={groupedDestinations} onSelect={handleAddTrip} />
       </section>
 
       {/* ═══ FEATURES ═══ */}

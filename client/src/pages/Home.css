@@ -1328,3 +1328,14 @@ html {
     transform: translateY(-1120px);
   }
 }
+
+.city-carousel-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.city-carousel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
