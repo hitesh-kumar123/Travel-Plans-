@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
 import { useSelector, useDispatch } from "react-redux";
+import { ThemeContext } from "../contexts/ThemeContext";
+import IconButton from "@mui/material/IconButton";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
@@ -390,6 +394,7 @@ const SEARCH_HISTORY_KEY = "recentDestinationSearches";
 /*  COMPONENT                                                      */
 /* ══════════════════════════════════════════════════════════════ */
 const Home = () => {
+  const { mode, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
@@ -594,29 +599,27 @@ const Home = () => {
         </ul>
 
         {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <IconButton onClick={toggleTheme} sx={{ color: "var(--ocean)" }}>
+              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
+            <Link to="/dashboard">
+              <button className="wander-nav-cta">My Dashboard</button>
+            </Link>
+          </div>
         ) : (
           <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-            }}
+            className="wander-nav-auth"
+            style={{ display: "flex", alignItems: "center", gap: "1rem" }}
           >
+            <IconButton onClick={toggleTheme} sx={{ color: "var(--ocean)" }}>
+              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
             <Link to="/login">
               <button className="wander-nav-log-in">Log In</button>
             </Link>
-
             <Link to="/register">
-              <button className="wander-nav-create-account">
-                Create Free Account
-              </button>
-            </Link>
-
-            <Link to="/register">
-              <button className="wander-nav-cta">Book Now</button>
+              <button className="wander-nav-create-account">Sign up</button>
             </Link>
           </div>
         )}
@@ -1041,8 +1044,17 @@ const Home = () => {
                     </div>
                     <div className="wander-dest-country">
                       {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
+                        ? `${
+                            [dest.city, dest.state]
+                              .filter(Boolean)
+                              .join(", ") || "India"
+                          } • ${
+                            dest.entrance_fee_inr === 0
+                              ? "Free Entry"
+                              : dest.entrance_fee_inr
+                                ? `₹${dest.entrance_fee_inr}`
+                                : "Explore"
+                          }`
                         : item.fallbackLoc}
                     </div>
                   </div>

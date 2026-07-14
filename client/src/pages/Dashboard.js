@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Routes,
   Route,
@@ -40,6 +40,9 @@ import LuggageIcon from "@mui/icons-material/Luggage";
 import ShieldIcon from "@mui/icons-material/Shield";
 
 import { logout } from "../redux/actions/authActions";
+import { ThemeContext } from "../contexts/ThemeContext";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 // Views
 import DashboardHome from "./dashboard/DashboardHome";
@@ -58,6 +61,7 @@ const mobileDrawerWidth = 240;
 const desktopDrawerWidth = 280;
 
 const Dashboard = () => {
+  const { mode, toggleTheme } = useContext(ThemeContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -330,6 +334,11 @@ const Dashboard = () => {
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip title="Toggle Theme">
+                <IconButton size="large" onClick={toggleTheme} color="inherit">
+                  {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Notifications">
                 <IconButton
                   size="large"

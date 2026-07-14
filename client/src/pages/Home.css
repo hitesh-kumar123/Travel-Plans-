@@ -11,6 +11,15 @@
   --white: #fdfaf5;
 }
 
+[data-theme="dark"] {
+  --sand: #121212;
+  --ocean: #90caf9;
+  --coral: #ff8a65;
+  --mist: #b0bec5;
+  --dark: #fdfaf5;
+  --white: #1e1e1e;
+}
+
 /* ── Reset ── */
 .wander-page * {
   box-sizing: border-box;
@@ -20,6 +29,9 @@
   font-family: "DM Sans", sans-serif;
   background: var(--white);
   color: var(--dark);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 html {
