@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 import "./Home.css"; // reuse same styles
@@ -195,13 +195,30 @@ const About = () => {
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
           <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
+            <a
+              href="https://www.linkedin.com/in/hitesh-kumar-dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin />
             </a>
-            <a href="/" aria-label="Instagram">
+
+            <a
+              href="https://www.instagram.com/hitesh_sundesha157/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <FaInstagram />
             </a>
-            <a href="/" aria-label="Twitter">
+
+            <a
+              href="https://x.com/hitesh_kumar123"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X (Twitter)"
+            >
               <FaXTwitter />
             </a>
           </div>
