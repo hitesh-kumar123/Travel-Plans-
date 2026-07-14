@@ -3,6 +3,7 @@ const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
 const PackingList = require("../models/PackingList");
+const { buildPublicTripResponse } = require("../utils/publicTrip");
 
 /**
  * Escape special regex metacharacters in a string so it can be safely
@@ -231,7 +232,7 @@ exports.getSharedTrip = async (req, res) => {
     if (!trip || !trip.shareEnabled)
       return res.status(404).json({ msg: "Shared trip not found or disabled" });
 
-    res.json(trip);
+    res.json(buildPublicTripResponse(trip));
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
