@@ -61,7 +61,21 @@ exports.createExpense = async (req, res) => {
     if (!tripExists) {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
+    const expenseDate = new Date(date || Date.now());
 
+    if (isNaN(expenseDate.getTime())) {
+      return res.status(400).json({
+        msg: "Invalid expense date.",
+      });
+    }
+    if (
+      expenseDate < tripExists.startDate ||
+      expenseDate > tripExists.endDate
+    ) {
+      return res.status(400).json({
+        msg: `Expense date must be between ${tripExists.startDate.toDateString()} and ${tripExists.endDate.toDateString()}.`,
+      });
+    }
     const newExpense = new Expense({
       user: req.user.id,
       trip,
@@ -69,7 +83,7 @@ exports.createExpense = async (req, res) => {
       currency,
       category,
       description,
-      date: date || Date.now(),
+      date: expenseDate,
     });
 
     const expense = await newExpense.save();
@@ -160,6 +174,13 @@ exports.updateExpense = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
+    const trip = await Trip.findById(expense.trip);
+    if (!trip) {
+      return res.status(404).json({
+        msg: "Associated trip not found.",
+      });
+    }
+
     const { amount, currency, category, description, date } = req.body;
 
     // Validate amount if provided: must be a positive number
@@ -178,7 +199,23 @@ exports.updateExpense = async (req, res) => {
     if (currency) expenseFields.currency = currency;
     if (category) expenseFields.category = category;
     if (description) expenseFields.description = description;
-    if (date) expenseFields.date = date;
+    if (date) {
+      const expenseDate = new Date(date);
+
+      if (isNaN(expenseDate.getTime())) {
+        return res.status(400).json({
+          msg: "Invalid expense date.",
+        });
+      }
+
+      if (expenseDate < trip.startDate || expenseDate > trip.endDate) {
+        return res.status(400).json({
+          msg: `Expense date must be between ${trip.startDate.toDateString()} and ${trip.endDate.toDateString()}.`,
+        });
+      }
+
+      expenseFields.date = expenseDate;
+    }
 
     expense = await Expense.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
