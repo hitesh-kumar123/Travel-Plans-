@@ -21,6 +21,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import SaveIcon from "@mui/icons-material/Save";
 import EmailIcon from "@mui/icons-material/Email";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EventIcon from "@mui/icons-material/Event";
 import api from "../../services/api";
 import { loadUser } from "../../redux/actions/authActions";
 import { toast } from "react-toastify";
@@ -440,32 +443,74 @@ const ProfileView = () => {
 
             <Divider sx={{ mb: 3 }} />
 
-            <Grid container spacing={2} sx={{ textAlign: "center" }}>
-              <Grid xs={4}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+              <Box
+                sx={{
+                  flex: "1 1 0",
+                  minWidth: 90,
+                  p: 2,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  bgcolor: "rgba(25, 118, 210, 0.06)",
+                  textAlign: "center",
+                }}
+              >
+                <FlightTakeoffIcon
+                  color="primary"
+                  sx={{ fontSize: 20, mb: 0.5 }}
+                />
                 <Typography variant="h5" fontWeight={800} color="primary.main">
                   {totalTrips}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Total Trips
                 </Typography>
-              </Grid>
-              <Grid xs={4}>
+              </Box>
+              <Box
+                sx={{
+                  flex: "1 1 0",
+                  minWidth: 90,
+                  p: 2,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  bgcolor: "rgba(46, 125, 50, 0.06)",
+                  textAlign: "center",
+                }}
+              >
+                <CheckCircleIcon
+                  color="success"
+                  sx={{ fontSize: 20, mb: 0.5 }}
+                />
                 <Typography variant="h5" fontWeight={800} color="success.main">
                   {completedTrips}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Completed
                 </Typography>
-              </Grid>
-              <Grid xs={4}>
+              </Box>
+              <Box
+                sx={{
+                  flex: "1 1 0",
+                  minWidth: 90,
+                  p: 2,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  bgcolor: "rgba(2, 136, 209, 0.06)",
+                  textAlign: "center",
+                }}
+              >
+                <EventIcon color="info" sx={{ fontSize: 20, mb: 0.5 }} />
                 <Typography variant="h5" fontWeight={800} color="info.main">
                   {plannedTrips}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Planned
                 </Typography>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
 
             <Divider sx={{ my: 3 }} />
             <Box sx={{ p: 2, bgcolor: "primary.light", borderRadius: 2 }}>
