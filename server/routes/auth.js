@@ -3,17 +3,18 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const requireDb = require("../middleware/requireDb");
+const { authLimiter, otpLimiter } = require("../middleware/rateLimit");
 
 // @route   POST api/auth/register
 // @desc    Register a user
 // @access  Public
 router.post("/google", authController.googleAuth); // for google login.
-router.post("/register", requireDb, authController.register);
+router.post("/register", authLimiter, requireDb, authController.register);
 
 // @route   POST api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post("/login", requireDb, authController.login);
+router.post("/login", authLimiter, requireDb, authController.login);
 
 router.get("/verify-email/:token", authController.verifyEmail);
 
@@ -35,7 +36,12 @@ router.put("/change-password", auth, authController.changePassword);
 // @route   POST api/auth/request-email-change
 // @desc    Request email change OTP
 // @access  Private
-router.post("/request-email-change", auth, authController.requestEmailChange);
+router.post(
+  "/request-email-change",
+  auth,
+  otpLimiter,
+  authController.requestEmailChange,
+);
 
 // @route   POST api/auth/verify-email-change
 // @desc    Verify email change OTP
