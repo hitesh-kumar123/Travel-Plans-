@@ -6,6 +6,7 @@ const path = require("path");
 const helmet = require("helmet");
 const { limiter } = require("./middleware/rateLimit");
 const errorHandler = require("./middleware/errorHandler");
+const sanitizeMiddleware = require("./middleware/sanitize");
 
 // Load environment variables from repo root .env (so server can be started from /server)
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -67,6 +68,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(limiter);
+app.use(sanitizeMiddleware);
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -140,6 +142,7 @@ function validateJwtSecret() {
 validateJwtSecret();
 
 // Connect to MongoDB
+mongoose.set("sanitizeFilter", true);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
