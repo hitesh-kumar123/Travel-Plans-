@@ -134,6 +134,14 @@ test("object transportation is stripped of booking reference", () => {
   });
 });
 
+test("transportation containing only sensitive fields is omitted", () => {
+  const publicTrip = buildPublicTripResponse(
+    makeTrip({ transportation: { bookingRef: "FL-98765" } }),
+  );
+
+  assert.equal(publicTrip.transportation, undefined);
+});
+
 test("handles trips without optional fields", () => {
   const publicTrip = buildPublicTripResponse(
     makeTrip({

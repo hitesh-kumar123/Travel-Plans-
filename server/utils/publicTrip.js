@@ -1,7 +1,9 @@
 // Sanitizer for the unauthenticated shared-trip endpoint.
-// Only whitelisted display fields may appear in the public response —
-// owner references, share tokens, internal flags, timestamps, and
-// booking/contact details must never be exposed here.
+// Only whitelisted display fields may appear in the public response.
+// Dedicated sensitive fields — owner references, share tokens, internal
+// flags, timestamps, and booking reference/contact fields — are always
+// stripped. Free-text display fields (e.g. activity notes) are
+// intentionally public; their content is up to the trip owner.
 
 function pickActivity(activity) {
   return {
@@ -31,18 +33,25 @@ function pickAccommodation(accommodation) {
 function pickTransportation(transportation) {
   if (!transportation) return undefined;
 
-  // The Trip schema stores transportation as a plain string (the mode of
-  // transport), but guard against object-shaped values so booking
-  // references are stripped in either case.
+  // Trip.js declares transportation with Mongoose's `type`-key shorthand
+  // ({ type: String, bookingRef: String, ... }), which Mongoose interprets
+  // as a plain String path — so persisted values are strings in practice.
+  // Object-shaped values are handled too so booking references are
+  // stripped whichever shape arrives.
   if (typeof transportation === "string") {
     return { type: transportation };
   }
 
-  return {
+  const publicTransportation = {
     type: transportation.type,
     departureTime: transportation.departureTime,
     arrivalTime: transportation.arrivalTime,
   };
+
+  const hasValue = Object.values(publicTransportation).some(
+    (value) => value !== undefined && value !== null,
+  );
+  return hasValue ? publicTransportation : undefined;
 }
 
 function buildPublicTripResponse(trip) {
