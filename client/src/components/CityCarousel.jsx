@@ -8,7 +8,7 @@ const CityCarousel = ({ cities, onSelect }) => {
 
     const interval = setInterval(() => {
       setCurrentCity((prev) => (prev + 1) % cities.length);
-    }, 5000);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, [cities]);
