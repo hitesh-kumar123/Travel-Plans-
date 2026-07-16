@@ -30,7 +30,7 @@ export const fetchBudgetEstimate = (params) => async (dispatch) => {
         endpoint: "/budget/estimate",
         method: "get",
         payload: params,
-      })
+      }),
     );
     return;
   }

@@ -83,7 +83,10 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 {/* Other Routes */}
                 <Route path="/trip/share/:token" element={<SharedTripView />} />
-                <Route path="/shared-trip/:token" element={<SharedTripView />} />
+                <Route
+                  path="/shared-trip/:token"
+                  element={<SharedTripView />}
+                />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
                 path="/verify-email/:token"
