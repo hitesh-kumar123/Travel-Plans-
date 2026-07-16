@@ -81,6 +81,10 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 {/* ✅ Contact Route Added */}
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/terms" element={<TermsConditions />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/verify-email" element={<EmailVerification />} />
                 {/* Other Routes */}
                 <Route path="/trip/share/:token" element={<SharedTripView />} />
                 <Route
