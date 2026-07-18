@@ -49,13 +49,33 @@ import {
 } from "../../redux/actions/bookingActions";
 
 const INDIAN_AIRPORTS = [
-  "Delhi (DEL)", "Mumbai (BOM)", "Bangalore (BLR)", "Chennai (MAA)",
-  "Kolkata (CCU)", "Hyderabad (HYD)", "Ahmedabad (AMD)", "Pune (PNQ)",
-  "Jaipur (JAI)", "Goa (GOI)", "Kochi (COK)", "Lucknow (LKO)",
-  "Chandigarh (IXC)", "Bhubaneswar (BBI)", "Indore (IDR)", "Nagpur (NAG)",
-  "Varanasi (VNS)", "Patna (PAT)", "Raipur (RPR)", "Ranchi (IXR)",
-  "Srinagar (SXR)", "Amritsar (ATQ)", "Coimbatore (CJB)", "Mangalore (IXE)",
-  "Thiruvananthapuram (TRV)", "Visakhapatnam (VTZ)", "Jammu (IXJ)",
+  "Delhi (DEL)",
+  "Mumbai (BOM)",
+  "Bangalore (BLR)",
+  "Chennai (MAA)",
+  "Kolkata (CCU)",
+  "Hyderabad (HYD)",
+  "Ahmedabad (AMD)",
+  "Pune (PNQ)",
+  "Jaipur (JAI)",
+  "Goa (GOI)",
+  "Kochi (COK)",
+  "Lucknow (LKO)",
+  "Chandigarh (IXC)",
+  "Bhubaneswar (BBI)",
+  "Indore (IDR)",
+  "Nagpur (NAG)",
+  "Varanasi (VNS)",
+  "Patna (PAT)",
+  "Raipur (RPR)",
+  "Ranchi (IXR)",
+  "Srinagar (SXR)",
+  "Amritsar (ATQ)",
+  "Coimbatore (CJB)",
+  "Mangalore (IXE)",
+  "Thiruvananthapuram (TRV)",
+  "Visakhapatnam (VTZ)",
+  "Jammu (IXJ)",
 ];
 
 const amenityIcons = {
@@ -362,7 +382,7 @@ const BookingView = () => {
 
   const getSuggestions = (value) =>
     INDIAN_AIRPORTS.filter((airport) =>
-      airport.toLowerCase().includes(value.toLowerCase())
+      airport.toLowerCase().includes(value.toLowerCase()),
     );
 
   return (
@@ -427,10 +447,15 @@ const BookingView = () => {
                       placeholder="e.g. Delhi"
                       value={flightForm.origin}
                       onChange={(e) => {
-                        setFlightForm({ ...flightForm, origin: e.target.value });
+                        setFlightForm({
+                          ...flightForm,
+                          origin: e.target.value,
+                        });
                         setOriginSuggestions(getSuggestions(e.target.value));
                       }}
-                      onBlur={() => setTimeout(() => setOriginSuggestions([]), 200)}
+                      onBlur={() =>
+                        setTimeout(() => setOriginSuggestions([]), 200)
+                      }
                       required
                       autoComplete="off"
                     />
@@ -472,10 +497,15 @@ const BookingView = () => {
                       placeholder="e.g. Mumbai"
                       value={flightForm.destination}
                       onChange={(e) => {
-                        setFlightForm({ ...flightForm, destination: e.target.value });
+                        setFlightForm({
+                          ...flightForm,
+                          destination: e.target.value,
+                        });
                         setDestSuggestions(getSuggestions(e.target.value));
                       }}
-                      onBlur={() => setTimeout(() => setDestSuggestions([]), 200)}
+                      onBlur={() =>
+                        setTimeout(() => setDestSuggestions([]), 200)
+                      }
                       required
                       autoComplete="off"
                     />
