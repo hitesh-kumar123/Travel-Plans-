@@ -473,15 +473,21 @@ const BookingView = () => {
                         }}
                       >
                         {originSuggestions.map((s) => (
-                          <MenuItem
+                          <Box
                             key={s}
                             onMouseDown={() => {
                               setFlightForm({ ...flightForm, origin: s });
                               setOriginSuggestions([]);
                             }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
                           >
                             {s}
-                          </MenuItem>
+                          </Box>
                         ))}
                       </Paper>
                     )}
@@ -523,15 +529,21 @@ const BookingView = () => {
                         }}
                       >
                         {destSuggestions.map((s) => (
-                          <MenuItem
+                          <Box
                             key={s}
                             onMouseDown={() => {
                               setFlightForm({ ...flightForm, destination: s });
                               setDestSuggestions([]);
                             }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
                           >
                             {s}
-                          </MenuItem>
+                          </Box>
                         ))}
                       </Paper>
                     )}
