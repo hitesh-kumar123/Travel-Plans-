@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function TravelQuiz() {
+export default function TravelQuiz({ open, onClose }) {
   const [preference, setPreference] = useState("");
   const [budget, setBudget] = useState("");
   const [travelStyle, setTravelStyle] = useState("");
@@ -20,119 +21,132 @@ export default function TravelQuiz() {
     }
   };
 
+  const handleClose = () => {
+    setPreference("");
+    setBudget("");
+    setTravelStyle("");
+    setResult("");
+    onClose();
+  };
+
   return (
-    <div className="travel-quiz">
-      <h2>✨ Find Your Dream Destination</h2>
-
-      {/* Preference */}
-      <div className="quiz-group">
-        <h4>Mountains or Beaches?</h4>
-
-        <button
-          className={
-            preference === "Mountain"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setPreference("Mountain")}
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="tq-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleClose}
         >
-          🏔 Mountains
-        </button>
+          <motion.div
+            className="tq-modal"
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="tq-close" onClick={handleClose} aria-label="Close">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
 
-        <button
-          className={
-            preference === "Beach"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setPreference("Beach")}
-        >
-          🏖 Beaches
-        </button>
+            <div className="tq-header">
+              <div className="tq-badge">Quick Quiz</div>
+              <h2>Find Your Dream Destination</h2>
+              <p>Answer 3 quick questions and we'll match you with the perfect trip.</p>
+            </div>
 
-        <button
-          className={
-            preference === "City"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setPreference("City")}
-        >
-          🌆 Cities
-        </button>
-      </div>
+            {/* Preference */}
+            <div className="tq-group">
+              <h4>Mountains or Beaches?</h4>
+              <div className="tq-options">
+                <button
+                  className={preference === "Mountain" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setPreference("Mountain")}
+                >
+                  🏔 Mountains
+                </button>
+                <button
+                  className={preference === "Beach" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setPreference("Beach")}
+                >
+                  🏖 Beaches
+                </button>
+                <button
+                  className={preference === "City" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setPreference("City")}
+                >
+                  🌆 Cities
+                </button>
+              </div>
+            </div>
 
-      {/* Budget */}
-      <div className="quiz-group">
-        <h4>Budget or Luxury?</h4>
+            {/* Budget */}
+            <div className="tq-group">
+              <h4>Budget or Luxury?</h4>
+              <div className="tq-options">
+                <button
+                  className={budget === "Budget" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setBudget("Budget")}
+                >
+                  💰 Budget
+                </button>
+                <button
+                  className={budget === "Luxury" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setBudget("Luxury")}
+                >
+                  💎 Luxury
+                </button>
+              </div>
+            </div>
 
-        <button
-          className={
-            budget === "Budget" ? "quiz-option active" : "quiz-option"
-          }
-          onClick={() => setBudget("Budget")}
-        >
-          💰 Budget
-        </button>
+            {/* Travel Style */}
+            <div className="tq-group">
+              <h4>Solo or Group?</h4>
+              <div className="tq-options">
+                <button
+                  className={travelStyle === "Solo" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setTravelStyle("Solo")}
+                >
+                  🧍 Solo
+                </button>
+                <button
+                  className={travelStyle === "Group" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setTravelStyle("Group")}
+                >
+                  👨‍👩‍👧 Group
+                </button>
+                <button
+                  className={travelStyle === "Couple" ? "tq-opt tq-opt--active" : "tq-opt"}
+                  onClick={() => setTravelStyle("Couple")}
+                >
+                  ❤️ Couple
+                </button>
+              </div>
+            </div>
 
-        <button
-          className={
-            budget === "Luxury" ? "quiz-option active" : "quiz-option"
-          }
-          onClick={() => setBudget("Luxury")}
-        >
-          💎 Luxury
-        </button>
-      </div>
+            <button className="tq-submit" onClick={getRecommendation}>
+              Get Recommendation
+            </button>
 
-      {/* Travel Style */}
-      <div className="quiz-group">
-        <h4>Solo or Group?</h4>
-
-        <button
-          className={
-            travelStyle === "Solo"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setTravelStyle("Solo")}
-        >
-          🧍 Solo
-        </button>
-
-        <button
-          className={
-            travelStyle === "Group"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setTravelStyle("Group")}
-        >
-          👨‍👩‍👧 Group
-        </button>
-
-        <button
-          className={
-            travelStyle === "Couple"
-              ? "quiz-option active"
-              : "quiz-option"
-          }
-          onClick={() => setTravelStyle("Couple")}
-        >
-          ❤️ Couple
-        </button>
-      </div>
-
-      <button className="quiz-btn" onClick={getRecommendation}>
-        Get Recommendation
-      </button>
-
-      {result && (
-        <div className="quiz-result">
-          <h3>🎯 Recommended Destination</h3>
-          <p>{result}</p>
-        </div>
+            {result && (
+              <motion.div
+                className="tq-result"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3>🎯 Recommended Destination</h3>
+                <p>{result}</p>
+              </motion.div>
+            )}
+          </motion.div>
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 }

@@ -1,6 +1,6 @@
-import TravelQuiz from "../components/TravelQuiz";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import ScrollLink from "../components/ScrollLink";
 import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
@@ -12,6 +12,20 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import TravellerSelector from "../components/TravellerSelector";
+import Navbar from "../components/Navbar";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+};
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.08 } },
+};
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -407,9 +421,6 @@ const Home = () => {
   });
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("wander-dest-section");
   const checkInRef = useRef(null);
 
   useEffect(() => {
@@ -454,45 +465,6 @@ const Home = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  useEffect(() => {
-    const sections = [
-      "wander-dest-section",
-      "wander-features",
-      "wander-testimonials",
-    ];
-
-    const handleActiveSection = () => {
-      const scrollPosition = window.scrollY + 150;
-
-      sections.forEach((sectionId) => {
-        const section = document.getElementById(sectionId);
-
-        if (
-          section &&
-          scrollPosition >= section.offsetTop &&
-          scrollPosition < section.offsetTop + section.offsetHeight
-        ) {
-          setActiveSection(sectionId);
-        }
-      });
-    };
-
-    window.addEventListener("scroll", handleActiveSection);
-
-    return () => {
-      window.removeEventListener("scroll", handleActiveSection);
-    };
   }, []);
 
   const handleAddTrip = (dest) => {
@@ -548,233 +520,29 @@ const Home = () => {
 
   return (
     <div className="wander-page">
-      {/* ═══ NAVBAR ═══ */}
-      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
-        <Link to="/" className="wander-logo">
-          Pack<span>Go</span>
-        </Link>
-
-        <ul className="wander-nav-links">
-          <li>
-            <a
-              href="#wander-dest-section"
-              className={
-                activeSection === "wander-dest-section"
-                  ? "wander-nav-active"
-                  : ""
-              }
-            >
-              <TravelQuiz />
-              Destinations
-            </a>
-          </li>
-          <li>
-            <a
-              href="#wander-features"
-              className={
-                activeSection === "wander-features" ? "wander-nav-active" : ""
-              }
-            >
-              Features
-            </a>
-          </li>
-          <li>
-            <a
-              href="#wander-testimonials"
-              className={
-                activeSection === "wander-testimonials"
-                  ? "wander-nav-active"
-                  : ""
-              }
-            >
-              Experiences
-            </a>
-          </li>
-          <li>
-            <Link to="/travel-checklist">Checklist</Link>
-          </li>
-          {isAuthenticated && (
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          )}
-        </ul>
-
-        {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
-          </Link>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-            }}
-          >
-            <Link to="/login">
-              <button className="wander-nav-log-in">Log In</button>
-            </Link>
-
-            <Link to="/register">
-              <button className="wander-nav-create-account">
-                Create Free Account
-              </button>
-            </Link>
-
-            <Link to="/register">
-              <button className="wander-nav-cta">Book Now</button>
-            </Link>
-          </div>
-        )}
-
-        <button
-          className="wander-mobile-menu"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <svg
-              key="close-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg
-              key="menu-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
-        </button>
-        {mobileOpen && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              background: "var(--white)",
-              borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-              boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
-              padding: "1rem 1.5rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              zIndex: 1001,
-            }}
-          >
-            <a
-              href="#wander-dest-section"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Destinations
-            </a>
-            <a
-              href="#wander-testimonials"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Experiences
-            </a>
-            <a
-              href="#wander-features"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Features
-            </a>
-            <Link
-              to="/travel-checklist"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Checklist
-            </Link>
-            {isAuthenticated ? (
-              <Link
-                to="/dashboard"
-                style={{
-                  color: "var(--coral)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Dashboard →
-              </Link>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  style={{ color: "var(--ocean)", textDecoration: "none" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  style={{
-                    color: "var(--coral)",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Sign Up Free →
-                </Link>
-              </>
-            )}
-          </div>
-        )}
-      </nav>
+      <Navbar />
 
       {/* ═══ HERO ═══ */}
       <section className="wander-hero">
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
+        <motion.div
+          className="wander-hero-content"
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+        >
+          <motion.div className="wander-hero-badge" variants={fadeUp}>
             <div className="wander-dot" />
             &nbsp;2,400+ destinations worldwide
-          </div>
-          <h1>
+          </motion.div>
+          <motion.h1 variants={fadeUp} custom={1}>
             Travel is the only thing you buy that makes you <em>richer</em>
-          </h1>
-          <p>
+          </motion.h1>
+          <motion.p variants={fadeUp} custom={2}>
             Curated journeys to the world's most extraordinary places.
             Handpicked experiences, flawless planning, memories that last
             forever.
-          </p>
-          <div className="wander-hero-actions">
+          </motion.p>
+          <motion.div className="wander-hero-actions" variants={fadeUp} custom={3}>
             <a href="#wander-dest-section">
               <button className="wander-btn-primary">
                 Explore Destinations
@@ -790,11 +558,16 @@ const Home = () => {
                 {isAuthenticated ? "Dashboard →" : "Start Free"}
               </button>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Hero Visual */}
-        <div className="wander-hero-visual">
+        <motion.div
+          className="wander-hero-visual"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <div className="wander-hero-card-main">
             <SceneIceland />
           </div>
@@ -808,11 +581,17 @@ const Home = () => {
             <div className="wander-stat-num">4.9★</div>
             <div className="wander-stat-txt">1,240 reviews</div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ SEARCH BAR ═══ */}
-      <div className="wander-search-section">
+      <motion.div
+        className="wander-search-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={fadeUp}
+      >
         <form className="wander-search-bar" onSubmit={handleSearch}>
           <div className="wander-sf" style={{ position: "relative" }}>
             <div className="wander-sf-label">Where to</div>
@@ -888,7 +667,7 @@ const Home = () => {
             <SearchIcon /> Search
           </button>
         </form>
-      </div>
+      </motion.div>
 
       {/* ═══ DESTINATIONS ═══ */}
 
@@ -907,7 +686,13 @@ const Home = () => {
       </div>
 
       <section className="wander-section" id="wander-dest-section">
-        <div className="wander-section-header">
+        <motion.div
+          className="wander-section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
+        >
           <div>
             <div className="wander-section-label">Top Picks</div>
             <div className="wander-section-title">
@@ -923,10 +708,16 @@ const Home = () => {
           <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
             <button className="wander-see-all">View all destinations →</button>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Editorial 4-card grid */}
-        <div className="wander-dest-grid">
+        <motion.div
+          className="wander-dest-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={stagger}
+        >
           {/* TALL card — always Santorini SVG (or first DB item) */}
           {editorialDests[0] ? (
             <div
@@ -1055,13 +846,17 @@ const Home = () => {
               </div>
             );
           })}
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ FEATURES ═══ */}
       <section className="wander-features-section" id="wander-features">
-        <div
+        <motion.div
           style={{ textAlign: "center", maxWidth: 500, margin: "0 auto 1rem" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
         >
           <div className="wander-section-label" style={{ textAlign: "center" }}>
             Why PackGo
@@ -1071,22 +866,33 @@ const Home = () => {
             <br />
             not harder
           </div>
-        </div>
-        <div className="wander-feat-grid">
+        </motion.div>
+        <motion.div
+          className="wander-feat-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={stagger}
+        >
           {FEATURES.map((f, i) => (
-            <div key={i} className="wander-feat-card">
+            <motion.div key={i} className="wander-feat-card" variants={fadeUp} custom={i}>
               <div className="wander-feat-icon">{f.icon}</div>
               <div className="wander-feat-title">{f.title}</div>
               <div className="wander-feat-desc">{f.desc}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
       <FAQSection />
 
       {/* ═══ TESTIMONIAL ═══ */}
       <section className="wander-testi-section" id="wander-testimonials">
-        <div>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
+        >
           <div className="wander-testi-label">Traveller Stories</div>
           <div className="wander-testi-heading">
             Journeys that changed everything
@@ -1109,21 +915,33 @@ const Home = () => {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Side Metrics Box Grid (Remains unshifted) */}
-        <div className="wander-stats-grid">
+        {/* Right Side Metrics Box Grid */}
+        <motion.div
+          className="wander-stats-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={stagger}
+        >
           {STATS.map((s, i) => (
-            <div key={i} className="wander-stat-box">
+            <motion.div key={i} className="wander-stat-box" variants={fadeUp} custom={i}>
               <div className="wander-stat-big">{s.big}</div>
               <div className="wander-stat-desc">{s.desc}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
+      <motion.div
+        className="wander-cta-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={fadeUp}
+      >
         <div className="wander-cta-text">
           <h2>
             Your next adventure
@@ -1144,9 +962,9 @@ const Home = () => {
             </Link>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">

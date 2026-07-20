@@ -1,56 +1,58 @@
-// src/pages/About.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import ScrollLink from "../components/ScrollLink";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import Navbar from "../components/Navbar";
+import "./Home.css";
 
-import "./Home.css"; // reuse same styles
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+};
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.08 } },
+};
 
 const About = () => {
   return (
     <div className="wander-page">
-      {/* ═══ HEADER (same as Home) ═══ */}
-      <nav className="wander-nav">
-        <Link to="/" className="wander-logo">
-          Pack<span>Go</span>
-        </Link>
-        <ul className="wander-nav-links">
-          <li>
-            <a href="/#wander-dest-section">Destinations</a>
-          </li>
-          <li>
-            <a href="/#wander-features">Experiences</a>
-          </li>
-          <li>
-            <a href="/#wander-features">Features</a>
-          </li>
-        </ul>
-        <Link to="/register">
-          <button className="wander-nav-cta">Book Now</button>
-        </Link>
-      </nav>
+      <Navbar />
 
       {/* ═══ ABOUT HERO ═══ */}
       <section className="wander-hero" style={{ minHeight: "60vh" }}>
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
+        <motion.div
+          className="wander-hero-content"
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+        >
+          <motion.div className="wander-hero-badge" variants={fadeUp}>
             <div className="wander-dot" /> Our Story
-          </div>
-          <h1>
+          </motion.div>
+          <motion.h1 variants={fadeUp} custom={1}>
             We believe travel <em>changes lives</em>
-          </h1>
-          <p>
+          </motion.h1>
+          <motion.p variants={fadeUp} custom={2}>
             PackGo was born from a passion for exploration and a desire to make
-            extraordinary journeys accessible to everyone. Since 2018, we’ve
-            helped over 40,000 travellers discover the world’s most breathtaking
+            extraordinary journeys accessible to everyone. Since 2018, we've
+            helped over 40,000 travellers discover the world's most breathtaking
             destinations with carefully curated itineraries and seamless
             planning.
-          </p>
-        </div>
-        <div className="wander-hero-visual">
+          </motion.p>
+        </motion.div>
+        <motion.div
+          className="wander-hero-visual"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <div className="wander-hero-card-main">
-            {/* Reuse one of the scenic SVGs */}
             <svg
               viewBox="0 0 460 360"
               xmlns="http://www.w3.org/2000/svg"
@@ -86,78 +88,92 @@ const About = () => {
               />
             </svg>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══ MISSION SECTION ═══ */}
       <section
         className="wander-features-section"
-        style={{ background: "var(--cream)", padding: "5rem 1.5rem" }}
+        style={{ background: "var(--sand)", padding: "6rem 1.5rem" }}
       >
-        <div
+        <motion.div
           style={{ textAlign: "center", maxWidth: 700, margin: "0 auto 3rem" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
         >
           <div className="wander-section-label">Why we exist</div>
           <div className="wander-section-title">Our mission is simple</div>
-          <p style={{ color: "var(--ocean-light)", marginTop: "1rem" }}>
+          <p style={{ color: "#6b8fa3", marginTop: "1rem" }}>
             To empower travellers with authentic, safe, and unforgettable
             experiences – without the stress of planning.
           </p>
-        </div>
-        <div className="wander-feat-grid">
-          <div className="wander-feat-card">
+        </motion.div>
+        <motion.div
+          className="wander-feat-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={stagger}
+        >
+          <motion.div className="wander-feat-card" variants={fadeUp}>
             <div className="wander-feat-icon">🌍</div>
             <div className="wander-feat-title">Authentic Travel</div>
             <div className="wander-feat-desc">
               We work with local experts to uncover hidden gems and cultural
               treasures.
             </div>
-          </div>
-          <div className="wander-feat-card">
+          </motion.div>
+          <motion.div className="wander-feat-card" variants={fadeUp} custom={1}>
             <div className="wander-feat-icon">💚</div>
             <div className="wander-feat-title">Sustainable Tourism</div>
             <div className="wander-feat-desc">
               Every trip supports local communities and minimises environmental
               impact.
             </div>
-          </div>
-          <div className="wander-feat-card">
+          </motion.div>
+          <motion.div className="wander-feat-card" variants={fadeUp} custom={2}>
             <div className="wander-feat-icon">✈️</div>
             <div className="wander-feat-title">Stress‑Free Planning</div>
             <div className="wander-feat-desc">
               From flights to activities – we handle every detail so you can
               focus on the joy.
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ═══ STATS SECTION ═══ */}
       <section className="wander-testi-section" style={{ background: "white" }}>
-        <div
+        <motion.div
           className="wander-stats-grid"
           style={{ maxWidth: 800, margin: "0 auto" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={stagger}
         >
-          <div className="wander-stat-box">
+          <motion.div className="wander-stat-box" variants={fadeUp}>
             <div className="wander-stat-big">40K+</div>
             <div className="wander-stat-desc">Happy travellers</div>
-          </div>
-          <div className="wander-stat-box">
+          </motion.div>
+          <motion.div className="wander-stat-box" variants={fadeUp} custom={1}>
             <div className="wander-stat-big">120+</div>
             <div className="wander-stat-desc">Countries</div>
-          </div>
-          <div className="wander-stat-box">
+          </motion.div>
+          <motion.div className="wander-stat-box" variants={fadeUp} custom={2}>
             <div className="wander-stat-big">24/7</div>
             <div className="wander-stat-desc">Support</div>
-          </div>
-          <div className="wander-stat-box">
+          </motion.div>
+          <motion.div className="wander-stat-box" variants={fadeUp} custom={3}>
             <div className="wander-stat-big">4.9★</div>
             <div className="wander-stat-desc">Average rating</div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* ═══ FOOTER (exactly same as Home) ═══ */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="wander-footer">
         <div className="wander-footer-top">
           <div className="wander-footer-brand">
