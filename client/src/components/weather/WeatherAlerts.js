@@ -12,17 +12,12 @@ import {
   ListItemText,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import {
-  generateWeatherAlerts,
-  getAlertSeverityConfig,
-} from "../../utils/alertUtils";
+import { generateWeatherAlerts } from "../../utils/alertUtils";
 
 const WeatherAlerts = ({ weatherData }) => {
   const alerts = useMemo(() => {
     return generateWeatherAlerts(weatherData);
   }, [weatherData]);
-
-  const severityConfig = getAlertSeverityConfig();
 
   if (alerts.length === 0) {
     return (
@@ -99,8 +94,6 @@ const WeatherAlerts = ({ weatherData }) => {
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {alerts.map((alert) => {
-          const config = severityConfig[alert.severity];
-
           return (
             <Alert
               key={alert.id}
