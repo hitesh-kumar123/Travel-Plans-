@@ -1,3 +1,4 @@
+import TravelQuiz from "../components/TravelQuiz";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
@@ -10,7 +11,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
-import CityCarousel from "../components/CityCarousel";
+import TravellerSelector from "../components/TravellerSelector";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -132,7 +133,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
-  const [travellers, setTravellers] = useState("");
+  const [travellers, setTravellers] = useState({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -262,10 +267,10 @@ const Home = () => {
   const filteredDestinations = where.trim()
     ? (Array.isArray(destinations) ? destinations : []).filter(
         (d) =>
-          (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase()),
+          (d.name || "").toLowerCase().includes(where.trim().toLowerCase()) ||
+          (d.city || "").toLowerCase().includes(where.trim().toLowerCase()) ||
+          (d.state || "").toLowerCase().includes(where.trim().toLowerCase()) ||
+          (d.category || "").toLowerCase().includes(where.trim().toLowerCase()),
       )
     : Array.isArray(destinations)
       ? destinations
@@ -308,6 +313,7 @@ const Home = () => {
                   : ""
               }
             >
+              <TravelQuiz />
               Destinations
             </a>
           </li>
@@ -631,11 +637,9 @@ const Home = () => {
           </div>
           <div className="wander-sf">
             <div className="wander-sf-label">Travellers</div>
-            <input
-              className="wander-sf-val"
-              placeholder="2 Adults, 1 Child"
-              value={travellers}
-              onChange={(e) => setTravellers(e.target.value)}
+            <TravellerSelector
+              travellers={travellers}
+              onChange={setTravellers}
             />
           </div>
           <button type="submit" className="wander-search-btn">

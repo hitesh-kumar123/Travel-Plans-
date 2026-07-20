@@ -42,11 +42,13 @@ app.post("/api/auth/register", authLimiter);
 
 // Core Middleware
 const allowedOrigins = [
+  "http://localhost:3005",
   "http://localhost:3000",
   "http://localhost:5000",
   "http://localhost:5001",
-  "http://127.0.0.1:3000",
+  "http://127.0.0.1:3005",
   "http://127.0.0.1:5000",
+  "http://127.0.0.1:3000",
 ];
 
 const frontendUrls = [];

@@ -78,7 +78,9 @@ async function openTripMapGet(path, query = {}) {
 }
 
 async function geocodeCity(keyword) {
-  const data = await openTripMapGet("/places/geoname", { name: keyword });
+  const data = await openTripMapGet("/places/geoname", {
+    name: (keyword || "").trim(),
+  });
 
   if (!data || data.status === "ERROR" || data.lat === undefined) {
     return null;
