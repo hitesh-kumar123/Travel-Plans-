@@ -12,6 +12,33 @@ const sanitizeMiddleware = require("./middleware/sanitize");
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 dotenv.config({ path: path.resolve(__dirname, "./.env") });
 
+// ========== ENV LOADING DEBUG ==========
+console.log("=".repeat(60));
+console.log("ENVIRONMENT LOADING CHECK");
+console.log("=".repeat(60));
+console.log("Loaded .env from:");
+console.log("  1. " + path.resolve(__dirname, "../.env"));
+console.log("  2. " + path.resolve(__dirname, "./.env"));
+console.log();
+
+// Check critical environment variables
+const envVars = {
+  PORT: process.env.PORT,
+  MONGO_URI: process.env.MONGO_URI ? "✅ Set" : "❌ Missing",
+  JWT_SECRET: process.env.JWT_SECRET ? "✅ Set" : "❌ Missing",
+  WEATHER_API_KEY: process.env.WEATHER_API_KEY
+    ? `✅ Set (${process.env.WEATHER_API_KEY.substring(0, 4)}...${process.env.WEATHER_API_KEY.substring(process.env.WEATHER_API_KEY.length - 4)})`
+    : "❌ Missing",
+};
+
+console.log("Environment Variables Status:");
+Object.entries(envVars).forEach(([key, value]) => {
+  console.log(`  ${key}: ${value}`);
+});
+console.log("=".repeat(60));
+console.log();
+// ========== END ENV DEBUG ==========
+
 // Initialize express app
 const app = express();
 // When running behind a proxy (like Render), trust the proxy so express
@@ -43,6 +70,7 @@ app.post("/api/auth/register", authLimiter);
 // Core Middleware
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://10.20.151.113:3000",
   "http://localhost:5000",
   "http://localhost:5001",
   "http://127.0.0.1:3000",
