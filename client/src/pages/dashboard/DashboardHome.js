@@ -25,7 +25,9 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import PrimaryButton from "../../components/PrimaryButton";
 import { getTrips } from "../../redux/actions/tripActions";
 import TripCountdownBadge from "../../components/TripCountdownBadge";
+import DashboardHero from "../../components/DashboardHero";
 import { getAllUserExpenses } from "../../redux/actions/expenseActions";
+
 import {
   BarChart,
   Bar,
@@ -132,30 +134,15 @@ const DashboardHome = () => {
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       {/* Greeting */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 800,
-            mb: 0.5,
-            fontSize: { xs: "1.75rem", sm: "2rem", md: "2.25rem" },
-          }}
-        >
-          Welcome back, {userName}! 👋
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{
-            fontSize: { xs: "0.9rem", sm: "1rem" },
-          }}
-        >
-          {totalTrips === 0
-            ? "Start planning your first adventure!"
-            : `You have ${plannedTrips} upcoming and ${ongoingTrips} ongoing trips.`}
-        </Typography>
-      </Box>
-
+      <DashboardHero
+        user={user}
+        totalTrips={totalTrips}
+        plannedTrips={plannedTrips}
+        ongoingTrips={ongoingTrips}
+        totalBudget={totalBudget}
+        totalSpent={totalSpent}
+        upcomingTrips={upcomingTrips}
+      />
       {/* Stats Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         {[
