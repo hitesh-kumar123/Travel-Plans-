@@ -18,13 +18,21 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const body = context.payload.issue.body || "";
+            const hasImage = /!\[.*?\]\(.*?\)|<img\s+[^>]*>|https:\/\/github\.com\/.*?\/(?:assets|user-attachments)/i.test(body);
+
+            let imageReminder = "";
+            if (!hasImage) {
+              imageReminder = `\n            - **Added screenshots/screen recordings** if this is a UI/visual bug or suggestion. 📸`;
+            }
+
             const issueComment = `👋 Hello @${context.payload.issue.user.login}!
 
             Thank you for opening this issue and showing interest in contributing to **Travel Planner**! 🚀
 
             A project maintainer will review your issue shortly. In the meantime, please make sure you have:
             - Checked if this issue already exists.
-            - Provided a clear description and steps to reproduce (if it's a bug).
+            - Provided a clear description and steps to reproduce (if it's a bug).${imageReminder}
             - Read our [Contributing Guidelines](https://github.com/hitesh-kumar123/Travel-Plans-/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/hitesh-kumar123/Travel-Plans-/blob/main/CODE_OF_CONDUCT.md).
 
             If you want to work on this issue, please wait to be assigned before starting your work. Happy Coding! ✨`;
@@ -41,13 +49,28 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const body = context.payload.pull_request.body || "";
+            const hasImage = /!\[.*?\]\(.*?\)|<img\s+[^>]*>|https:\/\/github\.com\/.*?\/(?:assets|user-attachments)/i.test(body);
+            const containsPlaceholder = body.includes("[Image]") || body.includes("[Description]") || body.includes("issue_number");
+
+            let checklistWarning = "";
+            if (!hasImage || containsPlaceholder) {
+              checklistWarning = `\n\n### ⚠️ **Action Required: PR Template Checklist**\n`;
+              if (containsPlaceholder) {
+                checklistWarning += `- **Fill in the Placeholders:** We noticed some template placeholders like \`[Image]\`, \`[Description]\`, or \`issue_number\` are still in your description. Please edit your PR description and fill them out. 🛠️\n`;
+              }
+              if (!hasImage) {
+                checklistWarning += `- **Before & After Screenshots:** If this PR contains any UI/Visual changes, please upload **Before** and **After** screenshots/GIFs to the table in the **UI Changes** section of your description. 📸\n`;
+              }
+            }
+
             const prComment = `🎉 Hello @${context.payload.pull_request.user.login}!
 
             Thank you for your fantastic contribution to **Travel Planner**! We really appreciate the time and effort you've put into this Pull Request. 🌟
 
             Our automated CI pipeline is currently running checks on your code. Please ensure:
             - Your PR description is clear and links to any related issues.
-            - You have followed the code style and formatting guidelines.
+            - You have followed the code style and formatting guidelines.${checklistWarning}
 
             A maintainer will review your PR as soon as possible (usually within 24-48 hours). Please keep an eye out for any feedback or requested changes.
 

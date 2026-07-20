@@ -1328,3 +1328,53 @@ html {
     transform: translateY(-1120px);
   }
 }
+.travel-quiz {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.quiz-group {
+  margin: 25px 0;
+}
+
+.quiz-group button {
+  margin: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  background: #1f4d72;
+  color: white;
+  transition: 0.3s;
+}
+
+.quiz-group button:hover {
+  transform: translateY(-3px);
+}
+
+.quiz-btn {
+  margin-top: 20px;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 30px;
+  background: #ff7f5c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.quiz-result {
+  margin-top: 25px;
+  padding: 20px;
+  background: #f4f8fb;
+  border-radius: 12px;
+}
+.quiz-option.active {
+  background: #ff7f5c;
+  color: white;
+}
