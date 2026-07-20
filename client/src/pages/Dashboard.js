@@ -53,7 +53,7 @@ import TripDetail from "./dashboard/TripDetail";
 import PackingView from "./dashboard/PackingView";
 import CultureSafetyAlerts from "./dashboard/CultureSafetyAlerts";
 import NotFound from "./NotFound";
-
+import PageTransition from "../components/PageTransition";
 const mobileDrawerWidth = 240;
 const desktopDrawerWidth = 280;
 
@@ -262,6 +262,7 @@ const Dashboard = () => {
   );
 
   return (
+    <PageTransition>
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <Box
         component="nav"
@@ -483,6 +484,7 @@ const Dashboard = () => {
         </Box>
       </Box>
     </Box>
+    </PageTransition>
   );
 };
 

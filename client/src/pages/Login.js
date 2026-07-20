@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { googleLogin, login } from "../redux/actions/authActions";
 import { GoogleLogin } from "@react-oauth/google";
+import PageTransition from "../components/PageTransition";
 import {
   Box,
   TextField,
@@ -46,6 +47,7 @@ const GoogleAuthSection = ({ onSuccess }) => {
   }, [updateWidth]);
 
   return (
+    <PageTransition>
     <>
       <Divider sx={{ my: 3 }}>
         <Typography variant="body2" color="text.secondary">
@@ -68,6 +70,7 @@ const GoogleAuthSection = ({ onSuccess }) => {
         )}
       </Box>
     </>
+    </PageTransition>
   );
 };
 
@@ -186,6 +189,7 @@ const Login = () => {
   };
 
   return (
+    <PageTransition>
     <Box
       sx={{
         minHeight: "100vh",
@@ -379,6 +383,7 @@ const Login = () => {
         </Box>
       </Box>
     </Box>
+    </PageTransition>
   );
 };
 

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import api from "../services/api";
-
+import PageTransition from "../components/PageTransition";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(null);
@@ -34,6 +34,7 @@ const ForgotPassword = () => {
   };
 
   return (
+    <PageTransition>
     <Box
       sx={{
         minHeight: "100vh",
@@ -136,6 +137,7 @@ const ForgotPassword = () => {
         </Box>
       </Box>
     </Box>
+    </PageTransition>
   );
 };
 

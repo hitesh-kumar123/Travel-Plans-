@@ -6,7 +6,7 @@ import { defaultForm } from "../utils/defaultFormData";
 import { currencyRates, currencySymbols } from "../utils/currencyData";
 import { Box, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
-
+import PageTransition from "../components/PageTransition";
 const BudgetEstimatorPage = () => {
   const [form, setForm] = useState(() => {
     try {
@@ -75,6 +75,7 @@ const BudgetEstimatorPage = () => {
   };
 
   return (
+    <PageTransition>
     <>
       <Box
         sx={{
@@ -139,6 +140,7 @@ const BudgetEstimatorPage = () => {
         />
       </Box>
     </>
+    </PageTransition>
   );
 };
 

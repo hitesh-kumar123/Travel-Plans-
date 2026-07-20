@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-
+import PageTransition from "../components/PageTransition";
 const HelpCenter = () => {
   const faqs = [
     {
@@ -33,6 +33,7 @@ const HelpCenter = () => {
   ];
 
   return (
+    <PageTransition>
     <div className="wander-page">
       <main
         style={{
@@ -222,6 +223,7 @@ const HelpCenter = () => {
         </motion.div>
       </main>
     </div>
+    </PageTransition>
   );
 };
 

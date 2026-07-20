@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-
+import PageTransition from "../components/PageTransition";
 const contactDetails = [
   {
     icon: FaEnvelope,
@@ -56,6 +56,7 @@ const Contact = () => {
   };
 
   return (
+    <PageTransition>
     <div
       style={{
         minHeight: "100vh",
@@ -437,6 +438,7 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

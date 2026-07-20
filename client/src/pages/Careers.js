@@ -3,7 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Typography, Button, Container, Grid, Paper } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import HomeIcon from "@mui/icons-material/Home";
-
+import PageTransition from "../components/PageTransition";
 const openings = [
   {
     title: "Frontend Developer",
@@ -24,11 +24,12 @@ const openings = [
 
 const Careers = () => {
   return (
-    <Box sx={{ minHeight: "100vh", py: { xs: 6, md: 10 } }}>
-      <Container maxWidth="md">
-        <Box sx={{ textAlign: "center", mb: 6 }}>
-          <WorkIcon sx={{ fontSize: 50, color: "primary.main", mb: 2 }} />
-          <Typography
+    <PageTransition>
+      <Box sx={{ minHeight: "100vh", py: { xs: 6, md: 10 } }}>
+        <Container maxWidth="md">
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <WorkIcon sx={{ fontSize: 50, color: "primary.main", mb: 2 }} />
+            <Typography
             variant="h3"
             component="h1"
             sx={{ fontWeight: 700, mb: 2 }}
@@ -92,6 +93,7 @@ const Careers = () => {
         </Box>
       </Container>
     </Box>
+    </PageTransition>
   );
 };
 

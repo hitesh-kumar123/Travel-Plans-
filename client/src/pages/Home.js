@@ -10,6 +10,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import PageTransition from "../components/PageTransition";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -541,6 +542,7 @@ const Home = () => {
   const editorialDests = filteredDestinations.slice(0, 4);
 
   return (
+    <PageTransition>
     <div className="wander-page">
       {/* ═══ NAVBAR ═══ */}
       <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
@@ -1200,6 +1202,7 @@ const Home = () => {
         </div>
       </footer>
     </div>
+    </PageTransition>
   );
 };
 

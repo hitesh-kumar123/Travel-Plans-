@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { register, googleLogin } from "../redux/actions/authActions";
 import { GoogleLogin } from "@react-oauth/google";
+import PageTransition from "../components/PageTransition";
 import {
   Box,
   TextField,
@@ -276,6 +277,7 @@ const Register = () => {
         );
       case 1:
         return (
+          <PageTransition>
           <>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Create your account
@@ -382,9 +384,11 @@ const Register = () => {
               }
             />
           </>
+          </PageTransition>
         );
       case 2:
         return (
+          <PageTransition>
           <Box sx={{ textAlign: "center", py: 2 }}>
             <CheckCircleOutlineIcon
               color="success"
@@ -409,6 +413,7 @@ const Register = () => {
               policy, and confirm that all information provided is accurate.
             </Typography>
           </Box>
+          </PageTransition>
         );
       default:
         return "Unknown step";
@@ -416,6 +421,7 @@ const Register = () => {
   };
 
   return (
+    <PageTransition>
     <Box
       sx={{
         minHeight: "100vh",
@@ -674,6 +680,7 @@ const Register = () => {
         </Box>
       </Box>
     </Box>
+    </PageTransition>
   );
 };
 

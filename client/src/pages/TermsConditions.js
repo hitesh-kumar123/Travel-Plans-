@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-
+import PageTransition from "../components/PageTransition";
 const TermsConditions = () => {
   const sections = [
     {
@@ -44,6 +44,7 @@ const TermsConditions = () => {
   ];
 
   return (
+    <PageTransition>
     <div className="wander-page">
       <main
         style={{
@@ -308,6 +309,7 @@ const TermsConditions = () => {
         </motion.div>
       </main>
     </div>
+    </PageTransition>
   );
 };
 

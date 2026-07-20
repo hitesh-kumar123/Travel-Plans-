@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-
+import PageTransition from "../components/PageTransition";
 const PrivacyPolicy = () => {
   const sections = [
     {
@@ -43,6 +43,7 @@ const PrivacyPolicy = () => {
   ];
 
   return (
+    <PageTransition>
     <div className="wander-page">
       <main
         style={{
@@ -239,6 +240,7 @@ const PrivacyPolicy = () => {
         </motion.div>
       </main>
     </div>
+    </PageTransition>
   );
 };
 

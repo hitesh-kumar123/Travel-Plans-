@@ -3,11 +3,12 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Typography, Button, Container, useTheme } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-
+import PageTransition from "../components/PageTransition";
 const NotFound = () => {
   const theme = useTheme();
 
   return (
+    <PageTransition>
     <Box
       sx={{
         display: "flex",
@@ -135,6 +136,7 @@ const NotFound = () => {
         </Box>
       </Container>
     </Box>
+    </PageTransition>
   );
 };
 

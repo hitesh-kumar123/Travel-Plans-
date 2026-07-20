@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-
+import pageTransition from "../components/PageTransition";
 import "./Home.css"; // reuse same styles
 
 const About = () => {
   return (
+    <pageTransition>
     <div className="wander-page">
       {/* ═══ HEADER (same as Home) ═══ */}
       <nav className="wander-nav">
@@ -208,6 +209,7 @@ const About = () => {
         </div>
       </footer>
     </div>
+    </pageTransition>
   );
 };
 
