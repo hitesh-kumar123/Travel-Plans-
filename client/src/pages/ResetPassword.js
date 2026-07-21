@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
-import pageTransition from "../components/PageTransition";
+import PageTransition from "../components/PageTransition";
 import {
   Box,
   TextField,
@@ -48,7 +48,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <pageTransition>
+    <PageTransition>
       <Box
         sx={{
           minHeight: "100vh",
@@ -162,7 +162,7 @@ const ResetPassword = () => {
           </Box>
         </Box>
       </Box>
-    </pageTransition>
+    </PageTransition>
   );
 };
 
