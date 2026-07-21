@@ -56,7 +56,6 @@ const DashboardHome = () => {
   }, [dispatch]);
 
   const tripsArr = trips || [];
-  const userName = user?.name?.split(" ")[0] || "Traveler";
 
   const totalTrips = tripsArr.length;
   const completedTrips = tripsArr.filter(
