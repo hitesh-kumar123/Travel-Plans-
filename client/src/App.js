@@ -1,6 +1,11 @@
 // src/App.js
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route ,useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
@@ -59,14 +64,8 @@ function AnimatedRoutes() {
         <Route path="/trip/share/:token" element={<SharedTripView />} />
         <Route path="/shared-trip/:token" element={<SharedTripView />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/verify-email/:token"
-          element={<EmailVerification />}
-        />
-        <Route
-          path="/reset-password/:token"
-          element={<ResetPassword />}
-        />
+        <Route path="/verify-email/:token" element={<EmailVerification />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/terms" element={<TermsConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/help" element={<HelpCenter />} />
@@ -87,14 +86,14 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-       <Router>
-  <ScrollToTop />
+        <Router>
+          <ScrollToTop />
 
-  <div className="App">
-    <AnimatedRoutes />
-    <ScrollButtons />
-  </div>
-</Router>
+          <div className="App">
+            <AnimatedRoutes />
+            <ScrollButtons />
+          </div>
+        </Router>
       </ThemeProvider>
 
       <ToastContainer

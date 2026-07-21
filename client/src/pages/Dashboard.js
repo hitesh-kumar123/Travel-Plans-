@@ -263,227 +263,230 @@ const Dashboard = () => {
 
   return (
     <PageTransition>
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <Box
-        component="nav"
-        sx={{ width: { md: desktopDrawerWidth }, flexShrink: { md: 0 } }}
-      >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              width: mobileDrawerWidth,
-              transition: "all 0.3s ease",
-            },
-          }}
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+        <Box
+          component="nav"
+          sx={{ width: { md: desktopDrawerWidth }, flexShrink: { md: 0 } }}
         >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": {
-              width: desktopDrawerWidth,
-              borderRight: "1px solid",
-              borderColor: "divider",
-              boxShadow: "2px 0 12px rgba(0,0,0,0.04)",
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": {
+                width: mobileDrawerWidth,
+                transition: "all 0.3s ease",
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", md: "block" },
+              "& .MuiDrawer-paper": {
+                width: desktopDrawerWidth,
+                borderRight: "1px solid",
+                borderColor: "divider",
+                boxShadow: "2px 0 12px rgba(0,0,0,0.04)",
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: {
-            xs: "100%",
-            md: `calc(100% - ${desktopDrawerWidth}px)`,
-          },
-          bgcolor: "grey.50",
-        }}
-      >
-        <AppBar
-          position="sticky"
-          color="default"
-          elevation={0}
+        <Box
+          component="main"
           sx={{
-            bgcolor: "background.paper",
-            borderBottom: "1px solid",
-            borderColor: "divider",
+            flexGrow: 1,
+            width: {
+              xs: "100%",
+              md: `calc(100% - ${desktopDrawerWidth}px)`,
+            },
+            bgcolor: "grey.50",
           }}
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Tooltip title="Notifications">
-                <IconButton
-                  size="large"
-                  color="inherit"
-                  onClick={handleNotificationOpen}
+          <AppBar
+            position="sticky"
+            color="default"
+            elevation={0}
+            sx={{
+              bgcolor: "background.paper",
+              borderBottom: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { md: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Tooltip title="Notifications">
+                  <IconButton
+                    size="large"
+                    color="inherit"
+                    onClick={handleNotificationOpen}
+                  >
+                    <Badge badgeContent={notifications.length} color="error">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Profile">
+                  <IconButton size="large" onClick={handleMenu} color="inherit">
+                    <Avatar
+                      alt={user?.name || "User"}
+                      sx={{
+                        width: 34,
+                        height: 34,
+                        bgcolor: "primary.main",
+                        fontSize: 14,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {user?.name?.[0]?.toUpperCase() || "U"}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
                 >
-                  <Badge badgeContent={notifications.length} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Profile">
-                <IconButton size="large" onClick={handleMenu} color="inherit">
-                  <Avatar
-                    alt={user?.name || "User"}
-                    sx={{
-                      width: 34,
-                      height: 34,
-                      bgcolor: "primary.main",
-                      fontSize: 14,
-                      fontWeight: 700,
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      navigate("/dashboard/profile");
                     }}
                   >
-                    {user?.name?.[0]?.toUpperCase() || "U"}
-                  </Avatar>
-                </IconButton>
-              </Tooltip>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleClose();
-                    navigate("/dashboard/profile");
+                    <ListItemIcon>
+                      <PersonIcon fontSize="small" />
+                    </ListItemIcon>
+                    Profile
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
+                    <ListItemIcon>
+                      <LogoutIcon
+                        fontSize="small"
+                        sx={{ color: "error.main" }}
+                      />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+
+                <Menu
+                  anchorEl={notificationAnchor}
+                  open={Boolean(notificationAnchor)}
+                  onClose={handleNotificationClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      mt: 1.5,
+                      width: 340,
+                      borderRadius: 4,
+                      overflow: "hidden",
+                      boxShadow: "0 10px 35px rgba(0,0,0,0.15)",
+                      border: "1px solid",
+                      borderColor: "divider",
+                    },
                   }}
                 >
-                  <ListItemIcon>
-                    <PersonIcon fontSize="small" />
-                  </ListItemIcon>
-                  Profile
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
-                  <ListItemIcon>
-                    <LogoutIcon fontSize="small" sx={{ color: "error.main" }} />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-              </Menu>
+                  <Box
+                    sx={{
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                      Notifications
+                    </Typography>
+                  </Box>
 
-              <Menu
-                anchorEl={notificationAnchor}
-                open={Boolean(notificationAnchor)}
-                onClose={handleNotificationClose}
-                PaperProps={{
-                  elevation: 0,
-                  sx: {
-                    mt: 1.5,
-                    width: 340,
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "0 10px 35px rgba(0,0,0,0.15)",
-                    border: "1px solid",
-                    borderColor: "divider",
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    px: 2,
-                    py: 1.5,
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                    bgcolor: "background.paper",
-                  }}
-                >
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Notifications
-                  </Typography>
-                </Box>
+                  <Box
+                    sx={{
+                      maxHeight: 320,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <MenuItem
+                          key={notification.id}
+                          onClick={handleNotificationClose}
+                          sx={{
+                            py: 1.5,
+                            alignItems: "flex-start",
+                            borderBottom: "1px solid",
+                            borderColor: "grey.100",
+                          }}
+                        >
+                          <Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                                color: "text.primary",
+                              }}
+                            >
+                              {notification.title}
+                            </Typography>
 
-                <Box
-                  sx={{
-                    maxHeight: 320,
-                    overflowY: "auto",
-                  }}
-                >
-                  {notifications.length > 0 ? (
-                    notifications.map((notification) => (
-                      <MenuItem
-                        key={notification.id}
-                        onClick={handleNotificationClose}
-                        sx={{
-                          py: 1.5,
-                          alignItems: "flex-start",
-                          borderBottom: "1px solid",
-                          borderColor: "grey.100",
-                        }}
-                      >
-                        <Box>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 600,
-                              color: "text.primary",
-                            }}
-                          >
-                            {notification.title}
-                          </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: "text.secondary",
+                              }}
+                            >
+                              {notification.time}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <Box sx={{ p: 3, textAlign: "center" }}>
+                        <Typography variant="body2" color="text.secondary">
+                          No new notifications
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Menu>
+              </Box>
+            </Toolbar>
+          </AppBar>
 
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: "text.secondary",
-                            }}
-                          >
-                            {notification.time}
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <Box sx={{ p: 3, textAlign: "center" }}>
-                      <Typography variant="body2" color="text.secondary">
-                        No new notifications
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              </Menu>
-            </Box>
-          </Toolbar>
-        </AppBar>
-
-        <Box sx={{ minHeight: "calc(100vh - 65px)" }}>
-          <Routes>
-            <Route path="/" element={<DashboardHome />} />
-            <Route path="trips" element={<TripsView />} />
-            <Route path="trips/:id" element={<TripDetail />} />
-            <Route path="expenses" element={<ExpensesView />} />
-            <Route path="weather" element={<WeatherView />} />
-            <Route path="translator" element={<TranslatorView />} />
-            <Route path="bookings" element={<BookingView />} />
-            <Route path="profile" element={<ProfileView />} />
-            <Route path="packing" element={<PackingView />} />
-            <Route path="culture-safety" element={<CultureSafetyAlerts />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Box sx={{ minHeight: "calc(100vh - 65px)" }}>
+            <Routes>
+              <Route path="/" element={<DashboardHome />} />
+              <Route path="trips" element={<TripsView />} />
+              <Route path="trips/:id" element={<TripDetail />} />
+              <Route path="expenses" element={<ExpensesView />} />
+              <Route path="weather" element={<WeatherView />} />
+              <Route path="translator" element={<TranslatorView />} />
+              <Route path="bookings" element={<BookingView />} />
+              <Route path="profile" element={<ProfileView />} />
+              <Route path="packing" element={<PackingView />} />
+              <Route path="culture-safety" element={<CultureSafetyAlerts />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
-    </Box>
     </PageTransition>
   );
 };

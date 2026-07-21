@@ -1,4 +1,3 @@
-import TravelQuiz from "../components/TravelQuiz";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
@@ -11,9 +10,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
-
 import PageTransition from "../components/PageTransition";
-import TravellerSelector from "../components/TravellerSelector";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -402,11 +399,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [where, setWhere] = useState("");
   const [checkIn, setCheckIn] = useState("");
-  const [travellers, setTravellers] = useState({
-    adults: 1,
-    children: 0,
-    infants: 0,
-  });
+  const [travellers, setTravellers] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -550,203 +543,182 @@ const Home = () => {
 
   return (
     <PageTransition>
-    <div className="wander-page">
-      {/* ═══ NAVBAR ═══ */}
-      <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
-        <Link to="/" className="wander-logo">
-          Pack<span>Go</span>
-        </Link>
-
-        <ul className="wander-nav-links">
-          <li>
-            <a
-              href="#wander-dest-section"
-              className={
-                activeSection === "wander-dest-section"
-                  ? "wander-nav-active"
-                  : ""
-              }
-            >
-              <TravelQuiz />
-              Destinations
-            </a>
-          </li>
-          <li>
-            <a
-              href="#wander-features"
-              className={
-                activeSection === "wander-features" ? "wander-nav-active" : ""
-              }
-            >
-              Features
-            </a>
-          </li>
-          <li>
-            <a
-              href="#wander-testimonials"
-              className={
-                activeSection === "wander-testimonials"
-                  ? "wander-nav-active"
-                  : ""
-              }
-            >
-              Experiences
-            </a>
-          </li>
-          <li>
-            <Link to="/travel-checklist">Checklist</Link>
-          </li>
-          {isAuthenticated && (
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          )}
-        </ul>
-
-        {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
+      <div className="wander-page">
+        {/* ═══ NAVBAR ═══ */}
+        <nav className={`wander-nav ${scrolled ? "wander-nav-scrolled" : ""}`}>
+          <Link to="/" className="wander-logo">
+            Pack<span>Go</span>
           </Link>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-            }}
-          >
-            <Link to="/login">
-              <button className="wander-nav-log-in">Log In</button>
-            </Link>
 
-            <Link to="/register">
-              <button className="wander-nav-create-account">
-                Create Free Account
-              </button>
-            </Link>
+          <ul className="wander-nav-links">
+            <li>
+              <a
+                href="#wander-dest-section"
+                className={
+                  activeSection === "wander-dest-section"
+                    ? "wander-nav-active"
+                    : ""
+                }
+              >
+                Destinations
+              </a>
+            </li>
+            <li>
+              <a
+                href="#wander-features"
+                className={
+                  activeSection === "wander-features" ? "wander-nav-active" : ""
+                }
+              >
+                Features
+              </a>
+            </li>
+            <li>
+              <a
+                href="#wander-testimonials"
+                className={
+                  activeSection === "wander-testimonials"
+                    ? "wander-nav-active"
+                    : ""
+                }
+              >
+                Experiences
+              </a>
+            </li>
+            <li>
+              <Link to="/travel-checklist">Checklist</Link>
+            </li>
+            {isAuthenticated && (
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            )}
+          </ul>
 
-            <Link to="/register">
-              <button className="wander-nav-cta">Book Now</button>
+          {isAuthenticated ? (
+            <Link to="/dashboard">
+              <button className="wander-nav-cta">My Dashboard</button>
             </Link>
-          </div>
-        )}
-
-        <button
-          className="wander-mobile-menu"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <svg
-              key="close-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
           ) : (
-            <svg
-              key="menu-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+            <div
+              style={{
+                display: "flex",
+                gap: "0.75rem",
+                alignItems: "center",
+              }}
             >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+              <Link to="/login">
+                <button className="wander-nav-log-in">Log In</button>
+              </Link>
+
+              <Link to="/register">
+                <button className="wander-nav-create-account">
+                  Create Free Account
+                </button>
+              </Link>
+
+              <Link to="/register">
+                <button className="wander-nav-cta">Book Now</button>
+              </Link>
+            </div>
           )}
-        </button>
-        {mobileOpen && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              background: "var(--white)",
-              borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-              boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
-              padding: "1rem 1.5rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              zIndex: 1001,
-            }}
+
+          <button
+            className="wander-mobile-menu"
+            onClick={() => setMobileOpen(!mobileOpen)}
           >
-            <a
-              href="#wander-dest-section"
+            {mobileOpen ? (
+              <svg
+                key="close-icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg
+                key="menu-icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            )}
+          </button>
+          {mobileOpen && (
+            <div
               style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "var(--white)",
+                borderBottom: "0.5px solid rgba(26,74,107,0.12)",
+                boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
+                padding: "1rem 1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                zIndex: 1001,
               }}
-              onClick={() => setMobileOpen(false)}
             >
-              Destinations
-            </a>
-            <a
-              href="#wander-testimonials"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Experiences
-            </a>
-            <a
-              href="#wander-features"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Features
-            </a>
-            <Link
-              to="/travel-checklist"
-              style={{
-                color: "var(--ocean)",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              Checklist
-            </Link>
-            {isAuthenticated ? (
-              <Link
-                to="/dashboard"
+              <a
+                href="#wander-dest-section"
                 style={{
-                  color: "var(--coral)",
-                  fontWeight: 600,
+                  color: "var(--ocean)",
                   textDecoration: "none",
+                  fontWeight: 500,
                 }}
                 onClick={() => setMobileOpen(false)}
               >
-                Dashboard →
+                Destinations
+              </a>
+              <a
+                href="#wander-testimonials"
+                style={{
+                  color: "var(--ocean)",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Experiences
+              </a>
+              <a
+                href="#wander-features"
+                style={{
+                  color: "var(--ocean)",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Features
+              </a>
+              <Link
+                to="/travel-checklist"
+                style={{
+                  color: "var(--ocean)",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Checklist
               </Link>
-            ) : (
-              <>
+              {isAuthenticated ? (
                 <Link
-                  to="/login"
-                  style={{ color: "var(--ocean)", textDecoration: "none" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
+                  to="/dashboard"
                   style={{
                     color: "var(--coral)",
                     fontWeight: 600,
@@ -754,280 +726,217 @@ const Home = () => {
                   }}
                   onClick={() => setMobileOpen(false)}
                 >
-                  Sign Up Free →
+                  Dashboard →
                 </Link>
-              </>
-            )}
-          </div>
-        )}
-      </nav>
-
-      {/* ═══ HERO ═══ */}
-      <section className="wander-hero">
-        <div className="wander-hero-content">
-          <div className="wander-hero-badge">
-            <div className="wander-dot" />
-            &nbsp;2,400+ destinations worldwide
-          </div>
-          <h1>
-            Travel is the only thing you buy that makes you <em>richer</em>
-          </h1>
-          <p>
-            Curated journeys to the world's most extraordinary places.
-            Handpicked experiences, flawless planning, memories that last
-            forever.
-          </p>
-          <div className="wander-hero-actions">
-            <a href="#wander-dest-section">
-              <button className="wander-btn-primary">
-                Explore Destinations
-              </button>
-            </a>
-
-            <Link to="/budget-estimator">
-              <button className="wander-btn-ghost">Budget Estimator</button>
-            </Link>
-
-            <Link to={isAuthenticated ? "/dashboard" : "/register"}>
-              <button className="wander-btn-ghost">
-                {isAuthenticated ? "Dashboard →" : "Start Free"}
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Hero Visual */}
-        <div className="wander-hero-visual">
-          <div className="wander-hero-card-main">
-            <SceneIceland />
-          </div>
-          <div className="wander-price-tag">
-            <div className="wander-price-label">FROM / PERSON</div>
-            <div className="wander-price-val">
-              ₹89,000 <span>/ 7 nights</span>
-            </div>
-          </div>
-          <div className="wander-stat-tag">
-            <div className="wander-stat-num">4.9★</div>
-            <div className="wander-stat-txt">1,240 reviews</div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ SEARCH BAR ═══ */}
-      <div className="wander-search-section">
-        <form className="wander-search-bar" onSubmit={handleSearch}>
-          <div className="wander-sf" style={{ position: "relative" }}>
-            <div className="wander-sf-label">Where to</div>
-            <input
-              className="wander-sf-val"
-              placeholder="Bali, Indonesia"
-              value={where}
-              onChange={(e) => {
-                setWhere(e.target.value);
-                if (recentSearches.length > 0) {
-                  setShowRecentSearches(true);
-                }
-              }}
-              onFocus={() => {
-                if (recentSearches.length > 0) {
-                  setShowRecentSearches(true);
-                }
-              }}
-            />
-            {showRecentSearches && recentSearches.length > 0 && (
-              <div className="wander-recent-searches">
-                {recentSearches.map((search) => (
-                  <button
-                    key={search}
-                    type="button"
-                    className="wander-recent-search-item"
-                    onMouseDown={() => {
-                      setWhere(search);
-                      setShowRecentSearches(false);
-                    }}
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    style={{ color: "var(--ocean)", textDecoration: "none" }}
+                    onClick={() => setMobileOpen(false)}
                   >
-                    {search}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Check In</div>
-
-            <div style={{ position: "relative" }}>
-              <input
-                ref={checkInRef}
-                className="wander-sf-val"
-                type="date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                onClick={() => checkInRef.current?.showPicker()}
-                style={{ paddingRight: "35px" }}
-              />
-
-              <span
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                }}
-              >
-                📅
-              </span>
-            </div>
-          </div>
-          <div className="wander-sf">
-            <div className="wander-sf-label">Travellers</div>
-            <TravellerSelector
-              travellers={travellers}
-              onChange={setTravellers}
-            />
-          </div>
-          <button type="submit" className="wander-search-btn">
-            <SearchIcon /> Search
-          </button>
-        </form>
-      </div>
-
-      {/* ═══ DESTINATIONS ═══ */}
-
-      {/* ═══ RECENTLY VIEWED ═══ */}
-      <div
-        style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}
-      >
-        <RecentlyViewed
-          onSelectDestination={(dest) => {
-            document
-              .getElementById("wander-dest-section")
-              ?.scrollIntoView({ behavior: "smooth" });
-            setWhere(dest.name);
-          }}
-        />
-      </div>
-
-      <section className="wander-section" id="wander-dest-section">
-        <div className="wander-section-header">
-          <div>
-            <div className="wander-section-label">Top Picks</div>
-            <div className="wander-section-title">
-              {loading
-                ? "Loading destinations…"
-                : where.trim()
-                  ? `${filteredDestinations.length} destination${
-                      filteredDestinations.length !== 1 ? "s" : ""
-                    } found`
-                  : "Destinations that steal hearts"}
-            </div>
-          </div>
-          <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
-            <button className="wander-see-all">View all destinations →</button>
-          </Link>
-        </div>
-
-        {/* Editorial 4-card grid */}
-        <div className="wander-dest-grid">
-          {/* TALL card — always Santorini SVG (or first DB item) */}
-          {editorialDests[0] ? (
-            <div
-              className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
-            >
-              <div className="wander-dest-card-img">
-                {editorialDests[0].images?.[0] ? (
-                  <img
-                    src={editorialDests[0].images[0]}
-                    alt={editorialDests[0].name}
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
                     style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
+                      color: "var(--coral)",
+                      fontWeight: 600,
+                      textDecoration: "none",
                     }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <SceneSantorini />
-                )}
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">
-                    {editorialDests[0].name || "Santorini"}
-                  </div>
-                  <div className="wander-dest-country">
-                    {[editorialDests[0].city, editorialDests[0].state]
-                      .filter(Boolean)
-                      .join(", ") || "Greece"}{" "}
-                    •{" "}
-                    {editorialDests[0].entrance_fee_inr === 0
-                      ? "Free Entry"
-                      : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div
-              className="wander-dest-card tall"
-              style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
-            >
-              <div className="wander-dest-card-img">
-                <SceneSantorini />
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">Santorini</div>
-                  <div className="wander-dest-country">
-                    Greece • From ₹1,20,000
-                  </div>
-                </div>
-              </div>
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Sign Up Free →
+                  </Link>
+                </>
+              )}
             </div>
           )}
+        </nav>
 
-          {/* Small cards */}
-          {[
-            {
-              svgScene: <SceneAngkor />,
-              fallbackName: "Angkor Wat",
-              fallbackLoc: "Cambodia • From ₹65,000",
-              bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
-            },
-            {
-              svgScene: <SceneBali />,
-              fallbackName: "Ubud, Bali",
-              fallbackLoc: "Indonesia • From ₹55,000",
-              bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
-            },
-            {
-              svgScene: <SceneSahara />,
-              fallbackName: "Sahara Desert",
-              fallbackLoc: "Morocco • From ₹95,000",
-              bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
-            },
-          ].map((item, idx) => {
-            const dest = editorialDests[idx + 1];
-            return (
+        {/* ═══ HERO ═══ */}
+        <section className="wander-hero">
+          <div className="wander-hero-content">
+            <div className="wander-hero-badge">
+              <div className="wander-dot" />
+              &nbsp;2,400+ destinations worldwide
+            </div>
+            <h1>
+              Travel is the only thing you buy that makes you <em>richer</em>
+            </h1>
+            <p>
+              Curated journeys to the world's most extraordinary places.
+              Handpicked experiences, flawless planning, memories that last
+              forever.
+            </p>
+            <div className="wander-hero-actions">
+              <a href="#wander-dest-section">
+                <button className="wander-btn-primary">
+                  Explore Destinations
+                </button>
+              </a>
+
+              <Link to="/budget-estimator">
+                <button className="wander-btn-ghost">Budget Estimator</button>
+              </Link>
+
+              <Link to={isAuthenticated ? "/dashboard" : "/register"}>
+                <button className="wander-btn-ghost">
+                  {isAuthenticated ? "Dashboard →" : "Start Free"}
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero Visual */}
+          <div className="wander-hero-visual">
+            <div className="wander-hero-card-main">
+              <SceneIceland />
+            </div>
+            <div className="wander-price-tag">
+              <div className="wander-price-label">FROM / PERSON</div>
+              <div className="wander-price-val">
+                ₹89,000 <span>/ 7 nights</span>
+              </div>
+            </div>
+            <div className="wander-stat-tag">
+              <div className="wander-stat-num">4.9★</div>
+              <div className="wander-stat-txt">1,240 reviews</div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ SEARCH BAR ═══ */}
+        <div className="wander-search-section">
+          <form className="wander-search-bar" onSubmit={handleSearch}>
+            <div className="wander-sf" style={{ position: "relative" }}>
+              <div className="wander-sf-label">Where to</div>
+              <input
+                className="wander-sf-val"
+                placeholder="Bali, Indonesia"
+                value={where}
+                onChange={(e) => {
+                  setWhere(e.target.value);
+                  if (recentSearches.length > 0) {
+                    setShowRecentSearches(true);
+                  }
+                }}
+                onFocus={() => {
+                  if (recentSearches.length > 0) {
+                    setShowRecentSearches(true);
+                  }
+                }}
+              />
+              {showRecentSearches && recentSearches.length > 0 && (
+                <div className="wander-recent-searches">
+                  {recentSearches.map((search) => (
+                    <button
+                      key={search}
+                      type="button"
+                      className="wander-recent-search-item"
+                      onMouseDown={() => {
+                        setWhere(search);
+                        setShowRecentSearches(false);
+                      }}
+                    >
+                      {search}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="wander-sf">
+              <div className="wander-sf-label">Check In</div>
+
+              <div style={{ position: "relative" }}>
+                <input
+                  ref={checkInRef}
+                  className="wander-sf-val"
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  onClick={() => checkInRef.current?.showPicker()}
+                  style={{ paddingRight: "35px" }}
+                />
+
+                <span
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  📅
+                </span>
+              </div>
+            </div>
+            <div className="wander-sf">
+              <div className="wander-sf-label">Travellers</div>
+              <input
+                className="wander-sf-val"
+                placeholder="2 Adults, 1 Child"
+                value={travellers}
+                onChange={(e) => setTravellers(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="wander-search-btn">
+              <SearchIcon /> Search
+            </button>
+          </form>
+        </div>
+
+        {/* ═══ DESTINATIONS ═══ */}
+
+        {/* ═══ RECENTLY VIEWED ═══ */}
+        <div
+          style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}
+        >
+          <RecentlyViewed
+            onSelectDestination={(dest) => {
+              document
+                .getElementById("wander-dest-section")
+                ?.scrollIntoView({ behavior: "smooth" });
+              setWhere(dest.name);
+            }}
+          />
+        </div>
+
+        <section className="wander-section" id="wander-dest-section">
+          <div className="wander-section-header">
+            <div>
+              <div className="wander-section-label">Top Picks</div>
+              <div className="wander-section-title">
+                {loading
+                  ? "Loading destinations…"
+                  : where.trim()
+                    ? `${filteredDestinations.length} destination${
+                        filteredDestinations.length !== 1 ? "s" : ""
+                      } found`
+                    : "Destinations that steal hearts"}
+              </div>
+            </div>
+            <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
+              <button className="wander-see-all">
+                View all destinations →
+              </button>
+            </Link>
+          </div>
+
+          {/* Editorial 4-card grid */}
+          <div className="wander-dest-grid">
+            {/* TALL card — always Santorini SVG (or first DB item) */}
+            {editorialDests[0] ? (
               <div
-                key={idx}
-                className="wander-dest-card"
-                style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
+                className="wander-dest-card tall"
+                onClick={() => handleAddTrip(editorialDests[0])}
               >
                 <div className="wander-dest-card-img">
-                  {dest?.images?.[0] ? (
+                  {editorialDests[0].images?.[0] ? (
                     <img
-                      src={dest.images[0]}
-                      alt={dest.name}
+                      src={editorialDests[0].images[0]}
+                      alt={editorialDests[0].name}
                       style={{
                         position: "absolute",
                         inset: 0,
@@ -1040,174 +949,277 @@ const Home = () => {
                       }}
                     />
                   ) : (
-                    item.svgScene
+                    <SceneSantorini />
                   )}
                   <div className="wander-dest-overlay" />
+                  <div className="wander-dest-tag">Trending</div>
                   <div className="wander-dest-info">
                     <div className="wander-dest-name">
-                      {dest?.name || item.fallbackName}
+                      {editorialDests[0].name || "Santorini"}
                     </div>
                     <div className="wander-dest-country">
-                      {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
-                        : item.fallbackLoc}
+                      {[editorialDests[0].city, editorialDests[0].state]
+                        .filter(Boolean)
+                        .join(", ") || "Greece"}{" "}
+                      •{" "}
+                      {editorialDests[0].entrance_fee_inr === 0
+                        ? "Free Entry"
+                        : editorialDests[0].entrance_fee_inr
+                          ? `₹${editorialDests[0].entrance_fee_inr}`
+                          : "Explore"}
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ═══ FEATURES ═══ */}
-      <section className="wander-features-section" id="wander-features">
-        <div
-          style={{ textAlign: "center", maxWidth: 500, margin: "0 auto 1rem" }}
-        >
-          <div className="wander-section-label" style={{ textAlign: "center" }}>
-            Why PackGo
-          </div>
-          <div className="wander-section-title" style={{ textAlign: "center" }}>
-            Travel smarter,
-            <br />
-            not harder
-          </div>
-        </div>
-        <div className="wander-feat-grid">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="wander-feat-card">
-              <div className="wander-feat-icon">{f.icon}</div>
-              <div className="wander-feat-title">{f.title}</div>
-              <div className="wander-feat-desc">{f.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <FAQSection />
-
-      {/* ═══ TESTIMONIAL ═══ */}
-      <section className="wander-testi-section" id="wander-testimonials">
-        <div>
-          <div className="wander-testi-label">Traveller Stories</div>
-          <div className="wander-testi-heading">
-            Journeys that changed everything
-          </div>
-
-          <div className="wander-testi-quote-container">
-            <div className="wander-testi-quote-track">
-              {REVIEWS.map((review, index) => (
-                <div className="wander-testi-card-slide" key={index}>
-                  <div className="wander-stars">{review.stars}</div>
-                  <p className="wander-testi-quote">{review.quote}</p>
-                  <div className="wander-testi-author">
-                    <div className="wander-author-avatar">{review.avatar}</div>
-                    <div>
-                      <div className="wander-author-name">{review.name}</div>
-                      <div className="wander-author-loc">{review.loc}</div>
+            ) : (
+              <div
+                className="wander-dest-card tall"
+                style={{
+                  background: "linear-gradient(135deg,#2D5986,#0F3A5C)",
+                }}
+              >
+                <div className="wander-dest-card-img">
+                  <SceneSantorini />
+                  <div className="wander-dest-overlay" />
+                  <div className="wander-dest-tag">Trending</div>
+                  <div className="wander-dest-info">
+                    <div className="wander-dest-name">Santorini</div>
+                    <div className="wander-dest-country">
+                      Greece • From ₹1,20,000
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            )}
+
+            {/* Small cards */}
+            {[
+              {
+                svgScene: <SceneAngkor />,
+                fallbackName: "Angkor Wat",
+                fallbackLoc: "Cambodia • From ₹65,000",
+                bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
+              },
+              {
+                svgScene: <SceneBali />,
+                fallbackName: "Ubud, Bali",
+                fallbackLoc: "Indonesia • From ₹55,000",
+                bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
+              },
+              {
+                svgScene: <SceneSahara />,
+                fallbackName: "Sahara Desert",
+                fallbackLoc: "Morocco • From ₹95,000",
+                bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
+              },
+            ].map((item, idx) => {
+              const dest = editorialDests[idx + 1];
+              return (
+                <div
+                  key={idx}
+                  className="wander-dest-card"
+                  style={{ background: item.bg }}
+                  onClick={() => dest && handleAddTrip(dest)}
+                >
+                  <div className="wander-dest-card-img">
+                    {dest?.images?.[0] ? (
+                      <img
+                        src={dest.images[0]}
+                        alt={dest.name}
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      item.svgScene
+                    )}
+                    <div className="wander-dest-overlay" />
+                    <div className="wander-dest-info">
+                      <div className="wander-dest-name">
+                        {dest?.name || item.fallbackName}
+                      </div>
+                      <div className="wander-dest-country">
+                        {dest
+                          ? [dest.city, dest.state]
+                              .filter(Boolean)
+                              .join(", ") || item.fallbackLoc
+                          : item.fallbackLoc}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ═══ FEATURES ═══ */}
+        <section className="wander-features-section" id="wander-features">
+          <div
+            style={{
+              textAlign: "center",
+              maxWidth: 500,
+              margin: "0 auto 1rem",
+            }}
+          >
+            <div
+              className="wander-section-label"
+              style={{ textAlign: "center" }}
+            >
+              Why PackGo
+            </div>
+            <div
+              className="wander-section-title"
+              style={{ textAlign: "center" }}
+            >
+              Travel smarter,
+              <br />
+              not harder
             </div>
           </div>
-        </div>
+          <div className="wander-feat-grid">
+            {FEATURES.map((f, i) => (
+              <div key={i} className="wander-feat-card">
+                <div className="wander-feat-icon">{f.icon}</div>
+                <div className="wander-feat-title">{f.title}</div>
+                <div className="wander-feat-desc">{f.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+        <FAQSection />
 
-        {/* Right Side Metrics Box Grid (Remains unshifted) */}
-        <div className="wander-stats-grid">
-          {STATS.map((s, i) => (
-            <div key={i} className="wander-stat-box">
-              <div className="wander-stat-big">{s.big}</div>
-              <div className="wander-stat-desc">{s.desc}</div>
+        {/* ═══ TESTIMONIAL ═══ */}
+        <section className="wander-testi-section" id="wander-testimonials">
+          <div>
+            <div className="wander-testi-label">Traveller Stories</div>
+            <div className="wander-testi-heading">
+              Journeys that changed everything
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* ═══ CTA BANNER ═══ */}
-      <div className="wander-cta-section">
-        <div className="wander-cta-text">
-          <h2>
-            Your next adventure
-            <br />
-            is one click away
-          </h2>
-          <p>Join 40,000+ travellers who explored the world with PackGo</p>
-        </div>
-        <div className="wander-cta-actions">
-          <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
-            <button className="wander-btn-primary">
-              {isAuthenticated ? "Plan My Trip" : "Create Free Account"}
-            </button>
-          </Link>
-          {!isAuthenticated && (
-            <Link to="/login">
-              <button className="wander-btn-ghost">Log In</button>
+            <div className="wander-testi-quote-container">
+              <div className="wander-testi-quote-track">
+                {REVIEWS.map((review, index) => (
+                  <div className="wander-testi-card-slide" key={index}>
+                    <div className="wander-stars">{review.stars}</div>
+                    <p className="wander-testi-quote">{review.quote}</p>
+                    <div className="wander-testi-author">
+                      <div className="wander-author-avatar">
+                        {review.avatar}
+                      </div>
+                      <div>
+                        <div className="wander-author-name">{review.name}</div>
+                        <div className="wander-author-loc">{review.loc}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side Metrics Box Grid (Remains unshifted) */}
+          <div className="wander-stats-grid">
+            {STATS.map((s, i) => (
+              <div key={i} className="wander-stat-box">
+                <div className="wander-stat-big">{s.big}</div>
+                <div className="wander-stat-desc">{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ═══ CTA BANNER ═══ */}
+        <div className="wander-cta-section">
+          <div className="wander-cta-text">
+            <h2>
+              Your next adventure
+              <br />
+              is one click away
+            </h2>
+            <p>Join 40,000+ travellers who explored the world with PackGo</p>
+          </div>
+          <div className="wander-cta-actions">
+            <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
+              <button className="wander-btn-primary">
+                {isAuthenticated ? "Plan My Trip" : "Create Free Account"}
+              </button>
             </Link>
-          )}
+            {!isAuthenticated && (
+              <Link to="/login">
+                <button className="wander-btn-ghost">Log In</button>
+              </Link>
+            )}
+          </div>
         </div>
+
+        {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
+        <footer className="wander-footer">
+          <div className="wander-footer-top">
+            <div className="wander-footer-brand">
+              <ScrollLink to="/" className="wander-footer-logo">
+                Pack<span>Go</span>
+              </ScrollLink>
+              <p>
+                Discover breathtaking destinations, curated travel experiences,
+                and unforgettable journeys with PackGo Travel.
+              </p>
+            </div>
+
+            <div className="wander-footer-links-wrapper">
+              <div className="wander-footer-col">
+                <h4>Explore</h4>
+                <a href="#wander-dest-section">Destinations</a>
+                <a href="#wander-testimonials">Experiences</a>
+                <a href="#wander-features">Features</a>
+                <a href="#wander-testimonials">Testimonials</a>
+              </div>
+
+              <div className="wander-footer-col">
+                <h4>Company</h4>
+                <ScrollLink to="/about">About</ScrollLink>
+                <ScrollLink to="/careers">Careers</ScrollLink>
+                <ScrollLink to="/contact">Contact</ScrollLink>
+                <ScrollLink to="/travel-checklist">Travel Checklist</ScrollLink>
+              </div>
+
+              <div className="wander-footer-col">
+                <h4>Support</h4>
+                <ScrollLink to="/help">Help Center</ScrollLink>
+                <ScrollLink to="/privacy">Privacy Policy</ScrollLink>
+                <ScrollLink to="/terms">Terms & Conditions</ScrollLink>
+              </div>
+            </div>
+          </div>
+
+          <div className="wander-footer-bottom">
+            <div className="wander-footer-copy">
+              © {new Date().getFullYear()} PackGo Travel Co. All rights
+              reserved.
+            </div>
+            <div className="wander-footer-socials">
+              <a href="/" aria-label="Facebook">
+                <FaFacebook />
+              </a>
+
+              <a href="/" aria-label="Instagram">
+                <FaInstagram />
+              </a>
+
+              <a href="/" aria-label="Twitter">
+                <FaXTwitter />
+              </a>
+            </div>
+          </div>
+        </footer>
       </div>
-
-      {/* ═══ FOOTER (UPDATED with <Link> for routing) ═══ */}
-      <footer className="wander-footer">
-        <div className="wander-footer-top">
-          <div className="wander-footer-brand">
-            <ScrollLink to="/" className="wander-footer-logo">
-              Pack<span>Go</span>
-            </ScrollLink>
-            <p>
-              Discover breathtaking destinations, curated travel experiences,
-              and unforgettable journeys with PackGo Travel.
-            </p>
-          </div>
-
-          <div className="wander-footer-links-wrapper">
-            <div className="wander-footer-col">
-              <h4>Explore</h4>
-              <a href="#wander-dest-section">Destinations</a>
-              <a href="#wander-testimonials">Experiences</a>
-              <a href="#wander-features">Features</a>
-              <a href="#wander-testimonials">Testimonials</a>
-            </div>
-
-            <div className="wander-footer-col">
-              <h4>Company</h4>
-              <ScrollLink to="/about">About</ScrollLink>
-              <ScrollLink to="/careers">Careers</ScrollLink>
-              <ScrollLink to="/contact">Contact</ScrollLink>
-              <ScrollLink to="/travel-checklist">Travel Checklist</ScrollLink>
-            </div>
-
-            <div className="wander-footer-col">
-              <h4>Support</h4>
-              <ScrollLink to="/help">Help Center</ScrollLink>
-              <ScrollLink to="/privacy">Privacy Policy</ScrollLink>
-              <ScrollLink to="/terms">Terms & Conditions</ScrollLink>
-            </div>
-          </div>
-        </div>
-
-        <div className="wander-footer-bottom">
-          <div className="wander-footer-copy">
-            © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
-          </div>
-          <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
-            </a>
-
-            <a href="/" aria-label="Instagram">
-              <FaInstagram />
-            </a>
-
-            <a href="/" aria-label="Twitter">
-              <FaXTwitter />
-            </a>
-          </div>
-        </div>
-      </footer>
-    </div>
     </PageTransition>
   );
 };

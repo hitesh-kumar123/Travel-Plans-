@@ -48,28 +48,31 @@ const GoogleAuthSection = ({ onSuccess }) => {
 
   return (
     <PageTransition>
-    <>
-      <Divider sx={{ my: 3 }}>
-        <Typography variant="body2" color="text.secondary">
-          OR
-        </Typography>
-      </Divider>
+      <>
+        <Divider sx={{ my: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            OR
+          </Typography>
+        </Divider>
 
-      {/* Container measured so we can feed exact px width to GoogleLogin */}
-      <Box ref={containerRef} sx={{ width: "100%", overflow: "hidden", mb: 3 }}>
-        {buttonWidth !== null && (
-          <GoogleLogin
-            theme="outlined"
-            width={buttonWidth}
-            shape="pill"
-            text="continue_with"
-            size="large"
-            onSuccess={onSuccess}
-            onError={() => console.log("Google Login failed")}
-          />
-        )}
-      </Box>
-    </>
+        {/* Container measured so we can feed exact px width to GoogleLogin */}
+        <Box
+          ref={containerRef}
+          sx={{ width: "100%", overflow: "hidden", mb: 3 }}
+        >
+          {buttonWidth !== null && (
+            <GoogleLogin
+              theme="outlined"
+              width={buttonWidth}
+              shape="pill"
+              text="continue_with"
+              size="large"
+              onSuccess={onSuccess}
+              onError={() => console.log("Google Login failed")}
+            />
+          )}
+        </Box>
+      </>
     </PageTransition>
   );
 };
@@ -190,199 +193,199 @@ const Login = () => {
 
   return (
     <PageTransition>
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        backgroundColor: theme.palette.background.default,
-      }}
-    >
-      {!isMobile && (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
+        {!isMobile && (
+          <Box
+            sx={{
+              flex: 1,
+              backgroundImage:
+                "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              position: "sticky",
+              top: 0,
+              height: "100vh",
+              alignSelf: "flex-start",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
+                backdropFilter: "blur(2px)",
+              }}
+            />
+            <Box sx={{ position: "relative", p: 6, color: "white" }}>
+              <Typography
+                variant="h3"
+                component="h1"
+                sx={{ fontWeight: 700, mb: 2 }}
+              >
+                PackGo
+              </Typography>
+              <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
+                Your ultimate companion for discovering and planning your dream
+                adventures
+              </Typography>
+            </Box>
+          </Box>
+        )}
+
         <Box
           sx={{
             flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=1887&auto=format&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            position: "sticky",
-            top: 0,
-            height: "100vh",
-            alignSelf: "flex-start",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-end",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              backdropFilter: "blur(2px)",
-            }}
-          />
-          <Box sx={{ position: "relative", p: 6, color: "white" }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{ fontWeight: 700, mb: 2 }}
+          <Box sx={{ maxWidth: 480, width: "100%" }}>
+            <Box sx={{ textAlign: "center", mb: 5 }}>
+              <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
+                Welcome Back
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Sign in to continue to PackGo
+              </Typography>
+            </Box>
+
+            <Paper
+              elevation={isMobile ? 1 : 0}
+              sx={{
+                p: 4,
+                borderRadius: 4,
+                border: !isMobile ? "1px solid" : "none",
+                borderColor: "divider",
+              }}
             >
-              PackGo
-            </Typography>
-            <Typography variant="h5" sx={{ mb: 4, maxWidth: "80%" }}>
-              Your ultimate companion for discovering and planning your dream
-              adventures
-            </Typography>
-          </Box>
-        </Box>
-      )}
-
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 4,
-        }}
-      >
-        <Box sx={{ maxWidth: 480, width: "100%" }}>
-          <Box sx={{ textAlign: "center", mb: 5 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-              Welcome Back
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Sign in to continue to PackGo
-            </Typography>
-          </Box>
-
-          <Paper
-            elevation={isMobile ? 1 : 0}
-            sx={{
-              p: 4,
-              borderRadius: 4,
-              border: !isMobile ? "1px solid" : "none",
-              borderColor: "divider",
-            }}
-          >
-            <form onSubmit={handleSubmit}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                value={formData.email}
-                onChange={handleChange}
-                error={!!errors.email}
-                helperText={errors.email}
-                sx={{ mb: 3 }}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                value={formData.password}
-                onChange={handleChange}
-                error={!!errors.password}
-                helperText={errors.password}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={toggleShowPassword}
-                          edge="end"
-                        >
-                          {showPassword ? (
-                            <VisibilityOffIcon />
-                          ) : (
-                            <VisibilityIcon />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-                sx={{ mb: 1 }}
-              />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 3,
-                }}
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Remember me"
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                  sx={{ mb: 3 }}
                 />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  autoComplete="current-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={toggleShowPassword}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                  sx={{ mb: 1 }}
+                />
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 3,
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="Remember me"
+                  />
+                  <Link
+                    component={RouterLink}
+                    to="/forgot-password"
+                    variant="body2"
+                  >
+                    Forgot password?
+                  </Link>
+                </Box>
+
+                <PrimaryButton
+                  type="submit"
+                  fullWidth
+                  size="large"
+                  disabled={isSignInDisabled() || loading}
+                >
+                  {loading ? <FaSpinner className="spin" /> : "Sign In"}
+                </PrimaryButton>
+
+                <GoogleAuthSection onSuccess={handleGoogleSuccess} />
+              </form>
+            </Paper>
+
+            <Box sx={{ mt: 4, textAlign: "center" }}>
+              <Typography variant="body2">
+                Don't have an account?{" "}
                 <Link
                   component={RouterLink}
-                  to="/forgot-password"
-                  variant="body2"
+                  to="/register"
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600 }}
                 >
-                  Forgot password?
+                  Get started
                 </Link>
-              </Box>
+              </Typography>
+            </Box>
+          </Box>
 
-              <PrimaryButton
-                type="submit"
-                fullWidth
-                size="large"
-                disabled={isSignInDisabled() || loading}
-              >
-                {loading ? <FaSpinner className="spin" /> : "Sign In"}
-              </PrimaryButton>
-
-              <GoogleAuthSection onSuccess={handleGoogleSuccess} />
-            </form>
-          </Paper>
-
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="body2">
-              Don't have an account?{" "}
-              <Link
-                component={RouterLink}
-                to="/register"
-                variant="subtitle2"
-                sx={{ fontWeight: 600 }}
-              >
-                Get started
-              </Link>
+          <Box sx={{ mt: "auto", textAlign: "center", pt: 4 }}>
+            <Typography variant="body2" color="text.secondary">
+              © {new Date().getFullYear()} PackGo. All rights reserved.
             </Typography>
           </Box>
         </Box>
-
-        <Box sx={{ mt: "auto", textAlign: "center", pt: 4 }}>
-          <Typography variant="body2" color="text.secondary">
-            © {new Date().getFullYear()} PackGo. All rights reserved.
-          </Typography>
-        </Box>
       </Box>
-    </Box>
     </PageTransition>
   );
 };

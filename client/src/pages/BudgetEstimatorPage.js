@@ -76,70 +76,71 @@ const BudgetEstimatorPage = () => {
 
   return (
     <PageTransition>
-    <>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          padding: "40px 20px",
-        }}
-      >
-        {/* TITLE */}
-        <Typography
-          variant="h2"
-          fontWeight="700"
-          align="center"
+      <>
+        <Box
           sx={{
-            letterSpacing: "0.5px",
-            color: "#0d47a1",
+            minHeight: "100vh",
+            padding: "40px 20px",
           }}
-          mb={1}
         >
-          Smart Trip Budget Estimator
-        </Typography>
+          {/* TITLE */}
+          <Typography
+            variant="h2"
+            fontWeight="700"
+            align="center"
+            sx={{
+              letterSpacing: "0.5px",
+              color: "#0d47a1",
+            }}
+            mb={1}
+          >
+            Smart Trip Budget Estimator
+          </Typography>
 
-        <Typography
-          align="center"
-          color="text.secondary"
-          mb={5}
-          sx={{ fontSize: "16px" }}
-        >
-          Estimate accommodation, food, transport and activity costs instantly.
-        </Typography>
+          <Typography
+            align="center"
+            color="text.secondary"
+            mb={5}
+            sx={{ fontSize: "16px" }}
+          >
+            Estimate accommodation, food, transport and activity costs
+            instantly.
+          </Typography>
 
-        {/* FORMS */}
-        <BudgetForm
-          form={form}
-          currency={currency}
-          handleChange={handleChange}
-          setCurrency={setCurrency}
-          handleReset={handleReset}
-        />
-        {/* RESULT CARDS */}
-        <BudgetBreakdown
-          hotelCost={hotelCost}
-          transportCost={transportCost}
-          foodCost={foodCost}
-          activitiesCost={activitiesCost}
-          miscCost={miscCost}
-          total={total}
-          form={form}
-          currency={currency}
-          currencySymbols={currencySymbols}
-          convertCurrency={convertCurrency}
-        />
+          {/* FORMS */}
+          <BudgetForm
+            form={form}
+            currency={currency}
+            handleChange={handleChange}
+            setCurrency={setCurrency}
+            handleReset={handleReset}
+          />
+          {/* RESULT CARDS */}
+          <BudgetBreakdown
+            hotelCost={hotelCost}
+            transportCost={transportCost}
+            foodCost={foodCost}
+            activitiesCost={activitiesCost}
+            miscCost={miscCost}
+            total={total}
+            form={form}
+            currency={currency}
+            currencySymbols={currencySymbols}
+            convertCurrency={convertCurrency}
+          />
 
-        {/* TRIP SUMMARY */}
-        <TripSummary
-          form={form}
-          budgetLevel={budgetLevel}
-          isValid={isValid}
-          currency={currency}
-          currencySymbols={currencySymbols}
-          convertedTotal={convertedTotal}
-          convertedPerDay={convertedPerDay}
-        />
-      </Box>
-    </>
+          {/* TRIP SUMMARY */}
+          <TripSummary
+            form={form}
+            budgetLevel={budgetLevel}
+            isValid={isValid}
+            currency={currency}
+            currencySymbols={currencySymbols}
+            convertedTotal={convertedTotal}
+            convertedPerDay={convertedPerDay}
+          />
+        </Box>
+      </>
     </PageTransition>
   );
 };
