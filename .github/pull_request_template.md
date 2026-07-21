@@ -10,7 +10,7 @@ assignees: ""
 
 <!-- Use "Closes #123" to auto-close the issue when PR is merged -->
 
-Closes #issue_number
+Closes #1349
 
 ---
 
@@ -64,7 +64,8 @@ Closes #issue_number
 | No scroll animations on page sections | framer-motion fade-up and stagger animations on all major sections |
 | Basic card hover effects (simple translateY) | Enhanced hover with scale, deeper shadows, and coral accent borders |
 | Default MUI theme colors | Updated MUI theme aligned with Wander brand palette |
-
+![afer changes](<Screenshot From 2026-07-21 14-42-29.png>)
+![before image](image.png)
 ---
 
 ## 📝 Documentation Updates
