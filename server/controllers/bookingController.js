@@ -418,10 +418,30 @@ exports.searchPlaces = async (req, res) => {
       kinds,
     });
 
+    const Destination = require("../models/Destination");
+    let dbDestinations = [];
+    try {
+      dbDestinations = await Destination.find({
+        $or: [
+          { city: new RegExp(city.name, "i") },
+          { state: new RegExp(destination, "i") },
+        ],
+      });
+    } catch (e) {
+      // Ignore error if DB is unreachable
+    }
+
     let places = rawPois
       .filter((poi) => hasPlausibleName(poi.name))
       .map((poi) => {
         const rank = rateToRank(poi.rate);
+        const poiNameLower = poi.name.toLowerCase();
+        const matchedDest = dbDestinations.find(
+          (d) =>
+            d.name &&
+            (d.name.toLowerCase().includes(poiNameLower) ||
+              poiNameLower.includes(d.name.toLowerCase())),
+        );
         return {
           id: poi.xid,
           name: poi.name,
@@ -432,6 +452,7 @@ exports.searchPlaces = async (req, res) => {
           coordinates: poi.point,
           price: estimateEntryFee(poi, rank),
           currency: "INR",
+          images: matchedDest?.images?.length ? matchedDest.images : [],
           bookingLinks: buildBookingLinks(poi.name, city.name),
         };
       });
