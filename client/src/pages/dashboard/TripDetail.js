@@ -59,6 +59,7 @@ import {
   addExpense,
   deleteExpense,
 } from "../../redux/actions/expenseActions";
+import WeatherWidget from "../../components/WeatherWidget";
 
 const STATUS_COLORS = {
   planned: "primary",
@@ -157,10 +158,19 @@ const TripDetail = () => {
   const totalSpent = expenses
     ? expenses.reduce((acc, e) => acc + e.amount, 0)
     : 0;
-  const budgetPercent =
-    currentTrip?.budget > 0
-      ? Math.min((totalSpent / currentTrip.budget) * 100, 100)
-      : 0;
+  // const budgetPercent =
+  //   currentTrip?.budget > 0
+  //     ? Math.min((totalSpent / currentTrip.budget) * 100, 100)
+  //     : 0;
+
+  const actualBudgetPercent =
+    currentTrip.budget > 0 ? (totalSpent / currentTrip.budget) * 100 : 0;
+
+  const budgetPercent = Math.min(actualBudgetPercent, 100);
+
+  const overBudget = Math.max(totalSpent - currentTrip.budget, 0);
+
+  const isOverBudget = totalSpent > currentTrip.budget;
 
   const tripDataForBudget = {
     destination: currentTrip?.destination || currentTrip?.name || "",
@@ -384,6 +394,11 @@ const TripDetail = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Smart Weather Widget — auto-loads forecast for this trip's destination */}
+      {currentTrip?.destination && (
+        <WeatherWidget destination={currentTrip.destination} />
+      )}
 
       <Grid container spacing={3}>
         {/* Left Column */}
@@ -614,16 +629,16 @@ const TripDetail = () => {
                   fontWeight={700}
                   color={budgetPercent > 90 ? "error.main" : "success.main"}
                 >
-                  {budgetPercent.toFixed(1)}%
+                  {actualBudgetPercent.toFixed(1)}%
                 </Typography>
               </Box>
               <LinearProgress
                 variant="determinate"
                 value={budgetPercent}
                 color={
-                  budgetPercent > 90
+                  isOverBudget
                     ? "error"
-                    : budgetPercent > 70
+                    : actualBudgetPercent > 70
                       ? "warning"
                       : "success"
                 }
@@ -639,6 +654,16 @@ const TripDetail = () => {
                   Budget: ₹{(currentTrip.budget || 0).toLocaleString()}
                 </Typography>
               </Box>
+              {isOverBudget && (
+                <Typography
+                  variant="body2"
+                  color="error.main"
+                  fontWeight={600}
+                  sx={{ mt: 1 }}
+                >
+                  ⚠ Budget Exceeded by ₹{overBudget.toLocaleString()}
+                </Typography>
+              )}
             </Paper>
           )}
 
@@ -662,7 +687,6 @@ const TripDetail = () => {
               </Typography>
             </Paper>
           )}
-
           {/* Accommodation */}
           {currentTrip.accommodation?.name && (
             <Paper
@@ -700,7 +724,6 @@ const TripDetail = () => {
               )}
             </Paper>
           )}
-
           {/* Transportation */}
           {currentTrip.transportation?.type && (
             <Paper

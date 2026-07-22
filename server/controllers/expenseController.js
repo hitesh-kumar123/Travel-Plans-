@@ -4,10 +4,32 @@ const Trip = require("../models/Trip");
 // Get all expenses for a user (across all trips) - for analytics
 exports.getAllUserExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user.id })
-      .populate("trip", "destination startDate endDate")
-      .sort({ date: -1 });
-    res.json(expenses);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const [expenses, total] = await Promise.all([
+      Expense.find({ user: req.user.id })
+        .populate("trip", "destination startDate endDate")
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit),
+      Expense.countDocuments({ user: req.user.id }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: expenses,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -18,6 +40,9 @@ exports.getAllUserExpenses = async (req, res) => {
 exports.createExpense = async (req, res) => {
   try {
     const { trip, amount, currency, category, description, date } = req.body;
+    if (typeof trip !== "string") {
+      return res.status(400).json({ msg: "Invalid trip identifier" });
+    }
 
     // Validate amount: must be a positive number
     const parsedAmount = parseFloat(amount);
@@ -36,7 +61,21 @@ exports.createExpense = async (req, res) => {
     if (!tripExists) {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
+    const expenseDate = new Date(date || Date.now());
 
+    if (isNaN(expenseDate.getTime())) {
+      return res.status(400).json({
+        msg: "Invalid expense date.",
+      });
+    }
+    if (
+      expenseDate < tripExists.startDate ||
+      expenseDate > tripExists.endDate
+    ) {
+      return res.status(400).json({
+        msg: `Expense date must be between ${tripExists.startDate.toDateString()} and ${tripExists.endDate.toDateString()}.`,
+      });
+    }
     const newExpense = new Expense({
       user: req.user.id,
       trip,
@@ -44,7 +83,7 @@ exports.createExpense = async (req, res) => {
       currency,
       category,
       description,
-      date: date || Date.now(),
+      date: expenseDate,
     });
 
     const expense = await newExpense.save();
@@ -70,8 +109,28 @@ exports.getTripExpenses = async (req, res) => {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
 
-    const expenses = await Expense.find({ trip: tripId }).sort({ date: -1 });
-    res.json(expenses);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const [expenses, total] = await Promise.all([
+      Expense.find({ trip: tripId }).sort({ date: -1 }).skip(skip).limit(limit),
+      Expense.countDocuments({ trip: tripId }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: expenses,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
@@ -84,22 +143,20 @@ exports.getTripExpenses = async (req, res) => {
 // Get expense by ID
 exports.getExpense = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
-    }
-
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     res.json(expense);
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -108,15 +165,20 @@ exports.getExpense = async (req, res) => {
 // Update expense
 exports.updateExpense = async (req, res) => {
   try {
-    let expense = await Expense.findById(req.params.id);
+    let expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+    const trip = await Trip.findById(expense.trip);
+    if (!trip) {
+      return res.status(404).json({
+        msg: "Associated trip not found.",
+      });
     }
 
     const { amount, currency, category, description, date } = req.body;
@@ -137,19 +199,39 @@ exports.updateExpense = async (req, res) => {
     if (currency) expenseFields.currency = currency;
     if (category) expenseFields.category = category;
     if (description) expenseFields.description = description;
-    if (date) expenseFields.date = date;
+    if (date) {
+      const expenseDate = new Date(date);
 
-    expense = await Expense.findByIdAndUpdate(
-      req.params.id,
+      if (isNaN(expenseDate.getTime())) {
+        return res.status(400).json({
+          msg: "Invalid expense date.",
+        });
+      }
+
+      if (expenseDate < trip.startDate || expenseDate > trip.endDate) {
+        return res.status(400).json({
+          msg: `Expense date must be between ${trip.startDate.toDateString()} and ${trip.endDate.toDateString()}.`,
+        });
+      }
+
+      expenseFields.date = expenseDate;
+    }
+
+    expense = await Expense.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
       { $set: expenseFields },
       { new: true },
     );
+
+    if (!expense) {
+      return res.status(403).json({ message: "Access denied" });
+    }
 
     res.json(expense);
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -158,15 +240,13 @@ exports.updateExpense = async (req, res) => {
 // Delete expense
 exports.deleteExpense = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     if (!expense) {
-      return res.status(404).json({ msg: "Expense not found" });
-    }
-
-    // Check if expense belongs to user
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     await expense.deleteOne();
@@ -174,7 +254,7 @@ exports.deleteExpense = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Expense not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
