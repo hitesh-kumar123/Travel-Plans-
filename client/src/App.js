@@ -29,6 +29,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
+import DestinationDetail from "./pages/DestinationDetail";
 import EmailVerification from "./pages/EmailVerification";
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/destination/:id" element={<DestinationDetail />} />
               <Route path="/travel-checklist" element={<TravelChecklist />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />

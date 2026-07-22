@@ -931,46 +931,85 @@ const Home = () => {
           {editorialDests[0] ? (
             <div
               className="wander-dest-card tall"
-              onClick={() => handleAddTrip(editorialDests[0])}
+              style={{ position: "relative" }}
             >
-              <div className="wander-dest-card-img">
-                {editorialDests[0].images?.[0] ? (
-                  <img
-                    src={editorialDests[0].images[0]}
-                    alt={editorialDests[0].name}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <SceneSantorini />
-                )}
-                <div className="wander-dest-overlay" />
-                <div className="wander-dest-tag">Trending</div>
-                <div className="wander-dest-info">
-                  <div className="wander-dest-name">
-                    {editorialDests[0].name || "Santorini"}
-                  </div>
-                  <div className="wander-dest-country">
-                    {[editorialDests[0].city, editorialDests[0].state]
-                      .filter(Boolean)
-                      .join(", ") || "Greece"}{" "}
-                    •{" "}
-                    {editorialDests[0].entrance_fee_inr === 0
-                      ? "Free Entry"
-                      : editorialDests[0].entrance_fee_inr
-                        ? `₹${editorialDests[0].entrance_fee_inr}`
-                        : "Explore"}
+              <Link
+                to={`/destination/${editorialDests[0]._id}`}
+                style={{
+                  display: "block",
+                  height: "100%",
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
+              >
+                <div className="wander-dest-card-img">
+                  {editorialDests[0].images?.[0] ? (
+                    <img
+                      src={editorialDests[0].images[0]}
+                      alt={editorialDests[0].name}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <SceneSantorini />
+                  )}
+                  <div className="wander-dest-overlay" />
+                  <div className="wander-dest-tag">Trending</div>
+                  <div
+                    className="wander-dest-info"
+                    style={{ paddingBottom: "4.5rem" }}
+                  >
+                    <div className="wander-dest-name">
+                      {editorialDests[0].name || "Santorini"}
+                    </div>
+                    <div className="wander-dest-country">
+                      {[editorialDests[0].city, editorialDests[0].state]
+                        .filter(Boolean)
+                        .join(", ") || "Greece"}{" "}
+                      •{" "}
+                      {editorialDests[0].entrance_fee_inr === 0
+                        ? "Free Entry"
+                        : editorialDests[0].entrance_fee_inr
+                          ? `₹${editorialDests[0].entrance_fee_inr}`
+                          : "Explore"}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
+              <button
+                className="wander-add-trip-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddTrip(editorialDests[0]);
+                }}
+                style={{
+                  position: "absolute",
+                  bottom: "1.25rem",
+                  right: "1.25rem",
+                  zIndex: 2,
+                  background: "var(--coral)",
+                  color: "white",
+                  border: "none",
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "100px",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  boxShadow: "0 4px 12px rgba(232,115,90,0.3)",
+                  fontFamily: "inherit",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                Add to Trip +
+              </button>
             </div>
           ) : (
             <div
@@ -1017,41 +1056,91 @@ const Home = () => {
               <div
                 key={idx}
                 className="wander-dest-card"
-                style={{ background: item.bg }}
-                onClick={() => dest && handleAddTrip(dest)}
+                style={{ background: item.bg, position: "relative" }}
               >
-                <div className="wander-dest-card-img">
-                  {dest?.images?.[0] ? (
-                    <img
-                      src={dest.images[0]}
-                      alt={dest.name}
+                {dest ? (
+                  <>
+                    <Link
+                      to={`/destination/${dest._id}`}
+                      style={{
+                        display: "block",
+                        height: "100%",
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      <div className="wander-dest-card-img">
+                        {dest.images?.[0] ? (
+                          <img
+                            src={dest.images[0]}
+                            alt={dest.name}
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          item.svgScene
+                        )}
+                        <div className="wander-dest-overlay" />
+                        <div
+                          className="wander-dest-info"
+                          style={{ paddingBottom: "4.5rem" }}
+                        >
+                          <div className="wander-dest-name">{dest.name}</div>
+                          <div className="wander-dest-country">
+                            {[dest.city, dest.state].filter(Boolean).join(", ")}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    <button
+                      className="wander-add-trip-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddTrip(dest);
+                      }}
                       style={{
                         position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
+                        bottom: "1.25rem",
+                        right: "1.25rem",
+                        zIndex: 2,
+                        background: "var(--coral)",
+                        color: "white",
+                        border: "none",
+                        padding: "0.6rem 1.2rem",
+                        borderRadius: "100px",
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(232,115,90,0.3)",
+                        fontFamily: "inherit",
+                        transition: "all 0.2s ease",
                       }}
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    item.svgScene
-                  )}
-                  <div className="wander-dest-overlay" />
-                  <div className="wander-dest-info">
-                    <div className="wander-dest-name">
-                      {dest?.name || item.fallbackName}
-                    </div>
-                    <div className="wander-dest-country">
-                      {dest
-                        ? [dest.city, dest.state].filter(Boolean).join(", ") ||
-                          item.fallbackLoc
-                        : item.fallbackLoc}
+                    >
+                      Add to Trip +
+                    </button>
+                  </>
+                ) : (
+                  <div className="wander-dest-card-img">
+                    {item.svgScene}
+                    <div className="wander-dest-overlay" />
+                    <div className="wander-dest-info">
+                      <div className="wander-dest-name">
+                        {item.fallbackName}
+                      </div>
+                      <div className="wander-dest-country">
+                        {item.fallbackLoc}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
