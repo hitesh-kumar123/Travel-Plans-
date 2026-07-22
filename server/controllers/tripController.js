@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
+const PackingList = require("../models/PackingList");
 
 /**
  * Escape special regex metacharacters in a string so it can be safely
@@ -73,10 +74,31 @@ exports.createTrip = async (req, res) => {
 // Get all trips for a user
 exports.getUserTrips = async (req, res) => {
   try {
-    const trips = await Trip.find({ user: req.user.id }).sort({
-      startDate: -1,
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const [trips, total] = await Promise.all([
+      Trip.find({ user: req.user.id })
+        .sort({ startDate: -1 })
+        .skip(skip)
+        .limit(limit),
+      Trip.countDocuments({ user: req.user.id }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: trips,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
     });
-    res.json(trips);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -86,22 +108,17 @@ exports.getUserTrips = async (req, res) => {
 // Get a specific trip
 exports.getTrip = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
-    }
-
-    // Make sure user owns the trip
-    if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     res.json(trip);
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -110,15 +127,10 @@ exports.getTrip = async (req, res) => {
 // Update a trip
 exports.updateTrip = async (req, res) => {
   try {
-    let trip = await Trip.findById(req.params.id);
+    let trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
-    }
-
-    // Make sure user owns the trip
-    if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     if (req.body.budget !== undefined && req.body.budget < 0) {
@@ -163,7 +175,7 @@ exports.updateTrip = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -172,25 +184,21 @@ exports.updateTrip = async (req, res) => {
 // Delete a trip
 exports.deleteTrip = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!trip) {
-      return res.status(404).json({ msg: "Trip not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    // Make sure user owns the trip
-    if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
-    }
-
-    // Also delete all expenses for this trip
+    // Also delete all expenses and the packing list for this trip
     await Expense.deleteMany({ trip: req.params.id });
+    await PackingList.deleteOne({ trip: req.params.id });
     await trip.deleteOne();
     res.json({ msg: "Trip removed" });
   } catch (err) {
     console.error(err.message);
     if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Trip not found" });
+      return res.status(403).json({ message: "Access denied" });
     }
     res.status(500).send("Server error");
   }
@@ -198,10 +206,8 @@ exports.deleteTrip = async (req, res) => {
 // Generate shareable link for a trip
 exports.shareTrip = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
-    if (!trip) return res.status(404).json({ msg: "Trip not found" });
-    if (trip.user.toString() !== req.user.id)
-      return res.status(401).json({ msg: "User not authorized" });
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
+    if (!trip) return res.status(403).json({ message: "Access denied" });
 
     const token = crypto.randomBytes(20).toString("hex");
     trip.shareToken = token;
@@ -211,6 +217,9 @@ exports.shareTrip = async (req, res) => {
     res.json({ shareToken: token });
   } catch (err) {
     console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(403).json({ message: "Access denied" });
+    }
     res.status(500).send("Server error");
   }
 };
@@ -232,18 +241,10 @@ exports.getSharedTrip = async (req, res) => {
 // Enable/Disable trip sharing
 exports.toggleTripSharing = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!trip) {
-      return res.status(404).json({
-        msg: "Trip not found",
-      });
-    }
-
-    if (trip.user.toString() !== req.user.id) {
-      return res.status(401).json({
-        msg: "User not authorized",
-      });
+      return res.status(403).json({ message: "Access denied" });
     }
 
     trip.shareEnabled = !trip.shareEnabled;
@@ -255,6 +256,9 @@ exports.toggleTripSharing = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(403).json({ message: "Access denied" });
+    }
     res.status(500).send("Server error");
   }
 };

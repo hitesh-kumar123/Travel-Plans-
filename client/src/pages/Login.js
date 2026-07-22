@@ -20,8 +20,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-import LoginIcon from "@mui/icons-material/Login";
 import PrimaryButton from "../components/PrimaryButton";
+import { FaSpinner } from "react-icons/fa";
 
 /**
  * Renders the Google Sign-In button and surrounding OR divider.
@@ -82,6 +82,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -159,15 +160,29 @@ const Login = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      dispatch(login(formData, navigate));
+      setLoading(true);
+      try {
+        await dispatch(login(formData, navigate));
+      } catch (err) {
+        console.error("Login Failed: ", err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleGoogleSuccess = (CredentialResponse) => {
-    dispatch(googleLogin(CredentialResponse, navigate));
+  const handleGoogleSuccess = async (CredentialResponse) => {
+    setLoading(true);
+    try {
+      await dispatch(googleLogin(CredentialResponse, navigate));
+    } catch (err) {
+      console.error("Google login failed", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -333,11 +348,9 @@ const Login = () => {
                 type="submit"
                 fullWidth
                 size="large"
-                disabled={isSignInDisabled()}
-                sx={{ py: 1.5, mb: 3, borderRadius: 2, fontWeight: 600 }}
-                endIcon={<LoginIcon />}
+                disabled={isSignInDisabled() || loading}
               >
-                Sign In
+                {loading ? <FaSpinner className="spin" /> : "Sign In"}
               </PrimaryButton>
 
               <GoogleAuthSection onSuccess={handleGoogleSuccess} />

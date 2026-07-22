@@ -1,0 +1,44 @@
+name: Conflict Checker
+
+on:
+  push:
+    branches: [main]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-conflicts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check for merge conflicts
+        uses: prince-chrismc/label-merge-conflicts-action@v3
+        with:
+          conflict_label_name: "conflicted"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          conflict_comment: |
+            👋 Hi @${author}!
+
+            We detected that your Pull Request has **merge conflicts** with the main branch. ⚠️
+
+            To proceed with the review and merging, please resolve these conflicts:
+            1. Sync your local branch with the latest `main` branch:
+               \`\`\`bash
+               git checkout <your-branch-name>
+               git pull origin main
+               \`\`\`
+            2. Resolve any conflicts in your code editor.
+            3. Commit the changes and push them back to your branch:
+               \`\`\`bash
+               git add .
+               git commit -m "chore: resolve merge conflicts"
+               git push origin <your-branch-name>
+               \`\`\`
+
+            You can also follow this step-by-step guide to help you resolve the conflicts:
+            🔗 [GitHub Guide: Resolving a merge conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line)
+
+            Once resolved, this label will be automatically removed and we can proceed with the review. Thank you! 🚀

@@ -34,13 +34,17 @@ export default function expenseReducer(state = initialState, action) {
     case GET_EXPENSES:
       return {
         ...state,
-        expenses: action.payload,
+        expenses: Array.isArray(action.payload)
+          ? action.payload
+          : action.payload?.data || [],
         loading: false,
       };
     case "GET_ALL_USER_EXPENSES":
       return {
         ...state,
-        allExpenses: action.payload,
+        allExpenses: Array.isArray(action.payload)
+          ? action.payload
+          : action.payload?.data || [],
         loading: false,
       };
     case GET_EXPENSE:
