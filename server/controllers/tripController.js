@@ -262,3 +262,59 @@ exports.toggleTripSharing = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+// Upload photos to a trip
+exports.uploadTripPhotos = async (req, res) => {
+  try {
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No images provided" });
+    }
+
+    const imageUrls = req.files.map((file) => file.path);
+
+    trip.uploadedImages.push(...imageUrls);
+    await trip.save();
+
+    res.json(trip);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+    res.status(500).send("Server error");
+  }
+};
+
+// Delete a photo from a trip
+exports.deleteTripPhoto = async (req, res) => {
+  try {
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.user.id });
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    const { imageUrl } = req.body;
+
+    if (!imageUrl) {
+      return res.status(400).json({ message: "Image URL is required" });
+    }
+
+    trip.uploadedImages = trip.uploadedImages.filter((url) => url !== imageUrl);
+    await trip.save();
+
+    res.json(trip);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+    res.status(500).send("Server error");
+  }
+};
