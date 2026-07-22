@@ -22,7 +22,8 @@ router.get("/", async (req, res) => {
 router.get("/search", async (req, res) => {
   try {
     const { q } = req.query;
-    if (!q) {
+    const trimmedQ = (q || "").trim();
+    if (!trimmedQ) {
       return res.json([]);
     }
 
