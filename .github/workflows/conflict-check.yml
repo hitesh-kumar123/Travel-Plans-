@@ -15,7 +15,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Check for merge conflicts
-        uses: prince-chrismc/label-merge-conflicts-action@v3
+        uses: prince-chrismc/label-merge-conflicts-action@v4
         with:
           conflict_label_name: "conflicted"
           github_token: ${{ secrets.GITHUB_TOKEN }}
