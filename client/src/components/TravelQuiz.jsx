@@ -30,9 +30,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            preference === "Mountain"
-              ? "quiz-option active"
-              : "quiz-option"
+            preference === "Mountain" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setPreference("Mountain")}
         >
@@ -41,9 +39,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            preference === "Beach"
-              ? "quiz-option active"
-              : "quiz-option"
+            preference === "Beach" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setPreference("Beach")}
         >
@@ -52,9 +48,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            preference === "City"
-              ? "quiz-option active"
-              : "quiz-option"
+            preference === "City" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setPreference("City")}
         >
@@ -67,18 +61,14 @@ export default function TravelQuiz() {
         <h4>Budget or Luxury?</h4>
 
         <button
-          className={
-            budget === "Budget" ? "quiz-option active" : "quiz-option"
-          }
+          className={budget === "Budget" ? "quiz-option active" : "quiz-option"}
           onClick={() => setBudget("Budget")}
         >
           💰 Budget
         </button>
 
         <button
-          className={
-            budget === "Luxury" ? "quiz-option active" : "quiz-option"
-          }
+          className={budget === "Luxury" ? "quiz-option active" : "quiz-option"}
           onClick={() => setBudget("Luxury")}
         >
           💎 Luxury
@@ -91,9 +81,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            travelStyle === "Solo"
-              ? "quiz-option active"
-              : "quiz-option"
+            travelStyle === "Solo" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setTravelStyle("Solo")}
         >
@@ -102,9 +90,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            travelStyle === "Group"
-              ? "quiz-option active"
-              : "quiz-option"
+            travelStyle === "Group" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setTravelStyle("Group")}
         >
@@ -113,9 +99,7 @@ export default function TravelQuiz() {
 
         <button
           className={
-            travelStyle === "Couple"
-              ? "quiz-option active"
-              : "quiz-option"
+            travelStyle === "Couple" ? "quiz-option active" : "quiz-option"
           }
           onClick={() => setTravelStyle("Couple")}
         >

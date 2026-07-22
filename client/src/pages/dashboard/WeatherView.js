@@ -19,6 +19,13 @@ import {
   getForecast,
 } from "../../redux/actions/weatherActions";
 
+// Import new AI Travel Assistant components
+import PackingChecklist from "../../components/weather/PackingChecklist";
+import TripReadiness from "../../components/weather/TripReadiness";
+import WeatherAlerts from "../../components/weather/WeatherAlerts";
+import OutdoorRecommendation from "../../components/weather/OutdoorRecommendation";
+import RecommendedActivities from "../../components/weather/RecommendedActivities";
+
 const getWeatherIcon = (desc) => {
   if (!desc) return "☀️";
   const d = desc.toLowerCase();
@@ -355,7 +362,7 @@ const WeatherView = () => {
 
       {/* 5-Day Forecast */}
       {forecastList.length > 0 && (
-        <Box>
+        <Box sx={{ mb: 4 }}>
           <Typography variant="h6" fontWeight={700} mb={2}>
             5-Day Forecast — {forecast?.location}
           </Typography>
@@ -422,6 +429,50 @@ const WeatherView = () => {
                   </Paper>
                 </Grid>
               ))}
+          </Grid>
+        </Box>
+      )}
+
+      {/* AI Travel Assistant Section - New Enhanced Features */}
+      {currentWeather && (
+        <Box>
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>
+            🤖 AI Travel Assistant
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+            Smart recommendations powered by current weather conditions
+          </Typography>
+
+          {/* Desktop: 3-column layout, Tablet: 2-column, Mobile: 1-column */}
+          <Grid container spacing={3}>
+            {/* Trip Readiness Score */}
+            <Grid item xs={12} md={6} lg={4}>
+              <TripReadiness
+                weatherData={currentWeather}
+                hasPackingList={true}
+                hasAlerts={true}
+              />
+            </Grid>
+
+            {/* AI Packing Checklist */}
+            <Grid item xs={12} md={6} lg={4}>
+              <PackingChecklist weatherData={currentWeather} />
+            </Grid>
+
+            {/* Weather Alerts */}
+            <Grid item xs={12} md={6} lg={4}>
+              <WeatherAlerts weatherData={currentWeather} />
+            </Grid>
+
+            {/* Best Time To Go Outside */}
+            <Grid item xs={12} md={6} lg={4}>
+              <OutdoorRecommendation weatherData={currentWeather} />
+            </Grid>
+
+            {/* AI Recommended Activities */}
+            <Grid item xs={12} md={12} lg={8}>
+              <RecommendedActivities weatherData={currentWeather} />
+            </Grid>
           </Grid>
         </Box>
       )}

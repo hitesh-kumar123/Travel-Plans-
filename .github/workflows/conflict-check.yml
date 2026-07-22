@@ -14,31 +14,147 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: Check for merge conflicts
-        uses: prince-chrismc/label-merge-conflicts-action@v3
+      - name: Check for merge conflicts and manage labels
+        uses: actions/github-script@v7
         with:
-          conflict_label_name: "conflicted"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          conflict_comment: |
-            👋 Hi @${author}!
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labelName = 'merge conflict';
+            const labelColor = 'd73a4a';
+            const labelDescription = 'This PR has merge conflicts that need to be resolved';
+            
+            // Only run on pull requests
+            if (!context.payload.pull_request) {
+              console.log('Not a pull request event, skipping conflict check');
+              return;
+            }
+            
+            const prNumber = context.payload.pull_request.number;
+            const author = context.payload.pull_request.user.login;
+            
+            console.log(`Checking PR #${prNumber} for merge conflicts`);
+            
+            // Step 1: Ensure the label exists
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: labelName
+              });
+              console.log(`Label "${labelName}" already exists`);
+            } catch (error) {
+              if (error.status === 404) {
+                console.log(`Label "${labelName}" not found, creating it...`);
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: labelName,
+                    color: labelColor,
+                    description: labelDescription
+                  });
+                  console.log(`Successfully created label "${labelName}"`);
+                } catch (createError) {
+                  console.error('Failed to create label:', createError.message);
+                  throw createError;
+                }
+              } else {
+                console.error('Error checking for label:', error.message);
+                throw error;
+              }
+            }
+            
+            // Step 2: Get PR details to check mergeable state
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            
+            console.log(`PR mergeable state: ${pullRequest.mergeable_state}`);
+            console.log(`PR mergeable: ${pullRequest.mergeable}`);
+            
+            // Step 3: Check if PR has conflicts
+            const hasConflicts = pullRequest.mergeable === false;
+            
+            // Step 4: Get current labels on the PR
+            const currentLabels = pullRequest.labels.map(label => label.name);
+            const hasConflictLabel = currentLabels.includes(labelName);
+            
+            console.log(`Has conflicts: ${hasConflicts}`);
+            console.log(`Has conflict label: ${hasConflictLabel}`);
+            
+            // Step 5: Handle conflicts - add label and comment
+            if (hasConflicts && !hasConflictLabel) {
+              console.log('Adding conflict label and posting comment...');
+              
+              // Add the label
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: [labelName]
+              });
+              
+              // Post a comment
+              const conflictComment = `👋 Hi @${author}!
 
-            We detected that your Pull Request has **merge conflicts** with the main branch. ⚠️
+We detected that your Pull Request has **merge conflicts** with the main branch. ⚠️
 
-            To proceed with the review and merging, please resolve these conflicts:
-            1. Sync your local branch with the latest `main` branch:
-               \`\`\`bash
-               git checkout <your-branch-name>
-               git pull origin main
-               \`\`\`
-            2. Resolve any conflicts in your code editor.
-            3. Commit the changes and push them back to your branch:
-               \`\`\`bash
-               git add .
-               git commit -m "chore: resolve merge conflicts"
-               git push origin <your-branch-name>
-               \`\`\`
+To proceed with the review and merging, please resolve these conflicts:
+1. Sync your local branch with the latest \`main\` branch:
+   \`\`\`bash
+   git checkout ${pullRequest.head.ref}
+   git pull origin main
+   \`\`\`
+2. Resolve any conflicts in your code editor.
+3. Commit the changes and push them back to your branch:
+   \`\`\`bash
+   git add .
+   git commit -m "chore: resolve merge conflicts"
+   git push origin ${pullRequest.head.ref}
+   \`\`\`
 
-            You can also follow this step-by-step guide to help you resolve the conflicts:
-            🔗 [GitHub Guide: Resolving a merge conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line)
+You can also follow this step-by-step guide to help you resolve the conflicts:
+🔗 [GitHub Guide: Resolving a merge conflict](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line)
 
-            Once resolved, this label will be automatically removed and we can proceed with the review. Thank you! 🚀
+Once resolved, this label will be automatically removed and we can proceed with the review. Thank you! 🚀`;
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: conflictComment
+              });
+              
+              console.log('Successfully added conflict label and comment');
+            }
+            
+            // Step 6: Handle resolved conflicts - remove label
+            if (!hasConflicts && hasConflictLabel) {
+              console.log('Conflicts resolved, removing label...');
+              
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                name: labelName
+              });
+              
+              // Post a success comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `✅ Great job @${author}! The merge conflicts have been resolved. This PR is now ready for review. 🎉`
+              });
+              
+              console.log('Successfully removed conflict label and posted success comment');
+            }
+            
+            // Step 7: Report final status
+            if (!hasConflicts) {
+              console.log('✅ No conflicts detected');
+            } else {
+              console.log('⚠️ Conflicts detected and labeled');
+            }
