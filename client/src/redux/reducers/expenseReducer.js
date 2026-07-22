@@ -9,6 +9,7 @@ import {
   CLEAR_EXPENSES,
   SET_LOADING,
   GET_CURRENCY_RATES,
+  CURRENCY_RATES_LOADING,
 } from "../types/expenseTypes";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   currentExpense: null,
   expenseSummary: null,
   loading: false,
+  ratesLoading: false,
   error: null,
   exchangeRates: {},
   baseCurrency: "INR",
@@ -32,13 +34,17 @@ export default function expenseReducer(state = initialState, action) {
     case GET_EXPENSES:
       return {
         ...state,
-        expenses: action.payload,
+        expenses: Array.isArray(action.payload)
+          ? action.payload
+          : action.payload?.data || [],
         loading: false,
       };
     case "GET_ALL_USER_EXPENSES":
       return {
         ...state,
-        allExpenses: action.payload,
+        allExpenses: Array.isArray(action.payload)
+          ? action.payload
+          : action.payload?.data || [],
         loading: false,
       };
     case GET_EXPENSE:
@@ -90,11 +96,17 @@ export default function expenseReducer(state = initialState, action) {
         expenseSummary: null,
         loading: false,
       };
+    case CURRENCY_RATES_LOADING:
+      return {
+        ...state,
+        ratesLoading: true,
+      };
     case GET_CURRENCY_RATES:
       return {
         ...state,
         baseCurrency: action.payload.base,
         exchangeRates: action.payload.rates,
+        ratesLoading: false,
       };
     default:
       return state;

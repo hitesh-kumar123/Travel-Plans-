@@ -53,9 +53,9 @@
   },
   {
     "name": "Pink City",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9232015,
       "lon": 75.8243929
@@ -63,7 +63,7 @@
     "type": "attraction",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 5000,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -71,17 +71,17 @@
     "airport_within_50km": "",
     "establishment_year": "",
     "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg",
       "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+      "https://upload.wikimedia.org/wikipedia/commons/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg",
       "https://images.unsplash.com/photo-1506461883276-594a12b11db3?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1506461883276-594a12b11db3?auto=format&fit=crop&w=800&q=80"
     ]
   },
   {
     "name": "Albert Hall",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9117053,
       "lon": 75.8194973
@@ -89,7 +89,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 40,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -107,9 +107,9 @@
   },
   {
     "name": "Iswari Minar Swarga Sali (Isarlat)",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9244425,
       "lon": 75.8208167
@@ -117,7 +117,7 @@
     "type": "viewpoint",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 20,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -133,9 +133,9 @@
   },
   {
     "name": "Nahargarh Fort",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9400336,
       "lon": 75.8165299
@@ -143,7 +143,7 @@
     "type": "attraction",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 50,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -159,9 +159,9 @@
   },
   {
     "name": "Maharaniyon",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9448268,
       "lon": 75.8407405
@@ -169,7 +169,7 @@
     "type": "attraction",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -185,9 +185,9 @@
   },
   {
     "name": "Maharaja Sawai Mansingh II",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.926828,
       "lon": 75.8238676
@@ -195,7 +195,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 100,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -211,9 +211,9 @@
   },
   {
     "name": "Sawai Mansingh Townhall",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9255317,
       "lon": 75.8272703
@@ -221,7 +221,7 @@
     "type": "attraction",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -238,8 +238,8 @@
   {
     "name": "Jaipur Wax Museum",
     "city": "Jaipur",
-    "state": "",
-    "zone": "",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9391114,
       "lon": 75.8163025
@@ -247,7 +247,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 500,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -263,9 +263,9 @@
   },
   {
     "name": "Paanch Batti",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9162485,
       "lon": 75.8098572
@@ -273,7 +273,7 @@
     "type": "monument",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -289,9 +289,9 @@
   },
   {
     "name": "Sunset Point",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9367309,
       "lon": 75.8122387
@@ -299,7 +299,7 @@
     "type": "viewpoint",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -315,9 +315,9 @@
   },
   {
     "name": "S R C Museum of indology",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9021795,
       "lon": 75.8193059
@@ -325,7 +325,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 30,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -341,9 +341,9 @@
   },
   {
     "name": "Wind Palace",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9237834,
       "lon": 75.8272706
@@ -351,7 +351,7 @@
     "type": "viewpoint",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 50,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -367,9 +367,9 @@
   },
   {
     "name": "Amrapali Museum",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9150126,
       "lon": 75.8019066
@@ -377,7 +377,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 600,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -393,9 +393,9 @@
   },
   {
     "name": "Turban museum",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9321605,
       "lon": 75.8313232
@@ -403,7 +403,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 50,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -419,9 +419,9 @@
   },
   {
     "name": "jewels gallery",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9226505,
       "lon": 75.8277839
@@ -429,7 +429,7 @@
     "type": "gallery",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -445,9 +445,9 @@
   },
   {
     "name": "Lake Palace",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9534274,
       "lon": 75.8461475
@@ -455,7 +455,7 @@
     "type": "attraction",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -474,8 +474,8 @@
   {
     "name": "Sanganeri Gate",
     "city": "Jaipur",
-    "state": "",
-    "zone": "",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9158691,
       "lon": 75.8247984
@@ -483,7 +483,7 @@
     "type": "building",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -499,9 +499,9 @@
   },
   {
     "name": "Mubarak Mahal",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9257301,
       "lon": 75.8236319
@@ -509,7 +509,7 @@
     "type": "museum",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 300,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -535,7 +535,7 @@
     "type": "fort",
     "significance": "Historical",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "Morning and Evening",
     "time_needed_hrs": null,
     "dslr_allowed": "No",
@@ -577,9 +577,9 @@
   },
   {
     "name": "Police Shahid Smarak",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.8988968,
       "lon": 75.8162136
@@ -587,7 +587,7 @@
     "type": "memorial",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -603,9 +603,9 @@
   },
   {
     "name": "Shaheed Smarak",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.9174202,
       "lon": 75.8017635
@@ -613,7 +613,7 @@
     "type": "memorial",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",
@@ -629,9 +629,9 @@
   },
   {
     "name": "Suraj Pol Gate",
-    "city": "",
-    "state": "",
-    "zone": "",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "zone": "Northern",
     "coordinates": {
       "lat": 26.919156,
       "lon": 75.8449354
@@ -639,7 +639,7 @@
     "type": "monument",
     "significance": "",
     "rating": null,
-    "entrance_fee_inr": null,
+    "entrance_fee_inr": 0,
     "best_time_to_visit": "",
     "time_needed_hrs": null,
     "dslr_allowed": "",

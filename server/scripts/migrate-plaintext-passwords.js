@@ -5,7 +5,6 @@ const User = require("../models/User");
 
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
-const BCRYPT_PREFIX = /^\$2[aby]\$/;
 const dryRun = !process.argv.includes("--save");
 
 async function migratePlaintextPasswords() {

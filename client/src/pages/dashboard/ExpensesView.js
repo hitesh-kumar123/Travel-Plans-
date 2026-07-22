@@ -89,9 +89,8 @@ const CURRENCY_SYMBOLS = {
 const ExpensesView = () => {
   const dispatch = useDispatch();
 
-  const { expenses, loading, exchangeRates, baseCurrency } = useSelector(
-    (state) => state.expenses,
-  );
+  const { expenses, loading, exchangeRates, baseCurrency, ratesLoading } =
+    useSelector((state) => state.expenses);
   const { trips } = useSelector((state) => state.trips);
 
   const [activeTripId, setActiveTripId] = useState("");
@@ -111,6 +110,7 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -144,8 +144,10 @@ const ExpensesView = () => {
     dispatch(fetchCurrencyRates(selectedBase));
   }, [dispatch, selectedBase]);
 
-  // Converts any amount from its stored currency to the user's baseCurrency.
+  // Converts any amount from its stored currency to the user's selected baseCurrency.
   // Uses INR as a pivot: amount → INR → baseCurrency
+  // Note: Frankfurter's rates response for base=INR does NOT include INR itself
+  // (it is implicitly 1.0). We handle that case explicitly below.
   const toBase = (amount, currency) => {
     if (currency === baseCurrency) return amount;
     if (!exchangeRates || Object.keys(exchangeRates).length === 0)
@@ -293,11 +295,21 @@ const ExpensesView = () => {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteExpense(id));
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    dispatch(deleteExpense(deleteTarget));
+    setDeleteTarget(null);
     setTimeout(() => {
       dispatch(getExpenses(activeTripId));
       dispatch(getExpenseSummary(activeTripId));
     }, 300);
+  };
+
+  const cancelDelete = () => {
+    setDeleteTarget(null);
   };
 
   const handleExportCSV = () => {
@@ -387,7 +399,7 @@ const ExpensesView = () => {
         </Box>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title="Export Expenses">
-            <>
+            <Box component="span" sx={{ display: "inline-flex", gap: 0 }}>
               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}
@@ -416,7 +428,7 @@ const ExpensesView = () => {
                   Export Excel (.xlsx)
                 </MenuItem>
               </Menu>
-            </>
+            </Box>
           </Tooltip>
           <PrimaryButton
             startIcon={<AddIcon />}
@@ -435,7 +447,7 @@ const ExpensesView = () => {
       </Box>
 
       {/* Base Currency Selector */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
         <Typography variant="body2" color="text.secondary">
           Display totals in:
         </Typography>
@@ -444,7 +456,8 @@ const ExpensesView = () => {
           size="small"
           value={selectedBase}
           onChange={(e) => setSelectedBase(e.target.value)}
-          sx={{ width: 120 }}
+          disabled={ratesLoading}
+          sx={{ width: 130 }}
         >
           {CURRENCIES.map((c) => (
             <MenuItem key={c} value={c}>
@@ -452,6 +465,13 @@ const ExpensesView = () => {
             </MenuItem>
           ))}
         </TextField>
+        {ratesLoading && (
+          <CircularProgress
+            size={18}
+            thickness={5}
+            sx={{ color: "primary.main" }}
+          />
+        )}
       </Box>
 
       {/* Trip Selector */}
@@ -470,8 +490,8 @@ const ExpensesView = () => {
             boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
           }}
         >
-          <Grid container spacing={3} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={3} sx={{ alignItems: "center" }}>
+            <Grid xs={12} md={6}>
               <Typography
                 variant="subtitle2"
                 fontWeight={700}
@@ -506,7 +526,6 @@ const ExpensesView = () => {
             </Grid>
             {activeTrip && (
               <Grid
-                item
                 xs={12}
                 md={6}
                 sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}
@@ -571,7 +590,7 @@ const ExpensesView = () => {
       {/* Financial Status Summary */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {/* Total Spent Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -614,7 +633,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Budget Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -646,7 +665,7 @@ const ExpensesView = () => {
         </Grid>
 
         {/* Remaining Card */}
-        <Grid item xs={12} sm={4}>
+        <Grid xs={12} sm={4}>
           <Paper
             elevation={0}
             sx={{
@@ -734,7 +753,7 @@ const ExpensesView = () => {
       {/* Main Analytics Area */}
       <Grid container spacing={4}>
         {/* Expenses List & Filter Card */}
-        <Grid item xs={12} md={7.5}>
+        <Grid xs={12} md={7.5}>
           <Paper
             elevation={0}
             sx={{
@@ -1189,7 +1208,7 @@ const ExpensesView = () => {
             )}
 
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={8}>
+              <Grid xs={12} sm={8}>
                 <TextField
                   fullWidth
                   label="Amount *"
@@ -1204,7 +1223,7 @@ const ExpensesView = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid xs={12} sm={4}>
                 <TextField
                   fullWidth
                   select
@@ -1277,6 +1296,30 @@ const ExpensesView = () => {
           >
             {editingExpenseId ? "Save Changes" : "Confirm & Save"}
           </PrimaryButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
+        <DialogTitle>Delete Expense</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this expense? This action cannot be
+          undone.
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5, gap: 1 }}>
+          <Button
+            onClick={cancelDelete}
+            sx={{ fontWeight: 600, color: "text.secondary" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            sx={{ borderRadius: 2.5, fontWeight: 600 }}
+          >
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
