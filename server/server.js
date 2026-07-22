@@ -4,7 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
+const { limiter } = require("./middleware/rateLimit");
 const errorHandler = require("./middleware/errorHandler");
 const sanitizeMiddleware = require("./middleware/sanitize");
 
@@ -20,25 +20,6 @@ app.set("trust proxy", 1);
 
 // Security Middleware
 app.use(helmet());
-
-// Rate limiter - 100 requests per 15 min per IP
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { msg: "Too many requests from this IP, please try again later." },
-});
-app.use("/api/auth", limiter);
-
-// Stricter rate limiter for login and registration attempts
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    message: "Too many login attempts, please try again after 15 minutes",
-  },
-});
-app.post("/api/auth/login", authLimiter);
-app.post("/api/auth/register", authLimiter);
 
 // Core Middleware
 const allowedOrigins = [
@@ -86,6 +67,9 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(limiter);
 app.use(sanitizeMiddleware);
 
 // Import routes
