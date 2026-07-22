@@ -25,14 +25,17 @@ router.get("/search", async (req, res) => {
     if (!q) {
       return res.json([]);
     }
+
     // Case-insensitive regex search by name or city
+    const regex = new RegExp(q, "i");
     const data = await Destination.find({
       $or: [
-        { name: { $regex: q, $options: "i" } },
-        { city: { $regex: q, $options: "i" } },
+        { name: regex },
+        { city: regex },
       ],
     }).limit(10);
     res.json(data);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
