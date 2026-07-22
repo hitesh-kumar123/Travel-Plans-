@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -47,6 +47,12 @@ import {
   searchHotels,
   searchPlaces,
 } from "../../redux/actions/bookingActions";
+import { fetchCurrencyRates } from "../../redux/actions/expenseActions";
+import {
+  convertCurrency,
+  formatCurrency,
+  CURRENCY_SYMBOLS,
+} from "../../utils/currencyUtils";
 
 const amenityIcons = {
   WiFi: <WifiIcon fontSize="small" />,
@@ -113,6 +119,26 @@ const BookingView = () => {
   const { flights, hotels, places, loading } = useSelector(
     (state) => state.booking,
   );
+  const { baseCurrency, exchangeRates } = useSelector(
+    (state) => state.expenses || { baseCurrency: "INR", exchangeRates: {} },
+  );
+
+  useEffect(() => {
+    if (!exchangeRates || Object.keys(exchangeRates).length === 0) {
+      dispatch(fetchCurrencyRates(baseCurrency || "INR"));
+    }
+  }, [dispatch, exchangeRates, baseCurrency]);
+
+  const toUSD = (amount, fromCurrency) => {
+    if (!amount) return "";
+    const converted = convertCurrency(
+      amount,
+      fromCurrency,
+      "USD",
+      exchangeRates,
+    );
+    return typeof converted === "number" ? converted.toFixed(2) : converted;
+  };
 
   const [tab, setTab] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -267,6 +293,10 @@ const BookingView = () => {
 
   const handleFlightSearch = (e) => {
     e.preventDefault();
+
+    const minBudgetUSD = toUSD(flightFilters.minBudget, baseCurrency);
+    const maxBudgetUSD = toUSD(flightFilters.maxBudget, baseCurrency);
+
     if (flightForm.departureDate < today) {
       setErrors((prev) => ({
         ...prev,
@@ -274,6 +304,7 @@ const BookingView = () => {
       }));
       return;
     }
+
     if (
       flightForm.returnDate &&
       flightForm.returnDate < flightForm.departureDate
@@ -284,7 +315,14 @@ const BookingView = () => {
       }));
       return;
     }
-    dispatch(searchFlights({ ...flightForm, ...flightFilters }));
+
+    dispatch(
+      searchFlights({
+        ...flightForm,
+        minBudget: minBudgetUSD,
+        maxBudget: maxBudgetUSD,
+      }),
+    );
   };
 
   const handleHotelSearch = (e) => {
@@ -545,7 +583,7 @@ const BookingView = () => {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <Typography variant="body2" fontWeight={600} mb={1}>
-                        💰 Budget Range (USD)
+                        💰 Budget Range ({baseCurrency || "USD"})
                       </Typography>
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <TextField
@@ -553,7 +591,7 @@ const BookingView = () => {
                           name="minBudget"
                           fullWidth
                           size="small"
-                          label="Min ($)"
+                          label={`Min (${CURRENCY_SYMBOLS[baseCurrency || "USD"] || "$"})`}
                           type="number"
                           inputProps={{ min: 0 }}
                           value={flightFilters.minBudget}
@@ -569,7 +607,7 @@ const BookingView = () => {
                           name="maxBudget"
                           fullWidth
                           size="small"
-                          label="Max ($)"
+                          label={`Max (${CURRENCY_SYMBOLS[baseCurrency || "USD"] || "$"})`}
                           type="number"
                           inputProps={{ min: 0 }}
                           value={flightFilters.maxBudget}
@@ -1110,7 +1148,15 @@ const BookingView = () => {
                         fontWeight={800}
                         color="primary.main"
                       >
-                        ${flight.price}
+                        {formatCurrency(
+                          convertCurrency(
+                            flight.price,
+                            flight.currency || "USD",
+                            baseCurrency,
+                            exchangeRates,
+                          ),
+                          baseCurrency,
+                        )}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
                         per person
