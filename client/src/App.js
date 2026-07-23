@@ -56,7 +56,6 @@ function App() {
 
   return (
     <Provider store={store}>
-
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -93,16 +92,10 @@ function App() {
                 />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
-                path="/verify-email/:token"
-                element={<EmailVerification />}
-                />
                 <Route
                   path="/reset-password/:token"
                   element={<ResetPassword />}
                 />
-                <Route path="/terms" element={<TermsConditions />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/help" element={<HelpCenter />} />
                 {/* Fallback */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
