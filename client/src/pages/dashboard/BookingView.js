@@ -147,17 +147,18 @@ const BookingView = () => {
   const [tab, setTab] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
+  const today = new Date().toISOString().split("T")[0];
   const [flightForm, setFlightForm] = useState({
     origin: "",
     destination: "",
-    departureDate: "",
+    departureDate: today,
     returnDate: "",
     adults: 1,
   });
 
   const [hotelForm, setHotelForm] = useState({
     location: "",
-    checkIn: "",
+    checkIn: today,
     checkOut: "",
     guests: 2,
     rooms: 1,
@@ -166,6 +167,7 @@ const BookingView = () => {
   const [placesForm, setPlacesForm] = useState({
     destination: "",
   });
+
   const [placesSearched, setPlacesSearched] = useState(false);
 
   // Anchor + place for the "Book Tickets" redirect-links dropdown
@@ -173,6 +175,71 @@ const BookingView = () => {
     anchorEl: null,
     place: null,
   });
+
+  const [errors, setErrors] = useState({
+    flightDeparture: "",
+    flightReturn: "",
+    hotelCheckIn: "",
+    hotelCheckOut: "",
+  });
+
+  const handleDepartureDate = (e) => {
+    const selectedDate = e.target.value;
+    setFlightForm((prev) => ({ ...prev, departureDate: selectedDate }));
+
+    if (selectedDate && selectedDate < today) {
+      setErrors((prev) => ({
+        ...prev,
+        flightDeparture: "Departure date cannot be in the past",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, flightDeparture: "" }));
+    }
+  };
+
+  const handleReturnDate = (e) => {
+    const selectedDate = e.target.value;
+    setFlightForm((prev) => ({ ...prev, returnDate: selectedDate }));
+
+    const minReturn = flightForm.departureDate || today;
+    if (selectedDate && selectedDate < minReturn) {
+      setErrors((prev) => ({
+        ...prev,
+        flightReturn: "Return date cannot be before departure date",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, flightReturn: "" }));
+    }
+  };
+
+  const handleHotelCheckIn = (e) => {
+    const selectedDate = e.target.value;
+    setHotelForm((prev) => ({ ...prev, checkIn: selectedDate }));
+
+    if (selectedDate && selectedDate < today) {
+      setErrors((prev) => ({
+        ...prev,
+        hotelCheckIn: "Check-in date cannot be in the past",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, hotelCheckIn: "" }));
+    }
+  };
+
+  const handleHotelCheckOut = (e) => {
+    const selectedDate = e.target.value;
+    setHotelForm((prev) => ({ ...prev, checkOut: selectedDate }));
+
+    const minCheckout = hotelForm.checkIn || today;
+    if (selectedDate && selectedDate < minCheckout) {
+      setErrors((prev) => ({
+        ...prev,
+        hotelCheckOut: "Check-out date cannot be before check-in date",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, hotelCheckOut: "" }));
+    }
+  };
   const openBookingMenu = (event, place) =>
     setBookingMenu({ anchorEl: event.currentTarget, place });
   const closeBookingMenu = () =>
@@ -230,11 +297,42 @@ const BookingView = () => {
 
   const handleFlightSearch = (e) => {
     e.preventDefault();
+    if (flightForm.departureDate < today) {
+      setErrors((prev) => ({
+        ...prev,
+        flightDeparture: "Departure date cannot be in the past",
+      }));
+      return;
+    }
+    if (
+      flightForm.returnDate &&
+      flightForm.returnDate < flightForm.departureDate
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        flightReturn: "Return date cannot be before departure date",
+      }));
+      return;
+    }
     dispatch(searchFlights({ ...flightForm, ...flightFilters }));
   };
 
   const handleHotelSearch = (e) => {
     e.preventDefault();
+    if (hotelForm.checkIn < today) {
+      setErrors((prev) => ({
+        ...prev,
+        hotelCheckIn: "Check-in date cannot be in the past",
+      }));
+      return;
+    }
+    if (hotelForm.checkOut && hotelForm.checkOut < hotelForm.checkIn) {
+      setErrors((prev) => ({
+        ...prev,
+        hotelCheckOut: "Check-out date cannot be before check-in date",
+      }));
+      return;
+    }
     dispatch(searchHotels({ ...hotelForm, ...hotelFilters }));
   };
 
@@ -375,15 +473,21 @@ const BookingView = () => {
                         }}
                       >
                         {originSuggestions.map((s) => (
-                          <MenuItem
+                          <Box
                             key={s}
                             onMouseDown={() => {
                               setFlightForm({ ...flightForm, origin: s });
                               setOriginSuggestions([]);
                             }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
                           >
                             {s}
-                          </MenuItem>
+                          </Box>
                         ))}
                       </Paper>
                     )}
@@ -425,15 +529,21 @@ const BookingView = () => {
                         }}
                       >
                         {destSuggestions.map((s) => (
-                          <MenuItem
+                          <Box
                             key={s}
                             onMouseDown={() => {
                               setFlightForm({ ...flightForm, destination: s });
                               setDestSuggestions([]);
                             }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
                           >
                             {s}
-                          </MenuItem>
+                          </Box>
                         ))}
                       </Paper>
                     )}
@@ -448,7 +558,7 @@ const BookingView = () => {
                     label="Departure"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    inputProps={{ min: today, placeholder: "" }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -457,12 +567,9 @@ const BookingView = () => {
                       },
                     }}
                     value={flightForm.departureDate}
-                    onChange={(e) =>
-                      setFlightForm({
-                        ...flightForm,
-                        departureDate: e.target.value,
-                      })
-                    }
+                    onChange={handleDepartureDate}
+                    error={Boolean(errors.flightDeparture)}
+                    helperText={errors.flightDeparture}
                     required
                   />
                 </Grid>
@@ -476,8 +583,8 @@ const BookingView = () => {
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{
+                      min: flightForm.departureDate || today,
                       placeholder: "",
-                      min: flightForm.departureDate || "",
                     }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
@@ -487,12 +594,9 @@ const BookingView = () => {
                       },
                     }}
                     value={flightForm.returnDate}
-                    onChange={(e) =>
-                      setFlightForm({
-                        ...flightForm,
-                        returnDate: e.target.value,
-                      })
-                    }
+                    onChange={handleReturnDate}
+                    error={Boolean(errors.flightReturn)}
+                    helperText={errors.flightReturn}
                   />
                 </Grid>
                 <Grid item xs={12} md={2.4}>
@@ -630,7 +734,7 @@ const BookingView = () => {
                     label="Check-in"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
-                    inputProps={{ placeholder: "" }}
+                    inputProps={{ min: today, placeholder: "" }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
                         paddingTop: "12px",
@@ -639,9 +743,9 @@ const BookingView = () => {
                       },
                     }}
                     value={hotelForm.checkIn}
-                    onChange={(e) =>
-                      setHotelForm({ ...hotelForm, checkIn: e.target.value })
-                    }
+                    onChange={handleHotelCheckIn}
+                    error={Boolean(errors.hotelCheckIn)}
+                    helperText={errors.hotelCheckIn}
                     required
                   />
                 </Grid>
@@ -655,8 +759,8 @@ const BookingView = () => {
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
                     inputProps={{
+                      min: hotelForm.checkIn || today,
                       placeholder: "",
-                      min: hotelForm.checkIn || "",
                     }}
                     sx={{
                       "& .MuiOutlinedInput-input[type='date']": {
@@ -666,9 +770,9 @@ const BookingView = () => {
                       },
                     }}
                     value={hotelForm.checkOut}
-                    onChange={(e) =>
-                      setHotelForm({ ...hotelForm, checkOut: e.target.value })
-                    }
+                    onChange={handleHotelCheckOut}
+                    error={Boolean(errors.hotelCheckOut)}
+                    helperText={errors.hotelCheckOut}
                     required
                   />
                 </Grid>

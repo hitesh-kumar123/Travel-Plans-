@@ -104,7 +104,12 @@ exports.searchFlights = async (req, res) => {
       });
     }
 
-    // Add request-specific fields to the shared flight data
+    if (origin.trim().toLowerCase() === destination.trim().toLowerCase()) {
+      return res.status(400).json({
+        msg: "Origin and destination cities cannot be the same",
+      });
+    }
+
     const flights = mockFlights.map((f) => ({
       ...f,
       origin,
@@ -113,7 +118,6 @@ exports.searchFlights = async (req, res) => {
       currency: "USD",
     }));
 
-    // Apply budget filters
     let filteredFlights = flights;
 
     if (minBudget !== undefined && minBudget !== "") {
