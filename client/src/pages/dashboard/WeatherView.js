@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -39,29 +39,47 @@ const WeatherView = () => {
   );
 
   const forecastList = forecast?.forecast || [];
+  const abortControllerRef = useRef(null);
+
+  // Cancels any in-flight weather/forecast pair before starting a new one,
+  // so a slow stale response can't overwrite a fresher result.
+  const fetchWeatherFor = useCallback(
+    (city) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+      dispatch(getCurrentWeather(city, controller.signal));
+      dispatch(getForecast(city, controller.signal));
+    },
+    [dispatch],
+  );
 
   // ✅ FIX: Re-fetch on every mount so data is never stale
   useEffect(() => {
     if (currentWeather?.location) {
-      dispatch(getCurrentWeather(currentWeather.location));
-      dispatch(getForecast(currentWeather.location));
+      fetchWeatherFor(currentWeather.location);
     }
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ✅ Manual refresh handler
   const handleRefresh = useCallback(() => {
     const city = location.trim() || currentWeather?.location;
     if (city) {
-      dispatch(getCurrentWeather(city));
-      dispatch(getForecast(city));
+      fetchWeatherFor(city);
     }
-  }, [dispatch, location, currentWeather]);
+  }, [location, currentWeather, fetchWeatherFor]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (location.trim()) {
-      dispatch(getCurrentWeather(location.trim()));
-      dispatch(getForecast(location.trim()));
+      fetchWeatherFor(location.trim());
     }
   };
 

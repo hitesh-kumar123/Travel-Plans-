@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
@@ -1190,15 +1190,30 @@ const Home = () => {
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
           <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
+            <a
+              href="https://www.linkedin.com/in/hitesh-kumar-dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin />
             </a>
 
-            <a href="/" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/hitesh_sundesha157/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <FaInstagram />
             </a>
 
-            <a href="/" aria-label="Twitter">
+            <a
+              href="https://x.com/hitesh_kumar123"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X (Twitter)"
+            >
               <FaXTwitter />
             </a>
           </div>
