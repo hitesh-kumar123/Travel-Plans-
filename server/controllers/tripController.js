@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const axios = require("axios");
 const Trip = require("../models/Trip");
 const Destination = require("../models/Destination");
 const Expense = require("../models/Expense");
@@ -10,6 +11,61 @@ const PackingList = require("../models/PackingList");
  */
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Free geocoding fallback using OpenStreetMap's Nominatim API.
+ * No API key required. Returns null on any failure so callers can
+ * gracefully proceed without coordinates rather than failing the request.
+ */
+async function geocodeDestination(destination) {
+  try {
+    const res = await axios.get("https://nominatim.openstreetmap.org/search", {
+      params: {
+        q: destination,
+        format: "json",
+        limit: 1,
+      },
+      headers: {
+        // Nominatim's usage policy requires a descriptive User-Agent
+        "User-Agent": "PackGo-TravelPlanner/1.0",
+      },
+      timeout: 5000,
+    });
+
+    const result = res.data && res.data[0];
+    if (!result) return null;
+
+    return { lat: parseFloat(result.lat), lon: parseFloat(result.lon) };
+  } catch (err) {
+    console.error("Geocoding failed:", err.message);
+    return null;
+  }
+}
+
+/**
+ * Resolve coordinates for a destination string:
+ * 1. Try matching the Destination catalog by name (case-insensitive).
+ * 2. Fall back to free geocoding via Nominatim if no catalog match.
+ * Returns { lat, lon } or null if neither source produced a result.
+ */
+async function resolveCoordinates(destination) {
+  if (!destination) return null;
+
+  const dest = await Destination.findOne({
+    name: { $regex: new RegExp(`^${escapeRegExp(destination)}$`, "i") },
+  });
+
+  if (
+    dest &&
+    dest.coordinates &&
+    dest.coordinates.lat != null &&
+    dest.coordinates.lon != null
+  ) {
+    return { lat: dest.coordinates.lat, lon: dest.coordinates.lon };
+  }
+
+  return geocodeDestination(destination);
 }
 
 // Create new trip
@@ -39,6 +95,7 @@ exports.createTrip = async (req, res) => {
 
     // Default images
     let images = [];
+    let coordinates = null;
     if (destination) {
       // Find destination in DB by name case-insensitively
       const dest = await Destination.findOne({
@@ -47,12 +104,14 @@ exports.createTrip = async (req, res) => {
       if (dest && dest.images && dest.images.length > 0) {
         images = dest.images;
       }
+      coordinates = await resolveCoordinates(destination);
     }
 
     const newTrip = new Trip({
       user: req.user.id,
       destination,
       images,
+      coordinates: coordinates || undefined,
       startDate,
       endDate,
       description,
@@ -156,7 +215,7 @@ exports.updateTrip = async (req, res) => {
       }
     });
 
-    // Update images if destination changed
+    // Update images and coordinates if destination changed
     if (updateData.destination && updateData.destination !== trip.destination) {
       const dest = await Destination.findOne({
         name: {
@@ -165,6 +224,10 @@ exports.updateTrip = async (req, res) => {
       });
       if (dest && dest.images && dest.images.length > 0) {
         updateData.images = dest.images;
+      }
+      const coordinates = await resolveCoordinates(updateData.destination);
+      if (coordinates) {
+        updateData.coordinates = coordinates;
       }
     }
 
