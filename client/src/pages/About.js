@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import PageTransition from "../components/PageTransition";
 import "./Home.css"; // reuse same styles

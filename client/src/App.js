@@ -7,7 +7,8 @@ import {
   useLocation,
 } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "./redux/store";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme";
@@ -32,6 +33,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ScrollButtons from "./components/ScrollButtons";
 import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
+import { flushOfflineQueue } from "./redux/actions/offlineQueueActions";
 import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
 import EmailVerification from "./pages/EmailVerification";
@@ -80,6 +82,19 @@ function AnimatedRoutes() {
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
+
+    // Flush any items queued from a previous session if we're already online.
+    if (navigator.onLine) {
+      store.dispatch(flushOfflineQueue());
+    }
+
+    // Background re-sync: once connectivity returns, flush queued
+    // offline mutations back to the backend in order.
+    const handleOnline = () => {
+      store.dispatch(flushOfflineQueue());
+    };
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
   }, []);
 
   return (
@@ -107,5 +122,4 @@ function App() {
     </Provider>
   );
 }
-
 export default App;
