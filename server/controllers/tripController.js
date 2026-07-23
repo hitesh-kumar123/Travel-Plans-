@@ -41,15 +41,12 @@ exports.createTrip = async (req, res) => {
     let images = [];
     if (destination) {
       // Find destination in DB by name case-insensitively
-      const regex = new RegExp(
-        `^${escapeRegExp(destination)}$`,
-        "i"
-      );
+      const regex = new RegExp(`^${escapeRegExp(destination)}$`, "i");
 
       const dest = await Destination.findOne({
         name: regex,
       });
-      
+
       if (dest && dest.images && dest.images.length > 0) {
         images = dest.images;
       }
@@ -166,13 +163,13 @@ exports.updateTrip = async (req, res) => {
     if (updateData.destination && updateData.destination !== trip.destination) {
       const regex = new RegExp(
         `^${escapeRegExp(updateData.destination)}$`,
-        "i"
+        "i",
       );
 
       const dest = await Destination.findOne({
         name: regex,
       });
-      
+
       if (dest && dest.images && dest.images.length > 0) {
         updateData.images = dest.images;
       }
