@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Typography,
@@ -32,6 +33,7 @@ import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DownloadIcon from "@mui/icons-material/Download";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
@@ -88,6 +90,7 @@ const CURRENCY_SYMBOLS = {
 
 const ExpensesView = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { expenses, loading, exchangeRates, baseCurrency, ratesLoading } =
     useSelector((state) => state.expenses);
@@ -265,6 +268,7 @@ const ExpensesView = () => {
         }),
       );
     }
+
     setOpen(false);
     setForm({
       amount: "",
@@ -369,960 +373,1183 @@ const ExpensesView = () => {
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, margin: "0 auto" }}>
-      {/* Header Banner */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          justifyContent: "space-between",
-          alignItems: { xs: "stretch", sm: "center" },
-          gap: 2,
-          mb: 4,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h4"
-            fontWeight={800}
+      {/* ===== STATE A: No Trips Exist ===== */}
+      {!trips || trips.length === 0 ? (
+        <>
+          {/* Minimal Header */}
+          <Box sx={{ mb: 4 }}>
+            <Typography
+              variant="h4"
+              fontWeight={800}
+              sx={{
+                background: "linear-gradient(90deg, #3f51b5 0%, #ff6e40 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              Expense Explorer
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+              Visualize and optimize your travel finances in real-time
+            </Typography>
+          </Box>
+          <Paper
+            elevation={0}
             sx={{
-              background: "linear-gradient(90deg, #3f51b5 0%, #ff6e40 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "-0.5px",
+              p: { xs: 5, md: 8 },
+              textAlign: "center",
+              borderRadius: 4,
+              border: "2px dashed",
+              borderColor: "divider",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 380,
             }}
           >
-            Expense Explorer
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-            Visualize and optimize your travel finances in real-time
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Tooltip title="Export Expenses">
-            <Box component="span" sx={{ display: "inline-flex", gap: 0 }}>
-              <Button
-                variant="outlined"
-                startIcon={<DownloadIcon />}
-                onClick={handleExportMenuOpen}
-                disabled={!activeTripId || !expenses || expenses.length === 0}
-                sx={{ borderRadius: 3 }}
-              >
-                Export
-              </Button>
-
-              <Menu
-                anchorEl={exportAnchorEl}
-                open={Boolean(exportAnchorEl)}
-                onClose={handleExportMenuClose}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleExportCSV();
-                    handleExportMenuClose();
-                  }}
-                >
-                  Export CSV
-                </MenuItem>
-
-                <MenuItem onClick={handleExportExcel}>
-                  Export Excel (.xlsx)
-                </MenuItem>
-              </Menu>
+            <Box
+              sx={{
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                bgcolor: "rgba(63, 81, 181, 0.08)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mb: 3,
+              }}
+            >
+              <FlightTakeoffIcon
+                sx={{ fontSize: 40, color: "primary.main", opacity: 0.7 }}
+              />
             </Box>
-          </Tooltip>
-          <PrimaryButton
-            startIcon={<AddIcon />}
-            onClick={() => setOpen(true)}
-            disabled={!activeTripId}
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              color="text.primary"
+              gutterBottom
+            >
+              No trips found!
+            </Typography>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ mb: 3, maxWidth: 380 }}
+            >
+              Create your first trip before tracking expenses.
+            </Typography>
+            <PrimaryButton
+              startIcon={<AddIcon />}
+              onClick={() => navigate("/dashboard/trips")}
+              sx={{ borderRadius: 3, px: 4 }}
+            >
+              Create Trip
+            </PrimaryButton>
+          </Paper>
+        </>
+      ) : (
+        <>
+          {/* Header Banner — shown when trips exist */}
+          <Box
             sx={{
-              borderRadius: 2.5,
-              fontWeight: 600,
-              px: 3,
-              boxShadow: "0 8px 20px -6px rgba(63, 81, 181, 0.5)",
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: "space-between",
+              alignItems: { xs: "stretch", sm: "center" },
+              gap: 2,
+              mb: 4,
             }}
           >
-            Add Expense
-          </PrimaryButton>
-        </Box>
-      </Box>
-
-      {/* Base Currency Selector */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-        <Typography variant="body2" color="text.secondary">
-          Display totals in:
-        </Typography>
-        <TextField
-          select
-          size="small"
-          value={selectedBase}
-          onChange={(e) => setSelectedBase(e.target.value)}
-          disabled={ratesLoading}
-          sx={{ width: 130 }}
-        >
-          {CURRENCIES.map((c) => (
-            <MenuItem key={c} value={c}>
-              {CURRENCY_SYMBOLS[c]} {c}
-            </MenuItem>
-          ))}
-        </TextField>
-        {ratesLoading && (
-          <CircularProgress
-            size={18}
-            thickness={5}
-            sx={{ color: "primary.main" }}
-          />
-        )}
-      </Box>
-
-      {/* Trip Selector */}
-      {/* Select Trip Panel */}
-      {trips && trips.length > 0 && (
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            borderRadius: 4,
-            mb: 4,
-            border: "1px solid",
-            borderColor: "rgba(224, 224, 224, 0.6)",
-            background: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(20px)",
-            boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
-          }}
-        >
-          <Grid container spacing={3} sx={{ alignItems: "center" }}>
-            <Grid xs={12} md={6}>
+            <Box>
               <Typography
-                variant="subtitle2"
-                fontWeight={700}
-                sx={{ mb: 1, color: "text.primary" }}
-              >
-                Active Trip Profile
-              </Typography>
-              <TextField
-                select
-                fullWidth
-                value={activeTripId}
-                onChange={(e) => setActiveTripId(e.target.value)}
-                variant="outlined"
+                variant="h4"
+                fontWeight={800}
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 3,
-                    bgcolor: "rgba(245, 247, 250, 0.5)",
+                  background:
+                    "linear-gradient(90deg, #3f51b5 0%, #ff6e40 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "-0.5px",
+                }}
+              >
+                Expense Explorer
+              </Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Visualize and optimize your travel finances in real-time
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Tooltip title="Export Expenses">
+                <Box component="span" sx={{ display: "inline-flex", gap: 0 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DownloadIcon />}
+                    onClick={handleExportMenuOpen}
+                    disabled={
+                      !activeTripId || !expenses || expenses.length === 0
+                    }
+                    sx={{ borderRadius: 3 }}
+                  >
+                    Export
+                  </Button>
+
+                  <Menu
+                    anchorEl={exportAnchorEl}
+                    open={Boolean(exportAnchorEl)}
+                    onClose={handleExportMenuClose}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleExportCSV();
+                        handleExportMenuClose();
+                      }}
+                    >
+                      Export CSV
+                    </MenuItem>
+
+                    <MenuItem onClick={handleExportExcel}>
+                      Export Excel (.xlsx)
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              </Tooltip>
+              <PrimaryButton
+                startIcon={<AddIcon />}
+                onClick={() => setOpen(true)}
+                disabled={!activeTripId}
+                sx={{
+                  borderRadius: 2.5,
+                  fontWeight: 600,
+                  px: 3,
+                  boxShadow: "0 8px 20px -6px rgba(63, 81, 181, 0.5)",
+                }}
+              >
+                Add Expense
+              </PrimaryButton>
+            </Box>
+          </Box>
+
+          {/* Base Currency Selector */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Display totals in:
+            </Typography>
+            <TextField
+              select
+              size="small"
+              value={selectedBase}
+              onChange={(e) => setSelectedBase(e.target.value)}
+              disabled={ratesLoading}
+              sx={{ width: 130 }}
+            >
+              {CURRENCIES.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {CURRENCY_SYMBOLS[c]} {c}
+                </MenuItem>
+              ))}
+            </TextField>
+            {ratesLoading && (
+              <CircularProgress
+                size={18}
+                thickness={5}
+                sx={{ color: "primary.main" }}
+              />
+            )}
+          </Box>
+
+          {/* Trip Selector */}
+          {/* Select Trip Panel */}
+          {trips && trips.length > 0 && (
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                borderRadius: 4,
+                mb: 4,
+                border: "1px solid",
+                borderColor: "rgba(224, 224, 224, 0.6)",
+                background: "rgba(255, 255, 255, 0.8)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
+              }}
+            >
+              <Grid container spacing={3} sx={{ alignItems: "center" }}>
+                <Grid xs={12} md={6}>
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={700}
+                    sx={{ mb: 1, color: "text.primary" }}
+                  >
+                    Active Trip Profile
+                  </Typography>
+                  <TextField
+                    select
+                    fullWidth
+                    value={activeTripId}
+                    onChange={(e) => setActiveTripId(e.target.value)}
+                    variant="outlined"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        bgcolor: "rgba(245, 247, 250, 0.5)",
+                      },
+                    }}
+                  >
+                    {trips.map((t) => (
+                      <MenuItem key={t._id} value={t._id}>
+                        🌍 {t.destination} (
+                        {new Date(t.startDate).toLocaleDateString("en-IN", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        )
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                {activeTrip && (
+                  <Grid
+                    xs={12}
+                    md={6}
+                    sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        fontWeight={500}
+                      >
+                        Trip Schedule
+                      </Typography>
+                      <Typography variant="body2" fontWeight={700}>
+                        {new Date(activeTrip.startDate).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                          },
+                        )}{" "}
+                        -{" "}
+                        {new Date(activeTrip.endDate).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          },
+                        )}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        fontWeight={500}
+                      >
+                        Status
+                      </Typography>
+                      <Box sx={{ mt: 0.5 }}>
+                        <Chip
+                          label={activeTrip.status.toUpperCase()}
+                          size="small"
+                          color={
+                            activeTrip.status === "completed"
+                              ? "success"
+                              : activeTrip.status === "ongoing"
+                                ? "secondary"
+                                : "primary"
+                          }
+                          sx={{
+                            fontWeight: 700,
+                            fontSize: "0.65rem",
+                            borderRadius: 1.5,
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Grid>
+                )}
+              </Grid>
+            </Paper>
+          )}
+
+          {/* Financial Status Summary */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            {/* Total Spent Card */}
+            <Grid item xs={12} sm={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 4,
+                  background:
+                    "linear-gradient(135deg, #3f51b5 0%, #002984 100%)",
+                  color: "white",
+                  boxShadow: "0 12px 24px -10px rgba(63, 81, 181, 0.4)",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: -50,
+                    right: -50,
+                    width: 150,
+                    height: 150,
+                    borderRadius: "50%",
+                    background: "rgba(255, 255, 255, 0.08)",
                   },
                 }}
               >
-                {trips.map((t) => (
-                  <MenuItem key={t._id} value={t._id}>
-                    🌍 {t.destination} (
-                    {new Date(t.startDate).toLocaleDateString("en-IN", {
-                      month: "short",
-                      year: "numeric",
-                    })}
-                    )
-                  </MenuItem>
-                ))}
-              </TextField>
+                <WalletIcon sx={{ mb: 1, opacity: 0.8 }} />
+                <Typography variant="body2" sx={{ opacity: 0.85 }}>
+                  Total Spent
+                </Typography>
+                <Typography variant="h5" fontWeight={700}>
+                  {currencySymbol}
+                  {totalSpent.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{ display: "block", mt: 1.5, opacity: 0.8 }}
+                >
+                  Aggregated across all categories
+                </Typography>
+              </Paper>
             </Grid>
-            {activeTrip && (
-              <Grid
-                xs={12}
-                md={6}
-                sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}
+
+            {/* Budget Card */}
+            <Grid item xs={12} sm={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 4,
+                  border: "1px solid",
+                  borderColor: "rgba(72, 187, 120, 0.2)",
+                  background: "rgba(255, 255, 255, 0.8)",
+                  boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
+                }}
               >
-                <Box>
+                <WalletIcon sx={{ mb: 1, color: "success.main" }} />
+                <Typography variant="body2" color="text.secondary">
+                  Budget
+                </Typography>
+                <Typography variant="h5" fontWeight={700} color="success.main">
+                  {budget > 0
+                    ? `${currencySymbol}${budget.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                    : "—"}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: "block", mt: 1.5 }}
+                >
+                  {budget > 0
+                    ? "Target maximum limit"
+                    : "No budget configured yet"}
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* Remaining Card */}
+            <Grid item xs={12} sm={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 4,
+                  border: "1px solid",
+                  borderColor:
+                    remaining !== null && remaining < 0
+                      ? "rgba(245, 101, 101, 0.2)"
+                      : "rgba(66, 153, 225, 0.2)",
+                  background:
+                    remaining !== null && remaining < 0
+                      ? "rgba(254, 242, 242, 0.6)"
+                      : "rgba(240, 249, 255, 0.6)",
+                  boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 1,
+                  }}
+                >
                   <Typography
-                    variant="caption"
+                    variant="subtitle2"
                     color="text.secondary"
-                    fontWeight={500}
+                    fontWeight={600}
                   >
-                    Trip Schedule
+                    Balance Remaining
                   </Typography>
-                  <Typography variant="body2" fontWeight={700}>
-                    {new Date(activeTrip.startDate).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                      },
-                    )}{" "}
-                    -{" "}
-                    {new Date(activeTrip.endDate).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    fontWeight={500}
+                  <Box
+                    sx={{
+                      p: 0.75,
+                      borderRadius: 2,
+                      bgcolor:
+                        remaining !== null && remaining < 0
+                          ? "rgba(245, 101, 101, 0.15)"
+                          : "rgba(66, 153, 225, 0.15)",
+                      color:
+                        remaining !== null && remaining < 0
+                          ? "#f56565"
+                          : "#4299e1",
+                      display: "flex",
+                    }}
                   >
-                    Status
-                  </Typography>
-                  <Box sx={{ mt: 0.5 }}>
-                    <Chip
-                      label={activeTrip.status.toUpperCase()}
-                      size="small"
-                      color={
-                        activeTrip.status === "completed"
-                          ? "success"
-                          : activeTrip.status === "ongoing"
-                            ? "secondary"
-                            : "primary"
-                      }
-                      sx={{
-                        fontWeight: 700,
-                        fontSize: "0.65rem",
-                        borderRadius: 1.5,
-                      }}
-                    />
+                    {remaining !== null && remaining < 0 ? (
+                      <ErrorIcon sx={{ fontSize: 18 }} />
+                    ) : (
+                      <InfoIcon sx={{ fontSize: 18 }} />
+                    )}
                   </Box>
                 </Box>
-              </Grid>
-            )}
+                <Typography
+                  variant="h3"
+                  fontWeight={800}
+                  color={
+                    remaining !== null && remaining < 0
+                      ? "error.main"
+                      : "info.main"
+                  }
+                  sx={{ letterSpacing: "-1px" }}
+                >
+                  {remaining !== null
+                    ? `${currencySymbol}${remaining.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                    : "—"}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color={
+                    remaining !== null && remaining < 0
+                      ? "error.main"
+                      : "text.secondary"
+                  }
+                  fontWeight={remaining !== null && remaining < 0 ? 600 : 400}
+                  sx={{ display: "block", mt: 1.5 }}
+                >
+                  {remaining !== null && remaining < 0
+                    ? "⚠️ Warning: Budget limit exceeded!"
+                    : remaining !== null
+                      ? "Safe zone spending budget"
+                      : "No budget set for this trip. Set a budget to monitor your spending."}
+                </Typography>
+              </Paper>
+            </Grid>
           </Grid>
-        </Paper>
-      )}
 
-      {/* Financial Status Summary */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {/* Total Spent Card */}
-        <Grid xs={12} sm={4}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              background: "linear-gradient(135deg, #3f51b5 0%, #002984 100%)",
-              color: "white",
-              boxShadow: "0 12px 24px -10px rgba(63, 81, 181, 0.4)",
-              position: "relative",
-              overflow: "hidden",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: -50,
-                right: -50,
-                width: 150,
-                height: 150,
-                borderRadius: "50%",
-                background: "rgba(255, 255, 255, 0.08)",
+          {/* Main Analytics Area */}
+          {/* ===== STATE B: Trips exist but no expenses ===== */}
+          {!expenses || expenses.length === 0 ? (
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 5, md: 8 },
+                textAlign: "center",
+                borderRadius: 4,
+                border: "2px dashed",
+                borderColor: "divider",
+                mb: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 320,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  bgcolor: "rgba(63, 81, 181, 0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 3,
+                }}
+              >
+                <WalletIcon
+                  sx={{ fontSize: 40, color: "primary.main", opacity: 0.7 }}
+                />
+              </Box>
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                color="text.primary"
+                gutterBottom
+              >
+                No expenses yet!
+              </Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mb: 3, maxWidth: 380 }}
+              >
+                Add your first expense for this trip.
+              </Typography>
+              <PrimaryButton
+                startIcon={<AddIcon />}
+                onClick={() => setOpen(true)}
+                sx={{ borderRadius: 3, px: 4 }}
+              >
+                Add Expense
+              </PrimaryButton>
+            </Paper>
+          ) : (
+            <Grid container spacing={4}>
+              {/* Expenses List & Filter Card */}
+              <Grid item xs={12} md={7.5}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: 4,
+                    border: "1px solid",
+                    borderColor: "rgba(224, 224, 224, 0.6)",
+                    overflow: "hidden",
+                    boxShadow: "0 12px 32px -12px rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 3,
+                      borderBottom: "1px solid",
+                      borderColor: "rgba(224, 224, 224, 0.6)",
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      justifyContent: "space-between",
+                      alignItems: { xs: "stretch", sm: "center" },
+                      gap: 2,
+                      background: "rgba(255, 255, 255, 0.5)",
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      fontWeight={800}
+                      color="text.primary"
+                    >
+                      Ledger Records
+                    </Typography>
+
+                    {/* Filters */}
+                    <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
+                      <TextField
+                        placeholder="Search..."
+                        size="small"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon
+                                  sx={{ color: "text.disabled", fontSize: 20 }}
+                                />
+                              </InputAdornment>
+                            ),
+                            style: { borderRadius: 10 },
+                          },
+                        }}
+                        sx={{ width: { xs: "100%", sm: 160 } }}
+                      />
+                      <TextField
+                        select
+                        size="small"
+                        value={filterCategory}
+                        onChange={(e) => setFilterCategory(e.target.value)}
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <FilterListIcon
+                                  sx={{ color: "text.disabled", fontSize: 18 }}
+                                />
+                              </InputAdornment>
+                            ),
+                            style: { borderRadius: 10 },
+                          },
+                        }}
+                        sx={{ width: { xs: "100%", sm: 140 } }}
+                      >
+                        <MenuItem value="All">All Categories</MenuItem>
+                        {EXPENSE_CATEGORIES.map((c) => (
+                          <MenuItem key={c} value={c}>
+                            {c}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Box>
+                  </Box>
+
+                  <TableContainer sx={{ maxHeight: 420 }}>
+                    <Table stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            sx={{
+                              fontWeight: 700,
+                              color: "text.secondary",
+                              py: 2,
+                            }}
+                          >
+                            Date
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: 700,
+                              color: "text.secondary",
+                              py: 2,
+                            }}
+                          >
+                            Category
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: 700,
+                              color: "text.secondary",
+                              py: 2,
+                            }}
+                          >
+                            Description
+                          </TableCell>
+                          <TableCell
+                            align="right"
+                            sx={{
+                              fontWeight: 700,
+                              color: "text.secondary",
+                              py: 2,
+                            }}
+                          >
+                            Amount
+                          </TableCell>
+                          <TableCell align="center" sx={{ py: 2 }} />
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {loading ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={5}
+                              align="center"
+                              sx={{ py: 6 }}
+                            >
+                              <CircularProgress size={32} />
+                            </TableCell>
+                          </TableRow>
+                        ) : filteredExpenses.length > 0 ? (
+                          filteredExpenses.map((expense) => (
+                            <TableRow
+                              key={expense._id}
+                              hover
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell sx={{ whiteSpace: "nowrap", py: 2 }}>
+                                {new Date(expense.date).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
+                              </TableCell>
+                              <TableCell sx={{ py: 1.5 }}>
+                                <Chip
+                                  label={expense.category}
+                                  size="small"
+                                  sx={{
+                                    bgcolor:
+                                      (CATEGORY_COLORS[expense.category] ||
+                                        "#9e9e9e") + "18",
+                                    color:
+                                      CATEGORY_COLORS[expense.category] ||
+                                      "#9e9e9e",
+                                    fontWeight: 700,
+                                    borderRadius: 1.5,
+                                    fontSize: "0.75rem",
+                                    border: "1px solid",
+                                    borderColor:
+                                      (CATEGORY_COLORS[expense.category] ||
+                                        "#9e9e9e") + "30",
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  color: "text.primary",
+                                  fontWeight: 500,
+                                  py: 2,
+                                }}
+                              >
+                                {expense.description || "—"}
+                              </TableCell>
+                              <TableCell align="right" sx={{ fontWeight: 700 }}>
+                                {CURRENCY_SYMBOLS[expense.currency] ||
+                                  expense.currency}
+                                {expense.amount.toLocaleString()}
+                                {expense.currency !== baseCurrency && (
+                                  <Typography
+                                    variant="caption"
+                                    display="block"
+                                    color="text.secondary"
+                                  >
+                                    ≈ {currencySymbol}
+                                    {parseFloat(
+                                      toBase(expense.amount, expense.currency),
+                                    ).toLocaleString(undefined, {
+                                      maximumFractionDigits: 2,
+                                    })}
+                                  </Typography>
+                                )}
+                              </TableCell>
+                              <TableCell align="center" sx={{ py: 1.5 }}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    gap: 1,
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Tooltip title="Edit Expense">
+                                    <IconButton
+                                      size="small"
+                                      sx={{
+                                        color: "primary.main",
+                                        bgcolor: "rgba(63, 81, 181, 0.05)",
+                                        "&:hover": {
+                                          bgcolor: "rgba(63, 81, 181, 0.15)",
+                                        },
+                                        borderRadius: 2,
+                                      }}
+                                      onClick={() => handleEditClick(expense)}
+                                    >
+                                      <EditIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Delete Expense">
+                                    <IconButton
+                                      size="small"
+                                      sx={{
+                                        color: "error.main",
+                                        bgcolor: "rgba(245, 101, 101, 0.05)",
+                                        "&:hover": {
+                                          bgcolor: "rgba(245, 101, 101, 0.15)",
+                                        },
+                                        borderRadius: 2,
+                                      }}
+                                      onClick={() => handleDelete(expense._id)}
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </Box>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={5}
+                              align="center"
+                              sx={{ py: 8 }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: 1.5,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <WalletIcon
+                                  sx={{
+                                    fontSize: 44,
+                                    color: "text.disabled",
+                                    opacity: 0.6,
+                                  }}
+                                />
+                                <Typography
+                                  variant="body1"
+                                  color="text.secondary"
+                                  fontWeight={500}
+                                >
+                                  No ledger records match filters
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  color="text.disabled"
+                                >
+                                  Try broadening your search criteria or adding
+                                  a new expense
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+
+              {/* Pie Chart */}
+              <Grid item xs={12} md={5}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 4,
+                    borderRadius: 3,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    boxSizing: "border-box",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={800}
+                    mb={3}
+                    color="text.primary"
+                  >
+                    Spending Allocation
+                  </Typography>
+                  {chartData.length > 0 ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      <Box sx={{ flex: 1, minWidth: 180, width: 0 }}>
+                        <ResponsiveContainer width="100%" height={240}>
+                          <PieChart
+                            margin={{
+                              top: 15,
+                              right: 15,
+                              bottom: 15,
+                              left: 30,
+                            }}
+                          >
+                            <Pie
+                              data={chartData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={55}
+                              outerRadius={80}
+                              paddingAngle={4}
+                              dataKey="value"
+                            >
+                              {chartData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={
+                                    CATEGORY_COLORS[entry.name] || "#8884d8"
+                                  }
+                                />
+                              ))}
+                            </Pie>
+                            <ReTooltip
+                              formatter={(value) => [
+                                `${currencySymbol}${value.toLocaleString()}`,
+                                "",
+                              ]}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </Box>
+                      {/* Custom Legend */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.75,
+                          alignSelf: "center",
+                          pl: 1,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {chartData.map((entry) => (
+                          <Box
+                            key={entry.name}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: 15,
+                                height: 15,
+                                borderRadius: "3px",
+                                bgcolor:
+                                  CATEGORY_COLORS[entry.name] || "#8884d8",
+                                flexShrink: 0,
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              sx={{ whiteSpace: "nowrap" }}
+                            >
+                              {entry.name}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: 120,
+                        flexDirection: "column",
+                        gap: 1.5,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: "50%",
+                          bgcolor: "grey.50",
+                          border: "2px dashed",
+                          borderColor: "grey.200",
+                          display: "flex",
+                        }}
+                      >
+                        <WalletIcon
+                          sx={{
+                            fontSize: 32,
+                            color: "text.disabled",
+                            opacity: 0.6,
+                          }}
+                        />
+                      </Box>
+                      <Typography color="text.secondary" fontWeight={500}>
+                        Insufficient spending data
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.disabled"
+                        align="center"
+                        sx={{ maxWidth: 200 }}
+                      >
+                        Add a transaction to generate real-time financial charts
+                      </Typography>
+                    </Box>
+                  )}
+                </Paper>
+              </Grid>
+            </Grid>
+          )}
+
+          {/* Add Expense Dialog */}
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth="sm"
+            fullWidth
+            TransitionComponent={Fade}
+            transitionDuration={350}
+            PaperProps={{
+              sx: {
+                borderRadius: 4,
+                p: 1.5,
+                boxShadow: "0 20px 50px rgba(0,0,0,0.12)",
               },
             }}
           >
-            <WalletIcon sx={{ mb: 1, opacity: 0.8 }} />
-            <Typography variant="body2" sx={{ opacity: 0.85 }}>
-              Total Spent
-            </Typography>
-            <Typography variant="h5" fontWeight={700}>
-              {currencySymbol}
-              {totalSpent.toLocaleString(undefined, {
-                maximumFractionDigits: 2,
-              })}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ display: "block", mt: 1.5, opacity: 0.8 }}
-            >
-              Aggregated across all categories
-            </Typography>
-          </Paper>
-        </Grid>
-
-        {/* Budget Card */}
-        <Grid xs={12} sm={4}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              border: "1px solid",
-              borderColor: "rgba(72, 187, 120, 0.2)",
-              background: "rgba(255, 255, 255, 0.8)",
-              boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
-            }}
-          >
-            <WalletIcon sx={{ mb: 1, color: "success.main" }} />
-            <Typography variant="body2" color="text.secondary">
-              Budget
-            </Typography>
-            <Typography variant="h5" fontWeight={700} color="success.main">
-              {budget > 0
-                ? `${currencySymbol}${budget.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                : "—"}
-            </Typography>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ display: "block", mt: 1.5 }}
-            >
-              {budget > 0 ? "Target maximum limit" : "No budget configured yet"}
-            </Typography>
-          </Paper>
-        </Grid>
-
-        {/* Remaining Card */}
-        <Grid xs={12} sm={4}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              border: "1px solid",
-              borderColor:
-                remaining !== null && remaining < 0
-                  ? "rgba(245, 101, 101, 0.2)"
-                  : "rgba(66, 153, 225, 0.2)",
-              background:
-                remaining !== null && remaining < 0
-                  ? "rgba(254, 242, 242, 0.6)"
-                  : "rgba(240, 249, 255, 0.6)",
-              boxShadow: "0 10px 30px -15px rgba(0,0,0,0.03)",
-            }}
-          >
-            <Box
+            <DialogTitle
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 1,
+                fontWeight: 800,
+                fontSize: "1.35rem",
+                pb: 1,
+                color: "text.primary",
               }}
             >
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                fontWeight={600}
-              >
-                Balance Remaining
-              </Typography>
+              {editingExpenseId
+                ? "📝 Edit Transaction Record"
+                : "📝 Add Transaction Record"}
+            </DialogTitle>
+            <DialogContent>
               <Box
                 sx={{
-                  p: 0.75,
-                  borderRadius: 2,
-                  bgcolor:
-                    remaining !== null && remaining < 0
-                      ? "rgba(245, 101, 101, 0.15)"
-                      : "rgba(66, 153, 225, 0.15)",
-                  color:
-                    remaining !== null && remaining < 0 ? "#f56565" : "#4299e1",
+                  mt: 1.5,
                   display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
                 }}
               >
-                {remaining !== null && remaining < 0 ? (
-                  <ErrorIcon sx={{ fontSize: 18 }} />
-                ) : (
-                  <InfoIcon sx={{ fontSize: 18 }} />
+                {/* Real-time Over Budget Warning Alert */}
+                {isOverBudgetDialog && (
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: "error.light",
+                      color: "error.main",
+                      border: "1px solid",
+                      borderColor: "rgba(245, 101, 101, 0.2)",
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <WarningIcon sx={{ mt: 0.25 }} />
+                    <Box>
+                      <Typography variant="body2" fontWeight={700}>
+                        Over-Budget Alert!
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
+                        This transaction of ₹{dialogAmount.toLocaleString()}{" "}
+                        will put you{" "}
+                        <strong>₹{overBudgetBy.toLocaleString()}</strong> over
+                        your trip budget limit.
+                      </Typography>
+                    </Box>
+                  </Box>
                 )}
-              </Box>
-            </Box>
-            <Typography
-              variant="h3"
-              fontWeight={800}
-              color={
-                remaining !== null && remaining < 0 ? "error.main" : "info.main"
-              }
-              sx={{ letterSpacing: "-1px" }}
-            >
-              {remaining !== null
-                ? `${currencySymbol}${remaining.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                : "—"}
-            </Typography>
-            <Typography
-              variant="caption"
-              color={
-                remaining !== null && remaining < 0
-                  ? "error.main"
-                  : "text.secondary"
-              }
-              fontWeight={remaining !== null && remaining < 0 ? 600 : 400}
-              sx={{ display: "block", mt: 1.5 }}
-            >
-              {remaining !== null && remaining < 0
-                ? "⚠️ Warning: Budget limit exceeded!"
-                : remaining !== null
-                  ? "Safe zone spending budget"
-                  : "Awaiting trip budget setup"}
-            </Typography>
-          </Paper>
-        </Grid>
-      </Grid>
 
-      {/* Main Analytics Area */}
-      <Grid container spacing={4}>
-        {/* Expenses List & Filter Card */}
-        <Grid xs={12} md={7.5}>
-          <Paper
-            elevation={0}
-            sx={{
-              borderRadius: 4,
-              border: "1px solid",
-              borderColor: "rgba(224, 224, 224, 0.6)",
-              overflow: "hidden",
-              boxShadow: "0 12px 32px -12px rgba(0,0,0,0.04)",
-            }}
-          >
-            <Box
-              sx={{
-                p: 3,
-                borderBottom: "1px solid",
-                borderColor: "rgba(224, 224, 224, 0.6)",
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                justifyContent: "space-between",
-                alignItems: { xs: "stretch", sm: "center" },
-                gap: 2,
-                background: "rgba(255, 255, 255, 0.5)",
-              }}
-            >
-              <Typography variant="h6" fontWeight={800} color="text.primary">
-                Ledger Records
-              </Typography>
+                <Grid container spacing={2}>
+                  <Grid xs={12} sm={8}>
+                    <TextField
+                      fullWidth
+                      label="Amount *"
+                      type="number"
+                      value={form.amount}
+                      onChange={handleAmountChange}
+                      error={Boolean(amountError)}
+                      helperText={amountError}
+                      slotProps={{
+                        htmlInput: { min: 0.01, step: 0.01 },
+                        input: { style: { borderRadius: 12 } },
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={12} sm={4}>
+                    <TextField
+                      fullWidth
+                      select
+                      label="Currency"
+                      value={form.currency}
+                      onChange={(e) =>
+                        setForm({ ...form, currency: e.target.value })
+                      }
+                      slotProps={{ input: { style: { borderRadius: 12 } } }}
+                    >
+                      {CURRENCIES.map((c) => (
+                        <MenuItem key={c} value={c}>
+                          {CURRENCY_SYMBOLS[c]} {c}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                </Grid>
 
-              {/* Filters */}
-              <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
                 <TextField
-                  placeholder="Search..."
-                  size="small"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon
-                            sx={{ color: "text.disabled", fontSize: 20 }}
-                          />
-                        </InputAdornment>
-                      ),
-                      style: { borderRadius: 10 },
-                    },
-                  }}
-                  sx={{ width: { xs: "100%", sm: 160 } }}
-                />
-                <TextField
+                  fullWidth
                   select
-                  size="small"
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <FilterListIcon
-                            sx={{ color: "text.disabled", fontSize: 18 }}
-                          />
-                        </InputAdornment>
-                      ),
-                      style: { borderRadius: 10 },
-                    },
-                  }}
-                  sx={{ width: { xs: "100%", sm: 140 } }}
+                  label="Expense Category *"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value })
+                  }
+                  slotProps={{ input: { style: { borderRadius: 12 } } }}
                 >
-                  <MenuItem value="All">All Categories</MenuItem>
                   {EXPENSE_CATEGORIES.map((c) => (
                     <MenuItem key={c} value={c}>
                       {c}
                     </MenuItem>
                   ))}
                 </TextField>
-              </Box>
-            </Box>
 
-            <TableContainer sx={{ maxHeight: 420 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
-                    >
-                      Date
-                    </TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
-                    >
-                      Category
-                    </TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
-                    >
-                      Description
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{ fontWeight: 700, color: "text.secondary", py: 2 }}
-                    >
-                      Amount
-                    </TableCell>
-                    <TableCell align="center" sx={{ py: 2 }} />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
-                        <CircularProgress size={32} />
-                      </TableCell>
-                    </TableRow>
-                  ) : filteredExpenses.length > 0 ? (
-                    filteredExpenses.map((expense) => (
-                      <TableRow
-                        key={expense._id}
-                        hover
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell sx={{ whiteSpace: "nowrap", py: 2 }}>
-                          {new Date(expense.date).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </TableCell>
-                        <TableCell sx={{ py: 1.5 }}>
-                          <Chip
-                            label={expense.category}
-                            size="small"
-                            sx={{
-                              bgcolor:
-                                (CATEGORY_COLORS[expense.category] ||
-                                  "#9e9e9e") + "18",
-                              color:
-                                CATEGORY_COLORS[expense.category] || "#9e9e9e",
-                              fontWeight: 700,
-                              borderRadius: 1.5,
-                              fontSize: "0.75rem",
-                              border: "1px solid",
-                              borderColor:
-                                (CATEGORY_COLORS[expense.category] ||
-                                  "#9e9e9e") + "30",
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          sx={{ color: "text.primary", fontWeight: 500, py: 2 }}
-                        >
-                          {expense.description || "—"}
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 700 }}>
-                          {CURRENCY_SYMBOLS[expense.currency] ||
-                            expense.currency}
-                          {expense.amount.toLocaleString()}
-                          {expense.currency !== baseCurrency && (
-                            <Typography
-                              variant="caption"
-                              display="block"
-                              color="text.secondary"
-                            >
-                              ≈ {currencySymbol}
-                              {parseFloat(
-                                toBase(expense.amount, expense.currency),
-                              ).toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              })}
-                            </Typography>
-                          )}
-                        </TableCell>
-                        <TableCell align="center" sx={{ py: 1.5 }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              gap: 1,
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Tooltip title="Edit Expense">
-                              <IconButton
-                                size="small"
-                                sx={{
-                                  color: "primary.main",
-                                  bgcolor: "rgba(63, 81, 181, 0.05)",
-                                  "&:hover": {
-                                    bgcolor: "rgba(63, 81, 181, 0.15)",
-                                  },
-                                  borderRadius: 2,
-                                }}
-                                onClick={() => handleEditClick(expense)}
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete Expense">
-                              <IconButton
-                                size="small"
-                                sx={{
-                                  color: "error.main",
-                                  bgcolor: "rgba(245, 101, 101, 0.05)",
-                                  "&:hover": {
-                                    bgcolor: "rgba(245, 101, 101, 0.15)",
-                                  },
-                                  borderRadius: 2,
-                                }}
-                                onClick={() => handleDelete(expense._id)}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 8 }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1.5,
-                            alignItems: "center",
-                          }}
-                        >
-                          <WalletIcon
-                            sx={{
-                              fontSize: 44,
-                              color: "text.disabled",
-                              opacity: 0.6,
-                            }}
-                          />
-                          <Typography
-                            variant="body1"
-                            color="text.secondary"
-                            fontWeight={500}
-                          >
-                            No ledger records match filters
-                          </Typography>
-                          <Typography variant="caption" color="text.disabled">
-                            Try broadening your search criteria or adding a new
-                            expense
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
-
-        {/* Pie Chart */}
-        <Grid xs={12} md={5}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 4,
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-              boxSizing: "border-box",
-              alignSelf: "flex-start",
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              fontWeight={800}
-              mb={3}
-              color="text.primary"
-            >
-              Spending Allocation
-            </Typography>
-            {chartData.length > 0 ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 3,
-                }}
-              >
-                <Box sx={{ flex: 1, minWidth: 180, width: 0 }}>
-                  <ResponsiveContainer width="100%" height={240}>
-                    <PieChart
-                      margin={{ top: 15, right: 15, bottom: 15, left: 30 }}
-                    >
-                      <Pie
-                        data={chartData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={55}
-                        outerRadius={80}
-                        paddingAngle={4}
-                        dataKey="value"
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={CATEGORY_COLORS[entry.name] || "#8884d8"}
-                          />
-                        ))}
-                      </Pie>
-                      <ReTooltip
-                        formatter={(value) => [
-                          `${currencySymbol}${value.toLocaleString()}`,
-                          "",
-                        ]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </Box>
-                {/* Custom Legend */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 0.75,
-                    alignSelf: "center",
-                    pl: 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  {chartData.map((entry) => (
-                    <Box
-                      key={entry.name}
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 15,
-                          height: 15,
-                          borderRadius: "3px",
-                          bgcolor: CATEGORY_COLORS[entry.name] || "#8884d8",
-                          flexShrink: 0,
-                        }}
-                      />
-                      <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-                        {entry.name}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 120,
-                  flexDirection: "column",
-                  gap: 1.5,
-                  mt: 1.5,
-                }}
-              >
-                <Box
-                  sx={{
-                    p: 2,
-                    borderRadius: "50%",
-                    bgcolor: "grey.50",
-                    border: "2px dashed",
-                    borderColor: "grey.200",
-                    display: "flex",
-                  }}
-                >
-                  <WalletIcon
-                    sx={{ fontSize: 32, color: "text.disabled", opacity: 0.6 }}
-                  />
-                </Box>
-                <Typography color="text.secondary" fontWeight={500}>
-                  Insufficient spending data
-                </Typography>
-                <Typography
-                  variant="caption"
-                  color="text.disabled"
-                  align="center"
-                  sx={{ maxWidth: 200 }}
-                >
-                  Add a transaction to generate real-time financial charts
-                </Typography>
-              </Box>
-            )}
-          </Paper>
-        </Grid>
-      </Grid>
-
-      {/* Add Expense Dialog */}
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Fade}
-        transitionDuration={350}
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            p: 1.5,
-            boxShadow: "0 20px 50px rgba(0,0,0,0.12)",
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            fontWeight: 800,
-            fontSize: "1.35rem",
-            pb: 1,
-            color: "text.primary",
-          }}
-        >
-          {editingExpenseId
-            ? "📝 Edit Transaction Record"
-            : "📝 Add Transaction Record"}
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{ mt: 1.5, display: "flex", flexDirection: "column", gap: 3 }}
-          >
-            {/* Real-time Over Budget Warning Alert */}
-            {isOverBudgetDialog && (
-              <Box
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  bgcolor: "error.light",
-                  color: "error.main",
-                  border: "1px solid",
-                  borderColor: "rgba(245, 101, 101, 0.2)",
-                  display: "flex",
-                  gap: 1.5,
-                  alignItems: "flex-start",
-                }}
-              >
-                <WarningIcon sx={{ mt: 0.25 }} />
-                <Box>
-                  <Typography variant="body2" fontWeight={700}>
-                    Over-Budget Alert!
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", mt: 0.5 }}
-                  >
-                    This transaction of ₹{dialogAmount.toLocaleString()} will
-                    put you <strong>₹{overBudgetBy.toLocaleString()}</strong>{" "}
-                    over your trip budget limit.
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-
-            <Grid container spacing={2}>
-              <Grid xs={12} sm={8}>
                 <TextField
                   fullWidth
-                  label="Amount *"
-                  type="number"
-                  value={form.amount}
-                  onChange={handleAmountChange}
-                  error={Boolean(amountError)}
-                  helperText={amountError}
-                  slotProps={{
-                    htmlInput: { min: 0.01, step: 0.01 },
-                    input: { style: { borderRadius: 12 } },
-                  }}
-                />
-              </Grid>
-              <Grid xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Currency"
-                  value={form.currency}
+                  label="Transaction Note"
+                  placeholder="e.g. Lunch at Jules Verne"
+                  value={form.description}
                   onChange={(e) =>
-                    setForm({ ...form, currency: e.target.value })
+                    setForm({ ...form, description: e.target.value })
                   }
                   slotProps={{ input: { style: { borderRadius: 12 } } }}
-                >
-                  {CURRENCIES.map((c) => (
-                    <MenuItem key={c} value={c}>
-                      {CURRENCY_SYMBOLS[c]} {c}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
+                />
 
-            <TextField
-              fullWidth
-              select
-              label="Expense Category *"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              slotProps={{ input: { style: { borderRadius: 12 } } }}
-            >
-              {EXPENSE_CATEGORIES.map((c) => (
-                <MenuItem key={c} value={c}>
-                  {c}
-                </MenuItem>
-              ))}
-            </TextField>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Transaction Date"
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    input: { style: { borderRadius: 12 } },
+                  }}
+                  value={form.date}
+                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                />
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ p: 2.5, gap: 1 }}>
+              <Button
+                onClick={handleClose}
+                sx={{ fontWeight: 600, color: "text.secondary" }}
+              >
+                Cancel
+              </Button>
+              <PrimaryButton
+                onClick={handleSubmit}
+                disabled={Boolean(amountError) || !form.amount}
+                sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
+              >
+                {editingExpenseId ? "Save Changes" : "Confirm & Save"}
+              </PrimaryButton>
+            </DialogActions>
+          </Dialog>
 
-            <TextField
-              fullWidth
-              label="Transaction Note"
-              placeholder="e.g. Lunch at Jules Verne"
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              slotProps={{ input: { style: { borderRadius: 12 } } }}
-            />
-
-            <TextField
-              fullWidth
-              type="date"
-              label="Transaction Date"
-              slotProps={{
-                inputLabel: { shrink: true },
-                input: { style: { borderRadius: 12 } },
-              }}
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, gap: 1 }}>
-          <Button
-            onClick={handleClose}
-            sx={{ fontWeight: 600, color: "text.secondary" }}
-          >
-            Cancel
-          </Button>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={Boolean(amountError) || !form.amount}
-            sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
-          >
-            {editingExpenseId ? "Save Changes" : "Confirm & Save"}
-          </PrimaryButton>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
-        <DialogTitle>Delete Expense</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this expense? This action cannot be
-          undone.
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, gap: 1 }}>
-          <Button
-            onClick={cancelDelete}
-            sx={{ fontWeight: 600, color: "text.secondary" }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={confirmDelete}
-            color="error"
-            variant="contained"
-            sx={{ borderRadius: 2.5, fontWeight: 600 }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
+            <DialogTitle>Delete Expense</DialogTitle>
+            <DialogContent>
+              Are you sure you want to delete this expense? This action cannot
+              be undone.
+            </DialogContent>
+            <DialogActions sx={{ p: 2.5, gap: 1 }}>
+              <Button
+                onClick={cancelDelete}
+                sx={{ fontWeight: 600, color: "text.secondary" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmDelete}
+                color="error"
+                variant="contained"
+                sx={{ borderRadius: 2.5, fontWeight: 600 }}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
     </Box>
   );
 };
