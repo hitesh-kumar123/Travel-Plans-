@@ -113,6 +113,7 @@ const ExpensesView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [form, setForm] = useState({
     amount: "",
@@ -297,11 +298,21 @@ const ExpensesView = () => {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteExpense(id));
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    dispatch(deleteExpense(deleteTarget));
+    setDeleteTarget(null);
     setTimeout(() => {
       dispatch(getExpenses(activeTripId));
       dispatch(getExpenseSummary(activeTripId));
     }, 300);
+  };
+
+  const cancelDelete = () => {
+    setDeleteTarget(null);
   };
 
   const handleExportCSV = () => {
@@ -1343,13 +1354,51 @@ const ExpensesView = () => {
                         Add a transaction to generate real-time financial charts
                       </Typography>
                     </Box>
-                  )}
-                </Paper>
-              </Grid>
-            </Grid>
-          )}
-        </>
-      )}
+                  ))}
+                </Box>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 120,
+                  flexDirection: "column",
+                  gap: 1.5,
+                  mt: 1.5,
+                }}
+              >
+                <Box
+                  sx={{
+                    p: 2,
+                    borderRadius: "50%",
+                    bgcolor: "grey.50",
+                    border: "2px dashed",
+                    borderColor: "grey.200",
+                    display: "flex",
+                  }}
+                >
+                  <WalletIcon
+                    sx={{ fontSize: 32, color: "text.disabled", opacity: 0.6 }}
+                  />
+                </Box>
+                <Typography color="text.secondary" fontWeight={500}>
+                  Insufficient spending data
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.disabled"
+                  align="center"
+                  sx={{ maxWidth: 200 }}
+                >
+                  Add a transaction to generate real-time financial charts
+                </Typography>
+              </Box>
+            )}
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Add Expense Dialog */}
       <Dialog
@@ -1504,6 +1553,30 @@ const ExpensesView = () => {
           >
             {editingExpenseId ? "Save Changes" : "Confirm & Save"}
           </PrimaryButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
+        <DialogTitle>Delete Expense</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this expense? This action cannot be
+          undone.
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5, gap: 1 }}>
+          <Button
+            onClick={cancelDelete}
+            sx={{ fontWeight: 600, color: "text.secondary" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            sx={{ borderRadius: 2.5, fontWeight: 600 }}
+          >
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
