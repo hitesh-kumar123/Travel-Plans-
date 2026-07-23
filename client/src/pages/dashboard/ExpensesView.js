@@ -269,9 +269,6 @@ const ExpensesView = () => {
       );
     }
 
-
-
-
     setOpen(false);
     setForm({
       amount: "",
@@ -287,8 +284,6 @@ const ExpensesView = () => {
       dispatch(getExpenseSummary(activeTripId));
     }, 300);
   };
-
-
 
   const handleClose = () => {
     setOpen(false);
@@ -307,8 +302,6 @@ const ExpensesView = () => {
     setDeleteTarget(id);
   };
 
-
-  
   const confirmDelete = () => {
     if (!deleteTarget) return;
     dispatch(deleteExpense(deleteTarget));
