@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const dns = require("dns");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -157,7 +158,16 @@ function validateJwtSecret() {
   }
 }
 
-validateJwtSecret();
+// Optional DNS override for environments where the OS DNS resolver blocks SRV lookups.
+const dnsServers = (process.env.MONGO_DNS_SERVERS || "8.8.8.8,1.1.1.1")
+  .split(",")
+  .map((server) => server.trim())
+  .filter(Boolean);
+
+if (dnsServers.length > 0) {
+  dns.setServers(dnsServers);
+  console.log("Using custom DNS servers:", dnsServers);
+}
 
 // Connect to MongoDB
 mongoose.set("sanitizeFilter", true);

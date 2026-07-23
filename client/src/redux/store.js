@@ -10,6 +10,7 @@ import translatorReducer from "./reducers/translatorReducer";
 import bookingReducer from "./reducers/bookingReducer";
 import packingReducer from "./reducers/packingReducer";
 import budgetReducer from "./reducers/budgetReducer";
+import nearbyReducer from "./reducers/nearbyReducer";
 import offlineQueueReducer from "./reducers/offlineQueueReducer";
 
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   booking: bookingReducer,
   packing: packingReducer,
   budget: budgetReducer,
+  nearby: nearbyReducer,
   offlineQueue: offlineQueueReducer,
 });
 
