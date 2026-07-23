@@ -1360,185 +1360,193 @@ const ExpensesView = () => {
             </Grid>
           )}
 
-      {/* Add Expense Dialog */}
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Fade}
-        transitionDuration={350}
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            p: 1.5,
-            boxShadow: "0 20px 50px rgba(0,0,0,0.12)",
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            fontWeight: 800,
-            fontSize: "1.35rem",
-            pb: 1,
-            color: "text.primary",
-          }}
-        >
-          {editingExpenseId
-            ? "📝 Edit Transaction Record"
-            : "📝 Add Transaction Record"}
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{ mt: 1.5, display: "flex", flexDirection: "column", gap: 3 }}
+          {/* Add Expense Dialog */}
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth="sm"
+            fullWidth
+            TransitionComponent={Fade}
+            transitionDuration={350}
+            PaperProps={{
+              sx: {
+                borderRadius: 4,
+                p: 1.5,
+                boxShadow: "0 20px 50px rgba(0,0,0,0.12)",
+              },
+            }}
           >
-            {/* Real-time Over Budget Warning Alert */}
-            {isOverBudgetDialog && (
+            <DialogTitle
+              sx={{
+                fontWeight: 800,
+                fontSize: "1.35rem",
+                pb: 1,
+                color: "text.primary",
+              }}
+            >
+              {editingExpenseId
+                ? "📝 Edit Transaction Record"
+                : "📝 Add Transaction Record"}
+            </DialogTitle>
+            <DialogContent>
               <Box
                 sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  bgcolor: "error.light",
-                  color: "error.main",
-                  border: "1px solid",
-                  borderColor: "rgba(245, 101, 101, 0.2)",
+                  mt: 1.5,
                   display: "flex",
-                  gap: 1.5,
-                  alignItems: "flex-start",
+                  flexDirection: "column",
+                  gap: 3,
                 }}
               >
-                <WarningIcon sx={{ mt: 0.25 }} />
-                <Box>
-                  <Typography variant="body2" fontWeight={700}>
-                    Over-Budget Alert!
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", mt: 0.5 }}
+                {/* Real-time Over Budget Warning Alert */}
+                {isOverBudgetDialog && (
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: "error.light",
+                      color: "error.main",
+                      border: "1px solid",
+                      borderColor: "rgba(245, 101, 101, 0.2)",
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "flex-start",
+                    }}
                   >
-                    This transaction of ₹{dialogAmount.toLocaleString()} will
-                    put you <strong>₹{overBudgetBy.toLocaleString()}</strong>{" "}
-                    over your trip budget limit.
-                  </Typography>
-                </Box>
-              </Box>
-            )}
+                    <WarningIcon sx={{ mt: 0.25 }} />
+                    <Box>
+                      <Typography variant="body2" fontWeight={700}>
+                        Over-Budget Alert!
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
+                        This transaction of ₹{dialogAmount.toLocaleString()}{" "}
+                        will put you{" "}
+                        <strong>₹{overBudgetBy.toLocaleString()}</strong> over
+                        your trip budget limit.
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
 
-            <Grid container spacing={2}>
-              <Grid xs={12} sm={8}>
-                <TextField
-                  fullWidth
-                  label="Amount *"
-                  type="number"
-                  value={form.amount}
-                  onChange={handleAmountChange}
-                  error={Boolean(amountError)}
-                  helperText={amountError}
-                  slotProps={{
-                    htmlInput: { min: 0.01, step: 0.01 },
-                    input: { style: { borderRadius: 12 } },
-                  }}
-                />
-              </Grid>
-              <Grid xs={12} sm={4}>
+                <Grid container spacing={2}>
+                  <Grid xs={12} sm={8}>
+                    <TextField
+                      fullWidth
+                      label="Amount *"
+                      type="number"
+                      value={form.amount}
+                      onChange={handleAmountChange}
+                      error={Boolean(amountError)}
+                      helperText={amountError}
+                      slotProps={{
+                        htmlInput: { min: 0.01, step: 0.01 },
+                        input: { style: { borderRadius: 12 } },
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={12} sm={4}>
+                    <TextField
+                      fullWidth
+                      select
+                      label="Currency"
+                      value={form.currency}
+                      onChange={(e) =>
+                        setForm({ ...form, currency: e.target.value })
+                      }
+                      slotProps={{ input: { style: { borderRadius: 12 } } }}
+                    >
+                      {CURRENCIES.map((c) => (
+                        <MenuItem key={c} value={c}>
+                          {CURRENCY_SYMBOLS[c]} {c}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                </Grid>
+
                 <TextField
                   fullWidth
                   select
-                  label="Currency"
-                  value={form.currency}
+                  label="Expense Category *"
+                  value={form.category}
                   onChange={(e) =>
-                    setForm({ ...form, currency: e.target.value })
+                    setForm({ ...form, category: e.target.value })
                   }
                   slotProps={{ input: { style: { borderRadius: 12 } } }}
                 >
-                  {CURRENCIES.map((c) => (
+                  {EXPENSE_CATEGORIES.map((c) => (
                     <MenuItem key={c} value={c}>
-                      {CURRENCY_SYMBOLS[c]} {c}
+                      {c}
                     </MenuItem>
                   ))}
                 </TextField>
-              </Grid>
-            </Grid>
 
-            <TextField
-              fullWidth
-              select
-              label="Expense Category *"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              slotProps={{ input: { style: { borderRadius: 12 } } }}
-            >
-              {EXPENSE_CATEGORIES.map((c) => (
-                <MenuItem key={c} value={c}>
-                  {c}
-                </MenuItem>
-              ))}
-            </TextField>
+                <TextField
+                  fullWidth
+                  label="Transaction Note"
+                  placeholder="e.g. Lunch at Jules Verne"
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                  slotProps={{ input: { style: { borderRadius: 12 } } }}
+                />
 
-            <TextField
-              fullWidth
-              label="Transaction Note"
-              placeholder="e.g. Lunch at Jules Verne"
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              slotProps={{ input: { style: { borderRadius: 12 } } }}
-            />
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Transaction Date"
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                    input: { style: { borderRadius: 12 } },
+                  }}
+                  value={form.date}
+                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                />
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ p: 2.5, gap: 1 }}>
+              <Button
+                onClick={handleClose}
+                sx={{ fontWeight: 600, color: "text.secondary" }}
+              >
+                Cancel
+              </Button>
+              <PrimaryButton
+                onClick={handleSubmit}
+                disabled={Boolean(amountError) || !form.amount}
+                sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
+              >
+                {editingExpenseId ? "Save Changes" : "Confirm & Save"}
+              </PrimaryButton>
+            </DialogActions>
+          </Dialog>
 
-            <TextField
-              fullWidth
-              type="date"
-              label="Transaction Date"
-              slotProps={{
-                inputLabel: { shrink: true },
-                input: { style: { borderRadius: 12 } },
-              }}
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, gap: 1 }}>
-          <Button
-            onClick={handleClose}
-            sx={{ fontWeight: 600, color: "text.secondary" }}
-          >
-            Cancel
-          </Button>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={Boolean(amountError) || !form.amount}
-            sx={{ px: 4, borderRadius: 2.5, fontWeight: 600 }}
-          >
-            {editingExpenseId ? "Save Changes" : "Confirm & Save"}
-          </PrimaryButton>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
-        <DialogTitle>Delete Expense</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this expense? This action cannot be
-          undone.
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, gap: 1 }}>
-          <Button
-            onClick={cancelDelete}
-            sx={{ fontWeight: 600, color: "text.secondary" }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={confirmDelete}
-            color="error"
-            variant="contained"
-            sx={{ borderRadius: 2.5, fontWeight: 600 }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <Dialog open={Boolean(deleteTarget)} onClose={cancelDelete}>
+            <DialogTitle>Delete Expense</DialogTitle>
+            <DialogContent>
+              Are you sure you want to delete this expense? This action cannot
+              be undone.
+            </DialogContent>
+            <DialogActions sx={{ p: 2.5, gap: 1 }}>
+              <Button
+                onClick={cancelDelete}
+                sx={{ fontWeight: 600, color: "text.secondary" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmDelete}
+                color="error"
+                variant="contained"
+                sx={{ borderRadius: 2.5, fontWeight: 600 }}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )}
     </Box>
