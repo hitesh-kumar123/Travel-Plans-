@@ -1,6 +1,11 @@
 // src/App.js
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./redux/store";
@@ -10,6 +15,7 @@ import theme from "./theme";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AnimatePresence } from "framer-motion";
 // Import components
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -32,8 +38,45 @@ import About from "./pages/About"; // <-- ADD THIS IMPORT
 import TravelChecklist from "./components/TravelChecklist";
 import EmailVerification from "./pages/EmailVerification";
 
-if (process.env.NODE_ENV === "development") {
-  window.store = store;
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Protected Dashboard */}
+        <Route
+          path="/dashboard/*"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/travel-checklist" element={<TravelChecklist />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<Contact />} />
+
+        {/* Other Routes */}
+        <Route path="/trip/share/:token" element={<SharedTripView />} />
+        <Route path="/shared-trip/:token" element={<SharedTripView />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-email/:token" element={<EmailVerification />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/terms" element={<TermsConditions />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/help" element={<HelpCenter />} />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AnimatePresence>
+  );
 }
 
 function App() {
@@ -56,61 +99,26 @@ function App() {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Router>
-            <ScrollToTop />
-            <div className="App">
-              <Routes>
-                {/* Protected Dashboard */}
-                <Route
-                  path="/dashboard/*"
-                  element={
-                    <PrivateRoute>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/travel-checklist" element={<TravelChecklist />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                {/* ✅ Contact Route Added */}
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/terms" element={<TermsConditions />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/help" element={<HelpCenter />} />
-                <Route path="/verify-email" element={<EmailVerification />} />
-                {/* Other Routes */}
-                <Route path="/trip/share/:token" element={<SharedTripView />} />
-                <Route
-                  path="/shared-trip/:token"
-                  element={<SharedTripView />}
-                />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route
-                  path="/reset-password/:token"
-                  element={<ResetPassword />}
-                />
-                {/* Fallback */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <ScrollButtons />
-            </div>
-          </Router>
-        </ThemeProvider>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnHover
-        />
-      </PersistGate>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <ScrollToTop />
+
+          <div className="App">
+            <AnimatedRoutes />
+            <ScrollButtons />
+          </div>
+        </Router>
+      </ThemeProvider>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
     </Provider>
   );
 }
