@@ -440,6 +440,11 @@ exports.requestEmailChange = async (req, res, next) => {
       });
     }
 
+    // Reset attempt counter if the previous block has expired
+    if (currentUser.otpBlockedUntil && new Date(currentUser.otpBlockedUntil).getTime() <= now) {
+      currentUser.otpResendAttempts = 0;
+    }
+
     // Check 60s cooldown
     if (currentUser.otpLastResent) {
       const lastResentTime = new Date(currentUser.otpLastResent).getTime();
