@@ -1378,3 +1378,149 @@ html {
   background: #ff7f5c;
   color: white;
 }
+
+/* ---------- dark mode styles ---------- */
+/* these only apply when data-theme="dark" is set on the html tag */
+
+:root[data-theme="dark"] .wander-page {
+  --wp-surface: #161a22;
+  --wp-surface-alt: #1c212b;
+  --wp-bg: #0f1115;
+  --wp-text: #e8eaed;
+  --wp-heading: #9cc2e8;
+  --wp-border: rgba(232, 234, 237, 0.14);
+
+  background: var(--wp-bg);
+  color: var(--wp-text);
+}
+
+/* ── Navigation ── */
+:root[data-theme="dark"] .wander-nav {
+  background: rgba(15, 17, 21, 0.92);
+  border-bottom: 0.5px solid var(--wp-border);
+}
+
+:root[data-theme="dark"] .wander-nav-scrolled {
+  background: rgba(15, 17, 21, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="dark"] .wander-logo,
+:root[data-theme="dark"] .wander-nav-links a,
+:root[data-theme="dark"] .wander-nav-active,
+:root[data-theme="dark"] .wander-nav-log-in,
+:root[data-theme="dark"] .wander-nav-create-account,
+:root[data-theme="dark"] .wander-mobile-menu,
+:root[data-theme="dark"] .wander-price-val,
+:root[data-theme="dark"] .wander-recent-search-item,
+:root[data-theme="dark"] .wander-sf-val,
+:root[data-theme="dark"] .wander-section-title,
+:root[data-theme="dark"] .wander-feat-title,
+:root[data-theme="dark"] .wander-testi-heading,
+:root[data-theme="dark"] .wander-author-name,
+:root[data-theme="dark"] .wander-stat-box,
+:root[data-theme="dark"] .wander-stat-big {
+  color: var(--wp-heading);
+}
+
+:root[data-theme="dark"] .wander-nav-active {
+  border-bottom-color: var(--wp-heading);
+}
+
+:root[data-theme="dark"] .wander-nav-log-in,
+:root[data-theme="dark"] .wander-nav-create-account {
+  border-color: var(--wp-border);
+}
+
+/* toggle button style */
+.wander-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 74, 107, 0.2);
+  background: transparent;
+  color: var(--ocean);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.wander-theme-toggle:hover {
+  background-color: var(--coral);
+  border-color: var(--coral);
+  color: white;
+}
+
+:root[data-theme="dark"] .wander-theme-toggle {
+  border-color: var(--wp-border, rgba(232, 234, 237, 0.14));
+  color: #9cc2e8;
+}
+
+/* search bar */
+:root[data-theme="dark"] .wander-page .wander-search-bar {
+  background: var(--wp-surface) !important;
+  border-color: var(--wp-border) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4) !important;
+}
+
+:root[data-theme="dark"] .wander-page .wander-sf {
+  border-color: var(--wp-border) !important;
+}
+
+:root[data-theme="dark"] .wander-page .wander-sf:hover {
+  background: rgba(232, 234, 237, 0.05);
+}
+
+:root[data-theme="dark"] .wander-page .wander-sf:focus-within {
+  background: rgba(232, 234, 237, 0.08);
+  box-shadow: inset 0 0 0 2px rgba(232, 234, 237, 0.2);
+}
+
+:root[data-theme="dark"] .wander-recent-searches {
+  background: var(--wp-surface);
+  border-color: var(--wp-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* feature cards */
+:root[data-theme="dark"] .wander-features-section {
+  background: var(--wp-surface-alt);
+}
+
+:root[data-theme="dark"] .wander-feat-card {
+  background: var(--wp-surface);
+  border-color: var(--wp-border);
+}
+
+:root[data-theme="dark"] .wander-feat-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .wander-feat-icon {
+  background: rgba(232, 234, 237, 0.08);
+}
+
+/* quiz box */
+:root[data-theme="dark"] .travel-quiz {
+  background: var(--wp-surface);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  color: var(--wp-text);
+}
+
+/* smooth transition when switching theme */
+.wander-page,
+.wander-nav,
+.wander-search-bar,
+.wander-feat-card,
+.wander-recent-searches {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
