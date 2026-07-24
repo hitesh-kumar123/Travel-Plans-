@@ -1,6 +1,14 @@
 import React from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
+import api from "../services/api";
+import { addTrip } from "../redux/actions/tripActions";
+import { FaLinkedin, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import FAQSection from "../components/FAQSection";
+import RecentlyViewed from "../components/RecentlyViewed";
+import { addRecentlyViewed } from "../utils/recentlyViewed";
+import TravellerSelector from "../components/TravellerSelector";
 
 const Home = () => {
   return (
@@ -112,9 +120,20 @@ const Home = () => {
           <div className="footer-logo">PackGo</div>
           <p className="footer-tagline">Your own smart travel partner</p>
           <div className="footer-socials">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg>
+            {/* Instagram Link */}
+            <a href="https://www.instagram.com/hitesh_sundesha157/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect   x="2"   y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16   11.37z"></  path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+          
+            {/* LinkedIn Link */}
+            <a href="https://www.linkedin.com/in/hitesh-kumar-dev/" target="_blank" rel="noopener noreferrer"   aria-label="LinkedIn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path     d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2"   y="9"   width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            </a>
+          
+            {/* X / Twitter Link */}
+            <a href="https://x.com/hitesh_kumar123" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path   d="M4   4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></  path></svg>
+            </a>
           </div>
         </div>
 
