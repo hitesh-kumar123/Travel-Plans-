@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./redux/store";
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import { getTheme } from "./theme";
+import ThemeProvider, { useTheme } from "./contexts/ThemeModeContext";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,7 +29,7 @@ import ScrollButtons from "./components/ScrollButtons";
 import ScrollToTop from "./components/ScrollToTop";
 import { loadUser } from "./redux/actions/authActions";
 import { flushOfflineQueue } from "./redux/actions/offlineQueueActions";
-import About from "./pages/About"; // <-- ADD THIS IMPORT
+import About from "./pages/About";
 import TravelChecklist from "./components/TravelChecklist";
 import EmailVerification from "./pages/EmailVerification";
 
@@ -36,17 +37,17 @@ if (process.env.NODE_ENV === "development") {
   window.store = store;
 }
 
-function App() {
+function AppContent() {
+  const { darkMode } = useTheme();
+  const theme = getTheme(darkMode);
+
   useEffect(() => {
     store.dispatch(loadUser());
 
-    // Flush any items queued from a previous session if we're already online.
     if (navigator.onLine) {
       store.dispatch(flushOfflineQueue());
     }
 
-    // Background re-sync: once connectivity returns, flush queued
-    // offline mutations back to the backend in order.
     const handleOnline = () => {
       store.dispatch(flushOfflineQueue());
     };
@@ -57,7 +58,7 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
             <ScrollToTop />
@@ -78,7 +79,7 @@ function App() {
                 <Route path="/travel-checklist" element={<TravelChecklist />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                {/* ✅ Contact Route Added */}
+                {/* Contact Route Added */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/terms" element={<TermsConditions />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -101,7 +102,7 @@ function App() {
               <ScrollButtons />
             </div>
           </Router>
-        </ThemeProvider>
+        </MuiThemeProvider>
         <ToastContainer
           position="bottom-right"
           autoClose={3000}
@@ -114,4 +115,13 @@ function App() {
     </Provider>
   );
 }
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
 export default App;

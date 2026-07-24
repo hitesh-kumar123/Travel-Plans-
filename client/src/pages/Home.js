@@ -12,6 +12,8 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import TravellerSelector from "../components/TravellerSelector";
+import { useTheme } from "../contexts/ThemeModeContext";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -395,6 +397,8 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
+  // dark mode toggle - true means dark is on
+  const { darkMode, toggleTheme } = useTheme();
 
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -600,33 +604,48 @@ const Home = () => {
           )}
         </ul>
 
-        {isAuthenticated ? (
-          <Link to="/dashboard">
-            <button className="wander-nav-cta">My Dashboard</button>
-          </Link>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-            }}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            alignItems: "center",
+          }}
+        >
+          {/* button to switch between light and dark theme */}
+          <button
+            type="button"
+            className="wander-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            <Link to="/login">
-              <button className="wander-nav-log-in">Log In</button>
-            </Link>
+            {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+          </button>
 
-            <Link to="/register">
-              <button className="wander-nav-create-account">
-                Create Free Account
-              </button>
+          {isAuthenticated ? (
+            <Link to="/dashboard">
+              <button className="wander-nav-cta">My Dashboard</button>
             </Link>
+          ) : (
+            <>
+              <Link to="/login">
+                <button className="wander-nav-log-in">Log In</button>
+              </Link>
 
-            <Link to="/register">
-              <button className="wander-nav-cta">Book Now</button>
-            </Link>
-          </div>
-        )}
+              <Link to="/register">
+                <button className="wander-nav-create-account">
+                  Create Free Account
+                </button>
+              </Link>
+
+              <Link to="/register">
+                <button className="wander-nav-cta">Book Now</button>
+              </Link>
+            </>
+          )}
+        </div>
 
         <button
           className="wander-mobile-menu"

@@ -13,6 +13,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f7fa;
   color: #2d3748;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* dark mode - html tag gets data-theme="dark" when toggled */
+:root[data-theme="dark"] body {
+  background-color: #0f1115;
+  color: #e8eaed;
 }
 
 a {
