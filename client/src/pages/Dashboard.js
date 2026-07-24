@@ -9,6 +9,12 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Drawer,
   List,
   ListItem,
@@ -60,6 +66,7 @@ const desktopDrawerWidth = 280;
 const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const [notificationAnchor, setNotificationAnchor] = useState(null);
 
@@ -84,6 +91,15 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     handleClose();
+    setLogoutDialogOpen(true);
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutDialogOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    setLogoutDialogOpen(false);
     dispatch(logout());
     navigate("/login");
   };
@@ -381,6 +397,34 @@ const Dashboard = () => {
                   Logout
                 </MenuItem>
               </Menu>
+
+              <Dialog
+                open={logoutDialogOpen}
+                onClose={handleLogoutCancel}
+                aria-labelledby="logout-dialog-title"
+                aria-describedby="logout-dialog-description"
+                fullWidth
+                maxWidth="xs"
+              >
+                <DialogTitle id="logout-dialog-title">
+                  Confirm Logout
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="logout-dialog-description">
+                    Are you sure you want to log out?
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleLogoutCancel}>Cancel</Button>
+                  <Button
+                    onClick={handleLogoutConfirm}
+                    color="error"
+                    variant="contained"
+                  >
+                    Logout
+                  </Button>
+                </DialogActions>
+              </Dialog>
 
               <Menu
                 anchorEl={notificationAnchor}
