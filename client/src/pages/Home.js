@@ -1,14 +1,8 @@
 import React from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import api from "../services/api";
-import { addTrip } from "../redux/actions/tripActions";
 import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import FAQSection from "../components/FAQSection";
-import RecentlyViewed from "../components/RecentlyViewed";
-import { addRecentlyViewed } from "../utils/recentlyViewed";
-import TravellerSelector from "../components/TravellerSelector";
 
 const Home = () => {
   return (
