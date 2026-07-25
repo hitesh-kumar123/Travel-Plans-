@@ -13,6 +13,11 @@ router.post("/flights/search", auth, bookingController.searchFlights);
 // @access  Private
 router.post("/hotels/search", auth, bookingController.searchHotels);
 
+// @route   POST api/booking/places/search
+// @desc    Search for places to visit (OpenTripMap Places API)
+// @access  Private
+router.post("/places/search", auth, bookingController.searchPlaces);
+
 // @route   POST api/booking/flights/book
 // @desc    Book a flight
 // @access  Private

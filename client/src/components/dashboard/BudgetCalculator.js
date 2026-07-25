@@ -119,7 +119,7 @@ const BudgetCalculator = ({ open, onClose, tripData, onSaveBudget }) => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, tripData?.destination, tripData?.duration, tripData?.travelers]);
 
   // ── Derived budget numbers (pure calculation, no API) ──────────────────────
   const result = useMemo(() => calculateBudget(inputs), [inputs]);

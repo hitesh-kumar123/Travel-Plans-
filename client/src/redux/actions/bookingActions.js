@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import {
   SEARCH_FLIGHTS,
   SEARCH_HOTELS,
+  SEARCH_PLACES,
   BOOK_FLIGHT,
   BOOK_HOTEL,
   BOOKING_ERROR,
@@ -41,6 +42,26 @@ export const searchHotels = (formData) => async (dispatch) => {
     toast.success(`Found ${res.data.hotels?.length || 0} hotels! 🏨`);
   } catch (err) {
     const msg = err.response?.data?.msg || "Error searching hotels";
+    dispatch({
+      type: BOOKING_ERROR,
+      payload: msg,
+    });
+    toast.error(msg);
+  }
+};
+
+export const searchPlaces = (formData) => async (dispatch) => {
+  dispatch({ type: SET_LOADING });
+  try {
+    const res = await api.post("/booking/places/search", formData);
+
+    dispatch({
+      type: SEARCH_PLACES,
+      payload: res.data.places,
+    });
+    toast.success(`Found ${res.data.places?.length || 0} places to visit! 🗺️`);
+  } catch (err) {
+    const msg = err.response?.data?.msg || "Error searching places to visit";
     dispatch({
       type: BOOKING_ERROR,
       payload: msg,

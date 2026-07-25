@@ -1,6 +1,7 @@
 import {
   SEARCH_FLIGHTS,
   SEARCH_HOTELS,
+  SEARCH_PLACES,
   BOOK_FLIGHT,
   BOOK_HOTEL,
   BOOKING_ERROR,
@@ -12,6 +13,7 @@ import {
 const initialState = {
   flights: [],
   hotels: [],
+  places: [],
   flightBooking: null,
   hotelBooking: null,
   loading: false,
@@ -35,6 +37,12 @@ export default function bookingReducer(state = initialState, action) {
       return {
         ...state,
         hotels: action.payload,
+        loading: false,
+      };
+    case SEARCH_PLACES:
+      return {
+        ...state,
+        places: action.payload,
         loading: false,
       };
     case BOOK_FLIGHT:

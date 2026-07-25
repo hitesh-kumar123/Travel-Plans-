@@ -15,6 +15,8 @@ router.post("/register", requireDb, authController.register);
 // @access  Public
 router.post("/login", requireDb, authController.login);
 
+router.get("/verify-email/:token", authController.verifyEmail);
+
 // @route   GET api/auth/profile
 // @desc    Get user profile
 // @access  Private

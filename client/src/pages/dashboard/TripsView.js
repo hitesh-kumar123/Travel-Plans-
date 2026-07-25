@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -55,6 +55,12 @@ const TripsView = () => {
   const [filter, setFilter] = useState("all");
   const [options, setOptions] = useState([]);
   const [loadingOpts, setLoadingOpts] = useState(false);
+  const destinationInputRef = useRef(null);
+  const [errors, setErrors] = useState({
+    destination: false,
+    startDate: false,
+    endDate: false,
+  });
 
   useEffect(() => {
     dispatch(getTrips());
@@ -83,13 +89,24 @@ const TripsView = () => {
 
   const tripsInitialCount = isMobile ? 2 : isTablet ? 4 : 6;
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({
+      ...errors,
+      [e.target.name]: false,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.destination || !formData.startDate || !formData.endDate)
+    if (!formData.destination || !formData.startDate || !formData.endDate) {
+      setErrors({
+        destination: !formData.destination,
+        startDate: !formData.startDate,
+        endDate: !formData.endDate,
+      });
       return;
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -117,6 +134,18 @@ const TripsView = () => {
       ? trips
       : trips.filter((t) => t.status === filter)
     : [];
+
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        destinationInputRef.current?.focus();
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [open]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -191,8 +220,13 @@ const TripsView = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  inputRef={destinationInputRef}
                   label="Destination *"
                   name="destination"
+                  error={errors.destination}
+                  helperText={
+                    errors.destination ? "Destination is required" : ""
+                  }
                   slotProps={{
                     ...params.slotProps,
                     input: {
@@ -210,6 +244,7 @@ const TripsView = () => {
                 />
               )}
             />
+
             <Grid container spacing={2}>
               <Grid xs={6}>
                 <TextField
@@ -217,6 +252,8 @@ const TripsView = () => {
                   name="startDate"
                   label="Start Date *"
                   type="date"
+                  error={errors.startDate}
+                  helperText={errors.startDate ? "Start date is required" : ""}
                   slotProps={{
                     inputLabel: { shrink: true },
                     htmlInput: { min: new Date().toISOString().split("T")[0] },
@@ -231,6 +268,8 @@ const TripsView = () => {
                   name="endDate"
                   label="End Date *"
                   type="date"
+                  error={errors.endDate}
+                  helperText={errors.endDate ? "End date is required" : ""}
                   slotProps={{
                     inputLabel: { shrink: true },
                     htmlInput: {

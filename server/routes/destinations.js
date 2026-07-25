@@ -22,14 +22,15 @@ router.get("/", async (req, res) => {
 router.get("/search", async (req, res) => {
   try {
     const { q } = req.query;
-    if (!q) {
+    const trimmedQ = (q || "").trim();
+    if (!trimmedQ) {
       return res.json([]);
     }
     // Case-insensitive regex search by name or city
     const data = await Destination.find({
       $or: [
-        { name: { $regex: q, $options: "i" } },
-        { city: { $regex: q, $options: "i" } },
+        { name: { $regex: trimmedQ, $options: "i" } },
+        { city: { $regex: trimmedQ, $options: "i" } },
       ],
     }).limit(10);
     res.json(data);

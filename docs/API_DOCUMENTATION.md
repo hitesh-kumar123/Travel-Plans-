@@ -15,9 +15,10 @@ Authorization: Bearer <your_jwt_token>
 ## 1. Authentication Endpoints (`/api/auth`)
 
 ### Register User
-* **Endpoint**: `POST /api/auth/register`
-* **Description**: Registers a new user.
-* **Request Body**:
+
+- **Endpoint**: `POST /api/auth/register`
+- **Description**: Registers a new user.
+- **Request Body**:
   ```json
   {
     "username": "traveler123",
@@ -25,7 +26,7 @@ Authorization: Bearer <your_jwt_token>
     "password": "StrongPassword123"
   }
   ```
-* **Response (201 Created)**:
+- **Response (201 Created)**:
   ```json
   {
     "token": "eyJhbGciOiJIUzI1NiIsIn...",
@@ -38,16 +39,17 @@ Authorization: Bearer <your_jwt_token>
   ```
 
 ### Login User
-* **Endpoint**: `POST /api/auth/login`
-* **Description**: Logs in an existing user.
-* **Request Body**:
+
+- **Endpoint**: `POST /api/auth/login`
+- **Description**: Logs in an existing user.
+- **Request Body**:
   ```json
   {
     "email": "traveler@example.com",
     "password": "StrongPassword123"
   }
   ```
-* **Response (200 OK)**:
+- **Response (200 OK)**:
   ```json
   {
     "token": "eyJhbGciOiJIUzI1NiIsIn...",
@@ -66,8 +68,9 @@ Authorization: Bearer <your_jwt_token>
 All trip endpoints require authentication.
 
 ### Get All Trips
-* **Endpoint**: `GET /api/trips`
-* **Response (200 OK)**:
+
+- **Endpoint**: `GET /api/trips`
+- **Response (200 OK)**:
   ```json
   [
     {
@@ -82,8 +85,9 @@ All trip endpoints require authentication.
   ```
 
 ### Create a Trip
-* **Endpoint**: `POST /api/trips`
-* **Request Body**:
+
+- **Endpoint**: `POST /api/trips`
+- **Request Body**:
   ```json
   {
     "title": "Summer Vacation in Tokyo",
@@ -92,7 +96,7 @@ All trip endpoints require authentication.
     "endDate": "2026-07-15"
   }
   ```
-* **Response (201 Created)**:
+- **Response (201 Created)**:
   ```json
   {
     "_id": "60d0fe4f5311236168a109cb",
@@ -108,8 +112,9 @@ All trip endpoints require authentication.
 ## 3. Weather Endpoints (`/api/weather`)
 
 ### Get Current & Forecast Weather
-* **Endpoint**: `GET /api/weather?city=Tokyo`
-* **Response (200 OK)**:
+
+- **Endpoint**: `GET /api/weather?city=Tokyo`
+- **Response (200 OK)**:
   ```json
   {
     "city": "Tokyo",

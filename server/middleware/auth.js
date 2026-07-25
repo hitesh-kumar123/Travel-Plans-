@@ -20,10 +20,7 @@ module.exports = function (req, res, next) {
   // Verify token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("meddleware");
-    console.log("decoded: ", decoded);
     req.user = decoded.user;
-    console.log(req.user);
     next();
   } catch (err) {
     console.error("Auth middleware token verify error:", err);

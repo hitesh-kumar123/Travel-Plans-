@@ -147,6 +147,7 @@ const PackingView = () => {
   const [confirmClear, setConfirmClear] = useState(false);
   const [showPacked, setShowPacked] = useState(true);
   const [newlyAdded, setNewlyAdded] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState("");
 
   useEffect(() => {
     if (trips && trips.length > 0 && !selectedTripId) {
@@ -164,12 +165,22 @@ const PackingView = () => {
   const handleAdd = useCallback(() => {
     const trimmed = itemName.trim();
     if (!trimmed || !selectedTripId) return;
+
+    const isDuplicate = (list?.items || []).some(
+      (item) => item.name.trim().toLowerCase() === trimmed.toLowerCase(),
+    );
+    if (isDuplicate) {
+      setDuplicateWarning(`"${trimmed}" already exists in your packing list`);
+      return;
+    }
+
+    setDuplicateWarning("");
     dispatch(addPackingItem(selectedTripId, trimmed, itemCategory));
     setNewlyAdded(trimmed);
     setItemName("");
     setItemCategory("Other");
     setTimeout(() => setNewlyAdded(null), 1500);
-  }, [dispatch, selectedTripId, itemName, itemCategory]);
+  }, [dispatch, selectedTripId, itemName, itemCategory, list]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -644,7 +655,10 @@ const PackingView = () => {
                   size="medium"
                   label="Item name"
                   value={itemName}
-                  onChange={(e) => setItemName(e.target.value)}
+                  onChange={(e) => {
+                    setItemName(e.target.value);
+                    if (duplicateWarning) setDuplicateWarning("");
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder="e.g., Passport, Charger..."
                   InputProps={{ sx: { borderRadius: 3 } }}
@@ -718,6 +732,17 @@ const PackingView = () => {
               </Grid>
             </Grid>
           </Paper>
+
+          {duplicateWarning && (
+            <Alert
+              severity="warning"
+              variant="outlined"
+              onClose={() => setDuplicateWarning("")}
+              sx={{ mb: 3, borderRadius: 3 }}
+            >
+              {duplicateWarning}
+            </Alert>
+          )}
 
           {/* ── Category Filter Chips ────────────────────────────────────────── */}
           {total > 0 && (

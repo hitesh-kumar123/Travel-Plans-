@@ -1,5 +1,6 @@
 export const SEARCH_FLIGHTS = "SEARCH_FLIGHTS";
 export const SEARCH_HOTELS = "SEARCH_HOTELS";
+export const SEARCH_PLACES = "SEARCH_PLACES";
 export const BOOK_FLIGHT = "BOOK_FLIGHT";
 export const BOOK_HOTEL = "BOOK_HOTEL";
 export const BOOKING_ERROR = "BOOKING_ERROR";

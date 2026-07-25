@@ -26,7 +26,9 @@ export default function tripReducer(state = initialState, action) {
     case GET_TRIPS:
       return {
         ...state,
-        trips: action.payload,
+        trips: Array.isArray(action.payload)
+          ? action.payload
+          : action.payload?.data || [],
         loading: false,
       };
     case GET_TRIP:
