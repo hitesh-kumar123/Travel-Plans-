@@ -632,7 +632,5 @@ exports.getEmailChangeStatus = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
-  }
-
-  console.log(typeof exports.verifyEmail);
+    }
 };
