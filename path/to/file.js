@@ -1,4 +1,4 @@
-import Trip from '../models/Trip';
+const Trip = require('../../server/models/Trip');
 
 const getTrips = async (req, res) => {
   try {
@@ -10,4 +10,4 @@ const getTrips = async (req, res) => {
   }
 };
 
-export default getTrips;
+module.exports = getTrips;
