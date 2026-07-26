@@ -9,6 +9,12 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Drawer,
   List,
   ListItem,
@@ -60,6 +66,7 @@ const desktopDrawerWidth = 280;
 const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const [notificationAnchor, setNotificationAnchor] = useState(null);
 
@@ -84,6 +91,15 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     handleClose();
+    setLogoutDialogOpen(true);
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutDialogOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    setLogoutDialogOpen(false);
     dispatch(logout());
     navigate("/login");
   };
@@ -263,6 +279,31 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      <Dialog
+        open={logoutDialogOpen}
+        onClose={handleLogoutCancel}
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description"
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle id="logout-dialog-title">Log out?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="logout-dialog-description">
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleLogoutCancel}>Cancel</Button>
+          <Button
+            onClick={handleLogoutConfirm}
+            color="error"
+            variant="contained"
+          >
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Box
         component="nav"
         sx={{ width: { md: desktopDrawerWidth }, flexShrink: { md: 0 } }}
