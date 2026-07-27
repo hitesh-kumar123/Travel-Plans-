@@ -1,4 +1,5 @@
 import TravelQuiz from "../components/TravelQuiz";
+import WeatherTooltip from "../components/WeatherTooltip";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
