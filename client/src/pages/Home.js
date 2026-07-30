@@ -564,7 +564,6 @@ const Home = () => {
                   : ""
               }
             >
-              <TravelQuiz />
               Destinations
             </a>
           </li>
@@ -810,6 +809,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <TravelQuiz />
 
       {/* ═══ SEARCH BAR ═══ */}
       <div className="wander-search-section">
