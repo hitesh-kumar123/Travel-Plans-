@@ -228,13 +228,20 @@ const PackingView = () => {
   if (!trips || trips.length === 0) {
     return (
       <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight={460}
-        gap={2}
-        sx={{ textAlign: "center", px: 3 }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 460,
+          gap: 2.5,
+          textAlign: "center",
+          px: 3,
+          maxWidth: 600,
+          mx: "auto",
+          width: "100%",
+          py: 8,
+        }}
       >
         <Box
           sx={{
@@ -246,17 +253,18 @@ const PackingView = () => {
             alignItems: "center",
             justifyContent: "center",
             mb: 1,
+            boxShadow: "0 8px 24px rgba(99, 102, 241, 0.15)",
           }}
         >
           <LuggageIcon sx={{ fontSize: 56, color: "#6366f1" }} />
         </Box>
-        <Typography variant="h5" fontWeight={700} color="text.primary">
+        <Typography variant="h5" fontWeight={800} color="text.primary">
           No active trips found
         </Typography>
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ maxWidth: 360 }}
+          sx={{ maxWidth: 400, lineHeight: 1.6 }}
         >
           Create your first trip inside the planner board, then come back to
           build your packing checklist here.
