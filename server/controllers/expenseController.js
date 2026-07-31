@@ -4,8 +4,8 @@ const Trip = require("../models/Trip");
 // Get all expenses for a user (across all trips) - for analytics
 exports.getAllUserExpenses = async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit, 10) || 10);
     const skip = (page - 1) * limit;
 
     const [expenses, total] = await Promise.all([
@@ -109,8 +109,8 @@ exports.getTripExpenses = async (req, res) => {
       return res.status(404).json({ msg: "Trip not found or unauthorized" });
     }
 
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(100, parseInt(req.query.limit) || 10);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit, 10) || 10);
     const skip = (page - 1) * limit;
 
     const [expenses, total] = await Promise.all([
