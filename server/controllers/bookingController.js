@@ -256,7 +256,7 @@ exports.bookHotel = async (req, res) => {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
 
-    if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+    if (Number.isNaN(checkInDate.getTime()) || Number.isNaN(checkOutDate.getTime())) {
       return res.status(400).json({
         msg: "Please provide valid check-in and check-out dates",
       });
