@@ -115,7 +115,7 @@ const Login = () => {
         setErrors((prev) => ({ ...prev, email: "" }));
       }
     } else if (name === "password") {
-      if (!value || value.trim() === "") {
+      if (!value || value.trim().length === 0) {
         setErrors((prev) => ({ ...prev, password: "Password is required" }));
       } else {
         setErrors((prev) => ({ ...prev, password: "" }));
@@ -140,7 +140,7 @@ const Login = () => {
       tempErrors.email = "Please enter a valid email";
       isValid = false;
     }
-    if (!formData.password || formData.password.trim() === "") {
+    if (!formData.password || formData.password.trim().length === 0) {
       tempErrors.password = "Password is required";
       isValid = false;
     }
@@ -152,10 +152,10 @@ const Login = () => {
   const isSignInDisabled = () => {
     return (
       !formData.email ||
-      formData.email.trim() === "" ||
+      formData.email.trim().length === 0 ||
       !!errors.email ||
       !formData.password ||
-      formData.password.trim() === "" ||
+      formData.password.trim().length === 0 ||
       !!errors.password
     );
   };
