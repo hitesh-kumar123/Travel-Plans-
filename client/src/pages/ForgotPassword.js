@@ -73,7 +73,7 @@ const ForgotPassword = () => {
             </Alert>
           )}
           {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
+            <Alert severity="success" sx={{ mb: 3 }}>
               {error}
             </Alert>
           )}
