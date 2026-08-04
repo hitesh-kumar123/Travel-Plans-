@@ -148,11 +148,6 @@ exports.verifyEmail = async (req, res, next) => {
       .update(req.params.token)
       .digest("hex");
 
-    console.log("Received Token:", req.params.token);
-    console.log("Hashed Token:", token);
-
-    const allUsers = await User.find({}, "email emailVerificationToken");
-    console.log(allUsers);
     const user = await User.findOne({
       emailVerificationToken: token,
       emailVerificationExpire: { $gt: Date.now() },
