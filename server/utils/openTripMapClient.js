@@ -129,7 +129,7 @@ async function getPlaceDetails(xid) {
   try {
     const data = await openTripMapGet(`/places/xid/${xid}`);
     return data;
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 }

@@ -18,6 +18,10 @@ router.get("/", async (req, res) => {
   }
 });
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Search destinations for autocomplete
 router.get("/search", async (req, res) => {
   try {
@@ -28,7 +32,7 @@ router.get("/search", async (req, res) => {
     }
 
     // Case-insensitive regex search by name or city
-    const regex = new RegExp(q, "i");
+    const regex = new RegExp(escapeRegExp(trimmedQ), "i");
     const data = await Destination.find({
       $or: [{ name: regex }, { city: regex }],
     }).limit(10);
