@@ -1328,6 +1328,7 @@ html {
     transform: translateY(-1120px);
   }
 }
+
 .travel-quiz {
   max-width: 1200px;
   margin: 60px auto;
@@ -1374,6 +1375,7 @@ html {
   background: #f4f8fb;
   border-radius: 12px;
 }
+
 .quiz-option.active {
   background: #ff7f5c;
   color: white;
