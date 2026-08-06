@@ -1110,6 +1110,7 @@ const ExpensesView = () => {
                   height: 120,
                   flexDirection: "column",
                   gap: 1.5,
+                  mt: 1.5,
                 }}
               >
                 <Box

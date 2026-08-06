@@ -22,5 +22,7 @@ function stripMongoOperators(obj) {
 module.exports = function sanitizeMiddleware(req, res, next) {
   if (req.body) stripMongoOperators(req.body);
   if (req.params) stripMongoOperators(req.params);
+  if (req.query) stripMongoOperators(req.query);
+
   next();
 };
