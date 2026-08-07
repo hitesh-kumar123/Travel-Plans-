@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import PageTransition from "../components/PageTransition";
 export default function EmailVerification() {
   const { token } = useParams();
   const [message, setMessage] = useState("Verifying your email...");
@@ -18,8 +18,10 @@ export default function EmailVerification() {
   }, [token]);
 
   return (
-    <div style={{ padding: "40px", textAlign: "center" }}>
-      <h2>{message}</h2>
-    </div>
+    <PageTransition>
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        <h2>{message}</h2>
+      </div>
+    </PageTransition>
   );
 }

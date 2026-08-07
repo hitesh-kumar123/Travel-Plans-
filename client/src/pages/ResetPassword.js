@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import PageTransition from "../components/PageTransition";
 import {
   Box,
   TextField,
@@ -47,119 +48,121 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        backgroundColor: theme.palette.background.default,
-      }}
-    >
+    <PageTransition>
       <Box
         sx={{
-          flex: 1,
+          minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 4,
+          backgroundColor: theme.palette.background.default,
         }}
       >
         <Box
           sx={{
-            maxWidth: 480,
-            width: "100%",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
           }}
         >
-          <Box sx={{ textAlign: "center", mb: 5 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-              Reset Password
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Enter your new password below.
-            </Typography>
-          </Box>
-
-          {message && (
-            <Alert severity="success" sx={{ mb: 3 }}>
-              {message} Redirecting...
-            </Alert>
-          )}
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
-
-          <Paper
-            elevation={isMobile ? 1 : 0}
+          <Box
             sx={{
-              p: 4,
-              borderRadius: 4,
-              border: !isMobile ? "1px solid" : "none",
-              borderColor: "divider",
+              maxWidth: 480,
+              width: "100%",
             }}
           >
-            <form onSubmit={handleSubmit}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="password"
-                label="New Password"
-                name="password"
-                type="password"
-                autoFocus
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="confirmPassword"
-                label="Confirm New Password"
-                name="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                sx={{ mb: 3 }}
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                sx={{
-                  py: 1.5,
-                  mb: 3,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                }}
-                endIcon={<LockResetIcon />}
-              >
+            <Box sx={{ textAlign: "center", mb: 5 }}>
+              <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
                 Reset Password
-              </Button>
-            </form>
-          </Paper>
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Enter your new password below.
+              </Typography>
+            </Box>
 
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="body2">
-              <Link
-                component={RouterLink}
-                to="/login"
-                variant="subtitle2"
-                sx={{ fontWeight: 600 }}
-              >
-                Back to Login
-              </Link>
-            </Typography>
+            {message && (
+              <Alert severity="success" sx={{ mb: 3 }}>
+                {message} Redirecting...
+              </Alert>
+            )}
+            {error && (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                {error}
+              </Alert>
+            )}
+
+            <Paper
+              elevation={isMobile ? 1 : 0}
+              sx={{
+                p: 4,
+                borderRadius: 4,
+                border: !isMobile ? "1px solid" : "none",
+                borderColor: "divider",
+              }}
+            >
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="password"
+                  label="New Password"
+                  name="password"
+                  type="password"
+                  autoFocus
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  sx={{ mb: 2 }}
+                />
+
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="confirmPassword"
+                  label="Confirm New Password"
+                  name="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  sx={{ mb: 3 }}
+                />
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    py: 1.5,
+                    mb: 3,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                  }}
+                  endIcon={<LockResetIcon />}
+                >
+                  Reset Password
+                </Button>
+              </form>
+            </Paper>
+
+            <Box sx={{ mt: 4, textAlign: "center" }}>
+              <Typography variant="body2">
+                <Link
+                  component={RouterLink}
+                  to="/login"
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600 }}
+                >
+                  Back to Login
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </PageTransition>
   );
 };
 
