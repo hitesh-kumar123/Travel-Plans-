@@ -117,6 +117,10 @@ const RecentlyViewed = ({ onSelectDestination }) => {
                 <img
                   src={dest.images[0]}
                   alt={dest.name}
+                  width="200"
+                  height="100"
+                  loading="lazy"
+                  decoding="async"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   onError={(e) => {
                     e.target.style.display = "none";

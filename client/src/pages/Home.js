@@ -550,7 +550,49 @@ const Home = () => {
             Pack<span>Go</span>
           </Link>
 
+
           <ul className="wander-nav-links">
+
+        <ul className="wander-nav-links">
+          <li>
+            <a
+              href="#wander-dest-section"
+              className={
+                activeSection === "wander-dest-section"
+                  ? "wander-nav-active"
+                  : ""
+              }
+            >
+              Destinations
+            </a>
+          </li>
+          <li>
+            <a
+              href="#wander-features"
+              className={
+                activeSection === "wander-features" ? "wander-nav-active" : ""
+              }
+            >
+              Features
+            </a>
+          </li>
+          <li>
+            <a
+              href="#wander-testimonials"
+              className={
+                activeSection === "wander-testimonials"
+                  ? "wander-nav-active"
+                  : ""
+              }
+            >
+              Experiences
+            </a>
+          </li>
+          <li>
+            <Link to="/travel-checklist">Checklist</Link>
+          </li>
+          {isAuthenticated && (
+
             <li>
               <a
                 href="#wander-dest-section"
@@ -887,6 +929,7 @@ const Home = () => {
           </form>
         </div>
 
+
         {/* ═══ DESTINATIONS ═══ */}
 
         {/* ═══ RECENTLY VIEWED ═══ */}
@@ -915,6 +958,74 @@ const Home = () => {
                         filteredDestinations.length !== 1 ? "s" : ""
                       } found`
                     : "Destinations that steal hearts"}
+
+        {/* Editorial 4-card grid */}
+        <div className="wander-dest-grid">
+          {/* TALL card — always Santorini SVG (or first DB item) */}
+          {editorialDests[0] ? (
+            <div
+              className="wander-dest-card tall"
+              onClick={() => handleAddTrip(editorialDests[0])}
+            >
+              <div className="wander-dest-card-img">
+                {editorialDests[0].images?.[0] ? (
+                  <img
+                    src={editorialDests[0].images[0]}
+                    alt={editorialDests[0].name}
+                    width="600"
+                    height="800"
+                    fetchpriority="high"
+                    decoding="async"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <SceneSantorini />
+                )}
+                <div className="wander-dest-overlay" />
+                <div className="wander-dest-tag">Trending</div>
+                <div className="wander-dest-info">
+                  <div className="wander-dest-name">
+                    {editorialDests[0].name || "Santorini"}
+                  </div>
+                  <div className="wander-dest-country">
+                    {[editorialDests[0].city, editorialDests[0].state]
+                      .filter(Boolean)
+                      .join(", ") || "Greece"}{" "}
+                    •{" "}
+                    {editorialDests[0].entrance_fee_inr === 0
+                      ? "Free Entry"
+                      : editorialDests[0].entrance_fee_inr
+                        ? `₹${editorialDests[0].entrance_fee_inr}`
+                        : "Explore"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="wander-dest-card tall"
+              style={{ background: "linear-gradient(135deg,#2D5986,#0F3A5C)" }}
+            >
+              <div className="wander-dest-card-img">
+                <SceneSantorini />
+                <div className="wander-dest-overlay" />
+                <div className="wander-dest-tag">Trending</div>
+                <div className="wander-dest-info">
+                  <div className="wander-dest-name">Santorini</div>
+                  <div className="wander-dest-country">
+                    Greece • From ₹1,20,000
+                  </div>
+                </div>
+
               </div>
             </div>
             <Link to={isAuthenticated ? "/dashboard/trips" : "/register"}>
@@ -935,8 +1046,17 @@ const Home = () => {
                 <div className="wander-dest-card-img">
                   {editorialDests[0].images?.[0] ? (
                     <img
+
                       src={editorialDests[0].images[0]}
                       alt={editorialDests[0].name}
+
+                      src={dest.images[0]}
+                      alt={dest.name}
+                      width="400"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
+
                       style={{
                         position: "absolute",
                         inset: 0,
