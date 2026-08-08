@@ -11,6 +11,7 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import TravellerSelector from "../components/TravellerSelector";
+import WeatherTooltip from "../components/WeatherTooltip";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -955,6 +956,13 @@ const Home = () => {
                   <SceneSantorini />
                 )}
                 <div className="wander-dest-overlay" />
+                <WeatherTooltip
+                  lat={editorialDests[0]?.coordinates?.lat ?? 36.3932}
+                  lon={editorialDests[0]?.coordinates?.lon ?? 25.4615}
+                  bestTimeToVisit={
+                    editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"
+                  }
+                />
                 <div className="wander-dest-tag">Trending</div>
                 <div className="wander-dest-info">
                   <div className="wander-dest-name">
@@ -982,6 +990,13 @@ const Home = () => {
               <div className="wander-dest-card-img">
                 <SceneSantorini />
                 <div className="wander-dest-overlay" />
+                <WeatherTooltip
+                  lat={editorialDests[0]?.coordinates?.lat ?? 36.3932}
+                  lon={editorialDests[0]?.coordinates?.lon ?? 25.4615}
+                  bestTimeToVisit={
+                    editorialDests[0]?.best_time_to_visit ?? "Apr - Oct"
+                  }
+                />
                 <div className="wander-dest-tag">Trending</div>
                 <div className="wander-dest-info">
                   <div className="wander-dest-name">Santorini</div>
@@ -1000,18 +1015,24 @@ const Home = () => {
               fallbackName: "Angkor Wat",
               fallbackLoc: "Cambodia • From ₹65,000",
               bg: "linear-gradient(135deg,#5C4A2A,#2E2010)",
+              coords: { lat: 13.4125, lon: 103.867 },
+              bestTime: "Nov - Mar",
             },
             {
               svgScene: <SceneBali />,
               fallbackName: "Ubud, Bali",
               fallbackLoc: "Indonesia • From ₹55,000",
               bg: "linear-gradient(135deg,#2A5C3A,#0F2E18)",
+              coords: { lat: -8.5069, lon: 115.2625 },
+              bestTime: "Apr - Oct",
             },
             {
               svgScene: <SceneSahara />,
               fallbackName: "Sahara Desert",
               fallbackLoc: "Morocco • From ₹95,000",
               bg: "linear-gradient(135deg,#5C3A2A,#2E150F)",
+              coords: { lat: 31.0801, lon: -4.0133 },
+              bestTime: "Oct - Apr",
             },
           ].map((item, idx) => {
             const dest = editorialDests[idx + 1];
@@ -1046,6 +1067,11 @@ const Home = () => {
                     item.svgScene
                   )}
                   <div className="wander-dest-overlay" />
+                  <WeatherTooltip
+                    lat={dest?.coordinates?.lat ?? item.coords.lat}
+                    lon={dest?.coordinates?.lon ?? item.coords.lon}
+                    bestTimeToVisit={dest?.best_time_to_visit ?? item.bestTime}
+                  />
                   <div className="wander-dest-info">
                     <div className="wander-dest-name">
                       {dest?.name || item.fallbackName}
