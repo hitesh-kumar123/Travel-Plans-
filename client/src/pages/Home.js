@@ -1,5 +1,3 @@
-import TravelQuiz from "../components/TravelQuiz";
-import WeatherTooltip from "../components/WeatherTooltip";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
@@ -13,6 +11,7 @@ import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import TravellerSelector from "../components/TravellerSelector";
+import WeatherTooltip from "../components/WeatherTooltip";
 
 /* ── REVIEWS DATA FOR CAROUSEL ────────────────────────────── */
 const REVIEWS = [
@@ -565,7 +564,6 @@ const Home = () => {
                   : ""
               }
             >
-              <TravelQuiz />
               Destinations
             </a>
           </li>
@@ -939,6 +937,10 @@ const Home = () => {
                   <img
                     src={editorialDests[0].images[0]}
                     alt={editorialDests[0].name}
+                    width="600"
+                    height="800"
+                    fetchpriority="high"
+                    decoding="async"
                     style={{
                       position: "absolute",
                       inset: 0,
@@ -1046,6 +1048,10 @@ const Home = () => {
                     <img
                       src={dest.images[0]}
                       alt={dest.name}
+                      width="400"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
                       style={{
                         position: "absolute",
                         inset: 0,
