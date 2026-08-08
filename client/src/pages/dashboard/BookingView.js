@@ -48,6 +48,36 @@ import {
   searchPlaces,
 } from "../../redux/actions/bookingActions";
 
+const INDIAN_AIRPORTS = [
+  "Delhi (DEL)",
+  "Mumbai (BOM)",
+  "Bangalore (BLR)",
+  "Chennai (MAA)",
+  "Kolkata (CCU)",
+  "Hyderabad (HYD)",
+  "Ahmedabad (AMD)",
+  "Pune (PNQ)",
+  "Jaipur (JAI)",
+  "Goa (GOI)",
+  "Kochi (COK)",
+  "Lucknow (LKO)",
+  "Chandigarh (IXC)",
+  "Bhubaneswar (BBI)",
+  "Indore (IDR)",
+  "Nagpur (NAG)",
+  "Varanasi (VNS)",
+  "Patna (PAT)",
+  "Raipur (RPR)",
+  "Ranchi (IXR)",
+  "Srinagar (SXR)",
+  "Amritsar (ATQ)",
+  "Coimbatore (CJB)",
+  "Mangalore (IXE)",
+  "Thiruvananthapuram (TRV)",
+  "Visakhapatnam (VTZ)",
+  "Jammu (IXJ)",
+];
+
 const amenityIcons = {
   WiFi: <WifiIcon fontSize="small" />,
   Pool: <PoolIcon fontSize="small" />,
@@ -347,6 +377,14 @@ const BookingView = () => {
     setPlacesFilters({ minPrice: "", maxPrice: "", categories: [] });
   };
 
+  const [originSuggestions, setOriginSuggestions] = useState([]);
+  const [destSuggestions, setDestSuggestions] = useState([]);
+
+  const getSuggestions = (value) =>
+    INDIAN_AIRPORTS.filter((airport) =>
+      airport.toLowerCase().includes(value.toLowerCase()),
+    );
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" fontWeight={700} mb={0.5}>
@@ -400,35 +438,116 @@ const BookingView = () => {
             <Box component="form" onSubmit={handleFlightSearch}>
               <Grid container spacing={2} sx={{ alignItems: "flex-end" }}>
                 <Grid xs={12} sm={6} md={2.4}>
-                  <TextField
-                    id="flight-origin"
-                    name="origin"
-                    fullWidth
-                    label="From (City/Airport)"
-                    placeholder="e.g. Delhi"
-                    value={flightForm.origin}
-                    onChange={(e) =>
-                      setFlightForm({ ...flightForm, origin: e.target.value })
-                    }
-                    required
-                  />
+                  <Box sx={{ position: "relative" }}>
+                    <TextField
+                      id="flight-origin"
+                      name="origin"
+                      fullWidth
+                      label="From (City/Airport)"
+                      placeholder="e.g. Delhi"
+                      value={flightForm.origin}
+                      onChange={(e) => {
+                        setFlightForm({
+                          ...flightForm,
+                          origin: e.target.value,
+                        });
+                        setOriginSuggestions(getSuggestions(e.target.value));
+                      }}
+                      onBlur={() =>
+                        setTimeout(() => setOriginSuggestions([]), 200)
+                      }
+                      required
+                      autoComplete="off"
+                    />
+                    {originSuggestions.length > 0 && (
+                      <Paper
+                        sx={{
+                          position: "absolute",
+                          zIndex: 10,
+                          width: "100%",
+                          maxHeight: 200,
+                          overflowY: "auto",
+                          mt: 0.5,
+                          borderRadius: 2,
+                          boxShadow: 4,
+                        }}
+                      >
+                        {originSuggestions.map((s) => (
+                          <Box
+                            key={s}
+                            onMouseDown={() => {
+                              setFlightForm({ ...flightForm, origin: s });
+                              setOriginSuggestions([]);
+                            }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
+                          >
+                            {s}
+                          </Box>
+                        ))}
+                      </Paper>
+                    )}
+                  </Box>
                 </Grid>
                 <Grid xs={12} sm={6} md={2.4}>
-                  <TextField
-                    fullWidth
-                    id="flight-destination"
-                    name="destination"
-                    label="To (City/Airport)"
-                    placeholder="e.g. Mumbai"
-                    value={flightForm.destination}
-                    onChange={(e) =>
-                      setFlightForm({
-                        ...flightForm,
-                        destination: e.target.value,
-                      })
-                    }
-                    required
-                  />
+                  <Box sx={{ position: "relative" }}>
+                    <TextField
+                      fullWidth
+                      id="flight-destination"
+                      name="destination"
+                      label="To (City/Airport)"
+                      placeholder="e.g. Mumbai"
+                      value={flightForm.destination}
+                      onChange={(e) => {
+                        setFlightForm({
+                          ...flightForm,
+                          destination: e.target.value,
+                        });
+                        setDestSuggestions(getSuggestions(e.target.value));
+                      }}
+                      onBlur={() =>
+                        setTimeout(() => setDestSuggestions([]), 200)
+                      }
+                      required
+                      autoComplete="off"
+                    />
+                    {destSuggestions.length > 0 && (
+                      <Paper
+                        sx={{
+                          position: "absolute",
+                          zIndex: 10,
+                          width: "100%",
+                          maxHeight: 200,
+                          overflowY: "auto",
+                          mt: 0.5,
+                          borderRadius: 2,
+                          boxShadow: 4,
+                        }}
+                      >
+                        {destSuggestions.map((s) => (
+                          <Box
+                            key={s}
+                            onMouseDown={() => {
+                              setFlightForm({ ...flightForm, destination: s });
+                              setDestSuggestions([]);
+                            }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
+                          >
+                            {s}
+                          </Box>
+                        ))}
+                      </Paper>
+                    )}
+                  </Box>
                 </Grid>
                 <Grid xs={6} md={2.4}>
                   <TextField

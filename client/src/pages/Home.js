@@ -1,4 +1,3 @@
-import TravelQuiz from "../components/TravelQuiz";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ScrollLink from "../components/ScrollLink";
@@ -6,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Home.css";
 import api from "../services/api";
 import { addTrip } from "../redux/actions/tripActions";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import FAQSection from "../components/FAQSection";
 import RecentlyViewed from "../components/RecentlyViewed";
@@ -564,7 +563,6 @@ const Home = () => {
                   : ""
               }
             >
-              <TravelQuiz />
               Destinations
             </a>
           </li>
@@ -938,6 +936,10 @@ const Home = () => {
                   <img
                     src={editorialDests[0].images[0]}
                     alt={editorialDests[0].name}
+                    width="600"
+                    height="800"
+                    fetchpriority="high"
+                    decoding="async"
                     style={{
                       position: "absolute",
                       inset: 0,
@@ -1025,6 +1027,10 @@ const Home = () => {
                     <img
                       src={dest.images[0]}
                       alt={dest.name}
+                      width="400"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
                       style={{
                         position: "absolute",
                         inset: 0,
@@ -1190,15 +1196,30 @@ const Home = () => {
             © {new Date().getFullYear()} PackGo Travel Co. All rights reserved.
           </div>
           <div className="wander-footer-socials">
-            <a href="/" aria-label="Facebook">
-              <FaFacebook />
+            <a
+              href="https://www.linkedin.com/in/hitesh-kumar-dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedin />
             </a>
 
-            <a href="/" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/hitesh_sundesha157/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <FaInstagram />
             </a>
 
-            <a href="/" aria-label="Twitter">
+            <a
+              href="https://x.com/hitesh_kumar123"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X (Twitter)"
+            >
               <FaXTwitter />
             </a>
           </div>

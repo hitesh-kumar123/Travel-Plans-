@@ -20,7 +20,7 @@
 
 <br>
 
-[🚀 Live Demo](#-live-demo) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
+[🚀 Live Demo](https://travel-plans-phi.vercel.app/) · [📖 Docs](docs/API_DOCUMENTATION.md) · [🐛 Report Bug](../../issues) · [✨ Request Feature](../../issues)
 
 </div>
 

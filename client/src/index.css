@@ -111,3 +111,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: rotate(360deg);
   }
 }
+
+/* ── Performance: Skip rendering off-screen sections ───────────
+   content-visibility:auto tells the browser it can skip paint + layout
+   for anything not in the viewport. This dramatically reduces initial
+   render time on long pages like Home and Dashboard.                  */
+.wander-features,
+.wander-dest-section,
+.wander-reviews-section,
+.wander-newsletter-section,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px; /* estimated height to prevent layout shift */
+}
+
+/* ── Performance: Smooth image rendering ─────────────────────── */
+img {
+  image-rendering: auto;
+  /* Prevent implicit width calculation that causes CLS */
+  max-width: 100%;
+  height: auto;
+}
