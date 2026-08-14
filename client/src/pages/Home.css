@@ -81,8 +81,10 @@ html {
   font-weight: 500;
   color: var(--ocean);
   opacity: 0.7;
-  transition: opacity 0.2s;
   letter-spacing: 0.3px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
 }
 
 .wander-nav-links a:hover {
@@ -90,11 +92,13 @@ html {
 }
 
 .wander-nav-active {
-  color: var(--ocean) !important;
+  background: var(--ocean);
+  color: white !important;
   opacity: 1 !important;
   font-weight: 700;
-  border-bottom: 2px solid var(--ocean);
-  padding-bottom: 2px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(26, 74, 107, 0.25);
 }
 
 .wander-nav-log-in {
@@ -514,23 +518,23 @@ html {
 }
 
 .wander-see-all {
-  font-size: 0.85rem;
-  color: var(--mist);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
+  background: var(--ocean);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 999px;
   cursor: pointer;
-  background: none;
-  border-top: none;
-  border-left: none;
-  border-right: none;
   font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(26, 74, 107, 0.2);
 }
 
 .wander-see-all:hover {
-  border-bottom-color: var(--mist);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(26, 74, 107, 0.3);
 }
-
 /* ═══ DESTINATIONS GRID ═══ */
 .wander-dest-grid {
   display: grid;
