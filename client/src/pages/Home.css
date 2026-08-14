@@ -610,6 +610,56 @@ html {
   letter-spacing: 0.5px;
 }
 
+.wander-dest-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.wander-dest-price {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.wander-dest-rating {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #ffd166;
+}
+
+.wander-dest-rating::before {
+  content: "•";
+  margin-right: 0.6rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}
+
+.wander-dest-reviews {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.wander-dest-reviews::before {
+  content: "•";
+  margin-right: 0.6rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.wander-dest-card.tall .wander-dest-price {
+  font-size: 1rem;
+}
+
+.wander-dest-card.tall .wander-dest-rating {
+  font-size: 0.9rem;
+}
+
+.wander-dest-card.tall .wander-dest-reviews {
+  font-size: 0.8rem;
+}
+
 .wander-dest-tag {
   position: absolute;
   top: 1rem;
