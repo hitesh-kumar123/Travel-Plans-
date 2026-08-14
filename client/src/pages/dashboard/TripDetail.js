@@ -6,6 +6,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import api from "../../services/api";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import {
   Box,
   Typography,
@@ -43,6 +46,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import WalletIcon from "@mui/icons-material/Wallet";
 import ShareIcon from "@mui/icons-material/Share";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import DirectionsIcon from "@mui/icons-material/Directions";
 import BudgetCalculator from "../../components/dashboard/BudgetCalculator";
 import {
   getTrip,
@@ -71,6 +75,28 @@ const EXPENSE_CATEGORIES = [
   "Shopping",
   "Other",
 ];
+
+// Leaflet's default marker icon paths break under most bundlers (webpack/CRA)
+// because the image assets aren't resolved automatically. Re-point them at
+// the CDN-hosted images that ship with the leaflet package version in use.
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+// Builds a Google Maps "Get Directions" URL. Works without any API key —
+// it opens Maps in a new tab with the destination pre-filled.
+const getDirectionsUrl = (destination, coordinates) => {
+  if (coordinates?.lat != null && coordinates?.lon != null) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lon}`;
+  }
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    destination || "",
+  )}`;
+};
 
 const TripDetail = () => {
   const { id } = useParams();
@@ -488,6 +514,98 @@ const TripDetail = () => {
               </Paper>
             </Grid>
           </Grid>
+
+          {/* Trip Location Map */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              mb: 3,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 1.5,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <PlaceIcon color="primary" fontSize="small" />
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Location
+                </Typography>
+              </Box>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<DirectionsIcon />}
+                href={getDirectionsUrl(
+                  currentTrip.destination,
+                  currentTrip.coordinates,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Directions
+              </Button>
+            </Box>
+
+            {currentTrip.coordinates?.lat != null &&
+            currentTrip.coordinates?.lon != null ? (
+              <Box
+                sx={{
+                  height: 260,
+                  borderRadius: 2,
+                  overflow: "hidden",
+                }}
+              >
+                <MapContainer
+                  center={[
+                    currentTrip.coordinates.lat,
+                    currentTrip.coordinates.lon,
+                  ]}
+                  zoom={11}
+                  style={{ height: "100%", width: "100%" }}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker
+                    position={[
+                      currentTrip.coordinates.lat,
+                      currentTrip.coordinates.lon,
+                    ]}
+                  >
+                    <Popup>{currentTrip.destination}</Popup>
+                  </Marker>
+                </MapContainer>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  height: 120,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: "action.hover",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Map preview isn't available for this destination yet — you can
+                  still get directions above.
+                </Typography>
+              </Box>
+            )}
+          </Paper>
+
           {/* Budget Progress */}
           {currentTrip.budget > 0 && (
             <Paper
