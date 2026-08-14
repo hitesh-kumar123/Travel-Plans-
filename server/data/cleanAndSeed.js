@@ -414,21 +414,21 @@ const cleanedData = rawData
 
     // Rating
     const rating = parseFloat(d.rating);
-    if (!isNaN(rating)) cleaned.rating = rating;
+    if (!Number.isNaN(rating)) cleaned.rating = rating;
 
     // Entrance fee
     const fee = parseFloat(d.entrance_fee_inr);
-    if (!isNaN(fee)) cleaned.entrance_fee_inr = fee;
+    if (!Number.isNaN(fee)) cleaned.entrance_fee_inr = fee;
 
     // Time needed
     const hrs = parseFloat(d.time_needed_hrs);
-    if (!isNaN(hrs)) cleaned.time_needed_hrs = hrs;
+    if (!Number.isNaN(hrs)) cleaned.time_needed_hrs = hrs;
 
     // Coordinates
     if (d.coordinates?.lat && d.coordinates?.lon) {
       const lat = parseFloat(d.coordinates.lat);
       const lon = parseFloat(d.coordinates.lon);
-      if (!isNaN(lat) && !isNaN(lon)) cleaned.coordinates = { lat, lon };
+      if (!Number.isNaN(lat) && !Number.isNaN(lon)) cleaned.coordinates = { lat, lon };
     }
 
     // Images — use valid URLs or pick a good Unsplash fallback
