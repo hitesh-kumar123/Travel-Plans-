@@ -243,7 +243,7 @@ const ExpensesView = () => {
     e.preventDefault();
     const parsed = parseFloat(form.amount);
 
-    if (!form.amount || isNaN(parsed) || parsed <= 0) {
+    if (!form.amount || Number.isNaN(parsed) || parsed <= 0) {
       setAmountError("Please enter a valid amount greater than zero.");
       return;
     }
