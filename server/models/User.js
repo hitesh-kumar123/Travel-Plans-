@@ -21,7 +21,6 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      // Strict RFC 5322 email regex: forbids leading dots and enforces valid domain/TLD structure
       match: [
         /^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         "Please enter a valid email",
@@ -33,7 +32,6 @@ const UserSchema = new mongoose.Schema(
         return this.authProvider === "local";
       },
       select: false,
-      // Strong password complexity: min 8 chars, >=1 uppercase, >=1 lowercase, >=1 number, >=1 special char
       minlength: [8, "Password must be atleast 8 characters"],
       match: [
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/,
@@ -53,7 +51,15 @@ const UserSchema = new mongoose.Schema(
     resetPasswordExpire: Date,
     isVerified: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null,
+    },
+    emailVerificationExpire: {
+      type: Date,
+      default: null,
     },
     otp: {
       type: String,
@@ -83,16 +89,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "INR",
     },
-    resetPasswordExpire: Date,
-    emailVerificationToken: {
-      type: String,
-      default: null,
-    },
-
-    emailVerificationExpire: {
-      type: Date,
-      default: null,
-    },
   },
   {
     toJSON: {
@@ -106,7 +102,6 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
-// Hash the password before saving
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -121,7 +116,6 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-// Method to compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
@@ -143,32 +137,27 @@ UserSchema.methods.verifyPassword = async function (
   return await this.comparePassword(candidatePassword);
 };
 
-// Method to generate password reset token
 UserSchema.methods.getResetPasswordToken = function () {
-  // Generate token
   const resetToken = crypto.randomBytes(20).toString("hex");
 
-  // Hash token and set to resetPasswordToken field
   this.resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
 
-  // Set expire to 10 minutes
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };
 
 UserSchema.methods.getEmailVerificationToken = function () {
-  //generate 20 random bytes and convert to string
   const token = crypto.randomBytes(20).toString("hex");
-  //hash the token
+
   this.emailVerificationToken = crypto
     .createHash("sha256")
     .update(token)
     .digest("hex");
-  //set expiry time
+
   this.emailVerificationExpire = Date.now() + 24 * 60 * 60 * 1000;
 
   return token;

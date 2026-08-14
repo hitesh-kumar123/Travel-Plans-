@@ -80,7 +80,7 @@ exports.register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       email: user.email,
-      msg: "Account created successfully. Please login.",
+      msg: "Account created successfully. Please check your email to verify your account before logging in.",
     });
   } catch (err) {
     next(err);
@@ -632,7 +632,5 @@ exports.getEmailChangeStatus = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
-  }
-
-  console.log(typeof exports.verifyEmail);
+    }
 };
