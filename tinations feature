@@ -1,0 +1,9 @@
+client/src/components/NearbyDestinations.js
+client/src/pages/Dashboard.js
+client/src/pages/dashboard/NearbyView.js
+client/src/pages/dashboard/TripsView.js
+client/src/redux/actions/nearbyActions.js
+client/src/redux/reducers/nearbyReducer.js
+client/src/redux/store.js
+client/src/redux/types/nearbyTypes.js
+client/src/utils/distanceUtils.js

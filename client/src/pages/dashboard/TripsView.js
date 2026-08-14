@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Typography,
   Box,
@@ -40,6 +40,7 @@ const STATUS_COLORS = {
 const TripsView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { trips, loading } = useSelector((state) => state.trips);
 
   const [open, setOpen] = useState(false);
@@ -65,6 +66,15 @@ const TripsView = () => {
   useEffect(() => {
     dispatch(getTrips());
   }, [dispatch]);
+
+  useEffect(() => {
+    const prefill = routerLocation.state?.prefillDestination;
+    if (prefill) {
+      setFormData((prev) => ({ ...prev, destination: prefill }));
+      setOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [routerLocation.state]);
 
   const fetchDestinations = async (query) => {
     if (!query) {
