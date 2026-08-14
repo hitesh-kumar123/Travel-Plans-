@@ -120,3 +120,53 @@ export const shareTrip = (id) => async () => {
     return null;
   }
 };
+
+// Upload Trip Photos
+export const uploadTripPhotos = (id, formData) => async (dispatch) => {
+  try {
+    const res = await api.post(`/trips/${id}/photos`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    dispatch({
+      type: UPDATE_TRIP,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    const msg = err.response?.data?.msg || "Error uploading photos";
+    dispatch({
+      type: TRIP_ERROR,
+      payload: msg,
+    });
+    toast.error(msg);
+    return Promise.reject(err);
+  }
+};
+
+// Delete Trip Photo
+export const deleteTripPhoto = (id, imageUrl) => async (dispatch) => {
+  try {
+    const res = await api.delete(`/trips/${id}/photos`, {
+      data: { imageUrl },
+    });
+
+    dispatch({
+      type: UPDATE_TRIP,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    const msg = err.response?.data?.msg || "Error deleting photo";
+    dispatch({
+      type: TRIP_ERROR,
+      payload: msg,
+    });
+    toast.error(msg);
+    return Promise.reject(err);
+  }
+};
