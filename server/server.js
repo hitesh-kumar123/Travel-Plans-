@@ -4,9 +4,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler");
-const sanitizeMiddleware = require("./middleware/sanitize");
+const { globalLimiter } = require("./middleware/rateLimit");
 
 // Load environment variables from repo root .env (so server can be started from /server)
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -21,34 +20,12 @@ app.set("trust proxy", 1);
 // Security Middleware
 app.use(helmet());
 
-// Rate limiter - 100 requests per 15 min per IP
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { msg: "Too many requests from this IP, please try again later." },
-});
-app.use("/api/auth", limiter);
-
-// Stricter rate limiter for login and registration attempts
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    message: "Too many login attempts, please try again after 15 minutes",
-  },
-});
-app.post("/api/auth/login", authLimiter);
-app.post("/api/auth/register", authLimiter);
-
 // Core Middleware
 const allowedOrigins = [
-  "http://localhost:3005",
   "http://localhost:3000",
   "http://localhost:5000",
-  "http://localhost:5001",
-  "http://127.0.0.1:3005",
-  "http://127.0.0.1:5000",
   "http://127.0.0.1:3000",
+  "http://127.0.0.1:5000",
 ];
 
 const frontendUrls = [];
@@ -86,7 +63,8 @@ app.use(
   }),
 );
 app.use(express.json());
-app.use(sanitizeMiddleware);
+app.use(express.urlencoded({ extended: true }));
+app.use(globalLimiter);
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -97,6 +75,7 @@ const translatorRoutes = require("./routes/translator");
 const bookingRoutes = require("./routes/booking");
 const destinationRoutes = require("./routes/destinations");
 const packingRoutes = require("./routes/packing");
+const currencyRoutes = require("./routes/currency");
 
 // Use routes
 app.use("/api/auth", authRoutes);
@@ -107,13 +86,13 @@ app.use("/api/translator", translatorRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/packing", packingRoutes);
+app.use("/api/currency", currencyRoutes);
 
 // Base route
 app.get("/", (req, res) => {
   res.send("Travel Planner API is running!");
 });
 
-// Global error handler (must be last)
 app.use(errorHandler);
 
 if (!process.env.MONGO_URI) {
@@ -121,46 +100,11 @@ if (!process.env.MONGO_URI) {
     "MONGO_URI is missing — set it in server/.env before using auth.",
   );
 }
-
-const MIN_JWT_SECRET_LENGTH = 32;
-const WEAK_JWT_SECRETS = new Set([
-  "secret",
-  "password",
-  "jwt_secret",
-  "your_super_secret_jwt_key_here",
-  "mysecret",
-  "changeme",
-  "123456",
-]);
-
-function validateJwtSecret() {
-  const secret = process.env.JWT_SECRET;
-
-  if (!secret) {
-    console.error("JWT_SECRET is missing. Generate one with:");
-    console.error(
-      "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
-    );
-    process.exit(1);
-  }
-
-  if (secret.length < MIN_JWT_SECRET_LENGTH) {
-    console.error(
-      `JWT_SECRET is too short (${secret.length} chars). Minimum is ${MIN_JWT_SECRET_LENGTH}.`,
-    );
-    process.exit(1);
-  }
-
-  if (WEAK_JWT_SECRETS.has(secret.toLowerCase())) {
-    console.error("JWT_SECRET is a known weak value. Choose a random one.");
-    process.exit(1);
-  }
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is missing — login and register will fail.");
 }
 
-validateJwtSecret();
-
 // Connect to MongoDB
-mongoose.set("sanitizeFilter", true);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
