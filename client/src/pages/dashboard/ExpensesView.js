@@ -53,6 +53,7 @@ import {
 import { getTrips } from "../../redux/actions/tripActions";
 import PrimaryButton from "../../components/PrimaryButton";
 import * as XLSX from "xlsx";
+import { convertCurrency, CURRENCY_SYMBOLS } from "../../utils/currencyUtils";
 import Menu from "@mui/material/Menu";
 
 const EXPENSE_CATEGORIES = [
@@ -74,17 +75,6 @@ const CATEGORY_COLORS = {
 };
 
 const CURRENCIES = ["INR", "USD", "EUR", "GBP", "JPY", "AED", "SGD", "AUD"];
-
-const CURRENCY_SYMBOLS = {
-  INR: "₹",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
-  AED: "د.إ",
-  SGD: "S$",
-  AUD: "A$",
-};
 
 const ExpensesView = () => {
   const dispatch = useDispatch();
@@ -150,22 +140,13 @@ const ExpensesView = () => {
   // (it is implicitly 1.0). We handle that case explicitly below.
   const toBase = (amount, currency) => {
     if (currency === baseCurrency) return amount;
-    if (!exchangeRates || Object.keys(exchangeRates).length === 0)
-      return amount;
-
-    let amountInINR;
-    if (currency === "INR") {
-      amountInINR = amount;
-    } else {
-      const rateToINR = exchangeRates[currency];
-      if (!rateToINR) return amount;
-      amountInINR = amount / rateToINR;
-    }
-
-    if (baseCurrency === "INR") return amountInINR.toFixed(2);
-    const rateToBase = exchangeRates[baseCurrency];
-    if (!rateToBase) return amount;
-    return (amountInINR * rateToBase).toFixed(2);
+    const converted = convertCurrency(
+      amount,
+      currency,
+      baseCurrency,
+      exchangeRates,
+    );
+    return typeof converted === "number" ? converted.toFixed(2) : converted;
   };
 
   const currencySymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
