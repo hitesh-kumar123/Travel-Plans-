@@ -124,18 +124,51 @@ const formatTagLabel = (tag) =>
     .join(" ");
 
 const CATEGORY_IMAGES = {
-  SIGHTS:
+  SIGHTS: [
     "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=60",
-  HISTORICAL:
+    "https://images.unsplash.com/photo-1530841377377-3ff09c682713?auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=60",
+  ],
+  HISTORICAL: [
     "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=60",
-  BEACH_PARK:
+    "https://images.unsplash.com/photo-1599661046227-4d1c87a5b9e1?auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=800&q=60",
+  ],
+  BEACH_PARK: [
     "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=60",
-  NIGHTLIFE:
+    "https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=60",
+  ],
+  NIGHTLIFE: [
     "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=60",
-  RESTAURANT:
+    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=60",
+  ],
+  RESTAURANT: [
     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=60",
-  SHOPPING:
+    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+  ],
+  SHOPPING: [
     "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=60",
+    "https://images.unsplash.com/photo-1604928141064-207ec6696804?auto=format&fit=crop&w=800&q=80",
+  ],
+};
+
+const getPlaceImage = (place) => {
+  if (place.images && place.images.length > 0 && place.images[0]) {
+    return place.images[0];
+  }
+  if (place.image) {
+    return place.image;
+  }
+  const categoryList = CATEGORY_IMAGES[place.category] || CATEGORY_IMAGES.SIGHTS;
+  let hash = 0;
+  const str = place.id || place.name || "";
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % categoryList.length;
+  return categoryList[index];
 };
 
 const BookingView = () => {
@@ -1467,8 +1500,8 @@ const BookingView = () => {
                     >
                       <Box
                         component="img"
-                        src={CATEGORY_IMAGES[place.category]}
-                        alt={CATEGORY_LABELS[place.category] || place.category}
+                        src={getPlaceImage(place)}
+                        alt={place.name || CATEGORY_LABELS[place.category] || place.category}
                         onError={(e) => {
                           e.target.style.display = "none";
                           e.target.nextSibling.style.display = "flex";
