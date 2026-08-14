@@ -53,7 +53,7 @@ const UserSchema = new mongoose.Schema(
     resetPasswordExpire: Date,
     isVerified: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     otp: {
       type: String,
@@ -83,7 +83,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "INR",
     },
-    resetPasswordExpire: Date,
     emailVerificationToken: {
       type: String,
       default: null,

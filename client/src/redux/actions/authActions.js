@@ -8,6 +8,7 @@ import {
   USER_LOADED,
   AUTH_ERROR,
   LOGOUT,
+  SET_LOADING,
 } from "../types/authTypes";
 
 function getAuthErrorMessage(error, fallback) {
@@ -105,13 +106,13 @@ export const register = (userData, navigate) => async (dispatch) => {
 export const googleLogin =
   (CredentialResponse, navigate) => async (dispatch) => {
     try {
-      dispatch({ type: "AUTH_START" });
+      dispatch({ type: SET_LOADING });
       const res = await api.post("/auth/google", {
         credential: CredentialResponse.credential,
       });
 
       dispatch({
-        type: "AUTH_SUCESS",
+        type: LOGIN_SUCCESS,
         payload: res.data,
       });
 
@@ -128,10 +129,12 @@ export const googleLogin =
 
       navigate("/dashboard");
     } catch (e) {
+      const msg = e.response?.data?.msg || e.response?.data?.message || e.message;
       dispatch({
-        type: "AUTH_FAIL",
-        payload: e.rensponse?.data?.message || e.message,
+        type: LOGIN_FAIL,
+        payload: msg,
       });
+      toast.error(msg || "Google Authentication failed");
     }
   };
 

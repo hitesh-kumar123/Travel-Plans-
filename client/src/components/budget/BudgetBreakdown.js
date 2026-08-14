@@ -78,15 +78,13 @@ const BudgetBreakdown = ({
                   {currencySymbols[currency]}
                   {convertCurrency(transportCost).toLocaleString()}
                   {" × "}
-                  {form.days}
-                  {" × "}
                   {form.travelers}
                 </TableCell>
 
                 <TableCell>
                   {currencySymbols[currency]}
                   {convertCurrency(
-                    transportCost * form.days * form.travelers,
+                    transportCost * form.travelers,
                   ).toLocaleString()}
                 </TableCell>
               </TableRow>

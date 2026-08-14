@@ -19,9 +19,10 @@ export const calculateBudget = (form) => {
   const miscCost = 1000;
 
   const total =
-    (hotelCost + transportCost + foodCost + activitiesCost + miscCost) *
-    form.days *
-    form.travelers;
+    (hotelCost + foodCost + activitiesCost + miscCost) *
+      form.days *
+      form.travelers +
+    transportCost * form.travelers;
 
   const perDay = form.days > 0 ? Math.round(total / form.days) : 0;
 
