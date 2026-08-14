@@ -264,7 +264,7 @@ export default function CultureSafetyAlerts() {
                 }}
                 onClick={() => setFilter(f)}
               >
-                {f.charAt(0).toUpperCase() + f.slice(1)}
+                {f[0].toUpperCase() + f.slice(1)}
               </button>
             ))}
           </div>
