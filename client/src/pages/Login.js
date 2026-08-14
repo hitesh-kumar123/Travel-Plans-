@@ -115,7 +115,7 @@ const Login = () => {
         setErrors((prev) => ({ ...prev, email: "" }));
       }
     } else if (name === "password") {
-      if (!value || value.trim() === "") {
+      if (!value || value.trim().length === 0) {
         setErrors((prev) => ({ ...prev, password: "Password is required" }));
       } else {
         setErrors((prev) => ({ ...prev, password: "" }));

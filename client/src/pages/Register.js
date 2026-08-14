@@ -224,7 +224,7 @@ const Register = () => {
     if (activeStep === 0) {
       return (
         !formData.firstName ||
-        formData.firstName.trim() === "" ||
+        formData.firstName.trim().length === 0 ||
         !!fieldErrors.firstName ||
         !formData.lastName ||
         formData.lastName.trim() === "" ||
