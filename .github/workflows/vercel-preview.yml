@@ -38,7 +38,11 @@ jobs:
         working-directory: ./client
         env:
           VERCEL_NODE_VERSION: "22"
-        run: node -v && vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          node -v
+          which node
+          vercel --version
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
         id: deploy
