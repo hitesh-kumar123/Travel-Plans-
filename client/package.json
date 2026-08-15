@@ -1,68 +1,32 @@
 {
   "name": "client",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@google/generative-ai": "^0.24.1",
-    "@mui/icons-material": "^6.5.0",
-    "@mui/material": "^6.5.0",
-    "@react-google-maps/api": "^2.20.8",
-    "@react-oauth/google": "^0.13.5",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.18.1",
-    "date-fns": "^4.2.1",
-    "framer-motion": "^12.42.2",
-    "leaflet": "^1.9.4",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-icons": "^5.6.0",
-    "react-leaflet": "^5.0.0",
-    "react-qr-code": "^2.2.0",
-    "react-redux": "^9.3.0",
-    "react-router-dom": "^7.18.0",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^11.0.5",
-    "react-transition-group": "^4.4.5",
-    "recharts": "^3.8.1",
-    "redux": "^5.0.1",
-    "redux-persist": "^6.0.0",
-    "redux-thunk": "^3.1.0",
-    "web-vitals": "^5.2.0",
-    "xlsx": "^0.18.5"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src",
-    "format:check": "prettier --check src",
-    "format": "prettier --write src"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5",
+    "@tailwindcss/vite": "^4.3.3",
+    "axios": "^1.19.0",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^1.31.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
-    "prettier": "^3.8.3"
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "autoprefixer": "^10.5.4",
+    "oxlint": "^1.75.0",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.0"
   }
 }

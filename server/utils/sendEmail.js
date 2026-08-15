@@ -45,13 +45,22 @@ const buildTransporter = async () => {
   }
 
   let host = hostFromEnv;
+  if (
+    service === "gmail" ||
+    hostFromEnv === "smtp.gmail.com" ||
+    (!service && !hostFromEnv && user.toLowerCase().includes("gmail.com"))
+  ) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user,
+        pass,
+      },
+    });
+  }
+
   if (!host) {
-    if (
-      service === "gmail" ||
-      (!service && user.toLowerCase().includes("gmail.com"))
-    ) {
-      host = "smtp.gmail.com";
-    } else if (service === "resend") {
+    if (service === "resend") {
       host = "smtp.resend.com";
     } else {
       throw new Error(
@@ -106,7 +115,6 @@ const sendEmail = async (options) => {
   };
 
   try {
-    await activeTransporter.verify();
     const info = await activeTransporter.sendMail(message);
 
     const previewUrl = nodemailer.getTestMessageUrl(info);

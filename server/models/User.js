@@ -83,7 +83,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "INR",
     },
-    resetPasswordExpire: Date,
     emailVerificationToken: {
       type: String,
       default: null,
@@ -155,7 +154,7 @@ UserSchema.methods.getResetPasswordToken = function () {
     .digest("hex");
 
   // Set expire to 10 minutes
-  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+  this.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
 
   return resetToken;
 };

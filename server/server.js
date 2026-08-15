@@ -29,12 +29,12 @@ const limiter = rateLimit({
 });
 app.use("/api/auth", limiter);
 
-// Stricter rate limiter for login and registration attempts
+// Stricter rate limiter for login and registration attempts (relaxed in development)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: process.env.NODE_ENV === "production" ? 10 : 100,
   message: {
-    message: "Too many login attempts, please try again after 15 minutes",
+    message: "Too many attempts, please try again after 15 minutes",
   },
 });
 app.post("/api/auth/login", authLimiter);
@@ -42,10 +42,12 @@ app.post("/api/auth/register", authLimiter);
 
 // Core Middleware
 const allowedOrigins = [
+  "http://localhost:5173",
   "http://localhost:3005",
   "http://localhost:3000",
   "http://localhost:5000",
   "http://localhost:5001",
+  "http://127.0.0.1:5173",
   "http://127.0.0.1:3005",
   "http://127.0.0.1:5000",
   "http://127.0.0.1:3000",

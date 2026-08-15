@@ -463,7 +463,7 @@ mongoose
   .then(async () => {
     await Destination.deleteMany();
     await Destination.insertMany(cleanedData);
-    console.log(`✅ Done! ${cleanedData.length} clean destinations seeded!`);
+    console.log(` Done! ${cleanedData.length} clean destinations seeded!`);
     process.exit(0);
   })
   .catch((err) => {
