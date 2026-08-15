@@ -19,20 +19,96 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: Show Node version
+        run: node -v && npm -v
 
       - name: Install Vercel CLI
-        run: npm i -g vercel
+        run: npm i -g vercel@latest
 
       - name: Pull Vercel Environment
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
+        run: node -v && vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
+        run: node -v && vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
         id: deploy
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
         run: |
+          node -v
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview_url=$url" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const previewUrl = process.env.PREVIEW_URL;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **Preview Ready!**\n\n🔗 ${previewUrl}`
+            })
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}name: Vercel Preview Deploy
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          allow-unsafe-pr-checkout: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Show Node version
+        run: node -v && npm -v
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel Environment
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
+        run: node -v && vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
+        run: node -v && vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        id: deploy
+        working-directory: ./client
+        env:
+          VERCEL_NODE_VERSION: "22"
+        run: |
+          node -v
           url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
           echo "preview_url=$url" >> $GITHUB_OUTPUT
 
