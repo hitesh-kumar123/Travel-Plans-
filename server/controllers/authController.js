@@ -228,8 +228,8 @@ exports.googleAuth = async (req, res) => {
     console.log(e);
 
     return res.status(500).json({
-      Sucess: false,
-      Message: "Google Authentication failed",
+      success: false,
+      message: "Google Authentication failed",
     });
   }
 };
