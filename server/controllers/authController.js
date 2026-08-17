@@ -317,10 +317,10 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      // Return 404 or 400 with a clear message
-      return res
-        .status(404)
-        .json({ msg: "No account found with that email address." });
+      return res.status(200).json({
+        success: true,
+        msg: "Successfully sent a reset link, if a user with that email exists.",
+      });
     }
 
     // Get reset token
