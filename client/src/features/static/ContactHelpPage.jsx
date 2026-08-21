@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  ChevronDown,
-  CheckCircle,
-  ArrowUpRight,
-} from "lucide-react";
+import { ArrowRight, CheckCircle, ArrowUpRight } from "lucide-react";
+import FAQSection from "../../components/FAQSection";
 
 export const ContactHelpPage = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +11,6 @@ export const ContactHelpPage = () => {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [openFaq, setOpenFaq] = useState(0);
 
   const faqs = [
     {
@@ -87,37 +82,7 @@ export const ContactHelpPage = () => {
               Help
             </h2>
 
-            <div className="space-y-1 divide-y divide-[#DAC2B6]/30">
-              {faqs.map((faq, idx) => {
-                const isOpen = openFaq === idx;
-                return (
-                  <div key={idx} className="py-6 cursor-pointer">
-                    <div
-                      onClick={() => setOpenFaq(isOpen ? -1 : idx)}
-                      className="flex justify-between items-center group cursor-pointer"
-                    >
-                      <h3 className="font-serif text-2xl font-semibold text-[#1C1B1B] group-hover:text-[#6C2F00] transition-colors">
-                        {faq.q}
-                      </h3>
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#877369] group-hover:text-[#6C2F00] transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </div>
-
-                    {isOpen && (
-                      <div className="pt-4 text-base text-[#54433A] leading-relaxed font-sans animate-fade-in-up">
-                        <strong className="text-[#1C1B1B] block mb-1">
-                          {faq.title}
-                        </strong>
-                        <p>{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <FAQSection faqs={faqs} />
 
             {/* Direct Contact */}
             <div className="mt-16 pt-8 border-t border-[#DAC2B6]/30">
