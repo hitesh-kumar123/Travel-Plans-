@@ -16,6 +16,7 @@ export const ContactHelpPage = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const faqs = [
     {
@@ -43,6 +44,14 @@ export const ContactHelpPage = () => {
         "Navigate to 'Settings' within your Account menu to update personal details, preferences, and payment information.",
     },
   ];
+    const filteredFaqs = faqs.filter((faq) => {
+    const search = searchTerm.toLowerCase();
+
+    return (
+      faq.title.toLowerCase().includes(search) ||
+      faq.answer.toLowerCase().includes(search)
+    );
+    });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -86,38 +95,53 @@ export const ContactHelpPage = () => {
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#6C2F00] mb-8 border-b border-[#DAC2B6]/30 pb-4">
               Help
             </h2>
+            <input
+              type="text"
+              placeholder="Search FAQs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-transparent border border-[#DAC2B6] rounded px-4 py-3 mb-8 text-[#1C1B1B] placeholder-[#877369]/60 focus:outline-none focus:border-[#6C2F00] transition-colors"
+            />
 
             <div className="space-y-1 divide-y divide-[#DAC2B6]/30">
-              {faqs.map((faq, idx) => {
-                const isOpen = openFaq === idx;
-                return (
-                  <div key={idx} className="py-6 cursor-pointer">
-                    <div
-                      onClick={() => setOpenFaq(isOpen ? -1 : idx)}
-                      className="flex justify-between items-center group cursor-pointer"
-                    >
-                      <h3 className="font-serif text-2xl font-semibold text-[#1C1B1B] group-hover:text-[#6C2F00] transition-colors">
-                        {faq.q}
-                      </h3>
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#877369] group-hover:text-[#6C2F00] transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </div>
+  {filteredFaqs.length === 0 ? (
+    <p className="py-8 text-center text-[#877369]">
+      No matching FAQs found
+    </p>
+  ) : (
+    filteredFaqs.map((faq, idx) => {
+      const isOpen = openFaq === idx;
 
-                    {isOpen && (
-                      <div className="pt-4 text-base text-[#54433A] leading-relaxed font-sans animate-fade-in-up">
-                        <strong className="text-[#1C1B1B] block mb-1">
-                          {faq.title}
-                        </strong>
-                        <p>{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+      return (
+        <div key={idx} className="py-6 cursor-pointer">
+          <div
+            onClick={() => setOpenFaq(isOpen ? -1 : idx)}
+            className="flex justify-between items-center group cursor-pointer"
+          >
+            <h3 className="font-serif text-2xl font-semibold text-[#1C1B1B] group-hover:text-[#6C2F00] transition-colors">
+              {faq.q}
+            </h3>
+
+            <ChevronDown
+              className={`w-5 h-5 text-[#877369] group-hover:text-[#6C2F00] transition-transform duration-300 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+
+          {isOpen && (
+            <div className="pt-4 text-base text-[#54433A] leading-relaxed font-sans animate-fade-in-up">
+              <strong className="text-[#1C1B1B] block mb-1">
+                {faq.title}
+              </strong>
+              <p>{faq.answer}</p>
             </div>
+          )}
+            </div>
+            );
+          })
+          )}
+          </div>
 
             {/* Direct Contact */}
             <div className="mt-16 pt-8 border-t border-[#DAC2B6]/30">
