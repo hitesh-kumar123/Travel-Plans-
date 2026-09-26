@@ -44,11 +44,13 @@ export const MyJourneyPage = () => {
     return t.status === filterStatus;
   });
 
-  const upcomingTrip =
-    trips.find((t) => t.status === "planned" || t.status === "ongoing") ||
-    trips[0];
+  const upcomingTrips = trips.filter(
+    (t) => t.status === "planned" || t.status === "ongoing",
+  );
 
-  const pastTrips = trips.filter((t) => t._id !== upcomingTrip?._id);
+  const featuredTrip = upcomingTrips[0] || null;
+
+  const pastTrips = trips.filter((t) => t.status === "completed");
 
   // Stitch Default Placeholder Past Journeys for Rich Experience if user has fewer trips
   const defaultPastJourneys = [
@@ -112,29 +114,6 @@ export const MyJourneyPage = () => {
             <span>Plan a New Trip</span>
           </button>
         </div>
-
-        {/* Filters */}
-        <div className="flex gap-8 mt-8 overflow-x-auto pb-3 hide-scrollbar border-b border-[#DAC2B6]/20">
-          {[
-            { id: "all", label: "All" },
-            { id: "planned", label: "Upcoming" },
-            { id: "ongoing", label: "Ongoing" },
-            { id: "completed", label: "Completed" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setFilterStatus(tab.id)}
-              className={`text-xs font-semibold uppercase tracking-widest pb-3 -mb-[14px] transition-colors cursor-pointer ${
-                filterStatus === tab.id
-                  ? "text-[#6C2F00] border-b-2 border-[#6C2F00]"
-                  : "text-[#54433A] hover:text-[#6C2F00]"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
       </header>
 
       {/* ── 2. FEATURED UPCOMING TRIP ── */}
@@ -142,17 +121,20 @@ export const MyJourneyPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 mb-24">
           <LoadingState message="Unpacking your journey archives..." />
         </div>
-      ) : upcomingTrip ? (
+      ) : featuredTrip ? (
         <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-24">
+          <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#6C2F00] mb-12 border-b border-[#DAC2B6]/30 pb-4">
+            Featured Trip
+          </h3>
           <div
-            onClick={() => navigate(`/trips/${upcomingTrip._id}`)}
+            onClick={() => navigate(`/trips/${featuredTrip._id}`)}
             className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded overflow-hidden group cursor-pointer shadow-sm bg-[#1C1B1B]"
           >
             <img
-              alt={upcomingTrip.destination}
+              alt={featuredTrip.destination}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               src={
-                upcomingTrip.destinationImageUrl ||
+                featuredTrip.destinationImageUrl ||
                 "https://lh3.googleusercontent.com/aida-public/AB6AXuCPK7Kb014ApSbqJiWUFvuGCH4yM7yCOpPNisGK8_FTjqE1hssMdn34_nB412kz_X3WHnEFvMbz5T6r2SOz_lfv5m7YrXvf5Xgmrqm9f1zNPTvgPj2J6JpEbC5kx0payiVFuEXDlXDb1uH_zlzQHOciJF4rSHIWK0Lbh6-rMGSleYJr9sIXrFl3fNlVaS_qTQI8Ft0FEZkApiwAhVemWiN6K0vp9y38nnXRfjU_t0Z0LRVhtrdmtXK3dA"
               }
             />
@@ -161,16 +143,16 @@ export const MyJourneyPage = () => {
               <div>
                 <div className="flex items-center gap-3 mb-3">
                   <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded text-[11px] font-semibold uppercase tracking-widest text-white border border-white/30">
-                    {upcomingTrip.status || "Upcoming"}
+                    {featuredTrip.status || "Upcoming"}
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-widest opacity-80">
-                    {upcomingTrip.startDate
-                      ? `${new Date(upcomingTrip.startDate).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} — ${new Date(upcomingTrip.endDate).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}`
+                    {featuredTrip.startDate
+                      ? `${new Date(featuredTrip.startDate).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} — ${new Date(featuredTrip.endDate).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}`
                       : "Dates not set"}
                   </span>
                 </div>
                 <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
-                  {upcomingTrip.destination}
+                  {featuredTrip.destination}
                 </h2>
                 <p className="text-sm sm:text-base opacity-90 mt-1">India</p>
               </div>
@@ -204,7 +186,90 @@ export const MyJourneyPage = () => {
         </section>
       )}
 
-      {/* ── 3. PAST JOURNEYS ASYMMETRICAL GRID ── */}
+      {/* ── 3. FILTERED TRIPS ──  */}
+      <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mb-24">
+        {/* Filters */}
+        <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#6C2F00] mb-12 border-b border-[#DAC2B6]/30 pb-4">
+          Your Trips
+        </h3>
+        <div className="flex gap-8 mt-8 overflow-x-auto pb-3 hide-scrollbar border-b border-[#DAC2B6]/20">
+          {[
+            { id: "all", label: "All" },
+            { id: "planned", label: "Upcoming" },
+            { id: "ongoing", label: "Ongoing" },
+            { id: "completed", label: "Completed" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFilterStatus(tab.id)}
+              className={`text-xs font-semibold uppercase tracking-widest pb-3 -mb-[14px] transition-colors cursor-pointer ${
+                filterStatus === tab.id
+                  ? "text-[#6C2F00] border-b-2 border-[#6C2F00]"
+                  : "text-[#54433A] hover:text-[#6C2F00]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mt-12">
+          {filteredTrips.length > 0 ? (
+            filteredTrips.map((trip, idx) => {
+              const isLarge = idx % 3 === 0;
+              const span = isLarge
+                ? "md:col-span-7 aspect-square"
+                : "md:col-span-5 aspect-[4/3]";
+              return (
+                <div
+                  key={trip._id}
+                  onClick={() => navigate(`/trips/${trip._id}`)}
+                  className={`${span} relative rounded overflow-hidden group cursor-pointer bg-[#1C1B1B] shadow-sm`}
+                >
+                  <img
+                    alt={trip.destination}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    src={
+                      trip.destinationImageUrl ||
+                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCop9_SUGmoIs8xdYJa5NPHUgJmnmEwh8ERGIz_QNasOM6UHaTVahV3K1wOz6L2u3SROQd2UPS_fZc2TPnz--AyMWSxPG3woCr7fU38exkAkmaezXjYNk2YBb0bxobTclTFcMeHWXppUx_SQlXzc2IEessiDKzephcx0bQRv1USw3ih39tNNKcSoCLdcqwM7m2tea60cEEaxzQhlWEjJQbkRuWRMlgXFeapJ_dr19cRKIzOMkYHwZ_XHQ"
+                    }
+                  />
+                  <div className="absolute inset-0 scrim-bottom opacity-80" />
+                  <div className="absolute bottom-0 left-0 w-full p-8 text-white">
+                    <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-2">
+                      {trip.status || "Completed"}
+                    </p>
+                    <h4 className="font-serif text-3xl font-bold">
+                      {trip.destination}
+                    </h4>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="text-center py-16 px-6 bg-white/50 border border-[#DAC2B6]/30 rounded md:col-span-12 w-full">
+              <h3 className="font-serif text-2xl font-bold text-[#1C1B1B] mb-2">
+                No Journeys Found
+              </h3>
+
+              <p className="text-sm text-[#54433A] mb-6 max-w-md mx-auto">
+                You don't have any trips matching the selected status yet.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-[#6C2F00] text-white px-8 py-3.5 rounded text-xs font-semibold uppercase tracking-widest hover:bg-[#8B4513] transition-colors inline-flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Plan a New Trip</span>
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── 4. PAST JOURNEYS ASYMMETRICAL GRID ── */}
       <section className="px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto">
         <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#6C2F00] mb-12 border-b border-[#DAC2B6]/30 pb-4">
           Past Journeys
