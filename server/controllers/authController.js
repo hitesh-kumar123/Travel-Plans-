@@ -314,13 +314,16 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+
     const user = await User.findOne({ email: normalizedEmail });
 
+    const genericResponse = {
+      success: true,
+      msg: "If an account exists with that email, a password reset link will be sent.",
+    };
+
     if (!user) {
-      // Return 404 or 400 with a clear message
-      return res
-        .status(404)
-        .json({ msg: "No account found with that email address." });
+      return res.status(200).json(genericResponse);
     }
 
     // Get reset token
@@ -345,10 +348,7 @@ exports.forgotPassword = async (req, res, next) => {
         html: getPasswordResetTemplate(user.name, resetUrl),
       });
 
-      return res.status(200).json({
-        success: true,
-        msg: "Password reset link sent to your email successfully.",
-      });
+      return res.status(200).json(genericResponse);
     } catch (err) {
       console.error("[forgotPassword] Email dispatch failed:", err.message);
 
