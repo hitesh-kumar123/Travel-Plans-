@@ -16,6 +16,7 @@ export const ContactHelpPage = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const faqs = [
     {
@@ -43,6 +44,12 @@ export const ContactHelpPage = () => {
         "Navigate to 'Settings' within your Account menu to update personal details, preferences, and payment information.",
     },
   ];
+
+  const filteredFaqs = faqs.filter((faq) =>
+  `${faq.q} ${faq.title} ${faq.answer}`
+    .toLowerCase()
+    .includes(searchQuery.toLowerCase())
+);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,37 +94,56 @@ export const ContactHelpPage = () => {
               Help
             </h2>
 
-            <div className="space-y-1 divide-y divide-[#DAC2B6]/30">
-              {faqs.map((faq, idx) => {
-                const isOpen = openFaq === idx;
-                return (
-                  <div key={idx} className="py-6 cursor-pointer">
-                    <div
-                      onClick={() => setOpenFaq(isOpen ? -1 : idx)}
-                      className="flex justify-between items-center group cursor-pointer"
-                    >
-                      <h3 className="font-serif text-2xl font-semibold text-[#1C1B1B] group-hover:text-[#6C2F00] transition-colors">
-                        {faq.q}
-                      </h3>
-                      <ChevronDown
-                        className={`w-5 h-5 text-[#877369] group-hover:text-[#6C2F00] transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </div>
+            <div className="mb-6">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search FAQs..."
+              className="w-full bg-white/70 border border-[#DAC2B6] rounded px-4 py-3 text-[#1C1B1B] placeholder-[#877369]/60 focus:outline-none focus:border-[#6C2F00] transition-colors"
+             />
+            </div>    
 
-                    {isOpen && (
-                      <div className="pt-4 text-base text-[#54433A] leading-relaxed font-sans animate-fade-in-up">
-                        <strong className="text-[#1C1B1B] block mb-1">
-                          {faq.title}
-                        </strong>
-                        <p>{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            
+<div className="space-y-1 divide-y divide-[#DAC2B6]/30">
+  {filteredFaqs.length > 0 ? (
+    filteredFaqs.map((faq, idx) => {
+      const isOpen = openFaq === idx;
+
+      return (
+        <div key={idx} className="py-6 cursor-pointer">
+          <div
+            onClick={() => setOpenFaq(isOpen ? -1 : idx)}
+            className="flex justify-between items-center group cursor-pointer"
+          >
+            <h3 className="font-serif text-2xl font-semibold text-[#1C1B1B] group-hover:text-[#6C2F00] transition-colors">
+              {faq.q}
+            </h3>
+
+            <ChevronDown
+              className={`w-5 h-5 text-[#877369] group-hover:text-[#6C2F00] transition-transform duration-300 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+
+          {isOpen && (
+            <div className="pt-4 text-base text-[#54433A] leading-relaxed font-sans animate-fade-in-up">
+              <strong className="text-[#1C1B1B] block mb-1">
+                {faq.title}
+              </strong>
+              <p>{faq.answer}</p>
             </div>
+          )}
+        </div>
+      );
+    })
+  ) : (
+    <p className="py-8 text-[#877369]" role="status">
+      No matching FAQs found
+    </p>
+  )}
+</div>
 
             {/* Direct Contact */}
             <div className="mt-16 pt-8 border-t border-[#DAC2B6]/30">
