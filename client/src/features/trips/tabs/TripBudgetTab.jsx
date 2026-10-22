@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { expensesApi } from "../../../services/api/expensesApi";
 import { getErrorMessage } from "../../../services/api/client";
+import { getRateToINR } from "../../../services/currencyConverter";
 import Button from "../../../components/Button";
 import FormField from "../../../components/FormField";
 import Modal from "../../../components/Modal";
@@ -12,16 +14,16 @@ import {
   Plus,
   Trash2,
   PieChart,
-  Calendar,
   AlertCircle,
-  TrendingUp,
 } from "lucide-react";
 
 export const TripBudgetTab = ({ trip }) => {
   const [expenses, setExpenses] = useState([]);
-  const [summary, setSummary] = useState([]);
+  const [convertedExpenses, setConvertedExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [conversionLoading, setConversionLoading] = useState(false);
+  const [conversionError, setConversionError] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState("");
@@ -48,13 +50,11 @@ export const TripBudgetTab = ({ trip }) => {
   const fetchExpensesData = async () => {
     setLoading(true);
     setError(null);
+
     try {
-      const [expRes, sumRes] = await Promise.all([
-        expensesApi.getByTrip(trip._id),
-        expensesApi.getSummary(trip._id),
-      ]);
-      setExpenses(expRes.data?.data || expRes.data || []);
-      setSummary(sumRes.data || []);
+      const expRes = await expensesApi.getByTrip(trip._id);
+      const data = expRes.data?.data || expRes.data || [];
+      setExpenses(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to load expenses:", err);
       setError("Unable to load budget records for this journey.");
@@ -64,20 +64,99 @@ export const TripBudgetTab = ({ trip }) => {
   };
 
   useEffect(() => {
-    if (trip._id) fetchExpensesData();
+    if (trip._id) {
+      fetchExpensesData();
+    }
   }, [trip._id]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const convertExpenses = async () => {
+      if (expenses.length === 0) {
+        setConvertedExpenses([]);
+        setConversionError("");
+        setConversionLoading(false);
+        return;
+      }
+
+      setConversionLoading(true);
+      setConversionError("");
+
+      try {
+        const currencies = [
+          ...new Set(
+            expenses.map((expense) =>
+              String(expense.currency || "INR").toUpperCase(),
+            ),
+          ),
+        ];
+
+        const rates = {};
+
+        await Promise.all(
+          currencies.map(async (currency) => {
+            rates[currency] = await getRateToINR(currency);
+          }),
+        );
+
+        const converted = expenses.map((expense) => {
+          const currency = String(
+            expense.currency || "INR",
+          ).toUpperCase();
+          const amount = Number(expense.amount);
+
+          if (!Number.isFinite(amount) || amount < 0) {
+            throw new Error("An expense has an invalid amount.");
+          }
+
+          return {
+            ...expense,
+            amountINR: amount * rates[currency].rate,
+            exchangeRate: rates[currency].rate,
+            rateDate: rates[currency].date,
+          };
+        });
+
+        if (!cancelled) {
+          setConvertedExpenses(converted);
+        }
+      } catch (err) {
+        console.error("Currency conversion failed:", err);
+
+        if (!cancelled) {
+          setConvertedExpenses([]);
+          setConversionError(
+            "Unable to retrieve exchange rates. Please try again later.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setConversionLoading(false);
+        }
+      }
+    };
+
+    convertExpenses();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [expenses]);
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
     setFormError("");
 
     const parsedAmount = parseFloat(formData.amount);
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
       setFormError("Amount must be a positive number.");
       return;
     }
 
     setFormLoading(true);
+
     try {
       await expensesApi.create({
         trip: trip._id,
@@ -87,6 +166,7 @@ export const TripBudgetTab = ({ trip }) => {
         description: formData.description.trim(),
         date: formData.date,
       });
+
       setIsAddModalOpen(false);
       setFormData({
         amount: "",
@@ -97,6 +177,7 @@ export const TripBudgetTab = ({ trip }) => {
           ? trip.startDate.split("T")[0]
           : new Date().toISOString().split("T")[0],
       });
+
       await fetchExpensesData();
     } catch (err) {
       setFormError(getErrorMessage(err, "Failed to record expense."));
@@ -111,96 +192,170 @@ export const TripBudgetTab = ({ trip }) => {
       await fetchExpensesData();
     } catch (err) {
       console.error("Failed to delete expense:", err);
+      setError("Failed to delete the expense. Please try again.");
     }
   };
 
-  // Calculate totals
-  const totalSpent = expenses.reduce(
-    (sum, item) => sum + (Number(item.amount) || 0),
+  // All budget calculations use INR.
+  const totalSpent = convertedExpenses.reduce(
+    (sum, item) => sum + item.amountINR,
     0,
   );
+
   const plannedBudget = Number(trip.budget) || 0;
   const budgetRemaining = plannedBudget - totalSpent;
+
   const percentUsed =
     plannedBudget > 0
-      ? Math.min(100, Math.round((totalSpent / plannedBudget) * 100))
+      ? Math.round((totalSpent / plannedBudget) * 100)
       : 0;
+
+  // Aggregate category totals after currency conversion.
+  const categorySummary = Object.values(
+    convertedExpenses.reduce((groups, item) => {
+      if (!groups[item.category]) {
+        groups[item.category] = {
+          category: item.category,
+          totalAmount: 0,
+          count: 0,
+        };
+      }
+
+      groups[item.category].totalAmount += item.amountINR;
+      groups[item.category].count += 1;
+
+      return groups;
+    }, {}),
+  );
+
+  const formatINR = (amount) =>
+    `₹${amount.toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+
+  const totalsUnavailable = conversionLoading || Boolean(conversionError);
 
   return (
     <div className="space-y-10">
+      {error && (
+        <div className="flex items-start gap-2 p-3 rounded bg-[#FFDAD6]/50 text-sm text-[#BA1A1A]">
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {conversionLoading && (
+        <p className="text-xs text-[#54433A]">
+          Converting expenses to INR using the latest available exchange rates...
+        </p>
+      )}
+
+      {conversionError && (
+        <div className="flex items-start gap-2 p-3 rounded bg-[#FFDAD6]/50 text-sm text-[#BA1A1A]">
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <div>
+            <p>{conversionError}</p>
+            <button
+              type="button"
+              className="mt-2 underline"
+              onClick={() => setExpenses((current) => [...current])}
+            >
+              Retry conversion
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Budget Summary Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-[#FFFFFF] p-6 border border-[#E5E2E1] rounded shadow-xs">
           <span className="text-xs font-semibold uppercase text-[#877369]">
-            Planned Budget
+            Planned Budget (INR)
           </span>
           <p className="font-serif text-2xl font-bold text-[#1C1B1B] mt-1">
-            ₹{plannedBudget.toLocaleString("en-IN")}
+            {formatINR(plannedBudget)}
           </p>
-          <p className="text-[11px] text-[#54433A] mt-1">Target allocated</p>
+          <p className="text-[11px] text-[#54433A] mt-1">
+            Target allocated
+          </p>
         </div>
 
         <div className="bg-[#FFFFFF] p-6 border border-[#E5E2E1] rounded shadow-xs">
           <span className="text-xs font-semibold uppercase text-[#6C2F00]">
-            Total Expended
+            Total Spent (INR)
           </span>
           <p className="font-serif text-2xl font-bold text-[#6C2F00] mt-1">
-            ₹{totalSpent.toLocaleString("en-IN")}
+            {totalsUnavailable ? "—" : formatINR(totalSpent)}
           </p>
+
           <div className="w-full bg-[#F0EDED] h-1.5 rounded-full mt-2 overflow-hidden">
             <div
               className={`h-full ${
                 percentUsed > 100 ? "bg-[#BA1A1A]" : "bg-[#6C2F00]"
               }`}
-              style={{ width: `${Math.min(100, percentUsed)}%` }}
+              style={{
+                width: `${
+                  totalsUnavailable
+                    ? 0
+                    : Math.min(100, Math.max(0, percentUsed))
+                }%`,
+              }}
             />
           </div>
+
           <p className="text-[11px] text-[#54433A] mt-1.5">
-            {percentUsed}% of budget utilized
+            {totalsUnavailable
+              ? "Awaiting currency conversion"
+              : `${percentUsed}% of budget utilized`}
           </p>
         </div>
 
         <div className="bg-[#FFFFFF] p-6 border border-[#E5E2E1] rounded shadow-xs">
           <span className="text-xs font-semibold uppercase text-[#877369]">
-            Remaining Sanctuary Balance
+            Remaining Budget (INR)
           </span>
           <p
             className={`font-serif text-2xl font-bold mt-1 ${
-              budgetRemaining < 0 ? "text-[#BA1A1A]" : "text-[#2E4632]"
+              !totalsUnavailable && budgetRemaining < 0
+                ? "text-[#BA1A1A]"
+                : "text-[#2E4632]"
             }`}
           >
-            ₹{budgetRemaining.toLocaleString("en-IN")}
+            {totalsUnavailable ? "—" : formatINR(budgetRemaining)}
           </p>
           <p className="text-[11px] text-[#54433A] mt-1">
-            {budgetRemaining < 0
-              ? "Exceeded target budget"
-              : "Within safety buffer"}
+            {totalsUnavailable
+              ? "Awaiting currency conversion"
+              : budgetRemaining < 0
+                ? "Exceeded target budget"
+                : "Within budget"}
           </p>
         </div>
       </div>
 
       {/* Category Breakdown */}
-      {summary.length > 0 && (
+      {!totalsUnavailable && categorySummary.length > 0 && (
         <div className="bg-[#FFFFFF] p-6 sm:p-8 border border-[#E5E2E1] rounded shadow-xs space-y-6">
           <h4 className="font-serif text-xl font-bold text-[#1C1B1B] flex items-center">
             <PieChart className="w-5 h-5 mr-2 text-[#6C2F00]" />
-            Expense Distribution by Category
+            Expense Distribution by Category (INR)
           </h4>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {summary.map((item, idx) => (
+            {categorySummary.map((item) => (
               <div
-                key={idx}
+                key={item.category}
                 className="p-3.5 bg-[#F6F3F2] rounded border border-[#E5E2E1] flex flex-col justify-between"
               >
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#877369] truncate">
                   {item.category}
                 </span>
                 <span className="font-serif text-lg font-bold text-[#1C1B1B] mt-1">
-                  ₹{(item.totalAmount || 0).toLocaleString("en-IN")}
+                  {formatINR(item.totalAmount)}
                 </span>
                 <span className="text-[10px] text-[#54433A] mt-0.5">
-                  {item.count} entry{item.count === 1 ? "" : "ies"}
+                  {item.count} {item.count === 1 ? "entry" : "entries"}
                 </span>
               </div>
             ))}
@@ -216,7 +371,7 @@ export const TripBudgetTab = ({ trip }) => {
               Expense Log
             </h3>
             <p className="text-xs text-[#54433A]">
-              Itemized entries recorded for this expedition.
+              Original amounts are shown in their recorded currencies.
             </p>
           </div>
 
@@ -231,7 +386,7 @@ export const TripBudgetTab = ({ trip }) => {
         </div>
 
         {loading ? (
-          <LoadingState message="Auditing journey expenses..." />
+          <LoadingState message="Loading journey expenses..." />
         ) : expenses.length > 0 ? (
           <div className="bg-[#FFFFFF] border border-[#E5E2E1] rounded overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
@@ -270,7 +425,9 @@ export const TripBudgetTab = ({ trip }) => {
                       </td>
                       <td className="py-4 px-6 text-right font-serif font-bold text-[#1C1B1B] whitespace-nowrap text-sm">
                         {exp.currency || "INR"}{" "}
-                        {Number(exp.amount).toLocaleString("en-IN")}
+                        {Number(exp.amount).toLocaleString("en-IN", {
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
                       <td className="py-4 px-6 text-center">
                         <button
@@ -361,9 +518,9 @@ export const TripBudgetTab = ({ trip }) => {
                   className="py-2.5 px-2 bg-transparent border-b border-[#DAC2B6] text-xs font-semibold text-[#1C1B1B] focus:outline-none focus:border-[#6C2F00]"
                   required
                 >
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
